@@ -602,6 +602,14 @@ accessibility is covered by axe in Playwright, which does onboard first; its
 performance is not measured at all. Adding a `puppeteerScript` to seed
 localStorage would close this, and is worth doing before launch.
 
+**The repository's default branch was wrong.** It was `architecture/v0.1`,
+the branch PR #1 merged into, so a `gh pr create` without `--base main` opened
+this PR against the architecture-only branch. The squash landed there and
+added the whole repository to it. The tree was correct, so the fix was to
+replay the same diff onto `main`, set `main` as the default branch, and reset
+`architecture/v0.1` back to the architecture commit. Every future PR now
+defaults to `main`.
+
 The web package's three remaining uncovered branches (`OnboardingFlow.tsx` line
 224, `WeekView.tsx` line 111, `store.ts` line 56) are pre-existing and not
 introduced here.
