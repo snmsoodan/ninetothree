@@ -28,6 +28,22 @@ export const WithPins: Story = {};
 /** The empty state is a sentence that says what will appear, not "No data". */
 export const Empty: Story = { args: { pins: [] } };
 
+/** A pin whose step was retired keeps its snapshot and stops linking. */
+export const Stale: Story = {
+  args: {
+    pins: [
+      ...pins.slice(0, 2),
+      {
+        id: "gone",
+        title: "A step that was retired",
+        packTitle: "Week 28",
+        packId: "pregnancy-w28",
+        stale: true,
+      },
+    ],
+  },
+};
+
 /** Six on the dashboard; the rest are counted, not hidden. */
 export const OverTheLimit: Story = {
   args: {

@@ -30,11 +30,12 @@ const PRIORITY_LABEL: Record<Action["priority"], string | null> = {
 
 export interface ActionItemProps {
   action: Action;
-  /** The pack this action belongs to, for the pin label. */
+  /** The pack this action belongs to, for the pin label and the pin snapshot. */
+  packId: string;
   packTitle: string;
 }
 
-export function ActionItem({ action, packTitle }: ActionItemProps) {
+export function ActionItem({ action, packId, packTitle }: ActionItemProps) {
   const state = useAppState();
   const done = isDone(state, action.id);
   const skipped = isSkipped(state, action.id);
@@ -73,7 +74,7 @@ export function ActionItem({ action, packTitle }: ActionItemProps) {
         </div>
         <button
           type="button"
-          onClick={() => togglePin(action.id)}
+          onClick={() => togglePin({ id: action.id, title: action.title, packId, packTitle })}
           aria-pressed={pinned}
           aria-label={pinned ? `Unpin ${action.title}` : `Pin ${action.title}`}
           className={cn(

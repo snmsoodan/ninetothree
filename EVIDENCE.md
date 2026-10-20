@@ -614,6 +614,30 @@ The web package's three remaining uncovered branches (`OnboardingFlow.tsx` line
 224, `WeekView.tsx` line 111, `store.ts` line 56) are pre-existing and not
 introduced here.
 
-## 13. How this file is maintained
+## 13. Pins (issue #24)
+
+**A pin is a snapshot, not a pointer.** The issue's acceptance criterion is that a pin survives a content version change. A bare action id would not: rename an action, and the pin silently disappears from a parent's shelf with no explanation. So `AppState.pins` stores `{ id, title, packId, packTitle, at }` — enough to render the pin even if the action it came from no longer exists.
+
+`resolvePins(pins, packs)` in `apps/web/src/lib/pins.ts` decides what to show:
+
+| Situation                                  | What the parent sees                                                                         |
+| ------------------------------------------ | -------------------------------------------------------------------------------------------- |
+| The action still exists                    | Live title and pack. The snapshot is ignored.                                                |
+| The action is gone, the snapshot is intact | The snapshot, marked `stale`, with "This step has changed since you pinned it." and no link. |
+| A v1 bare id whose action is gone          | Nothing. There is no title to show, so the pin is dropped.                                   |
+
+`migratePins()` runs inside `hydrate()`, so a `string[]` written by an earlier build upgrades in place rather than being discarded.
+
+**Reorder is buttons, not drag.** A drag handle is unusable with a screen reader and unreliable one-handed, which is the posture most of this product is used in. The first pin's "Move up" and the last pin's "Move down" are disabled rather than hidden, so the control does not move under a thumb.
+
+**Reorder is hidden while filtering**, with the reason stated: "Moving a pin inside a filtered list would not mean what it looks like." Moving item 2 above item 1 in a list of 3 filtered results is not the same operation as moving it in the full list, and pretending otherwise would corrupt the order.
+
+**The dashboard caps at six; the shelf does not.** `PIN_LIMIT = 6` in `PinList` is a dashboard decision — six is what fits above the fold on a phone. The shelf is the full list, with a "Find a pin" filter for when it grows.
+
+**Deferred, and said so in the PR rather than faked:** "convert to reminder" needs the reminder system in #34, and "shared vs private" needs partner accounts in #36/#37. Neither exists yet, so neither ships here.
+
+**What this could not test:** the shelf's reorder and filter are covered by one Playwright journey and by unit tests on `movePin`, but no test asserts the order survives a reload — `state survives a reload` covers progress and pins, not their order. The six-pin cap is unit-tested, not exercised end to end, because reaching seven pins needs seven actions across several weeks.
+
+## 14. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.

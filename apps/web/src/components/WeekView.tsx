@@ -103,7 +103,7 @@ export function WeekView({ pack, nextId, previousId }: WeekViewProps) {
           </p>
           <div className="mt-4 space-y-3">
             {personalized.coreActions.map((action) => (
-              <ActionItem key={action.id} action={action} packTitle={pack.title} />
+              <ActionItem key={action.id} action={action} packId={pack.id} packTitle={pack.title} />
             ))}
           </div>
           {hidden.length > 0 ? (

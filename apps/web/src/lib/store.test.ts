@@ -12,6 +12,8 @@ import {
   useHydrated,
   isDone,
   isPinned,
+  movePin,
+  removePin,
   isSkipped,
   markDone,
   markSkipped,
@@ -117,25 +119,75 @@ describe("progress", () => {
   });
 });
 
+const pin = (id: string, title = `Step ${id}`) => ({
+  id,
+  title,
+  packId: "pregnancy-w28",
+  packTitle: "Week 28",
+});
+
 describe("pins", () => {
   it("pins and unpins", () => {
-    togglePin("a1");
+    togglePin(pin("a1"));
     expect(isPinned(getSnapshot(), "a1")).toBe(true);
-    togglePin("a1");
+    togglePin(pin("a1"));
     expect(isPinned(getSnapshot(), "a1")).toBe(false);
   });
 
   it("keeps several pins in the order they were added", () => {
-    togglePin("a1");
-    togglePin("a2");
-    expect(getSnapshot().pins).toEqual(["a1", "a2"]);
+    togglePin(pin("a1"));
+    togglePin(pin("a2"));
+    expect(getSnapshot().pins.map((p) => p.id)).toEqual(["a1", "a2"]);
   });
 
   it("unpins only the one asked for", () => {
-    togglePin("a1");
-    togglePin("a2");
-    togglePin("a1");
-    expect(getSnapshot().pins).toEqual(["a2"]);
+    togglePin(pin("a1"));
+    togglePin(pin("a2"));
+    togglePin(pin("a1"));
+    expect(getSnapshot().pins.map((p) => p.id)).toEqual(["a2"]);
+  });
+
+  it("stores a snapshot, so a pin survives the action being renamed", () => {
+    togglePin(pin("a1", "Book your glucose test"), "2026-10-20T00:00:00.000Z");
+    expect(getSnapshot().pins[0]).toEqual({
+      id: "a1",
+      title: "Book your glucose test",
+      packId: "pregnancy-w28",
+      packTitle: "Week 28",
+      at: "2026-10-20T00:00:00.000Z",
+    });
+  });
+
+  it("moves a pin up and down", () => {
+    togglePin(pin("a1"));
+    togglePin(pin("a2"));
+    togglePin(pin("a3"));
+    movePin("a3", "up");
+    expect(getSnapshot().pins.map((p) => p.id)).toEqual(["a1", "a3", "a2"]);
+    movePin("a1", "down");
+    expect(getSnapshot().pins.map((p) => p.id)).toEqual(["a3", "a1", "a2"]);
+  });
+
+  it("refuses to move past either end", () => {
+    togglePin(pin("a1"));
+    togglePin(pin("a2"));
+    movePin("a1", "up");
+    movePin("a2", "down");
+    expect(getSnapshot().pins.map((p) => p.id)).toEqual(["a1", "a2"]);
+  });
+
+  it("ignores a move for a pin that is not there", () => {
+    togglePin(pin("a1"));
+    movePin("nope", "up");
+    expect(getSnapshot().pins.map((p) => p.id)).toEqual(["a1"]);
+  });
+
+  it("removes a pin without toggling it back on", () => {
+    togglePin(pin("a1"));
+    removePin("a1");
+    expect(getSnapshot().pins).toEqual([]);
+    removePin("a1");
+    expect(getSnapshot().pins).toEqual([]);
   });
 });
 
@@ -157,9 +209,18 @@ describe("resetAll", () => {
   it("returns to the empty state", () => {
     completeOnboarding({ status: "pregnant", dueDate: "2026-12-01", profile: {} });
     markDone("a1");
-    togglePin("a1");
+    togglePin(pin("a1"));
     resetAll();
     expect(getSnapshot()).toEqual(EMPTY_STATE);
+  });
+
+  it("keeps working in memory when storage refuses the write", () => {
+    const setItem = vi.spyOn(window.localStorage, "setItem").mockImplementation(() => {
+      throw new Error("QuotaExceededError");
+    });
+    expect(() => markDone("a1")).not.toThrow();
+    expect(isDone(getSnapshot(), "a1")).toBe(true);
+    setItem.mockRestore();
   });
 
   it("clears the stored copy too", () => {
@@ -185,7 +246,44 @@ describe("persistence", () => {
     );
     const unsubscribe = subscribe(() => {});
     expect(getSnapshot().onboarded).toBe(true);
-    expect(getSnapshot().pins).toEqual(["a1"]);
+    // A v1 pin was a bare id. It is upgraded with an empty snapshot, which the
+    // shelf resolves from the live registry.
+    expect(getSnapshot().pins).toEqual([
+      { id: "a1", title: "", packId: "", packTitle: "", at: "" },
+    ]);
+    unsubscribe();
+  });
+
+  it("drops a stored pin that is neither a string nor an object with an id", () => {
+    window.localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ ...EMPTY_STATE, pins: [42, null, { title: "no id" }, "a1"] }),
+    );
+    const unsubscribe = subscribe(() => {});
+    expect(getSnapshot().pins.map((p) => p.id)).toEqual(["a1"]);
+    unsubscribe();
+  });
+
+  it("fills in missing snapshot fields on a stored pin", () => {
+    window.localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ ...EMPTY_STATE, pins: [{ id: "a1" }] }),
+    );
+    const unsubscribe = subscribe(() => {});
+    expect(getSnapshot().pins[0]).toEqual({
+      id: "a1",
+      title: "",
+      packId: "",
+      packTitle: "",
+      at: "",
+    });
+    unsubscribe();
+  });
+
+  it("treats a non-array pins field as an empty shelf", () => {
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...EMPTY_STATE, pins: "a1" }));
+    const unsubscribe = subscribe(() => {});
+    expect(getSnapshot().pins).toEqual([]);
     unsubscribe();
   });
 

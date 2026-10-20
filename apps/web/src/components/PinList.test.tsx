@@ -52,6 +52,29 @@ describe("PinList", () => {
     expect(screen.queryByRole("button", { name: /Unpin/ })).not.toBeInTheDocument();
   });
 
+  it("shows a pin whose step has changed without linking it anywhere", () => {
+    render(
+      <PinList
+        pins={[
+          {
+            id: "gone",
+            title: "A step that was retired",
+            packTitle: "Week 28",
+            packId: "w28",
+            stale: true,
+          },
+        ]}
+        onUnpin={() => {}}
+      />,
+    );
+    expect(screen.getByText("A step that was retired")).toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "A step that was retired" })).not.toBeInTheDocument();
+    expect(screen.getByText("This step has changed since you pinned it.")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Unpin A step that was retired" }),
+    ).toBeInTheDocument();
+  });
+
   it("honours a different limit", () => {
     render(<PinList pins={pins} max={2} />);
     expect(screen.getAllByRole("listitem")).toHaveLength(2);
