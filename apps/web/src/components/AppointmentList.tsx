@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import type { Appointment } from "@ninetothree/content";
 import { Card, CardBody } from "@ninetothree/ui";
 
@@ -22,9 +23,17 @@ function windowLabel(appointment: Appointment, unit: AppointmentListProps["unit"
 export function AppointmentList({ appointments, unit }: AppointmentListProps) {
   return (
     <section aria-labelledby="appointments-heading">
-      <h2 id="appointments-heading" className="font-display text-xl text-ink">
-        Appointments
-      </h2>
+      <div className="flex items-baseline justify-between gap-3">
+        <h2 id="appointments-heading" className="font-display text-xl text-ink">
+          Appointments
+        </h2>
+        <Link
+          href="/appointments"
+          className="rounded-sm text-sm text-ink-muted underline underline-offset-2 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-clay"
+        >
+          See the whole schedule
+        </Link>
+      </div>
 
       {appointments.length === 0 ? (
         <Card tone="sunken" className="mt-3">
