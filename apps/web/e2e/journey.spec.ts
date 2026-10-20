@@ -701,3 +701,43 @@ test("a step that is a purchase can be narrowed to one answer, and the answer st
   await expect(page.getByText("You chose")).toBeVisible();
   await expect(page.getByRole("link", { name: "Change it" })).toBeVisible();
 });
+
+test("the safety page leads to a triage answer, and the answer names a number", async ({
+  page,
+}) => {
+  await page.goto("/safety");
+  await page.getByRole("link", { name: "Help me work out who to call" }).click();
+
+  await expect(page.getByRole("heading", { level: 1, name: "Who is this about?" })).toBeVisible();
+  await page.getByRole("link", { name: "Me, and I am pregnant" }).click();
+  await page.getByRole("link", { name: "Chest pain, trouble breathing, or I fainted" }).click();
+
+  await expect(page.getByRole("heading", { level: 1, name: "Call 911 now." })).toBeVisible();
+  await expect(page.getByRole("link", { name: "911" })).toHaveAttribute("href", "tel:911");
+  await expect(page.getByRole("heading", { name: "Call back if" })).toBeVisible();
+});
+
+test("a quiet triage answer still says who to call, and never says you are fine", async ({
+  page,
+}) => {
+  await page.goto("/triage?p=me-pregnant,bleeding,spotting");
+
+  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+  await expect(page.getByText("Call your OB triage line", { exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Call back if" })).toBeVisible();
+
+  const text = (await page.locator("main").textContent()) ?? "";
+  expect(text).not.toMatch(/you(?:'re| are) (?:fine|okay)/i);
+  expect(text).not.toMatch(/nothing to worry about/i);
+});
+
+test("a triage answer can be walked back one question at a time", async ({ page }) => {
+  await page.goto("/triage?p=me-pregnant,bleeding,spotting");
+  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+
+  await page.getByRole("link", { name: "Bleeding, or fluid" }).click();
+  await expect(page.getByRole("heading", { level: 1, name: "How much bleeding?" })).toBeVisible();
+
+  await page.getByRole("link", { name: "Me, and I am pregnant" }).click();
+  await expect(page.getByRole("heading", { level: 1, name: "What is happening?" })).toBeVisible();
+});

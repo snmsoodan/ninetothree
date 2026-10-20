@@ -116,6 +116,16 @@ test("the chooser has no violations", async ({ page }) => {
   expect(await audit(page)).toEqual([]);
 });
 
+test("the triage question has no violations", async ({ page }) => {
+  await page.goto("/triage");
+  expect(await audit(page)).toEqual([]);
+});
+
+test("a triage outcome has no violations", async ({ page }) => {
+  await page.goto("/triage?p=me-pregnant,bleeding,spotting");
+  expect(await audit(page)).toEqual([]);
+});
+
 test("the safety page has no violations", async ({ page }) => {
   await page.goto("/safety");
   expect(await audit(page)).toEqual([]);
@@ -166,6 +176,8 @@ test("every route has exactly one skip-link target", async ({ page }) => {
     "/read",
     "/read/glucose-test",
     "/choose/m6-highchair",
+    "/triage",
+    "/triage?p=me-pregnant,bleeding,spotting",
     "/safety",
     "/settings",
   ]) {

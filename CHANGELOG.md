@@ -9,6 +9,26 @@ changelog written after the fact from memory is a changelog nobody can trust.
 
 ## Unreleased
 
+### Triage: three outcomes, and none of them is "you are fine" (#30)
+
+- Added `packages/content/src/triage.ts`: the tree model, `treeIssues`, `walk`,
+  `paths`, `walkAnswers`, `nextNode`, `encodePath`/`decodePath`, and the
+  `REASSURANCE` ban list. 100% coverage.
+- Added `packages/content/triage/triage.json`: 13 nodes, 30 results, 31
+  root-to-outcome paths and 15 verified sources, across three roots — me and
+  pregnant, me and recently given birth, and the baby.
+- Added `packages/content/src/triage-registry.ts`. `loadTriage` parses before it
+  validates, so a malformed tree reports its Zod issues instead of throwing
+  `tree.nodes is not iterable`.
+- Added two lint rules, `reassurance` and `unreviewed`, and `lintTriage` /
+  `lintTriages`. The build gate now prints the path count and every result's
+  escalation and review date.
+- Added `apps/web/src/components/Triage.tsx` and `/triage`, a URL-driven page
+  that works with JavaScript disabled. Linked from `/safety`.
+- Added 53 content tests, 15 component tests, 6 lint tests, 2 axe tests, 2
+  no-JS tests and 3 journey tests. The link check now covers the tree's
+  sources: 130 links, none broken, none moved.
+
 ### Onboarding: six steps, a detected country, and a draft that resumes (#16)
 
 - Rewrote `OnboardingFlow` from four steps to six: where you are, when, where,

@@ -95,3 +95,25 @@ export {
   type ChooserAnswers,
   type ChooserResult,
 } from "./chooser";
+export {
+  TRIAGE_KINDS,
+  TriageKind,
+  TriageAnswer,
+  TriageNode,
+  TriageResult,
+  TriageTree,
+  EMERGENCY_ESCALATIONS,
+  WATCH_ESCALATIONS,
+  REASSURANCE,
+  treeIssues,
+  walk,
+  paths,
+  walkAnswers,
+  nextNode,
+  encodePath,
+  decodePath,
+  reassuranceIn,
+  type TriagePath,
+  type TriageStep,
+} from "./triage";
+export { loadTriage, TRIAGE, TRIAGE_BY_ID, getTriage } from "./triage-registry";

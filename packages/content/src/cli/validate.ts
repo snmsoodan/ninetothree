@@ -1,9 +1,11 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { ARTICLES } from "../article-registry";
-import { lintArticles, lintLinks, lintPacks, type LintFinding } from "../lint";
+import { lintArticles, lintLinks, lintPacks, lintTriages, type LintFinding } from "../lint";
 import { LINKS } from "../link-registry";
 import { loadPacks } from "../loader";
+import { paths } from "../triage";
+import { TRIAGE } from "../triage-registry";
 
 const packsDir = join(import.meta.dirname, "..", "..", "packs");
 const files = readdirSync(packsDir).filter((f) => f.endsWith(".json"));
@@ -66,6 +68,7 @@ if (issues.length > 0) {
 report(lintPacks(packs), "content lint problem(s)");
 report(lintLinks(LINKS), "catalogue lint problem(s)");
 report(lintArticles(ARTICLES), "article lint problem(s)");
+report(lintTriages([TRIAGE]), "triage lint problem(s)");
 
 if (process.exitCode !== 1) {
   console.log(`✓ ${LINKS.length} catalogue entries pass the same lint`);
@@ -73,6 +76,14 @@ if (process.exitCode !== 1) {
   for (const article of ARTICLES) {
     console.log(
       `  ${article.id.padEnd(24)} ${String(article.sources.length)} sources · reviewed ${article.reviewedAt}`,
+    );
+  }
+
+  const routes = paths(TRIAGE);
+  console.log(`✓ ${routes.length} triage paths, none of them reassuring`);
+  for (const result of TRIAGE.results) {
+    console.log(
+      `  ${result.id.padEnd(30)} ${result.kind.padEnd(9)} ${result.escalation.padEnd(20)} reviewed ${result.reviewedAt}`,
     );
   }
 }

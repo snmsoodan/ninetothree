@@ -7,12 +7,16 @@ import {
   lintLinks,
   lintPack,
   lintPacks,
+  lintTriage,
+  lintTriages,
   MAX_GRADE,
   proseFields,
   readingGrade,
   type LintFinding,
 } from "./lint";
 import { ARTICLES } from "./article-registry";
+import { TRIAGE } from "./triage-registry";
+import type { TriageResult, TriageTree } from "./triage";
 import { PACKS } from "./registry";
 import type { Article } from "./articles";
 import type { LinkEntry } from "./links";
@@ -369,5 +373,83 @@ describe("articles", () => {
 
   it("passes every shipped article", () => {
     expect(lintArticles(ARTICLES)).toEqual([]);
+  });
+});
+
+describe("triage", () => {
+  function outcome(over: Partial<TriageResult> & { id: string }): TriageResult {
+    return {
+      kind: "urgent",
+      headline: "Call your OB triage line now.",
+      body: "They will tell you whether to come in.",
+      escalation: "call-ob-triage",
+      sources: [
+        {
+          id: "s1",
+          title: "A source",
+          publisher: "ACOG",
+          url: "https://example.com/a-source",
+          kind: "clinical",
+          accessed: "2026-10-20",
+        },
+      ],
+      reviewedBy: "Clinical review pending",
+      reviewedAt: "2026-10-20",
+      ...over,
+    };
+  }
+
+  function tree(results: TriageResult[]): TriageTree {
+    return {
+      id: "triage",
+      title: "If something is wrong",
+      root: "start",
+      nodes: [
+        {
+          id: "start",
+          question: "Who is this about?",
+          answers: results.map((result, index) => ({
+            id: `answer-${String(index)}`,
+            label: "An answer",
+            next: result.id,
+          })),
+        },
+      ],
+      results,
+    };
+  }
+
+  it("passes an outcome that only says what to do", () => {
+    expect(lintTriage(tree([outcome({ id: "urgent" })]))).toEqual([]);
+  });
+
+  it("catches an outcome that reassures", () => {
+    const findings = lintTriage(tree([outcome({ id: "urgent", body: "You're fine." })]));
+    expect(rules(findings)).toContain("reassurance");
+    expect(findings[0]?.excerpt).toBe("You're fine");
+  });
+
+  it("catches reassurance in what to watch for", () => {
+    const findings = lintTriage(
+      tree([outcome({ id: "urgent", watchFor: ["Nothing to worry about"] })]),
+    );
+    expect(rules(findings)).toContain("reassurance");
+  });
+
+  it("catches an outcome with no review record", () => {
+    const findings = lintTriage(tree([outcome({ id: "urgent", reviewedBy: "   " })]));
+    expect(rules(findings)).toContain("unreviewed");
+  });
+
+  it("flattens every tree it is given", () => {
+    const findings = lintTriages([
+      tree([outcome({ id: "one", body: "You're fine." })]),
+      tree([outcome({ id: "two", reviewedBy: "" })]),
+    ]);
+    expect(findings.map((finding) => finding.subject)).toEqual(["one", "two"]);
+  });
+
+  it("passes every outcome we ship", () => {
+    expect(lintTriages([TRIAGE])).toEqual([]);
   });
 });

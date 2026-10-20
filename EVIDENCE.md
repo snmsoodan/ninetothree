@@ -915,6 +915,32 @@ The fix is `settledIds(pack, state)` in `apps/web/src/lib/week.ts`: a step is se
 
 **What this does not do.** Country does not change the week card, because the card's appointments are content. Locale-aware escalation numbers — 911 against 999 — would be a real feature and belong to #31 and #46. The draft is plain localStorage: not encrypted, not scoped, cleared on completion and on `resetAll`.
 
-## 26. How this file is maintained
+## 26. Triage (issue #30)
+
+**The issue asked for a rules-based decision tree with three outcomes, local emergency numbers, and offline operation, with an AC that twenty paths are clinician-reviewed, that no path says "you're fine", and that it works without JavaScript.** The tree is content, the page is a URL, and the two testable halves of the AC are enforced by the schema and the lint rather than by a promise.
+
+**Three outcomes, and deliberately no fourth.** Every result is `emergency`, `urgent` or `watch`. There is no "you are fine" outcome, and that is a design decision rather than an omission: a tree that can tell a worried parent nothing is wrong will eventually tell the wrong parent nothing is wrong. The quietest outcome still says what to watch for and who to call if it changes. `REASSURANCE` in `packages/content/src/triage.ts` is nine regexes — "you're fine", "nothing to worry about", "don't worry", "rest assured", "it's normal", "perfectly safe", "nothing is wrong", "you're okay", "it's nothing" — and `lintTriage` reports any of them in a result's headline, body or `watchFor`. The rule applies to triage text only, not to the packs, where "normal" is a legitimate word ("that is normal and not a sign it is dropping").
+
+**The tree is content in JSON, like the chooser.** `packages/content/triage/triage.json` holds 13 nodes, 30 results and 15 sources. A clinician can review and change it without a deploy, and the schema refuses a tree that is structurally wrong before it can reach a parent.
+
+**The page is a URL, not a wizard.** `/triage?p=<answerId>,<answerId>` is walked by `walkAnswers`, and every answer is a link. That is what makes "works without JavaScript" true rather than claimed: the browser navigates, the server renders, and there is no client state to lose. It also means the back button works, and a parent can send the URL to a partner. `apps/web/e2e/nojs.spec.ts` walks a path with `javaScriptEnabled: false` and asserts the outcome renders.
+
+**The schema gates on the escalation, not just on the kind.** An `emergency` result must escalate to `call-911`, `go-to-er`, `call-988` or `call-poison-control`. An `urgent` result must not be `call-911`. A `watch` result must be `call-ob-triage`, `call-pediatrician`, `call-psi` or `call-dv-hotline`, and must carry a `watchFor` list with at least one entry. `treeIssues` also refuses a duplicate id, an id that is both a node and a result, an answer pointing at nothing, and any node or result unreachable from the root.
+
+**Thirty-one paths, and the honest reading of "clinician-reviewed".** `paths(TRIAGE)` enumerates 31 root-to-outcome paths across three roots — `me-pregnant`, `me-after-birth` and `baby` — over the AC's twenty. Clinical review cannot be delivered by a commit, so the honest version is what shipped: every result carries a required `reviewedBy` and `reviewedAt`, and a test enumerates every path and asserts each one carries a review record. The value today is `"Clinical review pending"`, the same as every pack, every article and every catalogue entry.
+
+**`loadTriage` had a robustness bug and it was found by a test.** A malformed tree (`{ id: "x" }`) threw `tree.nodes is not iterable` from `treeIssues` before the useful message could be built, because the custom checker reads the tree before the schema has confirmed it is one. The loader now `safeParse`s first, returns on success, and only runs `treeIssues` when `root` is a string and `nodes` and `results` are arrays. It is exported so both paths are testable.
+
+**`INSTRUCTION` is a full `Record<Escalation, string>`, not a `Partial` with a fallback.** Three of the eight escalations carry no phone number — `call-ob-triage`, `call-pediatrician` and `go-to-er` — and each needs different words: "on your discharge paperwork", "on the card from your first visit", "Go now. Do not wait for a call back." A fallback would have been a dead branch and a worse sentence.
+
+**The trail is rebuilt from the answers, not passed through the URL.** A hand-edited `?p=` cannot show a breadcrumb for a path that was never walked, because the page re-derives the trail by walking the answers it was given.
+
+**The phone link is derived from the number.** `TriageOutcome` renders `tel:` from `copy.phone` rather than reading `copy.href`, so a number and its dial string cannot drift apart. The `??` fallback that read `href` first was unreachable — all five numbers with a phone also carry an `href` — and removing it took `Triage.tsx` to 100% branch coverage.
+
+**The tree is the first place four escalations appear at all.** No pack uses `go-to-er`, `call-poison-control`, `call-psi` or `call-dv-hotline` as a red flag. Two of the four are still unreachable in the tree: there is no domestic-violence branch and no poisoning branch, so `t-dv` and `t-poison` are defined sources that no result uses, and `go-to-er` is in `EMERGENCY_ESCALATIONS` but no result escalates to it. That is a content gap, recorded here rather than papered over with a branch that would have been written to satisfy a checklist.
+
+**What this does not do.** The 30 results and 31 paths are my content, not a clinician's. `/triage` is a dynamic route because it reads `searchParams`, so it is not prerendered — fine for a page this small, but it is not static. The tree does not use the phone numbers for `call-ob-triage` or `call-pediatrician` because `ESCALATION_COPY` has none; the page says where to find the number instead. `lintTriage`'s `unreviewed` rule cannot fire on the shipped tree, because the schema already requires a non-empty `reviewedBy`; it exists for a tree loaded from somewhere other than the schema, and it is tested with a hand-built fixture.
+
+## 27. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.
