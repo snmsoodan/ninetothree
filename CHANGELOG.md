@@ -9,6 +9,31 @@ changelog written after the fact from memory is a changelog nobody can trust.
 
 ## Unreleased
 
+### Onboarding: six steps, a detected country, and a draft that resumes (#16)
+
+- Rewrote `OnboardingFlow` from four steps to six: where you are, when, where,
+  how you feed, whether it is your first, and the payoff. Three of the six can
+  be skipped, and a skipped answer is left out of the profile rather than
+  filled with a default.
+- Added `apps/web/src/lib/country.ts`: `detectCountry()` reads the IANA time
+  zone first and `navigator.language` second, against 36 explicit US zones and
+  5 UK zones. `isCovered()` reads `ENABLED_LOCALES`, so the country gate and
+  the appointment schedule cannot drift apart.
+- Added an onboarding draft under its own key (`ninetothree.onboarding.v1`)
+  with a seven-day TTL, cleared by `completeOnboarding` and `resetAll`. A
+  half-finished onboarding is not the parent's state and never reaches the
+  history export.
+- Added the `formula-options` option rule. The `feeding` question previously
+  changed nothing: the `formula-feeding` hide rule matched words the content
+  did not use. Hiding the step would have removed advice that is true of a
+  bottle too, so the rule trims the two lactation-consultant options instead.
+- Added `apps/web/src/lib/onboarding.test.ts`, which proves the AC one answer
+  at a time at the starting point where it matters, and proves country changes
+  the schedule and not the week card.
+- Added two e2e tests: onboarding completes in under ninety seconds with every
+  answer recorded, and an abandoned onboarding resumes at the right step while
+  a stale draft is forgotten.
+
 ### Help me choose, for the one step that is a purchase (#29)
 
 - Added `packages/content/src/chooser.ts`: the `Chooser` model (exactly three

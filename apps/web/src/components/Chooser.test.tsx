@@ -114,6 +114,36 @@ describe("Chooser", () => {
     expect(screen.getByRole("radio", { name: "A small kitchen" })).toBeChecked();
   });
 
+  it("shows a recommendation with no cost, no vendor and no detail", async () => {
+    const user = userEvent.setup();
+    render(
+      <Chooser
+        actionId="a-buy"
+        actionTitle="Get a chair"
+        chooser={chooser}
+        options={[
+          { id: "cheap", label: "The cheap one" },
+          { id: "fancy", label: "The fancy one" },
+        ]}
+        backHref="/week/test-week"
+      />,
+    );
+    await answerAll(user, ["A small kitchen", "Under $50", "No"]);
+
+    expect(screen.getByText("The cheap one")).toBeInTheDocument();
+    expect(screen.queryByText("$")).not.toBeInTheDocument();
+  });
+
+  it("shows a recommendation with no vendor and no detail", async () => {
+    const user = userEvent.setup();
+    renderChooser();
+    await answerAll(user, ["Its own corner", "Over $200", "Yes"]);
+
+    expect(screen.getByText("The fancy one")).toBeInTheDocument();
+    expect(screen.getByText("Ships in six weeks.")).toBeInTheDocument();
+    expect(screen.queryByText("A shop")).not.toBeInTheDocument();
+  });
+
   it("returns one recommendation with its reason", async () => {
     const user = userEvent.setup();
     renderChooser();

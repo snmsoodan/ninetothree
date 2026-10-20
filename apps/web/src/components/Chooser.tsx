@@ -7,6 +7,7 @@ import {
   type Chooser as ChooserContent,
   type ChooserAnswers,
   type ChooserResult,
+  type Cost,
 } from "@ninetothree/content";
 import { ButtonLink } from "@/components/ButtonLink";
 import { chooseOption } from "@/lib/store";
@@ -21,7 +22,7 @@ export interface ChooserProps {
   backHref: string;
 }
 
-const COST_LABEL: Record<string, string> = {
+const COST_LABEL: Record<Cost, string> = {
   free: "Free",
   $: "$",
   $$: "$$",
@@ -184,9 +185,7 @@ export function ChooserResultView({
       {chosen.detail ? <p className="mt-2 text-base text-ink-muted">{chosen.detail}</p> : null}
       {chosen.note ? <p className="mt-2 text-sm text-ink-muted">{chosen.note}</p> : null}
       <div className="mt-3 flex flex-wrap items-center gap-2">
-        {chosen.cost ? (
-          <Badge tone="neutral">{COST_LABEL[chosen.cost] ?? chosen.cost}</Badge>
-        ) : null}
+        {chosen.cost ? <Badge tone="neutral">{COST_LABEL[chosen.cost]}</Badge> : null}
         {chosen.vendor ? <Badge tone="neutral">{chosen.vendor}</Badge> : null}
       </div>
       <div className="mt-6 flex flex-wrap items-center gap-2">

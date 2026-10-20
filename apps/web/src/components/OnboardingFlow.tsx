@@ -1,12 +1,17 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Card, CardBody, RadioGroup, cn } from "@ninetothree/ui";
-import { computeStage, type Profile } from "@ninetothree/rules";
-import { completeOnboarding } from "@/lib/store";
-
-type Step = "status" | "date" | "about" | "ready";
+import { computeStage, type Country, type Profile } from "@ninetothree/rules";
+import {
+  ONBOARDING_STEPS,
+  completeOnboarding,
+  readDraft,
+  saveDraft,
+  type OnboardingStep,
+} from "@/lib/store";
+import { countryName, detectCountry, isCovered } from "@/lib/country";
 
 const FEEDING = [
   { value: "breast", label: "Breastfeeding" },
@@ -20,6 +25,12 @@ const FIRST_BABY = [
   { value: "no", label: "No, I have done this before" },
 ];
 
+const COUNTRY = [
+  { value: "US", label: "The United States" },
+  { value: "UK", label: "The United Kingdom" },
+  { value: "other", label: "Somewhere else" },
+];
+
 function todayIso(): string {
   return new Date().toISOString().slice(0, 10);
 }
@@ -31,13 +42,66 @@ function addDays(iso: string, days: number): string {
   return date.toISOString().slice(0, 10);
 }
 
+/**
+ * Rendered only on the payoff screen, where the date step has already
+ * guaranteed a date. Computing it higher up would run `computeStage` on an
+ * empty string during the first render.
+ */
+function StartingAt({ status, date }: { status: "pregnant" | "parent"; date: string }) {
+  const stage = computeStage(
+    status === "pregnant"
+      ? { status: "pregnant", dueDate: date }
+      : { status: "parent", birthDate: date },
+    todayIso(),
+  );
+  return <>{stage.kind === "pregnancy" ? `Week ${stage.index}` : `Month ${stage.index}`}</>;
+}
+
 export function OnboardingFlow() {
   const router = useRouter();
-  const [step, setStep] = useState<Step>("status");
+  const [step, setStep] = useState<OnboardingStep>("status");
   const [status, setStatus] = useState<"pregnant" | "parent">("pregnant");
   const [date, setDate] = useState("");
-  const [feeding, setFeeding] = useState<string>("undecided");
-  const [firstBaby, setFirstBaby] = useState<string>("yes");
+  const [country, setCountry] = useState("");
+  const [feeding, setFeeding] = useState("");
+  const [firstBaby, setFirstBaby] = useState("");
+  const [guessed, setGuessed] = useState<Country | undefined>(undefined);
+  const [loaded, setLoaded] = useState(false);
+
+  // The draft is read after mount, not during render: the server has no
+  // storage, so reading it in a state initialiser would hydrate a different
+  // tree than the one that was sent.
+  useEffect(() => {
+    const guess = detectCountry();
+    setGuessed(guess);
+    const draft = readDraft();
+    if (draft) {
+      setStep(draft.step);
+      setStatus(draft.status);
+      setDate(draft.date);
+      setCountry(draft.country);
+      setFeeding(draft.feeding);
+      setFirstBaby(draft.firstBaby);
+    } else {
+      // A guess the parent can see is an answer. Leaving the radio selected
+      // and the profile empty would be a question that looks answered.
+      setCountry(guess ?? "");
+    }
+    setLoaded(true);
+  }, []);
+
+  useEffect(() => {
+    if (!loaded) return;
+    saveDraft({
+      step,
+      status,
+      date,
+      country,
+      feeding,
+      firstBaby,
+      at: new Date().toISOString(),
+    });
+  }, [loaded, step, status, date, country, feeding, firstBaby]);
 
   const dateLabel = status === "pregnant" ? "When is your due date?" : "When was the baby born?";
   const dateHint =
@@ -45,10 +109,14 @@ export function OnboardingFlow() {
       ? "An estimate is fine. You can change it later."
       : "The date on the birth certificate.";
 
+  const skipped = [country, feeding, firstBaby].filter((answer) => answer === "").length;
+  const covered = country === "US" || country === "UK" ? isCovered(country) : false;
+
   function finish() {
     const profile: Profile = {
-      feeding: feeding as Profile["feeding"],
-      firstBaby: firstBaby === "yes",
+      ...(feeding ? { feeding: feeding as Profile["feeding"] } : {}),
+      ...(firstBaby === "yes" || firstBaby === "no" ? { firstBaby: firstBaby === "yes" } : {}),
+      ...(country === "US" || country === "UK" ? { country } : {}),
     };
     completeOnboarding({
       status,
@@ -58,26 +126,25 @@ export function OnboardingFlow() {
     router.push("/");
   }
 
+  const position = ONBOARDING_STEPS.indexOf(step);
+
   return (
     <div className="mx-auto flex min-h-dvh max-w-lg flex-col justify-center px-5 py-10">
       <div className="mb-8">
         <p className="font-display text-lg text-ink">Nine to Three</p>
         <div className="mt-3 flex gap-1.5" aria-hidden="true">
-          {(["status", "date", "about", "ready"] as Step[]).map((s) => (
+          {ONBOARDING_STEPS.map((s) => (
             <span
               key={s}
               className={cn(
                 "h-1 flex-1 rounded-full transition-colors duration-[var(--duration-base)]",
-                ["status", "date", "about", "ready"].indexOf(step) >=
-                  ["status", "date", "about", "ready"].indexOf(s)
-                  ? "bg-ink"
-                  : "bg-line",
+                position >= ONBOARDING_STEPS.indexOf(s) ? "bg-ink" : "bg-line",
               )}
             />
           ))}
         </div>
         <p className="sr-only" aria-live="polite">
-          Step {["status", "date", "about", "ready"].indexOf(step) + 1} of 4
+          Step {position + 1} of {ONBOARDING_STEPS.length}
         </p>
       </div>
 
@@ -152,48 +219,100 @@ export function OnboardingFlow() {
             <Button variant="quiet" onClick={() => setStep("status")}>
               Back
             </Button>
-            <Button disabled={!date} onClick={() => setStep("about")}>
+            <Button disabled={!date} onClick={() => setStep("country")}>
               Continue
             </Button>
           </div>
         </section>
       ) : null}
 
-      {step === "about" ? (
+      {step === "country" ? (
         <section aria-labelledby="q3">
           <h1 id="q3" className="font-display text-3xl text-ink">
-            Two quick things
+            Where are you?
           </h1>
           <p className="mt-2 text-base text-ink-muted">
-            Both are optional. They only change what we hide, never what we warn you about.
+            This sets the appointment schedule and the phone numbers. We only cover the United
+            States right now.
           </p>
-          <div className="mt-6 space-y-6">
-            <div>
-              <h2 className="text-sm font-medium text-ink-muted">How are you feeding?</h2>
-              <RadioGroup
-                name="feeding"
-                label="How are you feeding?"
-                value={feeding}
-                onValueChange={setFeeding}
-                options={FEEDING}
-                className="mt-2"
-              />
-            </div>
-            <div>
-              <h2 className="text-sm font-medium text-ink-muted">Is this your first baby?</h2>
-              <RadioGroup
-                name="first"
-                label="Is this your first baby?"
-                value={firstBaby}
-                onValueChange={setFirstBaby}
-                options={FIRST_BABY}
-                className="mt-2"
-              />
-            </div>
-          </div>
+          {guessed ? (
+            <p className="mt-2 text-sm text-ink-faint">
+              We guessed {countryName(guessed)} from your device. Change it if it is wrong.
+            </p>
+          ) : null}
+          <RadioGroup
+            name="country"
+            label="Where are you?"
+            value={country || undefined}
+            onValueChange={setCountry}
+            options={COUNTRY}
+            className="mt-6"
+          />
+          {country === "other" ? (
+            <p className="mt-4 text-sm text-ink-muted">
+              We do not have a guide for there yet. You will see the US one, and the numbers in it
+              are US numbers.
+            </p>
+          ) : null}
           <div className="mt-8 flex gap-2">
             <Button variant="quiet" onClick={() => setStep("date")}>
               Back
+            </Button>
+            <Button onClick={() => setStep("feeding")}>Continue</Button>
+          </div>
+        </section>
+      ) : null}
+
+      {step === "feeding" ? (
+        <section aria-labelledby="q4">
+          <h1 id="q4" className="font-display text-3xl text-ink">
+            How are you feeding?
+          </h1>
+          <p className="mt-2 text-base text-ink-muted">
+            This only changes what we hide. It never changes what we warn you about.
+          </p>
+          <RadioGroup
+            name="feeding"
+            label="How are you feeding?"
+            value={feeding || undefined}
+            onValueChange={setFeeding}
+            options={FEEDING}
+            className="mt-6"
+          />
+          <div className="mt-8 flex gap-2">
+            <Button variant="quiet" onClick={() => setStep("country")}>
+              Back
+            </Button>
+            <Button variant="quiet" onClick={() => setStep("first")}>
+              Skip
+            </Button>
+            <Button onClick={() => setStep("first")}>Continue</Button>
+          </div>
+        </section>
+      ) : null}
+
+      {step === "first" ? (
+        <section aria-labelledby="q5">
+          <h1 id="q5" className="font-display text-3xl text-ink">
+            Is this your first baby?
+          </h1>
+          <p className="mt-2 text-base text-ink-muted">
+            First-time-only steps are hidden if it is not. Nothing else changes.
+          </p>
+          <RadioGroup
+            name="first"
+            label="Is this your first baby?"
+            value={firstBaby || undefined}
+            onValueChange={setFirstBaby}
+            options={FIRST_BABY}
+            className="mt-6"
+          />
+          <div className="mt-8 flex gap-2">
+            <Button variant="quiet" onClick={() => setStep("feeding")}>
+              Back
+            </Button>
+            <Button variant="quiet" onClick={() => setStep("ready")}>
+              Skip
             </Button>
             <Button onClick={() => setStep("ready")}>Continue</Button>
           </div>
@@ -201,8 +320,8 @@ export function OnboardingFlow() {
       ) : null}
 
       {step === "ready" ? (
-        <section aria-labelledby="q4">
-          <h1 id="q4" className="font-display text-3xl text-ink">
+        <section aria-labelledby="q6">
+          <h1 id="q6" className="font-display text-3xl text-ink">
             That is everything we need.
           </h1>
           <p className="mt-2 text-base text-ink-muted">
@@ -212,21 +331,23 @@ export function OnboardingFlow() {
             <CardBody className="pt-5">
               <p className="text-sm text-ink-muted">You are starting at</p>
               <p className="mt-1 font-display text-2xl text-ink">
-                {date
-                  ? computeStage(
-                      status === "pregnant"
-                        ? { status: "pregnant", dueDate: date }
-                        : { status: "parent", birthDate: date },
-                      todayIso(),
-                    ).kind === "pregnancy"
-                    ? `Week ${computeStage({ status: "pregnant", dueDate: date }, todayIso()).index}`
-                    : `Month ${computeStage({ status: "parent", birthDate: date }, todayIso()).index}`
-                  : "This week"}
+                <StartingAt status={status} date={date} />
               </p>
             </CardBody>
           </Card>
+          {skipped > 0 ? (
+            <p className="mt-4 text-sm text-ink-muted">
+              You skipped {skipped === 1 ? "one question" : `${skipped} questions`}. You can answer
+              {skipped === 1 ? " it" : " them"} in settings whenever you want.
+            </p>
+          ) : null}
+          {country !== "" && !covered ? (
+            <p className="mt-2 text-sm text-ink-muted">
+              The schedule and the phone numbers you will see are US ones.
+            </p>
+          ) : null}
           <div className="mt-8 flex gap-2">
-            <Button variant="quiet" onClick={() => setStep("about")}>
+            <Button variant="quiet" onClick={() => setStep("first")}>
               Back
             </Button>
             <Button size="lg" onClick={finish}>

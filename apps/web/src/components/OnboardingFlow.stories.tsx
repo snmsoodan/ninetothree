@@ -10,5 +10,9 @@ const meta: Meta<typeof OnboardingFlow> = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/** Two questions, one screen each. The whole thing is meant to take under 90 seconds. */
+/**
+ * Six questions, one screen each: where you are, when, where, how you feed,
+ * whether it is your first, and the payoff. The whole thing is meant to take
+ * under 90 seconds, and three of the six can be skipped.
+ */
 export const Default: Story = {};

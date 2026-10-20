@@ -99,6 +99,13 @@ export const OPTION_RULES: OptionRule[] = [
     reason: "You told us money is tight, so the most expensive option is not shown.",
     trims: (_action, option, profile) => profile.budget === "tight" && option.cost === "$$$",
   },
+  {
+    id: "formula-options",
+    reason: "You told us you are formula feeding, so breastfeeding support is not shown.",
+    trims: (_action, option, profile) =>
+      profile.feeding === "formula" &&
+      /lactation|breastfeed|la leche/i.test(`${option.label} ${option.detail ?? ""}`),
+  },
 ];
 
 /**
@@ -363,7 +370,7 @@ export const PROFILE_FIELDS: ProfileField[] = [
     key: "feeding",
     group: "Feeding",
     label: "Feeding",
-    effect: "Hides breastfeeding-specific steps if you are formula feeding.",
+    effect: "Hides breastfeeding support if you are formula feeding.",
     type: "choice",
     options: [
       { value: "breast", label: "Breastfeeding" },

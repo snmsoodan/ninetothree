@@ -1,7 +1,8 @@
 import { renderHook } from "@testing-library/react";
 import { writeField } from "@ninetothree/rules";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
+  DRAFT_KEY,
   EMPTY_STATE,
   STORAGE_KEY,
   __resetForTests,
@@ -9,6 +10,7 @@ import {
   chooseOption,
   chosenOption,
   clearChoice,
+  clearDraft,
   clearProgress,
   completeOnboarding,
   completeWeek,
@@ -27,6 +29,8 @@ import {
   isWeekComplete,
   markDone,
   markSkipped,
+  readDraft,
+  saveDraft,
   resetAll,
   setProfile,
   snooze,
@@ -759,13 +763,15 @@ describe("choices", () => {
           good: { optionId: "a", label: "A", at: "2026-10-20T10:00:00.000Z" },
           noOption: { label: "A" },
           noLabel: { optionId: "a" },
+          noAt: { optionId: "a", label: "A" },
           notAnObject: "a",
         },
       }),
     );
     __resetForTests();
     subscribe(() => {});
-    expect(Object.keys(getSnapshot().choices)).toEqual(["good"]);
+    expect(Object.keys(getSnapshot().choices)).toEqual(["good", "noAt"]);
+    expect(getSnapshot().choices.noAt).toEqual({ optionId: "a", label: "A", at: "" });
   });
 
   it("treats a non-object choices field as empty", () => {
@@ -773,5 +779,133 @@ describe("choices", () => {
     __resetForTests();
     subscribe(() => {});
     expect(getSnapshot().choices).toEqual({});
+  });
+});
+
+describe("the onboarding draft", () => {
+  const full = {
+    step: "feeding" as const,
+    status: "pregnant" as const,
+    date: "2026-12-01",
+    country: "US",
+    feeding: "formula",
+    firstBaby: "yes",
+    at: "2026-10-20T10:00:00.000Z",
+  };
+
+  function store(value: unknown) {
+    window.localStorage.setItem(DRAFT_KEY, JSON.stringify(value));
+  }
+
+  beforeEach(() => {
+    window.localStorage.clear();
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it("round-trips a draft", () => {
+    saveDraft(full);
+    expect(readDraft(new Date("2026-10-21T10:00:00.000Z"))).toEqual(full);
+  });
+
+  it("says nothing when there is no draft", () => {
+    expect(readDraft()).toBeNull();
+  });
+
+  it("says nothing when the draft is not JSON", () => {
+    window.localStorage.setItem(DRAFT_KEY, "{not json");
+    expect(readDraft()).toBeNull();
+  });
+
+  it("says nothing when the draft is not an object", () => {
+    window.localStorage.setItem(DRAFT_KEY, "null");
+    expect(readDraft()).toBeNull();
+    window.localStorage.setItem(DRAFT_KEY, "42");
+    expect(readDraft()).toBeNull();
+  });
+
+  it("says nothing when the step is not one of ours", () => {
+    store({ ...full, step: "checkout" });
+    expect(readDraft()).toBeNull();
+    store({ ...full, step: 3 });
+    expect(readDraft()).toBeNull();
+  });
+
+  it("says nothing when the status is not one of ours", () => {
+    store({ ...full, status: "expecting" });
+    expect(readDraft()).toBeNull();
+  });
+
+  it("says nothing when the date is missing or empty", () => {
+    store({ ...full, date: undefined });
+    expect(readDraft()).toBeNull();
+    store({ ...full, date: "" });
+    expect(readDraft()).toBeNull();
+  });
+
+  it("says nothing when the timestamp is missing or unreadable", () => {
+    store({ ...full, at: undefined });
+    expect(readDraft()).toBeNull();
+    store({ ...full, at: "yesterday" });
+    expect(readDraft()).toBeNull();
+  });
+
+  it("says nothing when the draft is older than a week", () => {
+    store(full);
+    expect(readDraft(new Date("2026-10-28T10:00:00.000Z"))).toBeNull();
+  });
+
+  it("fills the optional answers with nothing rather than a guess", () => {
+    store({ step: "country", status: "parent", date: "2026-01-01", at: full.at });
+    expect(readDraft(new Date("2026-10-21T10:00:00.000Z"))).toEqual({
+      step: "country",
+      status: "parent",
+      date: "2026-01-01",
+      country: "",
+      feeding: "",
+      firstBaby: "",
+      at: full.at,
+    });
+  });
+
+  it("says nothing when storage refuses to be read", () => {
+    vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => {
+      throw new Error("blocked");
+    });
+    expect(readDraft()).toBeNull();
+  });
+
+  it("survives storage refusing to write", () => {
+    vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+      throw new Error("quota");
+    });
+    expect(() => saveDraft(full)).not.toThrow();
+  });
+
+  it("survives storage refusing to remove", () => {
+    vi.spyOn(Storage.prototype, "removeItem").mockImplementation(() => {
+      throw new Error("blocked");
+    });
+    expect(() => clearDraft()).not.toThrow();
+  });
+
+  it("forgets the draft when it is cleared", () => {
+    saveDraft(full);
+    clearDraft();
+    expect(window.localStorage.getItem(DRAFT_KEY)).toBeNull();
+  });
+
+  it("forgets the draft once onboarding is finished", () => {
+    saveDraft(full);
+    completeOnboarding({ status: "pregnant", dueDate: "2026-12-01", profile: {} });
+    expect(window.localStorage.getItem(DRAFT_KEY)).toBeNull();
+  });
+
+  it("forgets the draft when everything is erased", () => {
+    saveDraft(full);
+    resetAll();
+    expect(window.localStorage.getItem(DRAFT_KEY)).toBeNull();
   });
 });

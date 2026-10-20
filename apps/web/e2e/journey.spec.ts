@@ -13,8 +13,10 @@ async function onboardAsPregnant(page: Page) {
 
   await page.getByRole("button", { name: /I am pregnant/ }).click();
   await page.getByRole("button", { name: /assume I am 28 weeks/ }).click();
-  await page.getByRole("button", { name: "Continue" }).click();
-  await page.getByRole("button", { name: "Continue" }).click();
+  // date, country, feeding, first baby
+  for (let i = 0; i < 4; i += 1) {
+    await page.getByRole("button", { name: "Continue" }).click();
+  }
   await expect(page.getByText("That is everything we need.")).toBeVisible();
   await page.getByRole("button", { name: "Show me" }).click();
 }
@@ -24,6 +26,61 @@ async function onboardToWeek(page: Page) {
   await onboardAsPregnant(page);
   await page.goto("/week");
 }
+
+test("onboarding takes under ninety seconds, and every answer is recorded", async ({ page }) => {
+  const started = Date.now();
+  await page.goto("/");
+  await expect(page).toHaveURL(/\/onboarding$/);
+
+  await page.getByRole("button", { name: /I am pregnant/ }).click();
+  await page.getByRole("button", { name: /assume I am 28 weeks/ }).click();
+  await page.getByRole("button", { name: "Continue" }).click();
+
+  // The country is guessed from the device, and the guess is shown as a guess.
+  await expect(page.getByText(/We guessed/)).toBeVisible();
+  await page.getByRole("button", { name: "Continue" }).click();
+
+  await page.getByRole("radio", { name: "Formula" }).click();
+  await page.getByRole("button", { name: "Continue" }).click();
+  await page.getByRole("radio", { name: "Yes, my first" }).click();
+  await page.getByRole("button", { name: "Continue" }).click();
+
+  await expect(page.getByText("That is everything we need.")).toBeVisible();
+  await page.getByRole("button", { name: "Show me" }).click();
+  await expect(page).toHaveURL(/\/$/);
+
+  const elapsed = Date.now() - started;
+  expect(elapsed, `onboarding took ${elapsed}ms`).toBeLessThan(90_000);
+
+  const profile = await page.evaluate(() => {
+    const raw = window.localStorage.getItem("ninetothree.v1");
+    return raw ? JSON.parse(raw).profile : null;
+  });
+  expect(profile).toMatchObject({ feeding: "formula", firstBaby: true, country: "US" });
+});
+
+test("onboarding resumes where it was left, and forgets a stale draft", async ({ page }) => {
+  await page.goto("/onboarding");
+  await page.getByRole("button", { name: /I am pregnant/ }).click();
+  await page.getByRole("button", { name: /assume I am 28 weeks/ }).click();
+  await page.getByRole("button", { name: "Continue" }).click();
+  await expect(page.getByText("Where are you?")).toBeVisible();
+
+  await page.reload();
+  await expect(page.getByText("Where are you?")).toBeVisible();
+  await expect(page.getByText("Step 3 of 6")).toBeVisible();
+
+  // A draft from three months ago is not a draft, it is a stale date.
+  await page.evaluate(() => {
+    const key = "ninetothree.onboarding.v1";
+    const draft = JSON.parse(window.localStorage.getItem(key) ?? "{}");
+    draft.at = "2026-01-01T00:00:00.000Z";
+    window.localStorage.setItem(key, JSON.stringify(draft));
+  });
+  await page.reload();
+  await expect(page.getByText("Where are you right now?")).toBeVisible();
+  await expect(page.getByText("Step 1 of 6")).toBeVisible();
+});
 
 test("a new parent can get from the front door to a finished step", async ({ page }) => {
   await onboardAsPregnant(page);
@@ -614,8 +671,10 @@ test("a step that is a purchase can be narrowed to one answer, and the answer st
   await page.goto("/onboarding");
   await page.getByRole("button", { name: /My baby is here/ }).click();
   await page.locator("#date").fill(birthDate);
-  await page.getByRole("button", { name: "Continue" }).click();
-  await page.getByRole("button", { name: "Continue" }).click();
+  // date, country, feeding, first baby
+  for (let i = 0; i < 4; i += 1) {
+    await page.getByRole("button", { name: "Continue" }).click();
+  }
   await page.getByRole("button", { name: "Show me" }).click();
 
   await page.goto("/week");

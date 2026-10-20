@@ -1,8 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { OnboardingFlow } from "./OnboardingFlow";
-import { __resetForTests, getSnapshot } from "@/lib/store";
+import { DRAFT_KEY, __resetForTests, getSnapshot } from "@/lib/store";
 
 const push = vi.fn();
 
@@ -18,10 +18,41 @@ function dateField(): HTMLInputElement {
   return el;
 }
 
+function draft(overrides: Record<string, unknown> = {}) {
+  return JSON.stringify({
+    step: "feeding",
+    status: "pregnant",
+    date: "2026-12-01",
+    country: "US",
+    feeding: "",
+    firstBaby: "",
+    at: new Date().toISOString(),
+    ...overrides,
+  });
+}
+
+/** Walks from the first screen to the payoff, answering nothing optional. */
+async function walkToPayoff(user: ReturnType<typeof userEvent.setup>) {
+  await user.click(screen.getByRole("button", { name: /I am pregnant/ }));
+  await user.type(dateField(), "2026-12-01");
+  await user.click(screen.getByRole("button", { name: "Continue" }));
+  await user.click(screen.getByRole("button", { name: "Continue" }));
+  await user.click(screen.getByRole("button", { name: "Skip" }));
+  await user.click(screen.getByRole("button", { name: "Skip" }));
+}
+
 beforeEach(() => {
   window.localStorage.clear();
   __resetForTests();
   push.mockClear();
+  // The guess must not depend on where the test machine happens to be.
+  vi.stubGlobal("Intl", {
+    DateTimeFormat: () => ({ resolvedOptions: () => ({ timeZone: "America/New_York" }) }),
+  });
+});
+
+afterEach(() => {
+  vi.unstubAllGlobals();
 });
 
 describe("OnboardingFlow", () => {
@@ -76,14 +107,70 @@ describe("OnboardingFlow", () => {
     expect(screen.getByRole("heading", { name: "Where are you right now?" })).toBeInTheDocument();
   });
 
-  it("asks two optional questions, then shows the payoff", async () => {
+  it("asks where you are, and says what it guessed", async () => {
     const user = userEvent.setup();
     render(<OnboardingFlow />);
     await user.click(screen.getByRole("button", { name: /I am pregnant/ }));
     await user.type(dateField(), "2026-12-01");
     await user.click(screen.getByRole("button", { name: "Continue" }));
-    expect(screen.getByRole("heading", { name: "Two quick things" })).toBeInTheDocument();
+
+    expect(screen.getByRole("heading", { name: "Where are you?" })).toBeInTheDocument();
+    expect(screen.getByText(/We guessed the United States from your device/)).toBeInTheDocument();
+    expect(screen.getByRole("radio", { name: "The United States" })).toBeChecked();
+  });
+
+  it("says nothing about a guess when it has none", async () => {
+    vi.stubGlobal("Intl", {
+      DateTimeFormat: () => ({ resolvedOptions: () => ({ timeZone: "UTC" }) }),
+    });
+    Object.defineProperty(window.navigator, "language", { value: "fr-FR", configurable: true });
+
+    const user = userEvent.setup();
+    render(<OnboardingFlow />);
+    await user.click(screen.getByRole("button", { name: /I am pregnant/ }));
+    await user.type(dateField(), "2026-12-01");
     await user.click(screen.getByRole("button", { name: "Continue" }));
+
+    expect(screen.queryByText(/We guessed/)).not.toBeInTheDocument();
+    expect(screen.getByRole("radio", { name: "The United States" })).not.toBeChecked();
+  });
+
+  it("says plainly that only the US is covered", async () => {
+    const user = userEvent.setup();
+    render(<OnboardingFlow />);
+    await user.click(screen.getByRole("button", { name: /I am pregnant/ }));
+    await user.type(dateField(), "2026-12-01");
+    await user.click(screen.getByRole("button", { name: "Continue" }));
+    expect(screen.getByText(/We only cover the United States right now/)).toBeInTheDocument();
+  });
+
+  it("says what happens if you pick somewhere else", async () => {
+    const user = userEvent.setup();
+    render(<OnboardingFlow />);
+    await user.click(screen.getByRole("button", { name: /I am pregnant/ }));
+    await user.type(dateField(), "2026-12-01");
+    await user.click(screen.getByRole("button", { name: "Continue" }));
+    await user.click(screen.getByRole("radio", { name: "Somewhere else" }));
+    expect(screen.getByText(/the numbers in it are US numbers/)).toBeInTheDocument();
+  });
+
+  it("asks how you are feeding, and lets you skip it", async () => {
+    const user = userEvent.setup();
+    render(<OnboardingFlow />);
+    await user.click(screen.getByRole("button", { name: /I am pregnant/ }));
+    await user.type(dateField(), "2026-12-01");
+    await user.click(screen.getByRole("button", { name: "Continue" }));
+    await user.click(screen.getByRole("button", { name: "Continue" }));
+
+    expect(screen.getByRole("heading", { name: "How are you feeding?" })).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: "Skip" }));
+    expect(screen.getByRole("heading", { name: "Is this your first baby?" })).toBeInTheDocument();
+  });
+
+  it("asks if it is the first baby, and lets you skip it", async () => {
+    const user = userEvent.setup();
+    render(<OnboardingFlow />);
+    await walkToPayoff(user);
     expect(
       screen.getByRole("heading", { name: "That is everything we need." }),
     ).toBeInTheDocument();
@@ -95,7 +182,9 @@ describe("OnboardingFlow", () => {
     await user.click(screen.getByRole("button", { name: /I am pregnant/ }));
     await user.type(dateField(), "2026-12-01");
     await user.click(screen.getByRole("button", { name: "Continue" }));
+    await user.click(screen.getByRole("button", { name: "Continue" }));
     await user.click(screen.getByRole("radio", { name: "Formula" }));
+    await user.click(screen.getByRole("button", { name: "Continue" }));
     await user.click(screen.getByRole("radio", { name: /No, I have done this before/ }));
     await user.click(screen.getByRole("button", { name: "Continue" }));
     await user.click(screen.getByRole("button", { name: "Show me" }));
@@ -104,8 +193,19 @@ describe("OnboardingFlow", () => {
     expect(state.onboarded).toBe(true);
     expect(state.status).toBe("pregnant");
     expect(state.dueDate).toBe("2026-12-01");
-    expect(state.profile).toEqual({ feeding: "formula", firstBaby: false });
+    expect(state.profile).toEqual({ country: "US", feeding: "formula", firstBaby: false });
     expect(push).toHaveBeenCalledWith("/");
+  });
+
+  it("does not write an answer that was skipped", async () => {
+    const user = userEvent.setup();
+    render(<OnboardingFlow />);
+    await walkToPayoff(user);
+    await user.click(screen.getByRole("button", { name: "Show me" }));
+
+    // The country was guessed and shown, so it is an answer. The two
+    // questions that were skipped are absent, not defaulted.
+    expect(getSnapshot().profile).toEqual({ country: "US" });
   });
 
   it("records a birth date for a parent", async () => {
@@ -115,6 +215,8 @@ describe("OnboardingFlow", () => {
     await user.type(dateField(), "2026-01-01");
     await user.click(screen.getByRole("button", { name: "Continue" }));
     await user.click(screen.getByRole("button", { name: "Continue" }));
+    await user.click(screen.getByRole("button", { name: "Skip" }));
+    await user.click(screen.getByRole("button", { name: "Skip" }));
     await user.click(screen.getByRole("button", { name: "Show me" }));
 
     const state = getSnapshot();
@@ -123,7 +225,7 @@ describe("OnboardingFlow", () => {
     expect(state.dueDate).toBeUndefined();
   });
 
-  it("goes back from the optional questions", async () => {
+  it("goes back from the country question", async () => {
     const user = userEvent.setup();
     render(<OnboardingFlow />);
     await user.click(screen.getByRole("button", { name: /I am pregnant/ }));
@@ -136,29 +238,23 @@ describe("OnboardingFlow", () => {
   it("goes back from the payoff", async () => {
     const user = userEvent.setup();
     render(<OnboardingFlow />);
-    await user.click(screen.getByRole("button", { name: /I am pregnant/ }));
-    await user.type(dateField(), "2026-12-01");
-    await user.click(screen.getByRole("button", { name: "Continue" }));
-    await user.click(screen.getByRole("button", { name: "Continue" }));
+    await walkToPayoff(user);
     await user.click(screen.getByRole("button", { name: "Back" }));
-    expect(screen.getByRole("heading", { name: "Two quick things" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Is this your first baby?" })).toBeInTheDocument();
   });
 
   it("announces the step to a screen reader", async () => {
     const user = userEvent.setup();
     render(<OnboardingFlow />);
-    expect(screen.getByText("Step 1 of 4")).toBeInTheDocument();
+    expect(screen.getByText("Step 1 of 6")).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: /I am pregnant/ }));
-    expect(screen.getByText("Step 2 of 4")).toBeInTheDocument();
+    expect(screen.getByText("Step 2 of 6")).toBeInTheDocument();
   });
 
   it("shows the starting week on the payoff screen", async () => {
     const user = userEvent.setup();
     render(<OnboardingFlow />);
-    await user.click(screen.getByRole("button", { name: /I am pregnant/ }));
-    await user.type(dateField(), "2026-12-01");
-    await user.click(screen.getByRole("button", { name: "Continue" }));
-    await user.click(screen.getByRole("button", { name: "Continue" }));
+    await walkToPayoff(user);
     expect(screen.getByText(/^Week \d+$/)).toBeInTheDocument();
   });
 
@@ -169,6 +265,139 @@ describe("OnboardingFlow", () => {
     await user.type(dateField(), "2026-01-01");
     await user.click(screen.getByRole("button", { name: "Continue" }));
     await user.click(screen.getByRole("button", { name: "Continue" }));
+    await user.click(screen.getByRole("button", { name: "Skip" }));
+    await user.click(screen.getByRole("button", { name: "Skip" }));
     expect(screen.getByText(/^Month \d+$/)).toBeInTheDocument();
+  });
+
+  it("goes back from the last two questions without losing the answers", async () => {
+    const user = userEvent.setup();
+    render(<OnboardingFlow />);
+    await user.click(screen.getByRole("button", { name: /I am pregnant/ }));
+    await user.type(dateField(), "2026-12-01");
+    await user.click(screen.getByRole("button", { name: "Continue" }));
+    await user.click(screen.getByRole("button", { name: "Continue" }));
+    await user.click(screen.getByRole("radio", { name: "Formula" }));
+    await user.click(screen.getByRole("button", { name: "Continue" }));
+    await user.click(screen.getByRole("radio", { name: "Yes, my first" }));
+
+    await user.click(screen.getByRole("button", { name: "Back" }));
+    expect(screen.getByRole("radio", { name: "Formula" })).toBeChecked();
+
+    await user.click(screen.getByRole("button", { name: "Back" }));
+    expect(screen.getByRole("radio", { name: "The United States" })).toBeChecked();
+  });
+
+  it("says one question was skipped when only one was", async () => {
+    const user = userEvent.setup();
+    render(<OnboardingFlow />);
+    await user.click(screen.getByRole("button", { name: /I am pregnant/ }));
+    await user.type(dateField(), "2026-12-01");
+    await user.click(screen.getByRole("button", { name: "Continue" }));
+    await user.click(screen.getByRole("button", { name: "Continue" }));
+    await user.click(screen.getByRole("button", { name: "Skip" }));
+    await user.click(screen.getByRole("radio", { name: "Yes, my first" }));
+    await user.click(screen.getByRole("button", { name: "Continue" }));
+    expect(screen.getByText(/You skipped one question/)).toBeInTheDocument();
+  });
+
+  it("does not record a country we do not cover", async () => {
+    const user = userEvent.setup();
+    render(<OnboardingFlow />);
+    await user.click(screen.getByRole("button", { name: /I am pregnant/ }));
+    await user.type(dateField(), "2026-12-01");
+    await user.click(screen.getByRole("button", { name: "Continue" }));
+    await user.click(screen.getByRole("radio", { name: "Somewhere else" }));
+    await user.click(screen.getByRole("button", { name: "Continue" }));
+    await user.click(screen.getByRole("button", { name: "Skip" }));
+    await user.click(screen.getByRole("button", { name: "Skip" }));
+    await user.click(screen.getByRole("button", { name: "Show me" }));
+
+    expect(getSnapshot().profile).toEqual({});
+  });
+
+  it("says how many questions were skipped", async () => {
+    const user = userEvent.setup();
+    render(<OnboardingFlow />);
+    await walkToPayoff(user);
+    expect(screen.getByText(/You skipped 2 questions/)).toBeInTheDocument();
+  });
+
+  it("says nothing about skipping when nothing was skipped", async () => {
+    const user = userEvent.setup();
+    render(<OnboardingFlow />);
+    await user.click(screen.getByRole("button", { name: /I am pregnant/ }));
+    await user.type(dateField(), "2026-12-01");
+    await user.click(screen.getByRole("button", { name: "Continue" }));
+    await user.click(screen.getByRole("button", { name: "Continue" }));
+    await user.click(screen.getByRole("radio", { name: "Breastfeeding" }));
+    await user.click(screen.getByRole("button", { name: "Continue" }));
+    await user.click(screen.getByRole("radio", { name: "Yes, my first" }));
+    await user.click(screen.getByRole("button", { name: "Continue" }));
+    expect(screen.queryByText(/You skipped/)).not.toBeInTheDocument();
+  });
+
+  it("warns that the numbers are US ones when the country is not covered", async () => {
+    const user = userEvent.setup();
+    render(<OnboardingFlow />);
+    await user.click(screen.getByRole("button", { name: /I am pregnant/ }));
+    await user.type(dateField(), "2026-12-01");
+    await user.click(screen.getByRole("button", { name: "Continue" }));
+    await user.click(screen.getByRole("radio", { name: "The United Kingdom" }));
+    await user.click(screen.getByRole("button", { name: "Continue" }));
+    await user.click(screen.getByRole("button", { name: "Skip" }));
+    await user.click(screen.getByRole("button", { name: "Skip" }));
+    expect(
+      screen.getByText(/The schedule and the phone numbers you will see are US ones/),
+    ).toBeInTheDocument();
+  });
+
+  it("resumes a half-finished onboarding where it was left", async () => {
+    window.localStorage.setItem(DRAFT_KEY, draft());
+    render(<OnboardingFlow />);
+    expect(
+      await screen.findByRole("heading", { name: "How are you feeding?" }),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Step 4 of 6")).toBeInTheDocument();
+  });
+
+  it("keeps the answers from the draft", async () => {
+    window.localStorage.setItem(DRAFT_KEY, draft({ feeding: "formula" }));
+    render(<OnboardingFlow />);
+    expect(await screen.findByRole("radio", { name: "Formula" })).toBeChecked();
+  });
+
+  it("ignores a draft older than a week", async () => {
+    const old = new Date(Date.now() - 8 * 86_400_000).toISOString();
+    window.localStorage.setItem(DRAFT_KEY, draft({ at: old }));
+    render(<OnboardingFlow />);
+    expect(screen.getByRole("heading", { name: "Where are you right now?" })).toBeInTheDocument();
+  });
+
+  it("ignores a draft it cannot read", async () => {
+    window.localStorage.setItem(DRAFT_KEY, "{not json");
+    render(<OnboardingFlow />);
+    expect(screen.getByRole("heading", { name: "Where are you right now?" })).toBeInTheDocument();
+  });
+
+  it("writes the draft as the parent answers", async () => {
+    const user = userEvent.setup();
+    render(<OnboardingFlow />);
+    await user.click(screen.getByRole("button", { name: /I am pregnant/ }));
+    await user.type(dateField(), "2026-12-01");
+    await user.click(screen.getByRole("button", { name: "Continue" }));
+
+    const saved = JSON.parse(window.localStorage.getItem(DRAFT_KEY) ?? "{}");
+    expect(saved.step).toBe("country");
+    expect(saved.status).toBe("pregnant");
+    expect(saved.date).toBe("2026-12-01");
+  });
+
+  it("clears the draft once onboarding is finished", async () => {
+    const user = userEvent.setup();
+    render(<OnboardingFlow />);
+    await walkToPayoff(user);
+    await user.click(screen.getByRole("button", { name: "Show me" }));
+    expect(window.localStorage.getItem(DRAFT_KEY)).toBeNull();
   });
 });
