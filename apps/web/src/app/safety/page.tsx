@@ -3,6 +3,7 @@
 import { ESCALATION_COPY, PACKS, type Escalation } from "@ninetothree/content";
 import { Card, CardBody, TextLink } from "@ninetothree/ui";
 import { AppShell } from "@/components/AppShell";
+import { ButtonLink } from "@/components/ButtonLink";
 
 const NUMBERS: { key: Escalation; detail: string }[] = [
   { key: "call-911", detail: "Anything that feels like an emergency. Trust that." },
@@ -26,6 +27,16 @@ export default function SafetyPage() {
         <h1 className="font-display text-3xl text-ink">If something is wrong</h1>
         <p className="mt-2 text-base text-ink-muted">
           This page is always here, always free, and never behind a sign-in.
+        </p>
+
+        <p className="mt-6">
+          <ButtonLink href="/triage" variant="primary">
+            Help me work out who to call
+          </ButtonLink>
+        </p>
+        <p className="mt-2 text-sm text-ink-muted">
+          A few questions, and one answer. It works without a signal, and nothing you answer is
+          stored.
         </p>
 
         <section aria-labelledby="numbers-heading" className="mt-8">

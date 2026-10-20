@@ -10,7 +10,8 @@
         "http://localhost:3000/library",
         "http://localhost:3000/search",
         "http://localhost:3000/read/glucose-test",
-        "http://localhost:3000/choose/m6-highchair"
+        "http://localhost:3000/choose/m6-highchair",
+        "http://localhost:3000/triage"
       ],
       "numberOfRuns": 1,
       "settings": {

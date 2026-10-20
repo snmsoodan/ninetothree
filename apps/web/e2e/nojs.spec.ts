@@ -50,3 +50,21 @@ test.describe("with JavaScript disabled", () => {
     await expect(page.getByRole("link", { name: "911" })).toBeVisible();
   });
 });
+
+test.describe("the triage tree with JavaScript disabled", () => {
+  test("asks the first question, and every answer is a link", async ({ page }) => {
+    await page.goto("/triage");
+
+    await expect(page.getByRole("heading", { level: 1, name: "Who is this about?" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Me, and I am pregnant" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "The baby" })).toBeVisible();
+  });
+
+  test("walks to an outcome and names the number", async ({ page }) => {
+    await page.goto("/triage?p=me-pregnant,bleeding,spotting");
+
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Call back if" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Where this comes from" })).toBeVisible();
+  });
+});

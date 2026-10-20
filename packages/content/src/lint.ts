@@ -1,6 +1,7 @@
 import { articleProse, type Article } from "./articles";
 import type { LinkEntry } from "./links";
 import type { StagePack } from "./schema";
+import { reassuranceIn, type TriageTree } from "./triage";
 
 /**
  * The content lint. It is not a spell-checker and it is not a proof: it is a
@@ -21,7 +22,9 @@ export type LintRule =
   | "reading-level"
   | "alt-text"
   | "unsourced-red-flag"
-  | "unsourced-article";
+  | "unsourced-article"
+  | "reassurance"
+  | "unreviewed";
 
 export interface LintFinding {
   /** The pack or link id, so a finding can be traced to a file. */
@@ -379,4 +382,47 @@ export function lintArticle(article: Article): LintFinding[] {
 
 export function lintArticles(articles: Article[]): LintFinding[] {
   return articles.flatMap(lintArticle);
+}
+
+/**
+ * A triage outcome is the one place in the product that may not reassure.
+ * "Normal" is a fair word in a week card and a dangerous one here: a tree
+ * that can tell a worried parent nothing is wrong will eventually tell the
+ * wrong parent nothing is wrong. The quietest outcome still says what to
+ * watch and who to call if it changes.
+ *
+ * The review record is checked here rather than in the schema because the
+ * schema cannot tell "Clinical review pending" from a real name, and the
+ * lint is where the honest placeholder is allowed to sit until it is not.
+ */
+export function lintTriage(tree: TriageTree): LintFinding[] {
+  const findings: LintFinding[] = [];
+
+  for (const result of tree.results) {
+    for (const phrase of reassuranceIn(result)) {
+      findings.push({
+        subject: result.id,
+        path: "body",
+        rule: "reassurance",
+        message: "A triage outcome may not reassure. Say what to do next, and what to watch for.",
+        excerpt: phrase,
+      });
+    }
+
+    if (result.reviewedBy.trim().length === 0) {
+      findings.push({
+        subject: result.id,
+        path: "reviewedBy",
+        rule: "unreviewed",
+        message: "Every outcome carries the name of who reviewed it.",
+        excerpt: result.headline,
+      });
+    }
+  }
+
+  return findings;
+}
+
+export function lintTriages(trees: TriageTree[]): LintFinding[] {
+  return trees.flatMap(lintTriage);
 }

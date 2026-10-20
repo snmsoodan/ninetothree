@@ -1,0 +1,1169 @@
+{
+  "id": "triage-v1",
+  "title": "If something is wrong",
+  "root": "start",
+  "nodes": [
+    {
+      "id": "start",
+      "question": "Who is this about?",
+      "answers": [
+        {
+          "id": "me-pregnant",
+          "label": "Me, and I am pregnant",
+          "next": "pregnant-what"
+        },
+        {
+          "id": "me-after-birth",
+          "label": "Me, and I gave birth recently",
+          "next": "postpartum-what"
+        },
+        {
+          "id": "baby",
+          "label": "The baby",
+          "next": "baby-what"
+        }
+      ]
+    },
+    {
+      "id": "pregnant-what",
+      "question": "What is happening?",
+      "answers": [
+        {
+          "id": "bleeding",
+          "label": "Bleeding, or fluid",
+          "next": "pregnant-bleeding"
+        },
+        {
+          "id": "movement",
+          "label": "The baby is moving less",
+          "next": "pregnant-movement"
+        },
+        {
+          "id": "headache",
+          "label": "A bad headache, or my vision has changed",
+          "next": "pregnant-headache"
+        },
+        {
+          "id": "breathing",
+          "label": "Chest pain, trouble breathing, or I fainted",
+          "next": "emergency-breathing"
+        },
+        {
+          "id": "fever",
+          "label": "A fever",
+          "next": "pregnant-fever"
+        },
+        {
+          "id": "other",
+          "label": "Something else",
+          "next": "urgent-other-pregnancy"
+        }
+      ],
+      "detail": "Pick the closest one. You can go back."
+    },
+    {
+      "id": "pregnant-bleeding",
+      "question": "How much bleeding?",
+      "answers": [
+        {
+          "id": "spotting",
+          "label": "Light spotting, no pain",
+          "next": "watch-spotting"
+        },
+        {
+          "id": "pad",
+          "label": "Filling a pad, or bleeding with pain",
+          "next": "urgent-bleeding"
+        },
+        {
+          "id": "fluid",
+          "label": "Fluid that keeps leaking",
+          "next": "urgent-fluid"
+        }
+      ]
+    },
+    {
+      "id": "pregnant-movement",
+      "question": "What have the movements done?",
+      "answers": [
+        {
+          "id": "slower",
+          "label": "Clearly fewer than usual",
+          "next": "urgent-movement"
+        },
+        {
+          "id": "stopped",
+          "label": "I have not felt the baby move",
+          "next": "urgent-movement-stopped"
+        },
+        {
+          "id": "back",
+          "label": "They came back after I rested and ate",
+          "next": "watch-movement"
+        }
+      ],
+      "detail": "Movements do not get quieter as pregnancy goes on. A change is worth a call."
+    },
+    {
+      "id": "pregnant-headache",
+      "question": "Is the headache severe, or has your vision changed?",
+      "answers": [
+        {
+          "id": "severe",
+          "label": "Severe, or I am seeing spots or flashing lights",
+          "next": "urgent-preeclampsia"
+        },
+        {
+          "id": "mild",
+          "label": "Uncomfortable but not severe",
+          "next": "watch-headache"
+        }
+      ]
+    },
+    {
+      "id": "pregnant-fever",
+      "question": "How high is the fever?",
+      "answers": [
+        {
+          "id": "high",
+          "label": "100.4°F (38°C) or higher",
+          "next": "urgent-fever"
+        },
+        {
+          "id": "low",
+          "label": "Below 100.4°F (38°C)",
+          "next": "watch-fever"
+        }
+      ]
+    },
+    {
+      "id": "postpartum-what",
+      "question": "What is happening?",
+      "answers": [
+        {
+          "id": "bleeding",
+          "label": "Bleeding",
+          "next": "postpartum-bleeding"
+        },
+        {
+          "id": "headache",
+          "label": "A bad headache, or my vision has changed",
+          "next": "urgent-postpartum-preeclampsia"
+        },
+        {
+          "id": "fever",
+          "label": "A fever",
+          "next": "urgent-postpartum-fever"
+        },
+        {
+          "id": "mood",
+          "label": "How I am feeling",
+          "next": "postpartum-mood"
+        },
+        {
+          "id": "breathing",
+          "label": "Chest pain, trouble breathing, or I fainted",
+          "next": "emergency-breathing"
+        },
+        {
+          "id": "other",
+          "label": "Something else",
+          "next": "urgent-other-postpartum"
+        }
+      ]
+    },
+    {
+      "id": "postpartum-bleeding",
+      "question": "How much bleeding?",
+      "answers": [
+        {
+          "id": "pad-hour",
+          "label": "Soaking a pad in an hour",
+          "next": "emergency-hemorrhage"
+        },
+        {
+          "id": "clots",
+          "label": "Clots bigger than a golf ball",
+          "next": "emergency-clot"
+        },
+        {
+          "id": "lighter",
+          "label": "Lighter than yesterday",
+          "next": "watch-lochia"
+        }
+      ],
+      "detail": "Bleeding gets lighter over the first weeks. It getting heavier is the thing to notice."
+    },
+    {
+      "id": "postpartum-mood",
+      "question": "Are you having thoughts of hurting yourself or the baby?",
+      "answers": [
+        {
+          "id": "yes",
+          "label": "Yes",
+          "next": "emergency-988"
+        },
+        {
+          "id": "sometimes",
+          "label": "Not that, but I am not coping",
+          "next": "urgent-psi"
+        },
+        {
+          "id": "no",
+          "label": "No",
+          "next": "watch-mood"
+        }
+      ],
+      "detail": "This is asked plainly because the answer matters. Nothing you answer here is stored."
+    },
+    {
+      "id": "baby-what",
+      "question": "What is happening with the baby?",
+      "answers": [
+        {
+          "id": "fever",
+          "label": "A fever, or the baby feels cold",
+          "next": "baby-fever"
+        },
+        {
+          "id": "breathing",
+          "label": "Trouble breathing, or a blue tint",
+          "next": "emergency-baby-breathing"
+        },
+        {
+          "id": "feeding",
+          "label": "Not feeding, or far fewer wet diapers",
+          "next": "urgent-baby-feeding"
+        },
+        {
+          "id": "choking",
+          "label": "Choking — cannot breathe, cough, or make a sound",
+          "next": "emergency-choking"
+        },
+        {
+          "id": "rash",
+          "label": "A rash",
+          "next": "baby-rash"
+        },
+        {
+          "id": "sleepy",
+          "label": "Hard to wake, or unusually sleepy",
+          "next": "urgent-baby-sleepy"
+        }
+      ]
+    },
+    {
+      "id": "baby-fever",
+      "question": "How old is the baby?",
+      "answers": [
+        {
+          "id": "newborn",
+          "label": "Under 3 months",
+          "next": "urgent-fever-newborn"
+        },
+        {
+          "id": "older",
+          "label": "3 months or older",
+          "next": "baby-fever-older"
+        }
+      ]
+    },
+    {
+      "id": "baby-fever-older",
+      "question": "Is any of this also true: unusual sleepiness, a rash, trouble breathing, or refusing feeds?",
+      "answers": [
+        {
+          "id": "yes",
+          "label": "Yes, one of those",
+          "next": "urgent-fever-symptoms"
+        },
+        {
+          "id": "no",
+          "label": "No, just the fever",
+          "next": "watch-fever-older"
+        }
+      ]
+    },
+    {
+      "id": "baby-rash",
+      "question": "Is the baby well otherwise — feeding, awake, and alert?",
+      "answers": [
+        {
+          "id": "well",
+          "label": "Yes, feeding and alert",
+          "next": "watch-rash"
+        },
+        {
+          "id": "unwell",
+          "label": "No, sleepy or not feeding",
+          "next": "urgent-rash-unwell"
+        }
+      ]
+    }
+  ],
+  "results": [
+    {
+      "id": "emergency-breathing",
+      "kind": "emergency",
+      "headline": "Call 911 now.",
+      "body": "Chest pain, trouble breathing and fainting are emergencies whether you are pregnant or just gave birth. Do not drive yourself. If you are alone, call and stay on the line.",
+      "escalation": "call-911",
+      "sources": [
+        {
+          "id": "t-cdc-warning",
+          "title": "Preventing pregnancy-related deaths",
+          "publisher": "CDC",
+          "url": "https://www.cdc.gov/maternal-mortality/preventing-pregnancy-related-deaths/index.html",
+          "kind": "government",
+          "accessed": "2026-10-20"
+        },
+        {
+          "id": "t-acog-postpartum",
+          "title": "Optimizing postpartum care",
+          "publisher": "ACOG",
+          "url": "https://www.acog.org/clinical/clinical-guidance/committee-opinion/articles/2018/05/optimizing-postpartum-care",
+          "kind": "clinical",
+          "accessed": "2026-10-20"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-20",
+      "watchFor": [
+        "Say how many weeks pregnant you are, or how many days since the birth",
+        "Unlock the door so they can get in"
+      ]
+    },
+    {
+      "id": "urgent-other-pregnancy",
+      "kind": "urgent",
+      "headline": "Call your OB triage line today.",
+      "body": "Anything that worries you is worth a call, and the triage line exists for exactly this. Say what changed and when it started. If you cannot reach them and it is getting worse, go to the ER.",
+      "escalation": "call-ob-triage",
+      "sources": [
+        {
+          "id": "t-cdc-warning",
+          "title": "Preventing pregnancy-related deaths",
+          "publisher": "CDC",
+          "url": "https://www.cdc.gov/maternal-mortality/preventing-pregnancy-related-deaths/index.html",
+          "kind": "government",
+          "accessed": "2026-10-20"
+        },
+        {
+          "id": "t-acog-bleeding",
+          "title": "Bleeding during pregnancy",
+          "publisher": "ACOG",
+          "url": "https://www.acog.org/womens-health/faqs/bleeding-during-pregnancy",
+          "kind": "clinical",
+          "accessed": "2026-10-20"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-20",
+      "watchFor": [
+        "Pain that gets worse rather than better",
+        "A fever on top of it",
+        "Bleeding that starts"
+      ]
+    },
+    {
+      "id": "watch-spotting",
+      "kind": "watch",
+      "headline": "Call your OB triage line and describe it.",
+      "body": "Light spotting with no pain is common in early pregnancy, and it is still worth a call so someone who knows your history can decide. Call today rather than waiting for the next appointment.",
+      "escalation": "call-ob-triage",
+      "sources": [
+        {
+          "id": "t-acog-bleeding",
+          "title": "Bleeding during pregnancy",
+          "publisher": "ACOG",
+          "url": "https://www.acog.org/womens-health/faqs/bleeding-during-pregnancy",
+          "kind": "clinical",
+          "accessed": "2026-10-20"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-20",
+      "watchFor": [
+        "Bleeding that fills a pad",
+        "Cramps or pain with the bleeding",
+        "Sharp pain on one side, or pain in the tip of your shoulder"
+      ]
+    },
+    {
+      "id": "urgent-bleeding",
+      "kind": "urgent",
+      "headline": "Call your OB triage line now.",
+      "body": "Bleeding that fills a pad, or bleeding with pain, needs to be looked at today. Call and describe how much and how fast. If you cannot reach them, go to the ER.",
+      "escalation": "call-ob-triage",
+      "sources": [
+        {
+          "id": "t-acog-bleeding",
+          "title": "Bleeding during pregnancy",
+          "publisher": "ACOG",
+          "url": "https://www.acog.org/womens-health/faqs/bleeding-during-pregnancy",
+          "kind": "clinical",
+          "accessed": "2026-10-20"
+        },
+        {
+          "id": "t-cdc-warning",
+          "title": "Preventing pregnancy-related deaths",
+          "publisher": "CDC",
+          "url": "https://www.cdc.gov/maternal-mortality/preventing-pregnancy-related-deaths/index.html",
+          "kind": "government",
+          "accessed": "2026-10-20"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-20",
+      "watchFor": ["Filling a pad in an hour", "Clots", "Dizziness or fainting"]
+    },
+    {
+      "id": "urgent-fluid",
+      "kind": "urgent",
+      "headline": "Call your OB triage line now.",
+      "body": "Fluid that keeps leaking can mean the waters have broken, and that needs to be checked today whatever week you are in. Note the colour before you call.",
+      "escalation": "call-ob-triage",
+      "sources": [
+        {
+          "id": "t-acog-labor",
+          "title": "How to tell when labor begins",
+          "publisher": "ACOG",
+          "url": "https://www.acog.org/womens-health/faqs/how-to-tell-when-labor-begins",
+          "kind": "clinical",
+          "accessed": "2026-10-20"
+        },
+        {
+          "id": "t-cdc-warning",
+          "title": "Preventing pregnancy-related deaths",
+          "publisher": "CDC",
+          "url": "https://www.cdc.gov/maternal-mortality/preventing-pregnancy-related-deaths/index.html",
+          "kind": "government",
+          "accessed": "2026-10-20"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-20",
+      "watchFor": ["Fluid that is green, brown, or smells bad", "Contractions starting", "A fever"]
+    },
+    {
+      "id": "urgent-movement",
+      "kind": "urgent",
+      "headline": "Call your OB triage line now.",
+      "body": "Movements that are clearly fewer than usual are checked the same day, not at the next appointment. Do not wait to see whether they pick up overnight.",
+      "escalation": "call-ob-triage",
+      "sources": [
+        {
+          "id": "t-acog-movement",
+          "title": "Special tests for monitoring fetal well-being",
+          "publisher": "ACOG",
+          "url": "https://www.acog.org/womens-health/faqs/special-tests-for-monitoring-fetal-well-being",
+          "kind": "clinical",
+          "accessed": "2026-10-20"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-20",
+      "watchFor": [
+        "No movement at all",
+        "A change in the kind of movement, not just the amount",
+        "A fever or bleeding on top of it"
+      ]
+    },
+    {
+      "id": "urgent-movement-stopped",
+      "kind": "urgent",
+      "headline": "Call your OB triage line now, and go in if you cannot reach them.",
+      "body": "Not feeling the baby move is the one thing on this page that is never waited on. Call, and if the line does not answer, go to the unit.",
+      "escalation": "call-ob-triage",
+      "sources": [
+        {
+          "id": "t-acog-movement",
+          "title": "Special tests for monitoring fetal well-being",
+          "publisher": "ACOG",
+          "url": "https://www.acog.org/womens-health/faqs/special-tests-for-monitoring-fetal-well-being",
+          "kind": "clinical",
+          "accessed": "2026-10-20"
+        },
+        {
+          "id": "t-cdc-warning",
+          "title": "Preventing pregnancy-related deaths",
+          "publisher": "CDC",
+          "url": "https://www.cdc.gov/maternal-mortality/preventing-pregnancy-related-deaths/index.html",
+          "kind": "government",
+          "accessed": "2026-10-20"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-20",
+      "watchFor": [
+        "Anything at all that feels different",
+        "Bleeding",
+        "A headache with vision changes"
+      ]
+    },
+    {
+      "id": "watch-movement",
+      "kind": "watch",
+      "headline": "Count again in an hour, and call if the count is low.",
+      "body": "Movements that came back after resting and eating are a good sign, and they are not a reason to stop paying attention. Lie on your left side and count. Fewer than ten movements in two hours is a call.",
+      "escalation": "call-ob-triage",
+      "sources": [
+        {
+          "id": "t-acog-movement",
+          "title": "Special tests for monitoring fetal well-being",
+          "publisher": "ACOG",
+          "url": "https://www.acog.org/womens-health/faqs/special-tests-for-monitoring-fetal-well-being",
+          "kind": "clinical",
+          "accessed": "2026-10-20"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-20",
+      "watchFor": [
+        "Fewer than ten movements in two hours",
+        "Movements that stop again",
+        "A change from the baby's usual pattern"
+      ]
+    },
+    {
+      "id": "urgent-preeclampsia",
+      "kind": "urgent",
+      "headline": "Call your OB triage line now.",
+      "body": "A severe headache, or seeing spots or flashing lights, can be a sign of preeclampsia, and it is checked the same day. Say that you have a headache and vision changes when you call — those two words get you seen faster.",
+      "escalation": "call-ob-triage",
+      "sources": [
+        {
+          "id": "t-mod-preeclampsia",
+          "title": "Preeclampsia",
+          "publisher": "March of Dimes",
+          "url": "https://www.marchofdimes.org/find-support/topics/pregnancy/preeclampsia",
+          "kind": "charity",
+          "accessed": "2026-10-20"
+        },
+        {
+          "id": "t-cdc-warning",
+          "title": "Preventing pregnancy-related deaths",
+          "publisher": "CDC",
+          "url": "https://www.cdc.gov/maternal-mortality/preventing-pregnancy-related-deaths/index.html",
+          "kind": "government",
+          "accessed": "2026-10-20"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-20",
+      "watchFor": [
+        "Swelling in your face or hands",
+        "Pain under your ribs on the right",
+        "Nausea that comes back after the first trimester"
+      ]
+    },
+    {
+      "id": "watch-headache",
+      "kind": "watch",
+      "headline": "Call your OB triage line if it gets worse or comes with anything else.",
+      "body": "A headache on its own is common and treatable. What makes it worth a call is severity, or company: vision changes, swelling, or pain under the ribs. Write down when it started.",
+      "escalation": "call-ob-triage",
+      "sources": [
+        {
+          "id": "t-mod-preeclampsia",
+          "title": "Preeclampsia",
+          "publisher": "March of Dimes",
+          "url": "https://www.marchofdimes.org/find-support/topics/pregnancy/preeclampsia",
+          "kind": "charity",
+          "accessed": "2026-10-20"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-20",
+      "watchFor": [
+        "It becomes severe",
+        "Spots or flashing lights",
+        "Swelling in your face or hands"
+      ]
+    },
+    {
+      "id": "urgent-fever",
+      "kind": "urgent",
+      "headline": "Call your OB triage line today.",
+      "body": "A fever of 100.4°F (38°C) or higher in pregnancy is looked at the same day. Say the temperature and how you took it. Do not take anything for it before you call unless you have already been told to.",
+      "escalation": "call-ob-triage",
+      "sources": [
+        {
+          "id": "t-cdc-warning",
+          "title": "Preventing pregnancy-related deaths",
+          "publisher": "CDC",
+          "url": "https://www.cdc.gov/maternal-mortality/preventing-pregnancy-related-deaths/index.html",
+          "kind": "government",
+          "accessed": "2026-10-20"
+        },
+        {
+          "id": "t-acog-postpartum",
+          "title": "Optimizing postpartum care",
+          "publisher": "ACOG",
+          "url": "https://www.acog.org/clinical/clinical-guidance/committee-opinion/articles/2018/05/optimizing-postpartum-care",
+          "kind": "clinical",
+          "accessed": "2026-10-20"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-20",
+      "watchFor": [
+        "A fever that does not come down",
+        "Pain when you pee",
+        "Contractions or bleeding"
+      ]
+    },
+    {
+      "id": "watch-fever",
+      "kind": "watch",
+      "headline": "Call your OB triage line if it reaches 100.4°F (38°C).",
+      "body": "A low fever is worth watching rather than ignoring. Take it again in a few hours with the same thermometer, and write the number down so you can read it out.",
+      "escalation": "call-ob-triage",
+      "sources": [
+        {
+          "id": "t-cdc-warning",
+          "title": "Preventing pregnancy-related deaths",
+          "publisher": "CDC",
+          "url": "https://www.cdc.gov/maternal-mortality/preventing-pregnancy-related-deaths/index.html",
+          "kind": "government",
+          "accessed": "2026-10-20"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-20",
+      "watchFor": [
+        "It reaches 100.4°F (38°C)",
+        "It lasts more than a day",
+        "Any other symptom arriving with it"
+      ]
+    },
+    {
+      "id": "urgent-postpartum-preeclampsia",
+      "kind": "urgent",
+      "headline": "Call your OB triage line now.",
+      "body": "Preeclampsia can start for the first time after the birth, usually in the first week. A severe headache or changed vision after giving birth is checked the same day, not at the six-week visit.",
+      "escalation": "call-ob-triage",
+      "sources": [
+        {
+          "id": "t-mod-preeclampsia",
+          "title": "Preeclampsia",
+          "publisher": "March of Dimes",
+          "url": "https://www.marchofdimes.org/find-support/topics/pregnancy/preeclampsia",
+          "kind": "charity",
+          "accessed": "2026-10-20"
+        },
+        {
+          "id": "t-acog-postpartum",
+          "title": "Optimizing postpartum care",
+          "publisher": "ACOG",
+          "url": "https://www.acog.org/clinical/clinical-guidance/committee-opinion/articles/2018/05/optimizing-postpartum-care",
+          "kind": "clinical",
+          "accessed": "2026-10-20"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-20",
+      "watchFor": [
+        "Swelling in your face or hands",
+        "Pain under your ribs on the right",
+        "A blood pressure you can have checked today"
+      ]
+    },
+    {
+      "id": "urgent-postpartum-fever",
+      "kind": "urgent",
+      "headline": "Call your OB triage line today.",
+      "body": "A fever over 100.4°F (38°C) in the first weeks after birth needs to be looked at today. It can be an infection that is easy to treat and not easy to wait out.",
+      "escalation": "call-ob-triage",
+      "sources": [
+        {
+          "id": "t-acog-postpartum",
+          "title": "Optimizing postpartum care",
+          "publisher": "ACOG",
+          "url": "https://www.acog.org/clinical/clinical-guidance/committee-opinion/articles/2018/05/optimizing-postpartum-care",
+          "kind": "clinical",
+          "accessed": "2026-10-20"
+        },
+        {
+          "id": "t-cdc-warning",
+          "title": "Preventing pregnancy-related deaths",
+          "publisher": "CDC",
+          "url": "https://www.cdc.gov/maternal-mortality/preventing-pregnancy-related-deaths/index.html",
+          "kind": "government",
+          "accessed": "2026-10-20"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-20",
+      "watchFor": [
+        "Foul-smelling discharge",
+        "Pain or redness in a caesarean incision",
+        "Pain in one breast with redness"
+      ]
+    },
+    {
+      "id": "emergency-hemorrhage",
+      "kind": "emergency",
+      "headline": "Call 911 now.",
+      "body": "Soaking a pad in an hour after giving birth is an emergency. Do not wait to see whether it slows. Call, and have someone stay with the baby.",
+      "escalation": "call-911",
+      "sources": [
+        {
+          "id": "t-mod-hemorrhage",
+          "title": "Postpartum hemorrhage",
+          "publisher": "March of Dimes",
+          "url": "https://www.marchofdimes.org/find-support/topics/postpartum/postpartum-hemorrhage",
+          "kind": "charity",
+          "accessed": "2026-10-20"
+        },
+        {
+          "id": "t-cdc-warning",
+          "title": "Preventing pregnancy-related deaths",
+          "publisher": "CDC",
+          "url": "https://www.cdc.gov/maternal-mortality/preventing-pregnancy-related-deaths/index.html",
+          "kind": "government",
+          "accessed": "2026-10-20"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-20",
+      "watchFor": [
+        "Feeling faint, dizzy, or cold",
+        "A racing heart",
+        "Clots bigger than a golf ball"
+      ]
+    },
+    {
+      "id": "emergency-clot",
+      "kind": "emergency",
+      "headline": "Call 911 now.",
+      "body": "A clot bigger than a golf ball, or any clot with heavy bleeding, is an emergency. Bleeding that heavy can make you faint quickly, so call before you do anything else.",
+      "escalation": "call-911",
+      "sources": [
+        {
+          "id": "t-mod-hemorrhage",
+          "title": "Postpartum hemorrhage",
+          "publisher": "March of Dimes",
+          "url": "https://www.marchofdimes.org/find-support/topics/postpartum/postpartum-hemorrhage",
+          "kind": "charity",
+          "accessed": "2026-10-20"
+        },
+        {
+          "id": "t-cdc-warning",
+          "title": "Preventing pregnancy-related deaths",
+          "publisher": "CDC",
+          "url": "https://www.cdc.gov/maternal-mortality/preventing-pregnancy-related-deaths/index.html",
+          "kind": "government",
+          "accessed": "2026-10-20"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-20",
+      "watchFor": ["Feeling faint or dizzy", "Bleeding that does not slow", "A racing heart"]
+    },
+    {
+      "id": "watch-lochia",
+      "kind": "watch",
+      "headline": "Call your OB triage line if it gets heavier.",
+      "body": "Bleeding that is lighter than yesterday is the direction it is meant to go. It can come back a little when you do more, and it should not come back heavy.",
+      "escalation": "call-ob-triage",
+      "sources": [
+        {
+          "id": "t-acog-postpartum",
+          "title": "Optimizing postpartum care",
+          "publisher": "ACOG",
+          "url": "https://www.acog.org/clinical/clinical-guidance/committee-opinion/articles/2018/05/optimizing-postpartum-care",
+          "kind": "clinical",
+          "accessed": "2026-10-20"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-20",
+      "watchFor": [
+        "It gets heavier rather than lighter",
+        "Clots",
+        "A fever, or discharge that smells bad"
+      ]
+    },
+    {
+      "id": "emergency-988",
+      "kind": "emergency",
+      "headline": "Call or text 988 now.",
+      "body": "Thoughts of hurting yourself or the baby are a medical emergency and they are treatable. 988 is free, answered 24 hours a day, and you do not have to be in crisis to call. If you are in immediate danger, call 911.",
+      "escalation": "call-988",
+      "sources": [
+        {
+          "id": "t-988",
+          "title": "988 Suicide and Crisis Lifeline",
+          "publisher": "988 Lifeline",
+          "url": "https://988lifeline.org/",
+          "kind": "charity",
+          "accessed": "2026-10-20"
+        },
+        {
+          "id": "t-psi",
+          "title": "Postpartum Support International",
+          "publisher": "PSI",
+          "url": "https://www.postpartum.net",
+          "kind": "charity",
+          "accessed": "2026-10-20"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-20",
+      "watchFor": [
+        "Call 911 if you or the baby are in immediate danger",
+        "Tell one person near you, now",
+        "You can call 988 as many times as you need"
+      ]
+    },
+    {
+      "id": "urgent-psi",
+      "kind": "urgent",
+      "headline": "Call the PSI Helpline today.",
+      "body": "Not coping is a reason to call, and it does not have to be the worst day. The PSI Helpline is free, and the people who answer know what the first year is like. 1-800-944-4773.",
+      "escalation": "call-psi",
+      "sources": [
+        {
+          "id": "t-psi",
+          "title": "Postpartum Support International",
+          "publisher": "PSI",
+          "url": "https://www.postpartum.net",
+          "kind": "charity",
+          "accessed": "2026-10-20"
+        },
+        {
+          "id": "t-acog-postpartum",
+          "title": "Optimizing postpartum care",
+          "publisher": "ACOG",
+          "url": "https://www.acog.org/clinical/clinical-guidance/committee-opinion/articles/2018/05/optimizing-postpartum-care",
+          "kind": "clinical",
+          "accessed": "2026-10-20"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-20",
+      "watchFor": [
+        "It getting worse rather than better",
+        "Not sleeping even when the baby sleeps",
+        "Thoughts of hurting yourself or the baby — that is 988 or 911"
+      ]
+    },
+    {
+      "id": "watch-mood",
+      "kind": "watch",
+      "headline": "Call the PSI Helpline if this lasts more than two weeks.",
+      "body": "Most people feel raw in the first weeks, and it usually eases. What is worth a call is duration and direction: two weeks, or getting worse. You do not need a reason beyond that.",
+      "escalation": "call-psi",
+      "sources": [
+        {
+          "id": "t-psi",
+          "title": "Postpartum Support International",
+          "publisher": "PSI",
+          "url": "https://www.postpartum.net",
+          "kind": "charity",
+          "accessed": "2026-10-20"
+        },
+        {
+          "id": "t-acog-postpartum",
+          "title": "Optimizing postpartum care",
+          "publisher": "ACOG",
+          "url": "https://www.acog.org/clinical/clinical-guidance/committee-opinion/articles/2018/05/optimizing-postpartum-care",
+          "kind": "clinical",
+          "accessed": "2026-10-20"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-20",
+      "watchFor": [
+        "It lasts more than two weeks",
+        "It gets worse rather than better",
+        "You stop enjoying things you used to"
+      ]
+    },
+    {
+      "id": "urgent-other-postpartum",
+      "kind": "urgent",
+      "headline": "Call your OB triage line today.",
+      "body": "Anything that worries you in the first weeks after birth is worth a call. The triage line is there for this, and calling it is not a fuss.",
+      "escalation": "call-ob-triage",
+      "sources": [
+        {
+          "id": "t-acog-postpartum",
+          "title": "Optimizing postpartum care",
+          "publisher": "ACOG",
+          "url": "https://www.acog.org/clinical/clinical-guidance/committee-opinion/articles/2018/05/optimizing-postpartum-care",
+          "kind": "clinical",
+          "accessed": "2026-10-20"
+        },
+        {
+          "id": "t-cdc-warning",
+          "title": "Preventing pregnancy-related deaths",
+          "publisher": "CDC",
+          "url": "https://www.cdc.gov/maternal-mortality/preventing-pregnancy-related-deaths/index.html",
+          "kind": "government",
+          "accessed": "2026-10-20"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-20",
+      "watchFor": ["A fever", "Pain that gets worse", "Bleeding that gets heavier"]
+    },
+    {
+      "id": "emergency-baby-breathing",
+      "kind": "emergency",
+      "headline": "Call 911 now.",
+      "body": "Fast or laboured breathing, or a blue tint around the lips, is an emergency at any age. Do not drive the baby yourself. Call and stay on the line.",
+      "escalation": "call-911",
+      "sources": [
+        {
+          "id": "t-aap-fever",
+          "title": "Fever",
+          "publisher": "AAP",
+          "url": "https://www.healthychildren.org/English/health-issues/conditions/fever/Pages/default.aspx",
+          "kind": "clinical",
+          "accessed": "2026-10-20"
+        },
+        {
+          "id": "t-cdc-warning",
+          "title": "Preventing pregnancy-related deaths",
+          "publisher": "CDC",
+          "url": "https://www.cdc.gov/maternal-mortality/preventing-pregnancy-related-deaths/index.html",
+          "kind": "government",
+          "accessed": "2026-10-20"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-20",
+      "watchFor": [
+        "Ribs pulling in with each breath",
+        "Pauses in breathing",
+        "Flaring nostrils or grunting"
+      ]
+    },
+    {
+      "id": "urgent-baby-feeding",
+      "kind": "urgent",
+      "headline": "Call your pediatrician now.",
+      "body": "A baby who is not feeding, or who has far fewer wet diapers than usual, is seen the same day. Count the wet diapers before you call — the number is the useful part.",
+      "escalation": "call-pediatrician",
+      "sources": [
+        {
+          "id": "t-aap-feeding",
+          "title": "How often and how much should your baby eat",
+          "publisher": "AAP",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/feeding-nutrition/Pages/How-Often-and-How-Much-Should-Your-Baby-Eat.aspx",
+          "kind": "clinical",
+          "accessed": "2026-10-20"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-20",
+      "watchFor": [
+        "Fewer than six wet diapers in a day after the first week",
+        "Refusing feeds for more than a few hours",
+        "A dry mouth, or no tears when crying"
+      ]
+    },
+    {
+      "id": "emergency-choking",
+      "kind": "emergency",
+      "headline": "Call 911 now.",
+      "body": "A baby who cannot breathe, cough, or make a sound is choking. Start back blows and chest thrusts if you know them, and have someone call 911 while you do.",
+      "escalation": "call-911",
+      "sources": [
+        {
+          "id": "t-aap-choking",
+          "title": "Choking prevention",
+          "publisher": "AAP",
+          "url": "https://www.healthychildren.org/English/health-issues/injuries-emergencies/Pages/Choking-Prevention.aspx",
+          "kind": "clinical",
+          "accessed": "2026-10-20"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-20",
+      "watchFor": [
+        "Call before you start if you are alone and can put the phone on speaker",
+        "Do not put your fingers in the mouth unless you can see the object",
+        "Keep going until the baby breathes or help arrives"
+      ]
+    },
+    {
+      "id": "urgent-baby-sleepy",
+      "kind": "urgent",
+      "headline": "Call your pediatrician now.",
+      "body": "A baby who is hard to wake, or who is unusually sleepy, is seen the same day. Try to wake them for a feed first, and note whether they wake and whether they feed.",
+      "escalation": "call-pediatrician",
+      "sources": [
+        {
+          "id": "t-aap-fever",
+          "title": "Fever",
+          "publisher": "AAP",
+          "url": "https://www.healthychildren.org/English/health-issues/conditions/fever/Pages/default.aspx",
+          "kind": "clinical",
+          "accessed": "2026-10-20"
+        },
+        {
+          "id": "t-aap-feeding",
+          "title": "How often and how much should your baby eat",
+          "publisher": "AAP",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/feeding-nutrition/Pages/How-Often-and-How-Much-Should-Your-Baby-Eat.aspx",
+          "kind": "clinical",
+          "accessed": "2026-10-20"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-20",
+      "watchFor": [
+        "Not waking for a feed",
+        "A temperature under 97.5°F or over 100.4°F",
+        "A change in colour or breathing"
+      ]
+    },
+    {
+      "id": "urgent-fever-newborn",
+      "kind": "urgent",
+      "headline": "Call your pediatrician now. A fever under 3 months is an ER visit.",
+      "body": "A temperature of 100.4°F (38°C) or higher in a baby under 3 months is not watched at home. Call, and expect to be sent to be seen today. Take the temperature again on the way.",
+      "escalation": "call-pediatrician",
+      "sources": [
+        {
+          "id": "t-aap-fever",
+          "title": "Fever",
+          "publisher": "AAP",
+          "url": "https://www.healthychildren.org/English/health-issues/conditions/fever/Pages/default.aspx",
+          "kind": "clinical",
+          "accessed": "2026-10-20"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-20",
+      "watchFor": [
+        "Any fever at all in a baby under 3 months",
+        "A temperature under 97.5°F (36.4°C)",
+        "Not feeding, or hard to wake"
+      ]
+    },
+    {
+      "id": "urgent-fever-symptoms",
+      "kind": "urgent",
+      "headline": "Call your pediatrician now.",
+      "body": "A fever with unusual sleepiness, a rash, trouble breathing, or refusing feeds is seen the same day. Say all of the symptoms when you call, not just the fever.",
+      "escalation": "call-pediatrician",
+      "sources": [
+        {
+          "id": "t-aap-fever",
+          "title": "Fever",
+          "publisher": "AAP",
+          "url": "https://www.healthychildren.org/English/health-issues/conditions/fever/Pages/default.aspx",
+          "kind": "clinical",
+          "accessed": "2026-10-20"
+        },
+        {
+          "id": "t-aap-skin",
+          "title": "Skin conditions",
+          "publisher": "AAP",
+          "url": "https://www.healthychildren.org/English/health-issues/conditions/skin/Pages/default.aspx",
+          "kind": "clinical",
+          "accessed": "2026-10-20"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-20",
+      "watchFor": [
+        "A rash that does not fade when you press it",
+        "Trouble breathing",
+        "Not waking for feeds"
+      ]
+    },
+    {
+      "id": "watch-fever-older",
+      "kind": "watch",
+      "headline": "Call your pediatrician if the fever lasts more than three days.",
+      "body": "A fever on its own in an older baby is usually something that passes. What matters is how the baby is between the temperatures, and how long it lasts.",
+      "escalation": "call-pediatrician",
+      "sources": [
+        {
+          "id": "t-aap-fever",
+          "title": "Fever",
+          "publisher": "AAP",
+          "url": "https://www.healthychildren.org/English/health-issues/conditions/fever/Pages/default.aspx",
+          "kind": "clinical",
+          "accessed": "2026-10-20"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-20",
+      "watchFor": [
+        "More than three days",
+        "A rash, or unusual sleepiness",
+        "Refusing feeds, or far fewer wet diapers"
+      ]
+    },
+    {
+      "id": "watch-rash",
+      "kind": "watch",
+      "headline": "Call your pediatrician if the rash does not fade when you press it.",
+      "body": "Most rashes in a baby who is feeding and alert are not urgent. The one test worth knowing: press a clear glass on it. A rash that stays visible under the glass is a call.",
+      "escalation": "call-pediatrician",
+      "sources": [
+        {
+          "id": "t-aap-skin",
+          "title": "Skin conditions",
+          "publisher": "AAP",
+          "url": "https://www.healthychildren.org/English/health-issues/conditions/skin/Pages/default.aspx",
+          "kind": "clinical",
+          "accessed": "2026-10-20"
+        },
+        {
+          "id": "t-aap-fever",
+          "title": "Fever",
+          "publisher": "AAP",
+          "url": "https://www.healthychildren.org/English/health-issues/conditions/fever/Pages/default.aspx",
+          "kind": "clinical",
+          "accessed": "2026-10-20"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-20",
+      "watchFor": [
+        "A rash that does not fade under pressure",
+        "A fever arriving with it",
+        "The baby becoming sleepy or refusing feeds"
+      ]
+    },
+    {
+      "id": "urgent-rash-unwell",
+      "kind": "urgent",
+      "headline": "Call your pediatrician now.",
+      "body": "A rash in a baby who is also sleepy or not feeding is seen the same day. Describe both things when you call.",
+      "escalation": "call-pediatrician",
+      "sources": [
+        {
+          "id": "t-aap-skin",
+          "title": "Skin conditions",
+          "publisher": "AAP",
+          "url": "https://www.healthychildren.org/English/health-issues/conditions/skin/Pages/default.aspx",
+          "kind": "clinical",
+          "accessed": "2026-10-20"
+        },
+        {
+          "id": "t-aap-fever",
+          "title": "Fever",
+          "publisher": "AAP",
+          "url": "https://www.healthychildren.org/English/health-issues/conditions/fever/Pages/default.aspx",
+          "kind": "clinical",
+          "accessed": "2026-10-20"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-20",
+      "watchFor": [
+        "A rash that does not fade under pressure",
+        "A fever",
+        "Not feeding, or hard to wake"
+      ]
+    }
+  ]
+}

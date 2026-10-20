@@ -525,3 +525,83 @@ Choosing is also not doing. `state.choices` is separate from `state.progress`, s
 ### How a parent finds one
 
 A step with a chooser renders "Not sure which? [Help me choose]" under its detail, linking to `/choose/<actionId>`. Once a choice is recorded it reads "You chose IKEA Antilop. [Change it]". `/choose` is not in the nav — it is reached from the step, which is the only place the question is being asked.
+
+## 12. The triage tree
+
+A red flag on a week says "call your OB triage line". That is the right sentence when the parent already knows which of the four things is happening. It is not enough when they are holding a phone at 2am trying to work out whether a headache is a headache. The triage tree is the second thing: a few questions, and one answer with a number in it.
+
+### Three outcomes, and no fourth
+
+Every result is one of three kinds:
+
+| Kind        | Means                                         | May escalate to                                                      |
+| ----------- | --------------------------------------------- | -------------------------------------------------------------------- |
+| `emergency` | Call now. Do not wait.                        | `call-911`, `go-to-er`, `call-988`, `call-poison-control`            |
+| `urgent`    | Call today, and go in if it changes.          | anything except `call-911`                                           |
+| `watch`     | It can wait, but here is what would change it | `call-ob-triage`, `call-pediatrician`, `call-psi`, `call-dv-hotline` |
+
+There is deliberately no "you are fine". A tree that can tell a worried parent nothing is wrong will eventually tell the wrong parent nothing is wrong, and the cost of that is not symmetric with the cost of one unnecessary phone call. The quietest outcome still carries a `watchFor` list and a number.
+
+### The tree is content
+
+`packages/content/triage/triage.json` holds the whole thing: 13 nodes, 30 results, 15 sources, and 31 root-to-outcome paths across three roots — `me-pregnant`, `me-after-birth` and `baby`.
+
+```json
+{
+  "id": "if-something-is-wrong",
+  "title": "If something is wrong",
+  "root": "start",
+  "nodes": [
+    {
+      "id": "start",
+      "question": "Who is this about?",
+      "answers": [
+        { "id": "me-pregnant", "label": "Me, and I am pregnant", "next": "pregnant-what" },
+        { "id": "baby", "label": "The baby", "next": "baby-what" }
+      ]
+    }
+  ],
+  "results": [
+    {
+      "id": "watch-spotting",
+      "kind": "watch",
+      "headline": "Call your OB triage line if it gets worse or comes with anything else.",
+      "body": "Light spotting with no pain is common in early pregnancy...",
+      "escalation": "call-ob-triage",
+      "watchFor": ["The bleeding fills a pad", "Cramps or pain join it"],
+      "sources": [{ "id": "t-acog-bleeding", "kind": "clinical", "url": "..." }],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-20"
+    }
+  ]
+}
+```
+
+A clinician can review and change it without a deploy, and the same lint that runs over the packs runs over it.
+
+### What the schema requires
+
+| Field        | Rule                                                                      |
+| ------------ | ------------------------------------------------------------------------- |
+| `answers`    | two to six per node, ids unique within the node                           |
+| `next`       | must resolve to a node or a result                                        |
+| `sources`    | at least one per result                                                   |
+| `reviewedBy` | required, non-empty                                                       |
+| `reviewedAt` | required, `YYYY-MM-DD`                                                    |
+| `watchFor`   | required on a `watch` result, one to five entries                         |
+| ids          | kebab-case, at least two characters — so `yes` and `no` are legal answers |
+
+`treeIssues` adds the structural checks the schema cannot express: no duplicate ids, no id that is both a node and a result, no answer pointing at nothing, and no node or result unreachable from the root.
+
+### The lint
+
+Two rules apply to triage text and nowhere else:
+
+- **`reassurance`** — nine phrases are banned from a result's headline, body and `watchFor`: "you're fine", "nothing to worry about", "no need to worry", "don't worry", "rest assured", "it's normal", "perfectly safe", "nothing is wrong", "you're okay", "it's nothing". The rule does not apply to the packs, where "that is normal and not a sign it is dropping" is a true and useful sentence.
+- **`unreviewed`** — a result with an empty `reviewedBy` fails. The schema already requires one, so this cannot fire on the shipped tree; it exists for a tree loaded from anywhere else, and it makes the intent explicit.
+
+### How a parent finds it
+
+`/safety` carries "Help me work out who to call" above the list of numbers. The page itself is `/triage`, and it is a URL rather than a wizard: every answer is a link to `/triage?p=<answerId>,<answerId>`, so it works with JavaScript disabled, the back button works, and a parent can send the link to a partner. The breadcrumb is rebuilt by walking the answers, so a hand-edited URL cannot show a path that was never walked.
+
+`/triage` is not in the nav and does not gate on onboarding. A parent in a panic should never be sent to a sign-up screen.

@@ -17,6 +17,7 @@ import { join } from "node:path";
 const PACKS = "packages/content/packs";
 const LINKS = "packages/content/links";
 const ARTICLES = "packages/content/articles";
+const TRIAGE = "packages/content/triage/triage.json";
 const UA =
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0 Safari/537.36";
 const TIMEOUT_MS = 20_000;
@@ -139,6 +140,13 @@ async function collect() {
       );
     }
     for (const url of found) add(urls, url, id);
+  }
+
+  // The triage tree is JSON, so its sources are read directly. Every outcome
+  // carries at least one, and the schema refuses a tree where one does not.
+  const tree = JSON.parse(await readFile(TRIAGE, "utf8"));
+  for (const result of tree.results) {
+    for (const source of result.sources) add(urls, source.url, source.id);
   }
 
   return urls;

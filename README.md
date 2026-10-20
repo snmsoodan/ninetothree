@@ -274,6 +274,12 @@ Five CI jobs run on every pull request. Each one fails for exactly one class of 
 
 **An answer that changes nothing is a bug.** The `feeding` question was recorded and had no effect, because the rule that was meant to act on it matched words the content did not use. The fix was not to hide the step — eight to twelve feeds a day is true of a bottle too — but to trim the two lactation-consultant options from it. A question the product asks has to do something.
 
+**A triage tree has three outcomes, and none of them is "you are fine".** Every result is `emergency`, `urgent` or `watch`. There is no fourth, because a tree that can tell a worried parent nothing is wrong will eventually tell the wrong parent nothing is wrong. The quietest outcome still says what to watch for and who to call if it changes. Nine reassurance phrases are banned from triage text by the content lint, and the schema refuses an `emergency` result that does not escalate to 911, an `urgent` result that does, and a `watch` result with nothing to watch for.
+
+**The triage page is a URL, not a wizard.** `/triage?p=me-pregnant,bleeding,spotting` is walked by answer ids, and every answer is a link. That is what makes "works without JavaScript" true rather than claimed — the browser navigates, the server renders, and there is no client state to lose. It also means the back button works and a parent can send the URL to a partner. The breadcrumb is rebuilt from the answers rather than read from the URL, so a hand-edited link cannot show a path that was never walked.
+
+**A number and its dial string cannot drift apart.** The triage outcome derives `tel:` from the phone number it prints, rather than reading a separate `href` field. The fallback that read `href` first was unreachable, and removing it took the component to 100% branch coverage.
+
 **The content schema is a gate, not a suggestion.** A pack with two essentials, no red flag, no source, or a `buy` action with no options fails the build. It has already caught four real content bugs.
 
 **The link check treats 403 as "verify by hand", not "broken".** CDC, CPSC, NHTSA, DOL, medicaid.gov, naeyc.org, adaa.org and ssa.gov block non-browser clients. A 404 or 410 fails the build; a 403 from those hosts is printed for manual review. It found seven dead citations in the first nine packs and eight dead URLs in the first 89 catalogue entries.

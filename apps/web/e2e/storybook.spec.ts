@@ -69,6 +69,10 @@ const STORIES = [
   "app-weekcompletion--forced",
   "app-chooser--first-question",
   "app-chooser--recommendation",
+  "app-triage--question",
+  "app-triage--outcome",
+  "app-triage--emergency",
+  "app-triage--trail",
 ];
 
 /**
