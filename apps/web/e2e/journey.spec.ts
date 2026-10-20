@@ -46,6 +46,43 @@ test("a new parent can get from the front door to a finished step", async ({ pag
   await expect(page.getByText(/1 step done/)).toBeVisible();
 });
 
+test("the shelf reorders, filters, and holds more than the dashboard shows", async ({ page }) => {
+  await onboardToWeek(page);
+
+  // Pin all three core actions, in the order they appear.
+  const pinButtons = page.getByRole("button", { name: /^Pin / });
+  const count = await pinButtons.count();
+  expect(count).toBeGreaterThanOrEqual(3);
+  for (let i = 0; i < 3; i += 1) {
+    await page.getByRole("button", { name: /^Pin / }).first().click();
+  }
+
+  await page.getByRole("link", { name: "Shelf" }).click();
+  await expect(page).toHaveURL(/\/shelf$/);
+
+  const headings = page.getByRole("region", { name: "Pinned" }).getByRole("heading", { level: 3 });
+  await expect(headings).toHaveCount(3);
+  const first = await headings.nth(0).textContent();
+  const second = await headings.nth(1).textContent();
+
+  // The first pin cannot move up; the last cannot move down.
+  await expect(page.getByRole("button", { name: `Move ${first} up` })).toBeDisabled();
+  await page.getByRole("button", { name: `Move ${second} up` }).click();
+  await expect(headings.nth(0)).toHaveText(second ?? "");
+  await expect(headings.nth(1)).toHaveText(first ?? "");
+
+  // Filtering hides reorder, because moving inside a filtered list would lie.
+  await page.getByLabel("Find a pin").fill("zzz-nothing-matches");
+  await expect(page.getByText(/Nothing matches/)).toBeVisible();
+  await expect(page.getByRole("button", { name: /^Move / })).toHaveCount(0);
+  await page.getByRole("button", { name: /Show all 3/ }).click();
+  await expect(headings).toHaveCount(3);
+
+  // Unpinning is by name, and the shelf empties honestly.
+  await page.getByRole("button", { name: `Unpin ${second}` }).click();
+  await expect(headings).toHaveCount(2);
+});
+
 test("the dashboard is one card, and a pin survives the round trip", async ({ page }) => {
   await onboardAsPregnant(page);
 

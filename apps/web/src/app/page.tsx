@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo } from "react";
-import { PACKS, findAction, findPackForStage, nextPack } from "@ninetothree/content";
+import { PACKS, findPackForStage, nextPack } from "@ninetothree/content";
 import { computeStage, stageLabel } from "@ninetothree/rules";
 import { AppShell } from "@/components/AppShell";
 import { AppointmentList } from "@/components/AppointmentList";
@@ -10,7 +10,8 @@ import { PinList, type PinItem } from "@/components/PinList";
 import { ProgressLine } from "@/components/ProgressLine";
 import { ShareCard } from "@/components/ShareCard";
 import { WeekSummaryCard } from "@/components/WeekSummaryCard";
-import { stageInput, togglePin, useAppState, useHydrated } from "@/lib/store";
+import { resolvePins } from "@/lib/pins";
+import { removePin, stageInput, useAppState, useHydrated } from "@/lib/store";
 
 export default function DashboardPage() {
   const state = useAppState();
@@ -22,16 +23,7 @@ export default function DashboardPage() {
     if (ready && !state.onboarded) router.replace("/onboarding");
   }, [ready, state.onboarded, router]);
 
-  const pins = useMemo<PinItem[]>(() => {
-    const found: PinItem[] = [];
-    for (const id of state.pins) {
-      const hit = findAction(PACKS, id);
-      if (hit) {
-        found.push({ id, title: hit.action.title, packTitle: hit.pack.title, packId: hit.pack.id });
-      }
-    }
-    return found;
-  }, [state.pins]);
+  const pins = useMemo<PinItem[]>(() => resolvePins(state.pins, PACKS), [state.pins]);
 
   const { weeksDone, actionsDone } = useMemo(() => {
     const done = new Set(
@@ -81,7 +73,7 @@ export default function DashboardPage() {
           href={`/week/${pack.id}`}
           nextHref={ahead ? `/week/${ahead.id}` : undefined}
         />
-        <PinList pins={pins} onUnpin={togglePin} />
+        <PinList pins={pins} onUnpin={removePin} />
         <AppointmentList appointments={pack.appointments} unit={pack.stageUnit} />
         <ShareCard stage={label} />
         <ProgressLine weeksDone={weeksDone} actionsDone={actionsDone} />

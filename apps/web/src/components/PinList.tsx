@@ -9,6 +9,8 @@ export interface PinItem {
   /** The week the pin came from, so it can be found again. */
   packTitle: string;
   packId: string;
+  /** The action is gone from the registry; only the snapshot is left. */
+  stale?: boolean;
 }
 
 export interface PinListProps {
@@ -68,13 +70,19 @@ export function PinList({ pins, max = PIN_LIMIT, onUnpin }: PinListProps) {
               <Card tone="sunken">
                 <CardBody className="flex items-start justify-between gap-3 py-4">
                   <div className="min-w-0">
-                    <Link
-                      href={`/week/${pin.packId}`}
-                      className="text-base text-ink underline decoration-line-strong underline-offset-2 hover:decoration-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-clay"
-                    >
-                      {pin.title}
-                    </Link>
-                    <p className="mt-0.5 text-sm text-ink-faint">{pin.packTitle}</p>
+                    {pin.stale ? (
+                      <span className="text-base text-ink">{pin.title}</span>
+                    ) : (
+                      <Link
+                        href={`/week/${pin.packId}`}
+                        className="text-base text-ink underline decoration-line-strong underline-offset-2 hover:decoration-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-clay"
+                      >
+                        {pin.title}
+                      </Link>
+                    )}
+                    <p className="mt-0.5 text-sm text-ink-faint">
+                      {pin.stale ? "This step has changed since you pinned it." : pin.packTitle}
+                    </p>
                   </div>
                   {onUnpin ? (
                     <button

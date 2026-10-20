@@ -24,6 +24,25 @@ export interface ProgressEntry {
   reason?: string;
 }
 
+/**
+ * A pin is a snapshot, not a pointer.
+ *
+ * Content is versioned and an action can be renamed or retired between
+ * releases. If a pin were a bare id, a rename would silently delete it from a
+ * parent's shelf. The snapshot is what the shelf falls back to when the action
+ * is no longer in the registry; when it still is, the live content wins.
+ */
+export interface Pin {
+  /** The action id. */
+  id: string;
+  /** The action's title at the moment it was pinned. */
+  title: string;
+  packId: string;
+  packTitle: string;
+  /** ISO timestamp. The tiebreak when order is not explicit. */
+  at: string;
+}
+
 export interface AppState {
   version: 1;
   onboarded: boolean;
@@ -32,7 +51,7 @@ export interface AppState {
   birthDate?: string;
   profile: Profile;
   progress: Record<string, ProgressEntry>;
-  pins: string[];
+  pins: Pin[];
 }
 
 export const EMPTY_STATE: AppState = {
@@ -62,6 +81,31 @@ function persist(): void {
   }
 }
 
+/**
+ * v1 stored pins as bare ids. They are upgraded in place with an empty
+ * snapshot, which the shelf resolves from the live registry; a legacy pin whose
+ * action is gone is dropped rather than shown as a blank row.
+ */
+function migratePins(raw: unknown): Pin[] {
+  if (!Array.isArray(raw)) return [];
+  const pins: Pin[] = [];
+  for (const entry of raw) {
+    if (typeof entry === "string") {
+      pins.push({ id: entry, title: "", packId: "", packTitle: "", at: "" });
+    } else if (entry && typeof entry === "object" && typeof (entry as Pin).id === "string") {
+      const pin = entry as Partial<Pin>;
+      pins.push({
+        id: pin.id as string,
+        title: pin.title ?? "",
+        packId: pin.packId ?? "",
+        packTitle: pin.packTitle ?? "",
+        at: pin.at ?? "",
+      });
+    }
+  }
+  return pins;
+}
+
 function hydrate(): void {
   if (hydrated || typeof window === "undefined") return;
   hydrated = true;
@@ -70,7 +114,12 @@ function hydrate(): void {
     if (!raw) return;
     const parsed = JSON.parse(raw) as Partial<AppState>;
     if (parsed.version !== 1) return;
-    state = { ...EMPTY_STATE, ...parsed, profile: parsed.profile ?? {} };
+    state = {
+      ...EMPTY_STATE,
+      ...parsed,
+      profile: parsed.profile ?? {},
+      pins: migratePins(parsed.pins),
+    };
     emit();
   } catch {
     // Corrupt state is discarded rather than repaired. A parent should
@@ -171,12 +220,37 @@ export function clearProgress(actionId: string): void {
   set({ ...state, progress: next });
 }
 
-export function togglePin(actionId: string): void {
-  const pinned = state.pins.includes(actionId);
+export function togglePin(
+  input: { id: string; title: string; packId: string; packTitle: string },
+  at = new Date().toISOString(),
+): void {
+  const pinned = state.pins.some((pin) => pin.id === input.id);
   set({
     ...state,
-    pins: pinned ? state.pins.filter((id) => id !== actionId) : [...state.pins, actionId],
+    pins: pinned
+      ? state.pins.filter((pin) => pin.id !== input.id)
+      : [...state.pins, { ...input, at }],
   });
+}
+
+export function removePin(actionId: string): void {
+  set({ ...state, pins: state.pins.filter((pin) => pin.id !== actionId) });
+}
+
+/**
+ * Reorder by one place. Buttons, not drag: a drag handle is unusable with a
+ * screen reader and unreliable with one hand holding a baby.
+ */
+export function movePin(actionId: string, direction: "up" | "down"): void {
+  const index = state.pins.findIndex((pin) => pin.id === actionId);
+  if (index === -1) return;
+  const target = direction === "up" ? index - 1 : index + 1;
+  if (target < 0 || target >= state.pins.length) return;
+  const pins = [...state.pins];
+  // `index` came from findIndex and is >= 0, so the splice always yields one.
+  const [moved] = pins.splice(index, 1) as [Pin];
+  pins.splice(target, 0, moved);
+  set({ ...state, pins });
 }
 
 export function updateProfile(profile: Profile): void {
@@ -205,7 +279,7 @@ export function isSkipped(state: AppState, actionId: string): boolean {
 }
 
 export function isPinned(state: AppState, actionId: string): boolean {
-  return state.pins.includes(actionId);
+  return state.pins.some((pin) => pin.id === actionId);
 }
 
 export type StageInputValue =

@@ -39,6 +39,7 @@ const STORIES = [
   "app-weeksummarycard--finished",
   "app-pinlist--with-pins",
   "app-pinlist--empty",
+  "app-pinlist--stale",
   "app-appointmentlist--scheduled",
   "app-sharecard--default",
   "app-progressline--some-progress",
