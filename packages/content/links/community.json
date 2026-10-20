@@ -1,0 +1,77 @@
+[
+  {
+    "id": "bluedot-project",
+    "title": "The Blue Dot Project",
+    "url": "https://thebluedotproject.org/",
+    "publisher": "The Blue Dot Project",
+    "type": "community",
+    "domains": ["mind"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "infant",
+        "index": 24
+      }
+    },
+    "cost": "free",
+    "why": "A campaign against the shame around maternal mental illness. Reading other people's stories is the point.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "black-mamas-matter",
+    "title": "Black Mamas Matter Alliance",
+    "url": "https://blackmamasmatter.org/",
+    "publisher": "Black Mamas Matter Alliance",
+    "type": "charity",
+    "domains": ["health-parent", "mind"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "infant",
+        "index": 12
+      }
+    },
+    "cost": "free",
+    "why": "Research, policy, and resources on the maternal mortality gap. The US rate for Black women is over three times the rate for white women.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "every-mother-counts",
+    "title": "Every Mother Counts",
+    "url": "https://everymothercounts.org/",
+    "publisher": "Every Mother Counts",
+    "type": "charity",
+    "domains": ["health-parent"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "postpartum",
+        "index": 12
+      }
+    },
+    "cost": "free",
+    "why": "Stories and resources on access to maternity care, including maternity care deserts.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  }
+]

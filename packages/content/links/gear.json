@@ -1,0 +1,104 @@
+[
+  {
+    "id": "nhtsa-inspection",
+    "title": "Find a free car seat inspection",
+    "url": "https://www.nhtsa.gov/equipment/car-seats-and-booster-seats#installation-help-inspection",
+    "publisher": "National Highway Traffic Safety Administration",
+    "type": "local-service",
+    "domains": ["gear", "safety"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "A certified technician checks your install for free. Most parents get something wrong the first time.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "cpsc-crib-safety",
+    "title": "CPSC \u2014 Crib safety",
+    "url": "https://www.cpsc.gov/Safety-Education/Safety-Education-Centers/cribs",
+    "publisher": "Consumer Product Safety Commission",
+    "type": "authoritative",
+    "domains": ["gear", "safety"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "infant",
+        "index": 12
+      }
+    },
+    "cost": "free",
+    "why": "What makes a crib legal, and why a drop-side crib from a relative is not a bargain.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "wirecutter-baby",
+    "title": "Wirecutter \u2014 Baby and kid",
+    "url": "https://www.nytimes.com/wirecutter/baby-kid/",
+    "publisher": "The New York Times",
+    "type": "editorial",
+    "domains": ["gear"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "Independent testing with the method published. The best starting point when you have no idea what to buy.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending",
+    "note": "Some links are affiliate links. The testing is still the most rigorous available."
+  },
+  {
+    "id": "consumer-reports-car-seats",
+    "title": "Consumer Reports \u2014 Car seats",
+    "url": "https://www.consumerreports.org/babies-kids/car-seats/",
+    "publisher": "Consumer Reports",
+    "type": "editorial",
+    "domains": ["gear", "safety"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "varies",
+    "why": "Crash-test data you cannot get anywhere else. Requires a subscription.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending",
+    "note": "Subscription required."
+  }
+]

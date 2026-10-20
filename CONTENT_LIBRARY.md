@@ -64,7 +64,9 @@ Every affiliate link carries: _"We may earn a commission if you buy through this
 }
 ```
 
-`type` is one of: `authoritative`, `charity`, `community`, `commercial`, `app`, `course`, `book`, `local-service`.
+`type` is one of: `authoritative`, `charity`, `community`, `editorial`, `commercial`, `app`, `course`, `book`, `local-service`.
+
+`editorial` is for independent testing and review — Wirecutter, Consumer Reports, ParentData. It is not `authoritative` (no standards body behind it) and not `commercial` (they do not sell the thing they are rating).
 
 ---
 

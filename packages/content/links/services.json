@@ -1,0 +1,152 @@
+[
+  {
+    "id": "childbirth-classes",
+    "title": "Lamaze International",
+    "url": "https://www.lamaze.org/",
+    "publisher": "Lamaze International",
+    "type": "course",
+    "domains": ["health-parent"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 20
+      },
+      "to": {
+        "kind": "postpartum",
+        "index": 0
+      }
+    },
+    "cost": "varies",
+    "why": "Childbirth education that is evidence-based rather than ideological. Many hospitals run free versions.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "breastfeeding-class",
+    "title": "WIC breastfeeding support",
+    "url": "https://www.fns.usda.gov/wic/breastfeeding",
+    "publisher": "US Department of Agriculture",
+    "type": "local-service",
+    "domains": ["feeding"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "infant",
+        "index": 12
+      }
+    },
+    "cost": "free",
+    "why": "Free peer counselors and pumps through WIC, whether or not you use the food benefits.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "dv-hotline",
+    "title": "National Domestic Violence Hotline",
+    "url": "https://www.thehotline.org/",
+    "publisher": "National Domestic Violence Hotline",
+    "type": "local-service",
+    "domains": ["safety", "mind"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "1-800-799-7233. Pregnancy is a period of elevated risk. This is free, confidential, and 24 hours.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "legal-aid",
+    "title": "LawHelp.org",
+    "url": "https://www.lawhelp.org/",
+    "publisher": "LawHelp Interactive",
+    "type": "local-service",
+    "domains": ["money"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "Free legal help by state for custody, housing, and benefits problems.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "feeding-america",
+    "title": "Feeding America",
+    "url": "https://www.feedingamerica.org/",
+    "publisher": "Feeding America",
+    "type": "charity",
+    "domains": ["money", "nutrition"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "A food bank finder by ZIP code. No proof of income at most pantries.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "baby2baby",
+    "title": "Baby2Baby",
+    "url": "https://baby2baby.org/",
+    "publisher": "Baby2Baby",
+    "type": "charity",
+    "domains": ["gear", "money"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 0
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "Diapers, wipes, and clothing through partner agencies. Ask a social worker or a shelter.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  }
+]

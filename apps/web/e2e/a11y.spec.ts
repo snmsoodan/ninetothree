@@ -43,6 +43,19 @@ test("the shelf has no violations", async ({ page }) => {
   expect(await audit(page)).toEqual([]);
 });
 
+test("the library has no violations", async ({ page }) => {
+  await onboard(page);
+  await page.goto("/library");
+  expect(await audit(page)).toEqual([]);
+});
+
+test("the library has no violations with a filter applied", async ({ page }) => {
+  await onboard(page);
+  await page.goto("/library");
+  await page.getByLabel("What do you need?").selectOption("sleep");
+  expect(await audit(page)).toEqual([]);
+});
+
 test("the safety page has no violations", async ({ page }) => {
   await page.goto("/safety");
   expect(await audit(page)).toEqual([]);
@@ -86,6 +99,7 @@ test("every route has exactly one skip-link target", async ({ page }) => {
     "/week",
     "/week/pregnancy-w28",
     "/shelf",
+    "/library",
     "/safety",
     "/settings",
   ]) {

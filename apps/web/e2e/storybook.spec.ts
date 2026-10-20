@@ -31,6 +31,10 @@ const STORIES = [
   "app-appshell--default",
   "app-weekview--default",
   "app-onboardingflow--default",
+  "app-linkcard--official",
+  "app-linkcard--app",
+  "app-linkcard--paid",
+  "app-linkcard--local-help",
 ];
 
 for (const id of STORIES) {

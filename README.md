@@ -214,18 +214,21 @@ A parent in the US can:
 
 ## How it is verified
 
-Four CI jobs run on every pull request. Each one fails for exactly one class of mistake, so a red build tells you what broke without reading a log.
+Five CI jobs run on every pull request. Each one fails for exactly one class of mistake, so a red build tells you what broke without reading a log.
 
 | Job                   | Fails when                                                                        | Command                                                                                                |
 | --------------------- | --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
 | **Verify**            | formatting, lint, types, content schema, unit tests, or the build is wrong        | `pnpm format:check && pnpm lint && pnpm typecheck && pnpm content:validate && pnpm test && pnpm build` |
 | **End to end**        | a parent-facing journey breaks, or axe finds a WCAG 2.2 AA violation              | `pnpm test:e2e`                                                                                        |
-| **Source links**      | a pack cites a URL that no longer resolves                                        | `pnpm links:check`                                                                                     |
+| **Storybook**         | a story throws, renders unstyled, or has an axe violation                         | `pnpm build-storybook && pnpm test:storybook`                                                          |
+| **Links**             | a pack or a catalogue entry cites a URL that no longer resolves                   | `pnpm links:check`                                                                                     |
 | **Lighthouse budget** | performance < 0.9, accessibility < 1.0, best practices < 0.95, or a console error | `pnpm lighthouse`                                                                                      |
 
 **The content schema is a gate, not a suggestion.** A pack with two essentials, no red flag, no source, or a `buy` action with no options fails the build. It has already caught four real content bugs.
 
-**The link check treats 403 as "verify by hand", not "broken".** CDC, CPSC, NHTSA, DOL, medicaid.gov, naeyc.org, adaa.org and ssa.gov block non-browser clients. A 404 or 410 fails the build; a 403 from those hosts is printed for manual review. It found seven dead citations in the first nine packs.
+**The link check treats 403 as "verify by hand", not "broken".** CDC, CPSC, NHTSA, DOL, medicaid.gov, naeyc.org, adaa.org and ssa.gov block non-browser clients. A 404 or 410 fails the build; a 403 from those hosts is printed for manual review. It found seven dead citations in the first nine packs and eight dead URLs in the first 89 catalogue entries.
+
+**The link check also runs weekly, on a schedule.** A citation that was live when it was written can rot while nobody is pushing. The `Links` job runs every Monday at 13:00 UTC against `main`, so a dead link is found by CI rather than by a parent at 3am. It retries a 5xx or a network failure twice before reporting, because a Cloudflare handshake failure is not a broken citation.
 
 **Every component has a story, and every story is rendered in CI.** `pnpm storybook` opens the design system on the app's real tokens and paper background. The Storybook job does not just build it — it loads all 20 stories in a browser, fails on any console error, asserts the CSS custom properties actually resolve, and runs axe on each one. A story that builds is not a story that renders: PR #54 shipped a completely unstyled product while 304 unit tests passed.
 
