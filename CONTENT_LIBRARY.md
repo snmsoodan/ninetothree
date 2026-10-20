@@ -337,3 +337,60 @@ The "Help me choose" flow is 3 questions: do you own a car, will you use a trave
 > Bought in the US? It meets FMVSS 213. A seat from Europe does not, and is not legal here.
 > Never buy a used seat unless you know its full history. Check the expiry date on the shell.
 > Free inspection: find a station at `nhtsa.gov` or a Safe Kids event near you.
+
+---
+
+## 9. The content lint
+
+Section 1 says what we will not publish. This is the machine that checks it. It runs inside `pnpm content:validate`, which the Verify job runs on every pull request, so a sentence that breaks the policy fails the build before it can reach a parent.
+
+### Why the word list is contextual, not a ban
+
+The first draft of this rule was a list of forbidden words: `cure`, `guarantee`, `safe`, `normal`, `should`. Run against the nine shipped packs it produced 56 hits, and almost all of them were good copy:
+
+| Sentence in a shipped pack                                        | Why a ban would be wrong                                           |
+| ----------------------------------------------------------------- | ------------------------------------------------------------------ |
+| "Cleanings are safe in pregnancy and often covered twice a year." | A clinical fact, sourced to ACOG. Banning it makes the pack worse. |
+| "That is normal and not a sign your supply is dropping."          | The most reassuring sentence in the postpartum pack.               |
+| "The seat should not move more than an inch at the belt path."    | A physical requirement, not a debt owed by the parent.             |
+| "A legitimate and safe choice."                                   | Describes a feeding method, not a promise of an outcome.           |
+
+So the rules target the **promise**, the **obligation**, and the **norm** — not the word. "Safe" is allowed; "completely safe" is not. "Normal" is allowed; "normal babies sleep through" is not. "Should" is allowed; "you should" is not.
+
+### The six rules
+
+| Rule                 | What it catches                                                                                                                                                                                      | Example that fails                             |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| `absolute-claim`     | A promised outcome: `will cure`, `cures`, `guarantee`, `100% safe`, `completely/perfectly/totally/always/absolutely safe`, `no risk`, `risk-free`, `proven to`, `never fails`, `eliminates the risk` | "This will cure your morning sickness."        |
+| `obligation`         | A debt the parent did not agree to: `you should`, `you must`, `you need to`, `you have to`                                                                                                           | "You should call your provider."               |
+| `normative`          | A claim about what normal people or babies do: `normal` + baby/babies/mother/parent/pregnancy/birth/child/newborn                                                                                    | "Normal babies sleep through by three months." |
+| `reading-level`      | Flesch-Kincaid grade above 8 for the whole pack                                                                                                                                                      | A paragraph of clinical prose                  |
+| `alt-text`           | An `image` or `img` key with no non-empty `alt`                                                                                                                                                      | `"image": { "src": "/x.png" }`                 |
+| `unsourced-red-flag` | A pack with red flags but no `clinical` or `government` source                                                                                                                                       | Red flags cited only to a vendor               |
+
+### The reading level is real, not aspirational
+
+Grade 8 is the ceiling. The nine shipped packs score between 4.6 and 7.4, so the ceiling is achievable and the rule has teeth. A parent reading at 3am on a phone should not have to parse a subordinate clause to find out whether to call someone.
+
+### What a failure looks like
+
+```
+✗ 1 content lint problem(s):
+
+  pregnancy-w8.json → coreActions[0].detail
+    absolute-claim: Nothing here cures anything. Say what the source found.
+    "This will cure your morning sickness."
+```
+
+The file, the path inside the pack, the rule, the reason, and the sentence. Not a line number in a JSON file — the path a person can act on.
+
+### A false positive is fixed by rewriting, not by weakening the rule
+
+The first run against real content flagged one sentence: "it cannot tell you what you need to know." That is an idiom, not an obligation, and the rule cannot tell the difference without a parser. The fix was to rewrite the sentence — "it cannot answer the question you are actually asking" — which is better copy anyway. The rule stayed narrow. If a rule starts producing false positives faster than it produces fixes, that is a signal the rule is wrong, not that the copy is.
+
+### What the lint does not do
+
+- **It does not read for meaning.** "This may help" and "this helps everyone" both pass. Only a human catches the second.
+- **It does not check facts.** A confidently wrong sentence with a citation passes every rule.
+- **It does not lint the UI chrome.** Button labels, empty states and error messages are covered by the banned-word list in `UX_CRAFT.md`, which is a design review, not a build step.
+- **The `alt-text` rule is a guard, not a check.** The schema has no image field today, so it is vacuous. It fires the day someone adds one without alt text.

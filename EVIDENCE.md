@@ -471,6 +471,80 @@ Three of the content tests are the ones that matter, because they assert a produ
 
 ---
 
-## 11. How this file is maintained
+## 11. The content lint (issue #10)
+
+Section 1 of `CONTENT_LIBRARY.md` says what we will not publish. This is the machine that checks it, wired into `pnpm content:validate` so the Verify job fails before a sentence reaches a parent.
+
+### The issue's word list was wrong, and the content proved it
+
+The issue asked for a ban on `cure`, `guarantee`, `safe`, `normal` and `should`. Run against the nine shipped packs, that list produced 56 hits. Almost all of them were good copy:
+
+- "Cleanings are safe in pregnancy and often covered twice a year." — a clinical fact, sourced to ACOG.
+- "That is normal and not a sign your supply is dropping." — the most reassuring sentence in the postpartum pack.
+- "The seat should not move more than an inch at the belt path." — a physical requirement, not a debt.
+- "A legitimate and safe choice." — describes a feeding method, not a promise.
+
+A blanket ban would have forced worse copy in every one of those cases. So the rules target the **promise**, the **obligation** and the **norm**, not the word. "Safe" passes; "completely safe" fails. "Normal" passes; "normal babies sleep through" fails. "Should" passes; "you should" fails.
+
+### What was built
+
+| File                                   | What it is                                                           |
+| -------------------------------------- | -------------------------------------------------------------------- |
+| `packages/content/src/lint.ts`         | Six rules, `readingGrade`, `proseFields`, `lintPack`, `lintLink`     |
+| `packages/content/src/lint.test.ts`    | 43 tests, 100% coverage on every branch                              |
+| `packages/content/src/cli/validate.ts` | Prints file → path → rule → reason → the offending sentence, exits 1 |
+
+The six rules: `absolute-claim`, `obligation`, `normative`, `reading-level`, `alt-text`, `unsourced-red-flag`. The catalogue's `title`, `why` and `note` are parent-facing prose too, so the same claim and obligation rules run over all 89 entries.
+
+### The reading level is measured, not assumed
+
+Flesch-Kincaid grade per pack, computed by the same function the lint uses:
+
+| Pack             | Grade | Pack                | Grade |
+| ---------------- | ----- | ------------------- | ----- |
+| `pregnancy-w20`  | 7.4   | `pregnancy-w12`     | 6.3   |
+| `pregnancy-w8`   | 7.2   | `postpartum-week-1` | 6.2   |
+| `pregnancy-w28`  | 6.8   | `infant-month-6`    | 5.5   |
+| `pregnancy-w36`  | 6.8   | `pregnancy-w39`     | 4.6   |
+| `infant-month-2` | 6.7   |                     |       |
+
+All nine are under the grade-8 ceiling, so the rule has teeth without being aspirational.
+
+### The acceptance criterion, proved
+
+The issue asked: a pack containing "this will cure" must fail CI with the exact line. I put that sentence into `pregnancy-w8.json`'s first action detail and ran the real command:
+
+```
+✗ 1 content lint problem(s):
+
+  pregnancy-w8.json → coreActions[0].detail
+    absolute-claim: Nothing here cures anything. Say what the source found.
+    "This will cure your morning sickness."
+```
+
+Exit code 1. Reverted, exit code 0. The output names the file, the path inside the pack, the rule, the reason and the sentence — not a line number in a JSON file.
+
+### The lint found a real sentence on its first run
+
+Against the shipped content it flagged exactly one thing: "it cannot tell you what you need to know" in `pregnancy-w28`. That is an idiom, not an obligation, and the rule cannot tell the difference without a parser. I rewrote the sentence — "it cannot answer the question you are actually asking" — rather than weakening the rule. The rewrite is better copy. That is the intended resolution: a false positive is a prompt to write a better sentence, not to add an exception.
+
+### What it proves
+
+- A promised outcome, an obligation, a norm, a dense paragraph, an unlabelled image or an unsourced red flag fails the build, with the file and the sentence named.
+- The nine shipped packs and all 89 catalogue entries pass.
+- The reading level of every pack is measured and under the ceiling.
+- The rule set is narrow enough that the existing good copy survives it untouched.
+
+### What this PR does not prove
+
+- **It does not read for meaning.** "This may help" and "this helps everyone" both pass. Only a human catches the second.
+- **It does not check facts.** A confidently wrong sentence with a citation passes every rule.
+- **It does not lint the UI chrome.** Button labels, empty states and error messages are governed by the banned-word list in `UX_CRAFT.md`, which is a design review, not a build step.
+- **The `alt-text` rule is vacuous today.** The schema has no image field, so it is a guard for the day someone adds one.
+- **The syllable counter is approximate.** It counts vowel groups, which is wrong for a handful of English words and right for the question "is this too dense for someone who has not slept".
+
+---
+
+## 12. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.

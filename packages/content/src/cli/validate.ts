@@ -1,14 +1,16 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import { lintLinks, lintPacks, type LintFinding } from "../lint";
+import { LINKS } from "../link-registry";
 import { loadPacks } from "../loader";
 
-const dir = join(import.meta.dirname, "..", "..", "packs");
-const files = readdirSync(dir).filter((f) => f.endsWith(".json"));
+const packsDir = join(import.meta.dirname, "..", "..", "packs");
+const files = readdirSync(packsDir).filter((f) => f.endsWith(".json"));
 
 const raw = files.map((file) => {
-  const text = readFileSync(join(dir, file), "utf8");
+  const text = readFileSync(join(packsDir, file), "utf8");
   try {
-    return JSON.parse(text) as unknown;
+    return { file, data: JSON.parse(text) as unknown };
   } catch (error) {
     console.error(`✗ ${file}: invalid JSON — ${(error as Error).message}`);
     process.exitCode = 1;
@@ -16,12 +18,36 @@ const raw = files.map((file) => {
   }
 });
 
-const { packs, issues } = loadPacks(raw.filter((r) => r !== null));
+const parsed = raw.filter((r) => r !== null);
+const { packs, issues } = loadPacks(parsed.map((r) => r.data));
+
+/** A finding names the file, not just the pack id, so the fix is one click away. */
+const fileFor = new Map<string, string>();
+for (const entry of parsed) {
+  const id =
+    typeof entry.data === "object" && entry.data !== null && "id" in entry.data
+      ? String((entry.data as { id: unknown }).id)
+      : null;
+  if (id) fileFor.set(id, entry.file);
+}
+
+function report(findings: LintFinding[], heading: string): void {
+  if (findings.length === 0) return;
+  console.error(`\n✗ ${findings.length} ${heading}:\n`);
+  for (const finding of findings) {
+    const where = fileFor.get(finding.subject) ?? finding.subject;
+    console.error(`  ${where} → ${finding.path}`);
+    console.error(`    ${finding.rule}: ${finding.message}`);
+    console.error(`    "${finding.excerpt}"`);
+  }
+  process.exitCode = 1;
+}
 
 if (issues.length > 0) {
   console.error(`\n✗ ${issues.length} content problem(s):\n`);
   for (const issue of issues) {
-    console.error(`  ${issue.packId} → ${issue.path}: ${issue.message}`);
+    const where = fileFor.get(issue.packId) ?? issue.packId;
+    console.error(`  ${where} → ${issue.path}: ${issue.message}`);
   }
   process.exitCode = 1;
 } else {
@@ -34,4 +60,11 @@ if (issues.length > 0) {
       `  ${pack.id.padEnd(22)} ${String(actions)} actions · ${String(flags)} red flags · ${String(sources)} sources`,
     );
   }
+}
+
+report(lintPacks(packs), "content lint problem(s)");
+report(lintLinks(LINKS), "catalogue lint problem(s)");
+
+if (process.exitCode !== 1) {
+  console.log(`✓ ${LINKS.length} catalogue entries pass the same lint`);
 }

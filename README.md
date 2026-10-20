@@ -224,6 +224,8 @@ Five CI jobs run on every pull request. Each one fails for exactly one class of 
 | **Links**             | a pack or a catalogue entry cites a URL that no longer resolves                   | `pnpm links:check`                                                                                     |
 | **Lighthouse budget** | performance < 0.9, accessibility < 1.0, best practices < 0.95, or a console error | `pnpm lighthouse`                                                                                      |
 
+**The content lint bans the promise, not the word.** `pnpm content:validate` fails a pack that says "this will cure", "you should", "normal babies", or that reads above grade 8 — and prints the file, the path inside the pack, the rule and the sentence. A blanket ban on `safe` and `normal` was the first draft; it rejected "cleanings are safe in pregnancy" and "that is normal and not a sign your supply is dropping", so the rules target the claim instead. Every shipped pack scores between 4.6 and 7.4.
+
 **The content schema is a gate, not a suggestion.** A pack with two essentials, no red flag, no source, or a `buy` action with no options fails the build. It has already caught four real content bugs.
 
 **The link check treats 403 as "verify by hand", not "broken".** CDC, CPSC, NHTSA, DOL, medicaid.gov, naeyc.org, adaa.org and ssa.gov block non-browser clients. A 404 or 410 fails the build; a 403 from those hosts is printed for manual review. It found seven dead citations in the first nine packs and eight dead URLs in the first 89 catalogue entries.
