@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   assertValidPacks,
+  findAction,
   findPackForStage,
   loadPacks,
   nextPack,
@@ -8,7 +9,7 @@ import {
   sortPacks,
 } from "./loader";
 import { PACKS, PACKS_BY_ID, getPack } from "./registry";
-import type { StagePack } from "./schema";
+import { StagePack } from "./schema";
 import { validPack } from "./schema.test";
 
 function pack(overrides: Record<string, unknown>): StagePack {
@@ -202,6 +203,27 @@ describe("nextPack and previousPack", () => {
     const stranger = pack({ id: "nope", stageIndex: 99 });
     expect(nextPack(packs, stranger)).toBeUndefined();
     expect(previousPack(packs, stranger)).toBeUndefined();
+  });
+});
+
+describe("findAction", () => {
+  const packs = [
+    StagePack.parse(validPack({ id: "pregnancy-w28" })),
+    StagePack.parse(validPack({ id: "pregnancy-w29" })),
+  ];
+
+  it("resolves a bare pin id back to its pack and action", () => {
+    const found = findAction(packs, "a1");
+    expect(found?.pack.id).toBe("pregnancy-w28");
+    expect(found?.action.id).toBe("a1");
+  });
+
+  it("returns undefined for an id no pack owns", () => {
+    expect(findAction(packs, "not-a-real-action")).toBeUndefined();
+  });
+
+  it("returns undefined for an empty registry", () => {
+    expect(findAction([], "a1")).toBeUndefined();
   });
 });
 

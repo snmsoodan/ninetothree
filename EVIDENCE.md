@@ -545,6 +545,67 @@ Against the shipped content it flagged exactly one thing: "it cannot tell you wh
 
 ---
 
-## 12. How this file is maintained
+## 12. The dashboard (issue #23)
+
+The dashboard is the product's front door. Onboarding used to land on `/week`;
+it now lands on `/`, and `/` is one card with one button.
+
+**What it shows, in order.** The week's card (`WeekSummaryCard`) — the stage
+label, the week's headline, a progress bar with no percentage, and a single
+full-width "Open this week". Then pins, appointments, the partner card, and one
+line of progress. Nothing else. There is no feed, no activity stream, and no
+"recently viewed".
+
+**The finished state is the interesting one.** When every core action is done,
+the card stops asking: "You are done for this week." / "Nothing else to do
+until Monday." / `[ Look ahead ]` and `[ Read it again ]`. The primary button
+disappears rather than greying out, because a disabled button is still a
+request.
+
+**Pins are bare ids.** `store.ts` stores `pins: string[]`, so the dashboard
+needs to resolve an id back to the pack that owns it. `findAction(packs, id)`
+in `packages/content/src/loader.ts` does that, and returns `undefined` for an
+id no pack owns — a pin whose week was renamed is dropped, not rendered as a
+broken row. The list caps at six (`PIN_LIMIT`) and says "N more on your shelf."
+rather than silently truncating.
+
+**The partner card is a share card, not partner accounts.** It calls
+`navigator.share` where the browser has it, falls back to the clipboard, and
+says nothing at all if both are blocked. Partner mode is issues #36 and #37.
+This is a deliberate v1 substitution and it is stated in the UI: "They will see
+the same page you do — no account, nothing to set up."
+
+**The navigation changed.** The first tab is now "This week" → `/`, and it
+stays lit on `/week` and `/week/*` via an `also` list, so opening the full week
+view does not make the tab look unselected. The logo goes to `/` too.
+
+**What was tested.**
+
+| Check                | Result                                                                    |
+| -------------------- | ------------------------------------------------------------------------- |
+| Unit tests           | 468 total (content 174, rules 79, ui 45, web 170)                         |
+| Coverage             | content/rules/ui 100%; web 99.9% lines, 98.99% branches                   |
+| Playwright chromium  | 25 passed                                                                 |
+| Playwright storybook | 31 passed (7 new stories)                                                 |
+| Lighthouse           | 1.0 / 1.0 / 1.0 / 1.0 on `/onboarding`, `/week/pregnancy-w28`, `/library` |
+| axe                  | zero violations on `/` and every other route                              |
+
+Two e2e tests are new and both are about the dashboard specifically: "the
+dashboard is one card, and a pin survives the round trip" (pin in the week,
+see it on `/`, unpin it, see the empty state return) and "a finished week stops
+asking and says when the next one arrives".
+
+**What it could not test.** Lighthouse does not audit `/`. The dashboard
+redirects to `/onboarding` without localStorage, and LHCI has no way to seed it,
+so auditing `/` would only re-measure the onboarding page. The dashboard's
+accessibility is covered by axe in Playwright, which does onboard first; its
+performance is not measured at all. Adding a `puppeteerScript` to seed
+localStorage would close this, and is worth doing before launch.
+
+The web package's three remaining uncovered branches (`OnboardingFlow.tsx` line
+224, `WeekView.tsx` line 111, `store.ts` line 56) are pre-existing and not
+introduced here.
+
+## 13. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.

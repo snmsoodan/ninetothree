@@ -19,12 +19,20 @@ async function onboardAsPregnant(page: Page) {
   await page.getByRole("button", { name: "Show me" }).click();
 }
 
+/** Onboarding lands on the dashboard; the week is one tap further in. */
+async function onboardToWeek(page: Page) {
+  await onboardAsPregnant(page);
+  await page.goto("/week");
+}
+
 test("a new parent can get from the front door to a finished step", async ({ page }) => {
   await onboardAsPregnant(page);
 
-  await expect(page).toHaveURL(/\/week$/);
-  // The header names the stage; the h1 is the week's headline, not a number.
-  await expect(page.getByText("Week 28", { exact: true }).first()).toBeVisible();
+  // Onboarding lands on the dashboard, which is the product: one card, one tap.
+  await expect(page).toHaveURL(/\/$/);
+  await expect(page.getByRole("heading", { level: 1, name: "Week 28" })).toBeVisible();
+  await page.getByRole("link", { name: "Open this week" }).click();
+  await expect(page).toHaveURL(/\/week\/pregnancy-w28$/);
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
 
   await page.getByRole("button", { name: "Done" }).first().click();
@@ -38,8 +46,53 @@ test("a new parent can get from the front door to a finished step", async ({ pag
   await expect(page.getByText(/1 step done/)).toBeVisible();
 });
 
-test("skipping is allowed and reversible", async ({ page }) => {
+test("the dashboard is one card, and a pin survives the round trip", async ({ page }) => {
   await onboardAsPregnant(page);
+
+  // One primary card, one h1, and no feed of activity.
+  await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
+  await expect(page.getByRole("heading", { name: "Pinned" })).toBeVisible();
+  await expect(page.getByText("Nothing pinned yet.")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Appointments" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "So far" })).toBeVisible();
+
+  // Pin something in the week, then come back.
+  await page.getByRole("link", { name: "Open this week" }).click();
+  const pin = page.getByRole("button", { name: /^Pin / }).first();
+  const pinnedName = (await pin.getAttribute("aria-label"))?.replace(/^Pin /, "") ?? "";
+  await pin.click();
+
+  await page.getByRole("link", { name: "This week", exact: true }).click();
+  await expect(page).toHaveURL(/\/$/);
+  await expect(page.getByRole("link", { name: pinnedName })).toBeVisible();
+  await expect(page.getByText("Nothing pinned yet.")).not.toBeVisible();
+
+  // Unpinning from the dashboard puts the empty state back.
+  await page.getByRole("button", { name: `Unpin ${pinnedName}` }).click();
+  await expect(page.getByText("Nothing pinned yet.")).toBeVisible();
+});
+
+test("a finished week stops asking and says when the next one arrives", async ({ page }) => {
+  await onboardAsPregnant(page);
+  await page.getByRole("link", { name: "Open this week" }).click();
+  await expect(page).toHaveURL(/\/week\/pregnancy-w28$/);
+
+  // Three core actions, so three clicks. Each one flips to "Undo", which is
+  // how the loop knows the click landed before reaching for the next.
+  for (let i = 0; i < 3; i += 1) {
+    await page.getByRole("button", { name: "Done" }).first().click();
+    await expect(page.getByRole("button", { name: "Undo" })).toHaveCount(i + 1);
+  }
+
+  await page.getByRole("link", { name: "This week", exact: true }).click();
+  await expect(page.getByText("You are done for this week.")).toBeVisible();
+  await expect(page.getByText("Nothing else to do until Monday.")).toBeVisible();
+  await expect(page.getByRole("link", { name: "Open this week" })).not.toBeVisible();
+  await expect(page.getByRole("link", { name: "Look ahead" })).toBeVisible();
+});
+
+test("skipping is allowed and reversible", async ({ page }) => {
+  await onboardToWeek(page);
 
   await page.getByRole("button", { name: "Skip" }).first().click();
   await expect(page.getByRole("dialog")).toBeVisible();
@@ -55,7 +108,7 @@ test("the design system is actually applied", async ({ page }) => {
   // Tailwind only scans the app by default. When the UI package is not named in
   // @source, every class in the design system silently disappears and the whole
   // product renders unstyled while every other test still passes.
-  await onboardAsPregnant(page);
+  await onboardToWeek(page);
 
   const done = page.getByRole("button", { name: "Done" }).first();
   const box = await done.boundingBox();
@@ -82,7 +135,7 @@ test("the safety page lists every escalation number", async ({ page }) => {
 });
 
 test("state survives a reload", async ({ page }) => {
-  await onboardAsPregnant(page);
+  await onboardToWeek(page);
   await page.getByRole("button", { name: "Done" }).first().click();
   await page.reload();
   await expect(page.getByRole("button", { name: "Undo" }).first()).toBeVisible();
@@ -111,7 +164,7 @@ test("every week page renders without a client error", async ({ page }) => {
 });
 
 test("a late joiner gets a short catch-up, not a backlog", async ({ page }) => {
-  await onboardAsPregnant(page);
+  await onboardToWeek(page);
 
   // The week's own three things come first.
   await expect(page.getByRole("heading", { name: "Before this week" })).toBeVisible();
@@ -173,7 +226,7 @@ test("every route is reachable with the keyboard alone", async ({ page }) => {
     ["Library", /\/library$/],
     ["Safety", /\/safety$/],
     ["Settings", /\/settings$/],
-    ["This week", /\/week$/],
+    ["This week", /\/$/],
   ] as const) {
     // Scope to the nav: the library page has outbound links whose names
     // contain "Safety", and a bare role query would match those too.

@@ -226,6 +226,8 @@ Five CI jobs run on every pull request. Each one fails for exactly one class of 
 
 **The content lint bans the promise, not the word.** `pnpm content:validate` fails a pack that says "this will cure", "you should", "normal babies", or that reads above grade 8 — and prints the file, the path inside the pack, the rule and the sentence. A blanket ban on `safe` and `normal` was the first draft; it rejected "cleanings are safe in pregnancy" and "that is normal and not a sign your supply is dropping", so the rules target the claim instead. Every shipped pack scores between 4.6 and 7.4.
 
+**The dashboard is the front door.** Onboarding lands on `/`, which is one card with one button — the week you are in, a progress bar with no percentage, and "Open this week". Pins, appointments, a share card and one line of progress sit below it. There is no feed. When the week is finished the card stops asking and says "Nothing else to do until Monday." The nav's first tab is "This week" and stays lit on `/week` and `/week/*`.
+
 **The content schema is a gate, not a suggestion.** A pack with two essentials, no red flag, no source, or a `buy` action with no options fails the build. It has already caught four real content bugs.
 
 **The link check treats 403 as "verify by hand", not "broken".** CDC, CPSC, NHTSA, DOL, medicaid.gov, naeyc.org, adaa.org and ssa.gov block non-browser clients. A 404 or 410 fails the build; a 403 from those hosts is printed for manual review. It found seven dead citations in the first nine packs and eight dead URLs in the first 89 catalogue entries.
