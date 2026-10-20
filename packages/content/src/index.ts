@@ -28,3 +28,14 @@ export {
   type LinkLoadResult,
 } from "./links";
 export { LINKS, LINKS_BY_ID, getLink } from "./link-registry";
+export {
+  MAX_GRADE,
+  readingGrade,
+  proseFields,
+  lintPack,
+  lintPacks,
+  lintLink,
+  lintLinks,
+  type LintRule,
+  type LintFinding,
+} from "./lint";
