@@ -7,7 +7,8 @@
       "url": [
         "http://localhost:3000/onboarding",
         "http://localhost:3000/week/pregnancy-w28",
-        "http://localhost:3000/library"
+        "http://localhost:3000/library",
+        "http://localhost:3000/search"
       ],
       "numberOfRuns": 1,
       "settings": {
@@ -17,14 +18,44 @@
     },
     "assert": {
       "assertions": {
-        "categories:performance": ["error", { "minScore": 0.9 }],
-        "categories:accessibility": ["error", { "minScore": 1 }],
-        "categories:best-practices": ["error", { "minScore": 0.95 }],
-        "categories:seo": ["warn", { "minScore": 0.9 }],
+        "categories:performance": [
+          "error",
+          {
+            "minScore": 0.9
+          }
+        ],
+        "categories:accessibility": [
+          "error",
+          {
+            "minScore": 1
+          }
+        ],
+        "categories:best-practices": [
+          "error",
+          {
+            "minScore": 0.95
+          }
+        ],
+        "categories:seo": [
+          "warn",
+          {
+            "minScore": 0.9
+          }
+        ],
         "errors-in-console": "error",
         "uses-responsive-images": "off",
-        "unused-javascript": ["warn", { "maxNumericValue": 2000 }],
-        "total-byte-weight": ["warn", { "maxNumericValue": 500000 }]
+        "unused-javascript": [
+          "warn",
+          {
+            "maxNumericValue": 2000
+          }
+        ],
+        "total-byte-weight": [
+          "warn",
+          {
+            "maxNumericValue": 500000
+          }
+        ]
       }
     },
     "upload": {

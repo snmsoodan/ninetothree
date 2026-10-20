@@ -46,7 +46,8 @@
           "note": "You can often get prenatal care here even with no insurance."
         }
       ],
-      "skipIf": "You already have a confirmed pregnancy and an appointment on the calendar."
+      "skipIf": "You already have a confirmed pregnancy and an appointment on the calendar.",
+      "keywords": ["prenatal", "ob appointment", "first appointment"]
     },
     {
       "id": "w8-folic-acid",
@@ -77,7 +78,8 @@
           "cost": "varies"
         }
       ],
-      "skipIf": "Your OB has told you to take a specific prescription instead."
+      "skipIf": "Your OB has told you to take a specific prescription instead.",
+      "keywords": ["vitamin", "folate", "supplement"]
     },
     {
       "id": "w8-insurance",
@@ -110,7 +112,8 @@
           "cost": "free"
         }
       ],
-      "skipIf": "You already know your plan's prenatal and delivery coverage in detail."
+      "skipIf": "You already know your plan's prenatal and delivery coverage in detail.",
+      "keywords": ["coverage", "deductible", "cost"]
     }
   ],
   "alsoKnow": [

@@ -40,7 +40,8 @@
           "cost": "varies"
         }
       ],
-      "skipIf": "You have already had the test this pregnancy, or your OB has decided to skip it for a clinical reason."
+      "skipIf": "You have already had the test this pregnancy, or your OB has decided to skip it for a clinical reason.",
+      "keywords": ["gestational diabetes", "sugar test", "gtt"]
     },
     {
       "id": "w28-tdap",
@@ -66,7 +67,8 @@
           "note": "Call first — not every location stocks it for pregnancy."
         }
       ],
-      "skipIf": "You have had a severe reaction to Tdap before. Talk to your OB about the alternative."
+      "skipIf": "You have had a severe reaction to Tdap before. Talk to your OB about the alternative.",
+      "keywords": ["whooping cough", "pertussis", "shot"]
     },
     {
       "id": "w28-kick-counts",
@@ -78,7 +80,8 @@
       "detail": "Pick a time of day when the baby is usually active and pay attention for a while. You are learning what normal feels like for this baby. If movements clearly slow down or stop, call your OB triage line the same day. Do not wait until morning, and do not use a home doppler to reassure yourself — it cannot answer the question you are actually asking.",
       "minutes": 10,
       "options": [],
-      "skipIf": "You have an anterior placenta and have been told movements will feel different. Still learn the pattern, just expect it to be softer."
+      "skipIf": "You have an anterior placenta and have been told movements will feel different. Still learn the pattern, just expect it to be softer.",
+      "keywords": ["kick counts", "movement", "fetal movement"]
     }
   ],
   "alsoKnow": [

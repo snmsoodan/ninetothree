@@ -36,7 +36,8 @@
           "cost": "free"
         }
       ],
-      "skipIf": "You have already been through labor before and know your own pattern."
+      "skipIf": "You have already been through labor before and know your own pattern.",
+      "keywords": ["contractions", "water breaking", "labor signs"]
     },
     {
       "id": "w39-induction",
@@ -55,7 +56,8 @@
           "cost": "free"
         }
       ],
-      "skipIf": "You have already discussed induction and made a decision."
+      "skipIf": "You have already discussed induction and made a decision.",
+      "keywords": ["induction", "sweep", "pitocin"]
     },
     {
       "id": "w39-rest",
@@ -66,7 +68,8 @@
       "why": "The last week is not the time to finish a project. Sleep when you can, eat, and let people bring you things.",
       "detail": "You will not get this rest back for a while. Say yes to help now, while it is easy to accept. If you are working up to your due date, consider whether the last week is worth it.",
       "options": [],
-      "skipIf": "You have things you genuinely need to finish, and that is fine too."
+      "skipIf": "You have things you genuinely need to finish, and that is fine too.",
+      "keywords": ["rest", "sleep", "slow down"]
     }
   ],
   "alsoKnow": [

@@ -86,6 +86,19 @@ test("the library has no violations with a filter applied", async ({ page }) => 
   expect(await audit(page)).toEqual([]);
 });
 
+test("search has no violations", async ({ page }) => {
+  await onboard(page);
+  await page.goto("/search");
+  expect(await audit(page)).toEqual([]);
+});
+
+test("search has no violations with results showing", async ({ page }) => {
+  await onboard(page);
+  await page.goto("/search");
+  await page.getByLabel("What are you looking for?").fill("glucose");
+  expect(await audit(page)).toEqual([]);
+});
+
 test("the safety page has no violations", async ({ page }) => {
   await page.goto("/safety");
   expect(await audit(page)).toEqual([]);
@@ -132,6 +145,7 @@ test("every route has exactly one skip-link target", async ({ page }) => {
     "/appointments",
     "/history",
     "/library",
+    "/search",
     "/safety",
     "/settings",
   ]) {

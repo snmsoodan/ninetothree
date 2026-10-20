@@ -59,3 +59,15 @@ export type {
   Schedule,
   ScheduleEntry,
 } from "./schedule";
+export {
+  STOPWORDS,
+  FUZZY_FLOOR,
+  parseQuery,
+  trigrams,
+  similarity,
+  search,
+  buildIndex,
+  type SearchDoc,
+  type SearchHit,
+  type SearchKind,
+} from "./search";

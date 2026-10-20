@@ -35,7 +35,8 @@
           "cost": "varies"
         }
       ],
-      "skipIf": "Your pediatrician has set a different schedule for a medical reason."
+      "skipIf": "Your pediatrician has set a different schedule for a medical reason.",
+      "keywords": ["vaccines", "shots", "immunizations"]
     },
     {
       "id": "m2-safe-sleep",
@@ -66,7 +67,8 @@
           "cost": "$$"
         }
       ],
-      "skipIf": "You have already checked the sleep space and it meets all of these."
+      "skipIf": "You have already checked the sleep space and it meets all of these.",
+      "keywords": ["sids", "crib", "bassinet"]
     },
     {
       "id": "m2-crying",
@@ -91,7 +93,8 @@
           "cost": "free"
         }
       ],
-      "skipIf": "You already have a plan and someone to call."
+      "skipIf": "You already have a plan and someone to call.",
+      "keywords": ["colic", "shaken baby", "purple crying"]
     }
   ],
   "alsoKnow": [

@@ -36,7 +36,8 @@
           "cost": "varies"
         }
       ],
-      "skipIf": "You have already had the swab this pregnancy."
+      "skipIf": "You have already had the swab this pregnancy.",
+      "keywords": ["strep", "gbs", "swab"]
     },
     {
       "id": "w36-bag",
@@ -55,7 +56,8 @@
           "cost": "free"
         }
       ],
-      "skipIf": "Your bag is already packed and by the door."
+      "skipIf": "Your bag is already packed and by the door.",
+      "keywords": ["hospital bag", "go bag", "packing"]
     },
     {
       "id": "w36-car-seat",
@@ -81,7 +83,8 @@
           "cost": "free"
         }
       ],
-      "skipIf": "The seat is installed and checked."
+      "skipIf": "The seat is installed and checked.",
+      "keywords": ["car seat", "infant seat", "base"]
     }
   ],
   "alsoKnow": [

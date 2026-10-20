@@ -9,6 +9,23 @@ changelog written after the fact from memory is a changelog nobody can trust.
 
 ## Unreleased
 
+### Search over the whole guide (#27)
+
+- Added `packages/content/src/search.ts`: `buildIndex`, `parseQuery`,
+  `trigrams`, `similarity` and `search`, with a scoring ladder that puts a
+  title match above a keyword, a keyword above a body match, and a typo
+  above nothing.
+- Added a `keywords` field to `Action`, so a pack can declare the word a
+  parent types ("ultrasound") when it differs from the word a clinician
+  writes ("anatomy scan"). Twenty-seven actions declare keywords.
+- Added a 100-query fixture as the acceptance criterion, plus a p95 timing
+  assertion. All 100 return their expected result in the top five.
+- Added `/search`, a `SearchResults` component, and a Search link in the
+  header. The no-results state says "Nothing here for that." and offers the
+  library; a test asserts "no results", "oops" and "0 results" never appear.
+- Added `/search` to the Lighthouse URLs. All four audited URLs score
+  1.0/1.0/1.0/1.0.
+
 ### The week card is readable before any script runs (#18)
 
 - Added a `no-js` Playwright project that turns JavaScript off entirely, and

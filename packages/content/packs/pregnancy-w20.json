@@ -42,7 +42,8 @@
           "cost": "varies"
         }
       ],
-      "skipIf": "You have already had a detailed anatomy scan this pregnancy."
+      "skipIf": "You have already had a detailed anatomy scan this pregnancy.",
+      "keywords": ["ultrasound", "sonogram", "scan"]
     },
     {
       "id": "w20-movement",
@@ -54,7 +55,8 @@
       "detail": "There is no official kick count in the US, and the 'ten movements in two hours' rule is a rough guide, not a test you can fail. What matters is a clear change from your baby's usual pattern. If movements slow down or stop, call your OB triage line the same day.",
       "minutes": 10,
       "options": [],
-      "skipIf": "You have an anterior placenta and have been told to expect softer movement."
+      "skipIf": "You have an anterior placenta and have been told to expect softer movement.",
+      "keywords": ["kicks", "flutters", "quickening"]
     },
     {
       "id": "w20-childbirth-class",
@@ -85,7 +87,8 @@
           "cost": "$"
         }
       ],
-      "skipIf": "You have already taken a childbirth class."
+      "skipIf": "You have already taken a childbirth class.",
+      "keywords": ["birth class", "lamaze", "breathing"]
     }
   ],
   "alsoKnow": [

@@ -48,7 +48,8 @@
           "url": "https://www.fedisbest.org"
         }
       ],
-      "skipIf": "Your pediatrician has given you a different feeding plan for a medical reason."
+      "skipIf": "Your pediatrician has given you a different feeding plan for a medical reason.",
+      "keywords": ["feeding", "nursing", "latch"]
     },
     {
       "id": "pp1-pediatrician",
@@ -67,7 +68,8 @@
           "cost": "varies"
         }
       ],
-      "skipIf": "Your pediatrician has already seen the baby and set a different schedule."
+      "skipIf": "Your pediatrician has already seen the baby and set a different schedule.",
+      "keywords": ["newborn visit", "weight check", "jaundice"]
     },
     {
       "id": "pp1-you",
@@ -100,7 +102,8 @@
           "url": "https://988lifeline.org"
         }
       ],
-      "skipIf": "You are feeling well, and you know the numbers if that changes."
+      "skipIf": "You are feeling well, and you know the numbers if that changes.",
+      "keywords": ["postpartum depression", "baby blues", "screening"]
     }
   ],
   "alsoKnow": [
