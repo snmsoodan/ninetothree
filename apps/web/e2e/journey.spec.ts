@@ -109,3 +109,28 @@ test("every week page renders without a client error", async ({ page }) => {
   }
   expect(errors).toEqual([]);
 });
+
+test("a late joiner gets a short catch-up, not a backlog", async ({ page }) => {
+  await onboardAsPregnant(page);
+
+  // The week's own three things come first.
+  await expect(page.getByRole("heading", { name: "Before this week" })).toBeVisible();
+  await expect(page.getByText(/You are on Week 28/)).toBeVisible();
+  await expect(page.getByText(/nothing expires/)).toBeVisible();
+
+  // Closed by default, and never a wall of twenty-six weeks.
+  const toggle = page.getByRole("button", { name: /^Show the \d+ things?$/ });
+  await expect(toggle).toHaveAttribute("aria-expanded", "false");
+  await expect(page.getByRole("heading", { name: "Book your anatomy scan" })).toHaveCount(0);
+
+  await toggle.click();
+  await expect(page.getByRole("heading", { name: "Book your anatomy scan" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Book your first prenatal visit" })).toBeVisible();
+
+  // Nothing older than the window leaks in.
+  await expect(page.getByRole("heading", { name: /Week 4\b/ })).toHaveCount(0);
+
+  // Clearing one removes it from the list.
+  await page.locator("#catchup-list").getByRole("button", { name: "Done" }).first().click();
+  await expect(page.getByRole("heading", { name: "Book your anatomy scan" })).toHaveCount(0);
+});

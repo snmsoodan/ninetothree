@@ -70,3 +70,10 @@ test("the whole journey is keyboard reachable", async ({ page }) => {
   await page.keyboard.press("Enter");
   await expect(page.getByRole("heading", { name: /due date/i })).toBeVisible();
 });
+
+test("the catch-up list has no violations", async ({ page }) => {
+  await onboard(page);
+  await page.getByRole("button", { name: /^Show the \d+ things?$/ }).click();
+  await expect(page.locator("#catchup-list")).toBeVisible();
+  expect(await audit(page)).toEqual([]);
+});
