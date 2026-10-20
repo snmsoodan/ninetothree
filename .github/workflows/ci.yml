@@ -95,13 +95,48 @@ jobs:
         run: pnpm --filter @ninetothree/web exec playwright install --with-deps chromium
 
       - name: Run Playwright
-        run: pnpm --filter @ninetothree/web test:e2e
+        run: pnpm --filter @ninetothree/web exec playwright test --project=chromium
 
       - name: Upload report
         if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: playwright-report
+          path: apps/web/playwright-report
+          retention-days: 7
+
+  storybook:
+    name: Storybook
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Install browsers
+        run: pnpm --filter @ninetothree/web exec playwright install --with-deps chromium
+
+      # Every story is rendered, checked for console errors, checked that the
+      # design tokens actually resolve, and run through axe. A story that
+      # throws or renders unstyled is a component that will do the same in the
+      # product.
+      - name: Build Storybook and check every story
+        run: pnpm --filter @ninetothree/web exec playwright test --project=storybook
+
+      - name: Upload report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: storybook-report
           path: apps/web/playwright-report
           retention-days: 7
 
