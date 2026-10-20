@@ -686,6 +686,36 @@ Computed in UTC, so a parent in a state that observes DST does not see a visit s
 
 **What this could not test:** the downloaded files are asserted by filename and by unit tests over their contents, but no test opens the CSV in a spreadsheet application or the JSON in a third-party importer. `/history` is not in `lighthouserc.json` for the same reason as `/` and `/appointments` — it redirects to `/onboarding` without localStorage and LHCI cannot seed it. The history is not yet paginated; a parent three years in will have a long page, and that is a real gap rather than a deliberate choice.
 
-## 16. How this file is maintained
+## 16. Profile and settings (issue #17)
+
+**The acceptance criterion is "changing any field re-personalizes the current week without a reload."** Half of that was already true: `WeekView` computes `personalizePack(pack, state.profile)` inside a `useMemo` keyed on the profile, so a change re-renders. The other half was not, and the test that proves it found a real defect.
+
+**`ButtonLink` was a full page load.** The design system's `ButtonLink` rendered a plain `<a>`, so "Next →" on the week page and "See your history" in Settings reloaded the document. The dashboard's primary call to action already used Next's `<Link>`, which is why nobody had noticed. The fix keeps `packages/ui` framework-free: `ButtonLinkProps` gains `as?: ElementType` (default `"a"`), and `apps/web/src/components/ButtonLink.tsx` binds `as={Link}`. The e2e test sets `window.__noReload = true`, changes a setting, walks back to week 36 entirely client-side, and asserts the marker survived — which it could not have done before.
+
+**Six of the twelve profile fields have no content to act on yet, and the screen says so.** The issue lists twelve fields. Probing all nine shipped packs found content for five rules only:
+
+| Rule              | Field       | What it changes                                    |
+| ----------------- | ----------- | -------------------------------------------------- |
+| `no-car`          | `hasCar`    | hides `w36-car-seat`                               |
+| `formula-feeding` | `feeding`   | hides `pp1-feed`                                   |
+| `not-first-baby`  | `firstBaby` | hides `w8-first-visit`, `w20-childbirth-class`     |
+| `staying-home`    | `work`      | hides `m6-sitter`                                  |
+| `tight-budget`    | `budget`    | trims `$$$` options on `m6-highchair`, `m6-sitter` |
+
+`country`, `delivery`, `support`, `multiples`, `preterm` and `housing` are recorded and inert. No action in any pack mentions a nursery, a room or paint; only two actions have any `$$$` option at all. Rather than invent rules that would never fire, each field states its own effect, and a field with no rule says "Recorded. Nothing in the guide changes for this yet." A test asserts that no field without a `ruleId` claims to hide anything, so the copy cannot drift into a promise.
+
+**`country` is read-only.** `ENABLED_LOCALES` is `["en-US"]`, so the UK option cannot be honoured. A disabled radio would be a dead control; a read-only line with the reason is honest.
+
+**The budget rule trims options, not actions.** Hiding an action because it is expensive could hide something important. Hiding the expensive _option_ is honest and reversible. An action is never left with zero options: if every option was trimmed, the rule was wrong, so all are shown and nothing is reported. That guard was a bug in the first draft — the action was restored but the trims were still listed.
+
+**`ProfilePreview` scans the whole guide, not the current week.** The first version showed only the current week, and the e2e proved it wrong: at 28 weeks, setting "no car" hid nothing, so the preview said "Nothing is hidden right now" — true for week 28, useless to the parent. It now groups every hidden step and trimmed option across all packs by rule, showing `title (Week 36)`. It answers "why am I not seeing this?" where the parent changed the setting.
+
+**`updateDates` exists because "start over" was the only way to fix a due date.** The old Settings page told a parent who had mistyped a date to erase everything. `updateDates({ status?, dueDate?, birthDate? })` changes the date and keeps pins, progress and profile.
+
+**`PROFILE_FIELDS` is the single source of truth for the screen.** A test asserts every `keyof Profile` appears in it, so adding a field without wiring it fails CI.
+
+**What this could not test:** the six inert fields are inert because the content does not exist, not because the rules are missing; making them real needs content (issues #47 and #48), not more rules. `preterm` should probably shift the stage to corrected age rather than the birth date, which is a `computeStage` change and belongs to a follow-up. `delivery: "cesarean"` should probably hide perineal-care steps, but no shipped pack has one. Settings is not in `lighthouserc.json` because it redirects to `/onboarding` without localStorage.
+
+## 17. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.
