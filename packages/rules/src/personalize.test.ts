@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { PACKS } from "@ninetothree/content";
 import type { Action, StagePack } from "@ninetothree/content";
 import {
   completion,
@@ -666,6 +667,88 @@ describe("ADJUST_RULES", () => {
       mentalHealthHistory: true,
     });
     expect(result.pack.coreActions.map((a) => a.id)).toEqual(["p-mind", "a1"]);
+  });
+});
+
+describe("red flags are never personalized away", () => {
+  /**
+   * One profile per answer a parent can give, plus the combinations that
+   * fire more than one rule at once. If a rule could ever reach a red flag,
+   * one of these would find it.
+   */
+  const PROFILES: Profile[] = [
+    {},
+    { country: "US" },
+    { country: "UK" },
+    { feeding: "breast" },
+    { feeding: "formula" },
+    { feeding: "both" },
+    { feeding: "undecided" },
+    { delivery: "vaginal" },
+    { delivery: "cesarean" },
+    { delivery: "undecided" },
+    { work: "returning" },
+    { work: "staying-home" },
+    { work: "undecided" },
+    { support: "partner" },
+    { support: "alone" },
+    { support: "other" },
+    { firstBaby: true },
+    { firstBaby: false },
+    { hasCar: true },
+    { hasCar: false },
+    { mentalHealthHistory: true },
+    { mentalHealthHistory: false },
+    { multiples: true },
+    { multiples: false },
+    { preterm: true },
+    { preterm: false },
+    { budget: "tight" },
+    { budget: "ok" },
+    { budget: "comfortable" },
+    { housing: "own" },
+    { housing: "rent" },
+    { housing: "shared" },
+    { housing: "temporary" },
+    {
+      feeding: "formula",
+      firstBaby: false,
+      hasCar: false,
+      work: "staying-home",
+      budget: "tight",
+      support: "alone",
+    },
+  ];
+
+  it("keeps every red flag, for every answer, in every pack", () => {
+    for (const p of PACKS) {
+      for (const profile of PROFILES) {
+        const result = personalizePack(p, profile);
+        expect(result.pack.redFlags, `${p.id} with ${JSON.stringify(profile)}`).toEqual(p.redFlags);
+      }
+    }
+  });
+
+  it("never names a red flag as hidden or trimmed", () => {
+    for (const p of PACKS) {
+      const flagIds = new Set(p.redFlags.map((flag) => flag.id));
+      for (const profile of PROFILES) {
+        const result = personalizePack(p, profile);
+        for (const entry of [...result.hidden, ...result.trimmed]) {
+          expect(flagIds.has(entry.actionId), `${p.id} hid ${entry.actionId}`).toBe(false);
+        }
+      }
+    }
+  });
+
+  it("keeps the flags on the safety page even in loss mode", () => {
+    // Loss mode is the one case where the week is not shown at all, so there
+    // is no week card to carry a flag. The safety page reads the packs
+    // directly, which is why it still lists every one of them.
+    const quiet = personalizePack(PACKS[0] as StagePack, { loss: "pregnancy" });
+    expect(quiet.quiet).toBe(true);
+    expect(quiet.pack.redFlags).toEqual([]);
+    expect(PACKS.flatMap((p) => p.redFlags).length).toBeGreaterThan(0);
   });
 });
 

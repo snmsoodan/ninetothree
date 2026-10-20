@@ -12,6 +12,7 @@ import {
   type OnboardingStep,
 } from "@/lib/store";
 import { countryName, detectCountry, isCovered } from "@/lib/country";
+import { HelpNow } from "./HelpNow";
 
 const FEEDING = [
   { value: "breast", label: "Breastfeeding" },
@@ -131,7 +132,13 @@ export function OnboardingFlow() {
   return (
     <div className="mx-auto flex min-h-dvh max-w-lg flex-col justify-center px-5 py-10">
       <div className="mb-8">
-        <p className="font-display text-lg text-ink">Nine to Three</p>
+        {/* Onboarding has no shell, so the way out lives here. A parent can
+            arrive at this screen from a search result while something is
+            wrong, and must not have to finish six questions first. */}
+        <div className="flex items-center justify-between gap-3">
+          <p className="font-display text-lg text-ink">Nine to Three</p>
+          <HelpNow />
+        </div>
         <div className="mt-3 flex gap-1.5" aria-hidden="true">
           {ONBOARDING_STEPS.map((s) => (
             <span

@@ -605,3 +605,22 @@ Two rules apply to triage text and nowhere else:
 `/safety` carries "Help me work out who to call" above the list of numbers. The page itself is `/triage`, and it is a URL rather than a wizard: every answer is a link to `/triage?p=<answerId>,<answerId>`, so it works with JavaScript disabled, the back button works, and a parent can send the link to a partner. The breadcrumb is rebuilt by walking the answers, so a hand-edited URL cannot show a path that was never walked.
 
 `/triage` is not in the nav and does not gate on onboarding. A parent in a panic should never be sent to a sign-up screen.
+
+## 13. Where a red flag appears
+
+A red flag is written once, in the pack's `redFlags` array, and it appears in four places. None of them is behind a gesture, and none of them can be personalized away.
+
+| Where           | What it shows                                              | Reached by                        |
+| --------------- | ---------------------------------------------------------- | --------------------------------- |
+| The week card   | That week's flags, inline, under "Call now if"             | Opening the week                  |
+| The help drawer | That week's flags under "This week", plus the five numbers | "Get help now" in the header      |
+| `/safety`       | Every flag in every pack, plus every number                | The nav, or the drawer's footer   |
+| `/triage`       | The outcome for the answers given                          | `/safety`, or the drawer's footer |
+
+**The week card's flags are inline, not in a drawer.** A drawer is a thing you have to know to open, and a warning sign is the one thing on the page that must not be behind a gesture. The drawer exists for the parent who is not on the week card — it is the header control's panel, and it shows the week's flags when the shell was given them.
+
+**A red flag is never hidden or trimmed by a rule.** `personalizePack` can hide a step, trim an option, add a step or reorder the week; it cannot touch `redFlags`. A test runs every pack against 35 profiles and asserts the flags come out identical. The one exception is loss mode, where the week is not shown at all — and `/safety` still lists every flag, because it reads the packs directly.
+
+**A page about how a parent feels carries the numbers.** `/read/[slug]` renders the crisis footer when the article's domain is `mind`. The 988 and PSI numbers are there whether or not the article mentions them, because the worst moment is not the time to hope the prose covered it.
+
+**The five numbers live in one place.** `apps/web/src/lib/help.ts` holds `HELP_NUMBERS`, and both `/safety` and the drawer map over it. Adding a number is one edit, and the two surfaces cannot drift.

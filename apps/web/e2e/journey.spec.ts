@@ -741,3 +741,58 @@ test("a triage answer can be walked back one question at a time", async ({ page 
   await page.getByRole("link", { name: "Me, and I am pregnant" }).click();
   await expect(page.getByRole("heading", { level: 1, name: "What is happening?" })).toBeVisible();
 });
+
+test("help is one tap away from every screen, and it is a real link", async ({ page }) => {
+  await onboardAsPregnant(page);
+
+  for (const path of [
+    "/",
+    "/week",
+    "/week/pregnancy-w28",
+    "/shelf",
+    "/appointments",
+    "/history",
+    "/library",
+    "/search",
+    "/read",
+    "/read/postpartum-mood",
+    "/choose/m6-highchair",
+    "/triage",
+    "/safety",
+    "/settings",
+    "/onboarding",
+  ]) {
+    await page.goto(path);
+    const help = page.getByRole("link", { name: "Get help now" });
+    await expect(help, path).toHaveCount(1);
+    await expect(help, path).toHaveAttribute("href", "/safety");
+  }
+});
+
+test("the drawer from the week card carries that week's warning signs", async ({ page }) => {
+  await onboardToWeek(page);
+
+  await page.getByRole("link", { name: "Get help now" }).click();
+  const dialog = page.getByRole("dialog");
+  await expect(dialog).toBeVisible();
+
+  // The numbers, every time.
+  await expect(dialog.getByRole("link", { name: "911" })).toHaveAttribute("href", "tel:911");
+  await expect(dialog.getByRole("link", { name: "988" })).toHaveAttribute("href", "tel:988");
+
+  // And this week's own flags, so the drawer is not a generic page.
+  await expect(dialog.getByRole("heading", { name: "This week" })).toBeVisible();
+  await expect(
+    dialog.getByText("Movements that have clearly slowed down or stopped"),
+  ).toBeVisible();
+
+  // The way out is a link, not a dead end.
+  await expect(dialog.getByRole("link", { name: "Every warning sign" })).toHaveAttribute(
+    "href",
+    "/safety",
+  );
+  await expect(dialog.getByRole("link", { name: "Help me work out who to call" })).toHaveAttribute(
+    "href",
+    "/triage",
+  );
+});

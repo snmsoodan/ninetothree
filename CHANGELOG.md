@@ -9,6 +9,26 @@ changelog written after the fact from memory is a changelog nobody can trust.
 
 ## Unreleased
 
+### Red-flag surfaces: help is a link before it is a drawer (#31)
+
+- Added `apps/web/src/lib/help.ts`: `HELP_NUMBERS`, the five escalations that
+  carry a number, read by both `/safety` and the drawer so the two cannot
+  disagree.
+- Added `apps/web/src/components/HelpNow.tsx`: `isPlainClick` (exported, pure),
+  `HelpDialog` (the numbers, this week's flags, and links to `/safety` and
+  `/triage`), and `HelpNow` — a real `<a href="/safety">` that opens the drawer
+  on a plain click and leaves a modified click alone.
+- Added `apps/web/src/components/CrisisFooter.tsx`, rendered on
+  `/read/[slug]` when the article's domain is `mind`.
+- Added "Get help now" to the `AppShell` header and to the onboarding header,
+  which has no shell. The stage label is now hidden below `sm` so the header
+  fits at 320px.
+- Added a 35-profile × 9-pack invariant test asserting red flags are never
+  hidden or trimmed, plus a test that loss mode is the only case where the
+  week's flags are absent.
+- Added two axe tests, two journey tests, two no-JS tests, and four stories.
+  The keyboard test now tabs until focused rather than counting tabs.
+
 ### Triage: three outcomes, and none of them is "you are fine" (#30)
 
 - Added `packages/content/src/triage.ts`: the tree model, `treeIssues`, `walk`,

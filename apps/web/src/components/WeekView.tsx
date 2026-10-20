@@ -72,7 +72,7 @@ export function WeekView({ pack, nextId, previousId }: WeekViewProps) {
   }
 
   return (
-    <AppShell stage={pack.title}>
+    <AppShell stage={pack.title} flags={pack.redFlags}>
       <div className="measure">
         <header>
           <Link

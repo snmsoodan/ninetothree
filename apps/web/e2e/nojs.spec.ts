@@ -68,3 +68,22 @@ test.describe("the triage tree with JavaScript disabled", () => {
     await expect(page.getByRole("heading", { name: "Where this comes from" })).toBeVisible();
   });
 });
+
+test.describe("help with JavaScript disabled", () => {
+  test("the week page carries a working link to the safety page", async ({ page }) => {
+    await page.goto("/week/pregnancy-w28");
+    const help = page.getByRole("link", { name: "Get help now" });
+    await expect(help).toHaveAttribute("href", "/safety");
+    await help.click();
+    await expect(page).toHaveURL(/\/safety$/);
+    await expect(page.getByRole("link", { name: "911" })).toHaveAttribute("href", "tel:911");
+  });
+
+  test("onboarding carries the same link, because it has no shell", async ({ page }) => {
+    await page.goto("/onboarding");
+    await expect(page.getByRole("link", { name: "Get help now" })).toHaveAttribute(
+      "href",
+      "/safety",
+    );
+  });
+});

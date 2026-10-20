@@ -126,6 +126,21 @@ test("a triage outcome has no violations", async ({ page }) => {
   expect(await audit(page)).toEqual([]);
 });
 
+test("the help drawer has no violations", async ({ page }) => {
+  await onboardToWeek(page);
+  await page.getByRole("link", { name: "Get help now" }).click();
+  await expect(page.getByRole("dialog")).toBeVisible();
+  expect(await audit(page)).toEqual([]);
+});
+
+test("the crisis footer has no violations", async ({ page }) => {
+  await page.goto("/read/postpartum-mood");
+  await expect(
+    page.getByRole("heading", { name: "If you are thinking about hurting yourself" }),
+  ).toBeVisible();
+  expect(await audit(page)).toEqual([]);
+});
+
 test("the safety page has no violations", async ({ page }) => {
   await page.goto("/safety");
   expect(await audit(page)).toEqual([]);
@@ -147,9 +162,14 @@ test("the skip dialog has no violations", async ({ page }) => {
 test("the whole journey is keyboard reachable", async ({ page }) => {
   await page.goto("/onboarding");
 
-  // Tab to the first choice and activate it with the keyboard alone.
-  await page.keyboard.press("Tab");
-  await page.keyboard.press("Tab");
+  // Tab until the first choice has focus, then activate it with the keyboard
+  // alone. Counting tabs would break every time the header gains a control.
+  const first = page.getByRole("button", { name: /I am pregnant/ });
+  for (let i = 0; i < 10; i += 1) {
+    if (await first.evaluate((el) => el === document.activeElement)) break;
+    await page.keyboard.press("Tab");
+  }
+  await expect(first).toBeFocused();
   await page.keyboard.press("Enter");
   await expect(page.getByRole("heading", { name: /due date/i })).toBeVisible();
 });
@@ -175,6 +195,7 @@ test("every route has exactly one skip-link target", async ({ page }) => {
     "/search",
     "/read",
     "/read/glucose-test",
+    "/read/postpartum-mood",
     "/choose/m6-highchair",
     "/triage",
     "/triage?p=me-pregnant,bleeding,spotting",
