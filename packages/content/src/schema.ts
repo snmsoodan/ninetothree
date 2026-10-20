@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { Chooser, chooserIssues } from "./chooser";
+
 /**
  * The Stage Pack is the core object of the product.
  *
@@ -108,8 +110,60 @@ export const Action = z.object({
    * Searchable, never shown.
    */
   keywords: z.array(z.string().min(2).max(30)).max(6).optional(),
+  /**
+   * Three questions that narrow the options to one, with a reason. Required on
+   * a `buy` action unless `noChooser` says why a chooser would not help.
+   */
+  chooser: Chooser.optional(),
+  /** Why this purchase needs no chooser. "There is one car seat that fits." */
+  noChooser: z.string().min(1).max(200).optional(),
 });
 export type Action = z.infer<typeof Action>;
+
+/**
+ * A purchase must either help the parent choose or say why it does not. This is
+ * the gate behind issue #29: a `buy` action cannot ship as a bare list of
+ * options, because a list of three things with no way to pick is not help.
+ */
+export const ActionWithChooser = Action.superRefine((action, ctx) => {
+  if (action.type !== "buy") {
+    if (action.chooser !== undefined || action.noChooser !== undefined) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["chooser"],
+        message: "only a buy action can carry a chooser",
+      });
+    }
+    return;
+  }
+
+  if (action.chooser !== undefined && action.noChooser !== undefined) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["noChooser"],
+      message: "a buy action has a chooser or a reason it needs none, not both",
+    });
+    return;
+  }
+
+  if (action.chooser === undefined && action.noChooser === undefined) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["chooser"],
+      message: "a buy action needs a chooser, or a noChooser saying why it needs none",
+    });
+    return;
+  }
+
+  if (action.chooser !== undefined) {
+    for (const issue of chooserIssues(
+      action.chooser,
+      action.options.map((option) => option.id),
+    )) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["chooser"], message: issue });
+    }
+  }
+});
 
 export const RedFlag = z.object({
   id: z.string().min(1),
@@ -196,7 +250,7 @@ export const StagePack = z
       .optional(),
 
     /** The product rule: at most three. Enforced here, not in review. */
-    coreActions: z.array(Action).min(1).max(3),
+    coreActions: z.array(ActionWithChooser).min(1).max(3),
     /** Steps that only some parents see. Never counted against the three. */
     profileActions: z.array(ProfileAction).max(3).optional(),
     alsoKnow: z.array(AlsoKnow).max(8).default([]),

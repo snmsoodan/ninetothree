@@ -115,6 +115,22 @@ export interface WeekCompletion {
   forced: boolean;
 }
 
+/**
+ * The option a parent picked from a chooser.
+ *
+ * A choice is a snapshot for the same reason a pin is: the option may be
+ * renamed or retired, and the step still has to say what was chosen. It is
+ * separate from `progress` because choosing is not doing — a parent can pick
+ * the chair and still not have bought it.
+ */
+export interface Choice {
+  optionId: string;
+  /** The option's label at the time it was chosen. */
+  label: string;
+  /** ISO timestamp. */
+  at: string;
+}
+
 export interface AppState {
   version: 1;
   onboarded: boolean;
@@ -127,6 +143,7 @@ export interface AppState {
   appointments: CustomAppointment[];
   snoozed: Record<string, SnoozedEntry>;
   completed: Record<string, WeekCompletion>;
+  choices: Record<string, Choice>;
 }
 
 export const EMPTY_STATE: AppState = {
@@ -139,6 +156,7 @@ export const EMPTY_STATE: AppState = {
   appointments: [],
   snoozed: {},
   completed: {},
+  choices: {},
 };
 
 let state: AppState = EMPTY_STATE;
@@ -227,6 +245,18 @@ function migrateCompleted(raw: unknown): Record<string, WeekCompletion> {
   return completed;
 }
 
+function migrateChoices(raw: unknown): Record<string, Choice> {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return {};
+  const choices: Record<string, Choice> = {};
+  for (const [actionId, entry] of Object.entries(raw as Record<string, unknown>)) {
+    if (!entry || typeof entry !== "object") continue;
+    const value = entry as Partial<Choice>;
+    if (typeof value.optionId !== "string" || typeof value.label !== "string") continue;
+    choices[actionId] = { optionId: value.optionId, label: value.label, at: value.at ?? "" };
+  }
+  return choices;
+}
+
 function hydrate(): void {
   if (hydrated || typeof window === "undefined") return;
   hydrated = true;
@@ -243,6 +273,7 @@ function hydrate(): void {
       appointments: migrateAppointments(parsed.appointments),
       snoozed: migrateSnoozed(parsed.snoozed),
       completed: migrateCompleted(parsed.completed),
+      choices: migrateChoices(parsed.choices),
     };
     emit();
   } catch {
@@ -468,6 +499,28 @@ export function reopenWeek(packId: string): void {
   set({ ...state, completed });
 }
 
+/**
+ * Records the option a parent picked. Replaces an earlier choice, because
+ * changing your mind is the normal case, not an error.
+ */
+export function chooseOption(actionId: string, optionId: string, label: string, at?: string): void {
+  set({
+    ...state,
+    choices: {
+      ...state.choices,
+      [actionId]: { optionId, label, at: at ?? new Date().toISOString() },
+    },
+  });
+}
+
+/** Forgets a choice, so the step goes back to offering the chooser. */
+export function clearChoice(actionId: string): void {
+  if (!state.choices[actionId]) return;
+  const choices = { ...state.choices };
+  delete choices[actionId];
+  set({ ...state, choices });
+}
+
 export function resetAll(): void {
   set({ ...EMPTY_STATE });
   if (typeof window !== "undefined") {
@@ -497,6 +550,10 @@ export function isSkipped(state: AppState, actionId: string): boolean {
 export function isSnoozed(state: AppState, actionId: string, today: string): boolean {
   const entry = state.snoozed[actionId];
   return Boolean(entry && entry.until > today);
+}
+
+export function chosenOption(state: AppState, actionId: string): Choice | undefined {
+  return state.choices[actionId];
 }
 
 export function isWeekComplete(state: AppState, packId: string): boolean {

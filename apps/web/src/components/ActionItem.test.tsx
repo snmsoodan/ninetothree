@@ -3,7 +3,15 @@ import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it } from "vitest";
 import { ActionItem } from "./ActionItem";
 import { TEST_PACK } from "@/test-fixtures";
-import { __resetForTests, getSnapshot, isDone, isPinned, isSkipped, isSnoozed } from "@/lib/store";
+import {
+  __resetForTests,
+  chooseOption,
+  getSnapshot,
+  isDone,
+  isPinned,
+  isSkipped,
+  isSnoozed,
+} from "@/lib/store";
 
 const glucose = TEST_PACK.coreActions[0]!;
 const tdap = TEST_PACK.coreActions[1]!;
@@ -52,6 +60,48 @@ describe("ActionItem", () => {
       "href",
       "/read/glucose-test",
     );
+  });
+
+  it("offers the chooser when the step has one and nothing is chosen", () => {
+    render(
+      <ActionItem
+        action={glucose}
+        packId="pregnancy-w28"
+        packTitle="Week 28"
+        today="2027-01-07"
+        chooseHref="/choose/t-glucose"
+      />,
+    );
+    expect(screen.getByRole("link", { name: "Help me choose" })).toHaveAttribute(
+      "href",
+      "/choose/t-glucose",
+    );
+  });
+
+  it("says what was chosen, and offers to change it", () => {
+    chooseOption("t-glucose", "m6-chair-ikea", "IKEA Antilop");
+    render(
+      <ActionItem
+        action={glucose}
+        packId="pregnancy-w28"
+        packTitle="Week 28"
+        today="2027-01-07"
+        chooseHref="/choose/t-glucose"
+      />,
+    );
+    expect(screen.getByText("IKEA Antilop")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Change it" })).toHaveAttribute(
+      "href",
+      "/choose/t-glucose",
+    );
+    expect(screen.queryByRole("link", { name: "Help me choose" })).not.toBeInTheDocument();
+  });
+
+  it("says nothing about choosing when the step has no chooser", () => {
+    render(
+      <ActionItem action={glucose} packId="pregnancy-w28" packTitle="Week 28" today="2027-01-07" />,
+    );
+    expect(screen.queryByRole("link", { name: "Help me choose" })).not.toBeInTheDocument();
   });
 
   it("says nothing about a long read when there is not one", () => {

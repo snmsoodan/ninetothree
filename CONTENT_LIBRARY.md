@@ -452,3 +452,76 @@ A step that has an article renders "Long read — <title>" under its detail. The
 ### Print
 
 An article prints as one column with its sources written out. The rules are in the `@media print` block of `globals.css`: `font-size: 11pt`, `break-after: avoid` on headings, `break-inside: avoid` on list items and paragraphs. A journey test asserts the print rule is still in the stylesheet, because a print stylesheet dropped by a refactor is invisible until someone is standing at a printer.
+
+## 11. Choosers
+
+A step that is a purchase is not advice. "Here are three high chairs" is a list; "here is the one for a small kitchen and a small budget, and here is why" is help. A chooser is the second thing.
+
+### A chooser is content, not code
+
+It lives in the pack, on the action it belongs to:
+
+```json
+{
+  "id": "m6-highchair",
+  "type": "buy",
+  "chooser": {
+    "questions": [
+      {
+        "id": "space",
+        "question": "Where will it live?",
+        "why": "A chair with a wide footprint is a chair you trip over.",
+        "answers": [
+          { "id": "small", "label": "A small kitchen", "hint": "It has to tuck under the table." },
+          { "id": "own", "label": "Its own corner", "hint": "It can stay out." }
+        ]
+      }
+    ],
+    "recommendations": [
+      {
+        "optionId": "m6-chair-ikea",
+        "when": { "space": ["small"], "budget": ["low"] },
+        "reason": "It is about $25, the legs come off, and it wipes clean."
+      }
+    ]
+  }
+}
+```
+
+A clinician or an editor can change the advice without a deploy, and the content lint and the schema run over it like everything else.
+
+### The table is scored, not a tree
+
+A recommendation matches on a **subset** of the answers. `choose()` scores each recommendation by how many of its clauses the answers satisfy, and the highest score wins. Ties break on the number of clauses — the more specific recommendation is the better answer — and then on declaration order, so the result is deterministic.
+
+This is why adding a fourth question later does not invalidate every leaf: a recommendation that does not mention the new question still matches.
+
+`choose()` returns `undefined` when nothing matches. It does not fall back to a default, because a default is an answer nobody chose. The UI has a written state for it.
+
+### What the schema requires
+
+| Field             | Rule                                                               |
+| ----------------- | ------------------------------------------------------------------ |
+| `questions`       | exactly three, each with two to four answers                       |
+| `answers`         | ids unique within the question                                     |
+| `recommendations` | one to four, each with a `reason`                                  |
+| `optionId`        | must resolve to an option on the same action                       |
+| `when`            | every key must be a real question id, every value a real answer id |
+
+And the gate, which is the point:
+
+- Only a `buy` action may carry a `chooser` or a `noChooser`.
+- A `buy` action must carry one of them, and not both.
+- `noChooser` is a written reason the step needs none, at most 200 characters.
+
+So a new `buy` action cannot ship as a bare list of three things. It either helps the parent choose, or it says why it does not need to.
+
+### A choice is a snapshot
+
+`chooseOption(actionId, optionId, label)` records the option's **label** at the time it was chosen. A renamed or retired option still reads correctly on the step. This is the same rule as pins and history: content is versioned, and a record of what a parent decided must not change when the content does.
+
+Choosing is also not doing. `state.choices` is separate from `state.progress`, so a parent can pick the chair and still not have bought it, and the step keeps its Done button.
+
+### How a parent finds one
+
+A step with a chooser renders "Not sure which? [Help me choose]" under its detail, linking to `/choose/<actionId>`. Once a choice is recorded it reads "You chose IKEA Antilop. [Change it]". `/choose` is not in the nav — it is reached from the step, which is the only place the question is being asked.

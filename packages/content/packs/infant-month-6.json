@@ -81,7 +81,96 @@
         }
       ],
       "skipIf": "You already have a high chair with a footrest and a harness.",
-      "keywords": ["high chair", "feeding chair", "seat"]
+      "keywords": ["high chair", "feeding chair", "seat"],
+      "chooser": {
+        "questions": [
+          {
+            "id": "space",
+            "question": "Where will it live?",
+            "why": "A chair with a wide footprint is a chair you trip over.",
+            "answers": [
+              {
+                "id": "small",
+                "label": "A small kitchen",
+                "hint": "It has to tuck under the table."
+              },
+              {
+                "id": "own",
+                "label": "Its own corner",
+                "hint": "It can stay out."
+              }
+            ]
+          },
+          {
+            "id": "budget",
+            "question": "What do you want to spend?",
+            "why": "Every chair here has a footrest and a harness. The price buys materials and years, not safety.",
+            "answers": [
+              {
+                "id": "low",
+                "label": "Under $50"
+              },
+              {
+                "id": "mid",
+                "label": "$50 to $200"
+              },
+              {
+                "id": "high",
+                "label": "Over $200"
+              }
+            ]
+          },
+          {
+            "id": "years",
+            "question": "Do you want it to last past age three?",
+            "why": "A chair that converts is a chair you do not buy twice.",
+            "answers": [
+              {
+                "id": "no",
+                "label": "No, three years is enough"
+              },
+              {
+                "id": "yes",
+                "label": "Yes, I would rather buy once"
+              }
+            ]
+          }
+        ],
+        "recommendations": [
+          {
+            "optionId": "m6-chair-ikea",
+            "when": {
+              "space": ["small"],
+              "budget": ["low"]
+            },
+            "reason": "It is about $25, the legs come off, and it wipes clean. Add the $10 footrest — the chair is not finished without it."
+          },
+          {
+            "optionId": "m6-chair-stokke",
+            "when": {
+              "budget": ["high"],
+              "years": ["yes"]
+            },
+            "reason": "It is the one that holds its value. You buy it once, it adjusts from six months to adulthood, and it resells for most of what you paid."
+          },
+          {
+            "optionId": "m6-chair-convertible",
+            "when": {
+              "budget": ["mid"],
+              "years": ["yes"]
+            },
+            "reason": "It becomes a booster, so it earns the floor space it takes. Check that the tray is dishwasher safe before you buy — not all of them are."
+          },
+          {
+            "optionId": "m6-chair-ikea",
+            "when": {
+              "budget": ["mid"],
+              "years": ["no"]
+            },
+            "reason": "At this budget the cheap chair is still the honest answer. Spend the difference on the footrest and a second tray."
+          }
+        ]
+      }
     },
     {
       "id": "m6-sitter",

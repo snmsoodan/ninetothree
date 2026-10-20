@@ -605,3 +605,40 @@ test("an article prints as one column with its sources written out", async ({ pa
   expect(printRules).toContain("article-body");
   expect(printRules).toContain("attr(href)");
 });
+
+test("a step that is a purchase can be narrowed to one answer, and the answer sticks", async ({
+  page,
+}) => {
+  // A parent past six months, so the high chair is the week they are on.
+  const birthDate = new Date(Date.now() - 200 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+  await page.goto("/onboarding");
+  await page.getByRole("button", { name: /My baby is here/ }).click();
+  await page.locator("#date").fill(birthDate);
+  await page.getByRole("button", { name: "Continue" }).click();
+  await page.getByRole("button", { name: "Continue" }).click();
+  await page.getByRole("button", { name: "Show me" }).click();
+
+  await page.goto("/week");
+  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+
+  // The step offers the chooser, because a list of three chairs is not advice.
+  await page.getByRole("link", { name: "Help me choose" }).click();
+  await expect(page).toHaveURL(/\/choose\/m6-highchair$/);
+  await expect(page.getByText("Question 1 of 3")).toBeVisible();
+
+  await page.getByRole("radio", { name: "A small kitchen" }).click();
+  await page.getByRole("button", { name: "Next" }).click();
+  await page.getByRole("radio", { name: "Under $50" }).click();
+  await page.getByRole("button", { name: "Next" }).click();
+  await page.getByRole("radio", { name: "No, three years is enough" }).click();
+  await page.getByRole("button", { name: "See the answer" }).click();
+
+  // One answer, with the reason for it — not a ranked list.
+  await expect(page.getByRole("heading", { level: 2, name: "IKEA Antilop" })).toBeVisible();
+  await expect(page.getByText(/the legs come off, and it wipes clean/)).toBeVisible();
+
+  await page.getByRole("button", { name: "Use this one" }).click();
+  await page.getByRole("link", { name: "Back to the week" }).click();
+  await expect(page.getByText("You chose")).toBeVisible();
+  await expect(page.getByRole("link", { name: "Change it" })).toBeVisible();
+});

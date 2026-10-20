@@ -67,6 +67,8 @@ const STORIES = [
   "app-weekcompletion--open",
   "app-weekcompletion--settled",
   "app-weekcompletion--forced",
+  "app-chooser--first-question",
+  "app-chooser--recommendation",
 ];
 
 /**

@@ -85,3 +85,13 @@ export {
   type SearchHit,
   type SearchKind,
 } from "./search";
+export {
+  Chooser,
+  ChooserAnswer,
+  ChooserQuestion,
+  ChooserRecommendation,
+  choose,
+  chooserIssues,
+  type ChooserAnswers,
+  type ChooserResult,
+} from "./chooser";

@@ -135,6 +135,7 @@ export function WeekView({ pack, nextId, previousId }: WeekViewProps) {
                 packTitle={pack.title}
                 today={today}
                 readMore={readMoreFor(action.id)}
+                chooseHref={action.chooser ? `/choose/${action.id}` : undefined}
               />
             ))}
           </div>
