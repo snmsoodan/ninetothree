@@ -5,6 +5,7 @@ export { Card, CardHeader, CardBody, CardFooter, type CardProps } from "./primit
 export { Badge, type BadgeProps, type BadgeTone } from "./primitives/Badge";
 export { Checkbox, type CheckboxProps } from "./primitives/Checkbox";
 export { Progress, type ProgressProps } from "./primitives/Progress";
+export { ProgressRing, type ProgressRingProps } from "./primitives/ProgressRing";
 export { TextLink, type TextLinkProps } from "./primitives/TextLink";
 export { Dialog, type DialogProps } from "./primitives/Dialog";
 export { RadioGroup, type RadioGroupProps, type RadioOption } from "./primitives/RadioGroup";

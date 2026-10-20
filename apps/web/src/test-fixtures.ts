@@ -1,4 +1,5 @@
 import type { StagePack } from "@ninetothree/content";
+import type { WeekProgress } from "@/lib/week";
 
 /** A small, valid pack for component tests. Not shipped content. */
 export const TEST_PACK: StagePack = {
@@ -87,3 +88,25 @@ export const TEST_PACK: StagePack = {
   reviewedAt: "2026-01-01",
   updatedAt: "2026-01-01",
 };
+
+/**
+ * A `WeekProgress` literal for component tests. The real one is derived from
+ * state by `weekProgress`; this is the shape it produces, so a component test
+ * does not have to build a whole store to render a card.
+ */
+export function progressOf(
+  settled: number,
+  total = 3,
+  extra: Partial<WeekProgress> = {},
+): WeekProgress {
+  const allSettled = total > 0 && settled === total;
+  return {
+    settled,
+    total,
+    percent: total === 0 ? 0 : (settled / total) * 100,
+    status: allSettled ? "settled" : "open",
+    finished: allSettled,
+    reopenable: false,
+    ...extra,
+  };
+}

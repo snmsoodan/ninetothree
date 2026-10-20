@@ -99,6 +99,22 @@ export interface SnoozedEntry {
   at: string;
 }
 
+/**
+ * A week is finished when its steps are, or when a parent says so.
+ *
+ * `forced` records which of the two happened, because they mean different
+ * things: a settled week is finished because the work is, and a forced one is
+ * finished because the parent decided to move on. Only a forced week can be
+ * reopened — there is nothing to reopen in a week whose steps are all done or
+ * skipped.
+ */
+export interface WeekCompletion {
+  /** ISO timestamp of the first time it was marked. */
+  at: string;
+  /** True when steps were still open. */
+  forced: boolean;
+}
+
 export interface AppState {
   version: 1;
   onboarded: boolean;
@@ -110,6 +126,7 @@ export interface AppState {
   pins: Pin[];
   appointments: CustomAppointment[];
   snoozed: Record<string, SnoozedEntry>;
+  completed: Record<string, WeekCompletion>;
 }
 
 export const EMPTY_STATE: AppState = {
@@ -121,6 +138,7 @@ export const EMPTY_STATE: AppState = {
   pins: [],
   appointments: [],
   snoozed: {},
+  completed: {},
 };
 
 let state: AppState = EMPTY_STATE;
@@ -197,6 +215,18 @@ function migrateSnoozed(raw: unknown): Record<string, SnoozedEntry> {
   return snoozed;
 }
 
+function migrateCompleted(raw: unknown): Record<string, WeekCompletion> {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return {};
+  const completed: Record<string, WeekCompletion> = {};
+  for (const [packId, entry] of Object.entries(raw as Record<string, unknown>)) {
+    if (!entry || typeof entry !== "object") continue;
+    const value = entry as Partial<WeekCompletion>;
+    if (typeof value.at !== "string") continue;
+    completed[packId] = { at: value.at, forced: value.forced === true };
+  }
+  return completed;
+}
+
 function hydrate(): void {
   if (hydrated || typeof window === "undefined") return;
   hydrated = true;
@@ -212,6 +242,7 @@ function hydrate(): void {
       pins: migratePins(parsed.pins),
       appointments: migrateAppointments(parsed.appointments),
       snoozed: migrateSnoozed(parsed.snoozed),
+      completed: migrateCompleted(parsed.completed),
     };
     emit();
   } catch {
@@ -404,6 +435,30 @@ export function updateDates(input: {
   set(next);
 }
 
+/**
+ * Marks a week finished. Idempotent: a second call keeps the first timestamp
+ * and the first `forced` flag, so a retry can never move the date a parent
+ * finished a week.
+ */
+export function completeWeek(packId: string, forced: boolean, at?: string): void {
+  if (state.completed[packId]) return;
+  set({
+    ...state,
+    completed: {
+      ...state.completed,
+      [packId]: { at: at ?? new Date().toISOString(), forced },
+    },
+  });
+}
+
+/** Takes a week back to unfinished. A no-op when it was never marked. */
+export function reopenWeek(packId: string): void {
+  if (!state.completed[packId]) return;
+  const completed = { ...state.completed };
+  delete completed[packId];
+  set({ ...state, completed });
+}
+
 export function resetAll(): void {
   set({ ...EMPTY_STATE });
   if (typeof window !== "undefined") {
@@ -433,6 +488,10 @@ export function isSkipped(state: AppState, actionId: string): boolean {
 export function isSnoozed(state: AppState, actionId: string, today: string): boolean {
   const entry = state.snoozed[actionId];
   return Boolean(entry && entry.until > today);
+}
+
+export function isWeekComplete(state: AppState, packId: string): boolean {
+  return Boolean(state.completed[packId]);
 }
 
 export function isPinned(state: AppState, actionId: string): boolean {

@@ -17,6 +17,8 @@ const STORIES = [
   "primitives-badge--all-tones",
   "primitives-card--raised",
   "primitives-progress--default",
+  "primitives-progressring--partway",
+  "primitives-progressring--closed",
   "primitives-textlink--external",
   "primitives-checkbox--with-hint",
   "primitives-radiogroup--with-hints",
@@ -55,6 +57,9 @@ const STORIES = [
   "app-appointmentlist--scheduled",
   "app-sharecard--default",
   "app-progressline--some-progress",
+  "app-weekcompletion--open",
+  "app-weekcompletion--settled",
+  "app-weekcompletion--forced",
 ];
 
 /**

@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import type { StagePack } from "@ninetothree/content";
-import { Badge, Progress } from "@ninetothree/ui";
+import { Badge, ProgressRing } from "@ninetothree/ui";
+import type { WeekProgress } from "@/lib/week";
 
 export interface WeekSummaryCardProps {
   pack: StagePack;
-  /** How many of this pack's core actions are done. */
-  done: number;
+  progress: WeekProgress;
   /** The stage label, e.g. "Week 28". */
   stage: string;
   /** Where "Open this week" goes. */
@@ -21,11 +21,7 @@ export interface WeekSummaryCardProps {
  * app, sees what this week is, and taps once. Everything else on the screen is
  * quieter than this on purpose.
  */
-export function WeekSummaryCard({ pack, done, stage, href, nextHref }: WeekSummaryCardProps) {
-  const total = pack.coreActions.length;
-  const finished = done >= total;
-  const percent = total === 0 ? 0 : (done / total) * 100;
-
+export function WeekSummaryCard({ pack, progress, stage, href, nextHref }: WeekSummaryCardProps) {
   return (
     <section
       aria-labelledby="this-week-heading"
@@ -33,9 +29,16 @@ export function WeekSummaryCard({ pack, done, stage, href, nextHref }: WeekSumma
     >
       <div className="flex items-center justify-between gap-3">
         <Badge tone="clay">{stage}</Badge>
-        <span className="text-sm text-ink-faint tabular">
-          {done} of {total} done
-        </span>
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-ink-faint tabular">
+            {progress.settled} of {progress.total}
+          </span>
+          <ProgressRing
+            value={progress.percent}
+            label={`${progress.settled} of ${progress.total} steps done or skipped`}
+            size={28}
+          />
+        </div>
       </div>
 
       <h1 id="this-week-heading" className="mt-3 font-display text-3xl leading-tight text-ink">
@@ -43,16 +46,9 @@ export function WeekSummaryCard({ pack, done, stage, href, nextHref }: WeekSumma
       </h1>
       {pack.subtitle ? <p className="mt-2 text-lg text-ink-muted">{pack.subtitle}</p> : null}
 
-      <Progress
-        value={percent}
-        label={finished ? "This week is done" : "This week"}
-        hideValue
-        className="mt-5"
-      />
-
-      {finished ? (
+      {progress.finished ? (
         <div className="mt-5">
-          <p className="text-base text-ink">You are done for this week.</p>
+          <p className="text-base text-ink">That&rsquo;s this week.</p>
           <p className="mt-1 text-base text-ink-muted">Nothing else to do until Monday.</p>
           <div className="mt-4 flex flex-wrap gap-2">
             {nextHref ? (

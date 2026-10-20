@@ -746,6 +746,24 @@ The files are the same fonts, so nothing about the design changed. The built CSS
 
 **What this costs:** the latin subset only. A parent reading in a script outside latin gets the system fallback, which is the same behaviour `subsets: ["latin"]` already had. Adding a subset means downloading another woff2 and adding it to the `src` array; `apps/web/src/app/fonts/README.md` records how.
 
-## 19. How this file is maintained
+## 19. Week completion (issue #20)
+
+**A parent who skipped every step was stuck at 0% forever.** `completion()` in the rules package counted only `status === "done"`. The issue asks for a week to complete "when all core actions are done/skipped", and the product's own rule is that skip is first-class — but the progress bar disagreed with both. Skipping all three steps of week 28 left the bar empty and the week permanently unfinished.
+
+The fix is `settledIds(pack, state)` in `apps/web/src/lib/week.ts`: a step is settled when it is done **or** skipped. The dashboard's `weeksDone` and `actionsDone` now use the same rule, so the two screens cannot disagree about whether a week is finished.
+
+**A week finishes two ways, and they are recorded differently.** `state.completed[packId] = { at, forced }`. `forced: false` means every step is settled and the week closed itself. `forced: true` means the parent pressed "I'm done with this week" with steps still open. Recording which one happened is what makes the next decision possible.
+
+**Only a forced week can be reopened.** A week whose steps are all done or skipped has nothing to reopen, so `reopenable = closed && !allSettled` and the Reopen button is not rendered at all rather than rendered as a no-op. This is a defensible reading of "a completed week can be reopened" — a reviewer may want Reopen always available, in which case the change is one line in `weekProgress`.
+
+**`completeWeek` is idempotent.** A second call keeps the first `at` and the first `forced`, so a retry or a double tap can never move the date a parent finished a week. `reopenWeek` is a no-op when the week is not closed.
+
+**The ring, not the bar.** `ProgressRing` replaces `Progress` on the week page and the dashboard card. A bar reads as a scoreboard; a ring reads as a week. There is deliberately **no percentage in the middle** — a number there turns a week into a grade, and the only celebration is a muted sage tick when the ring closes.
+
+**The count is "N of M", with no verb.** "2 of 3 done" is a lie when one was skipped. "2 of 3 settled" is legalistic. The verb lives only in the `aria-label`: "2 of 3 steps done or skipped".
+
+**What this does not do yet.** `state.completed` is written but nothing reads it except `weekProgress`. The history page and the JSON/CSV export do not surface it, and the weekly email (#33) will want it. That is a gap, not a decision.
+
+## 20. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.

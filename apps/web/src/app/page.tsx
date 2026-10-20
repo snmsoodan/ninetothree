@@ -12,6 +12,7 @@ import { ShareCard } from "@/components/ShareCard";
 import { WeekSummaryCard } from "@/components/WeekSummaryCard";
 import { resolvePins } from "@/lib/pins";
 import { removePin, stageInput, useAppState, useHydrated } from "@/lib/store";
+import { weekProgress } from "@/lib/week";
 
 export default function DashboardPage() {
   const state = useAppState();
@@ -26,15 +27,15 @@ export default function DashboardPage() {
   const pins = useMemo<PinItem[]>(() => resolvePins(state.pins, PACKS), [state.pins]);
 
   const { weeksDone, actionsDone } = useMemo(() => {
-    const done = new Set(
+    const settled = new Set(
       Object.entries(state.progress)
-        .filter(([, entry]) => entry.status === "done")
+        .filter(([, entry]) => entry.status === "done" || entry.status === "skipped")
         .map(([id]) => id),
     );
     const weeks = PACKS.filter(
-      (pack) => pack.coreActions.length > 0 && pack.coreActions.every((a) => done.has(a.id)),
+      (pack) => pack.coreActions.length > 0 && pack.coreActions.every((a) => settled.has(a.id)),
     ).length;
-    return { weeksDone: weeks, actionsDone: done.size };
+    return { weeksDone: weeks, actionsDone: settled.size };
   }, [state.progress]);
 
   if (!ready || !input) {
@@ -60,7 +61,7 @@ export default function DashboardPage() {
     );
   }
 
-  const done = pack.coreActions.filter((a) => state.progress[a.id]?.status === "done").length;
+  const progress = weekProgress(pack, state);
   const ahead = nextPack(PACKS, pack);
 
   return (
@@ -68,7 +69,7 @@ export default function DashboardPage() {
       <div className="space-y-10">
         <WeekSummaryCard
           pack={pack}
-          done={done}
+          progress={progress}
           stage={label}
           href={`/week/${pack.id}`}
           nextHref={ahead ? `/week/${ahead.id}` : undefined}
