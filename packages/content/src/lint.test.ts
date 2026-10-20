@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { LINKS } from "./link-registry";
 import {
+  lintArticle,
+  lintArticles,
   lintLink,
   lintLinks,
   lintPack,
@@ -10,7 +12,9 @@ import {
   readingGrade,
   type LintFinding,
 } from "./lint";
+import { ARTICLES } from "./article-registry";
 import { PACKS } from "./registry";
+import type { Article } from "./articles";
 import type { LinkEntry } from "./links";
 import type { StagePack } from "./schema";
 
@@ -273,5 +277,97 @@ describe("the shipped content", () => {
   it("skips the note when there is none", () => {
     const link: LinkEntry = { ...(LINKS[0] as LinkEntry), id: "test-link", note: undefined };
     expect(lintLink(link)).toEqual([]);
+  });
+});
+
+const ARTICLE_SOURCE = {
+  id: "src-one",
+  title: "A source",
+  publisher: "A publisher",
+  url: "https://example.com/a",
+  kind: "clinical" as const,
+  accessed: "2026-10-20",
+};
+
+function article(overrides: Partial<Article> = {}): Article {
+  return {
+    id: "a-test-article",
+    title: "A test article",
+    summary: "One sentence about the thing.",
+    domain: "health-parent",
+    stages: { from: { kind: "pregnancy", index: 28 }, to: { kind: "pregnancy", index: 28 } },
+    sources: [ARTICLE_SOURCE],
+    reviewedBy: "Clinical review pending",
+    reviewedAt: "2026-10-20",
+    updatedAt: "2026-10-20",
+    body: "## A heading\n\nA short paragraph. It has two sentences.",
+    ...overrides,
+  };
+}
+
+describe("articles", () => {
+  it("passes a plain article", () => {
+    expect(lintArticle(article())).toEqual([]);
+  });
+
+  it("catches a claim in the title", () => {
+    expect(rules(lintArticle(article({ title: "This will cure reflux" })))).toContain(
+      "absolute-claim",
+    );
+  });
+
+  it("catches a claim in the summary", () => {
+    expect(rules(lintArticle(article({ summary: "It is completely safe." })))).toContain(
+      "absolute-claim",
+    );
+  });
+
+  it("catches an obligation in the body", () => {
+    expect(rules(lintArticle(article({ body: "You should do this every day." })))).toContain(
+      "obligation",
+    );
+  });
+
+  it("measures the reading level of the body, not of the Markdown", () => {
+    const dense =
+      "Maternal physiological adaptations during the antepartum period necessitate " +
+      "comprehensive evaluation of hematologic parameters prior to administration of " +
+      "neuraxial analgesia in the peripartum interval.";
+    const findings = lintArticle(article({ body: `## ${dense}\n\n${dense}` }));
+    expect(rules(findings)).toContain("reading-level");
+  });
+
+  it("does not count a heading marker as a word", () => {
+    // The same sentence, once with Markdown and once without, must score the
+    // same. If `##` counted, the article would look harder than it reads.
+    const plain = "A short paragraph. It has two sentences.";
+    const marked = `## A heading\n\n${plain}`;
+    const a = lintArticle(article({ body: plain }));
+    const b = lintArticle(article({ body: marked }));
+    expect(rules(a)).toEqual(rules(b));
+  });
+
+  it("refuses a health article with no clinical or government source", () => {
+    const findings = lintArticle(article({ sources: [{ ...ARTICLE_SOURCE, kind: "editorial" }] }));
+    expect(rules(findings)).toContain("unsourced-article");
+  });
+
+  it("allows a non-health article to cite an editorial source", () => {
+    const findings = lintArticle(
+      article({ domain: "money", sources: [{ ...ARTICLE_SOURCE, kind: "editorial" }] }),
+    );
+    expect(rules(findings)).not.toContain("unsourced-article");
+  });
+
+  it("flattens every article's findings", () => {
+    const findings = lintArticles([
+      article({ id: "one", title: "This will cure reflux" }),
+      article({ id: "two", body: "You should do this." }),
+    ]);
+    expect(findings.map((f) => f.subject)).toEqual(["one", "two"]);
+  });
+
+  it("passes every shipped article", () => {
+    expect(lintArticles(ARTICLES)).toEqual([]);
   });
 });

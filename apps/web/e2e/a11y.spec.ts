@@ -99,6 +99,16 @@ test("search has no violations with results showing", async ({ page }) => {
   expect(await audit(page)).toEqual([]);
 });
 
+test("the long reads index has no violations", async ({ page }) => {
+  await page.goto("/read");
+  expect(await audit(page)).toEqual([]);
+});
+
+test("an article has no violations", async ({ page }) => {
+  await page.goto("/read/glucose-test");
+  expect(await audit(page)).toEqual([]);
+});
+
 test("the safety page has no violations", async ({ page }) => {
   await page.goto("/safety");
   expect(await audit(page)).toEqual([]);
@@ -146,6 +156,8 @@ test("every route has exactly one skip-link target", async ({ page }) => {
     "/history",
     "/library",
     "/search",
+    "/read",
+    "/read/glucose-test",
     "/safety",
     "/settings",
   ]) {

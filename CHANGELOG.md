@@ -9,6 +9,32 @@ changelog written after the fact from memory is a changelog nobody can trust.
 
 ## Unreleased
 
+### Long reads, with their sources and a review date (#28)
+
+- Added `packages/content/src/articles.ts`: the `Article` schema, `loadArticles`,
+  `assertValidArticles`, `articleProse`, `articlesForStage`,
+  `articlesForAction` and `articleHref`. An article needs a source, a
+  reviewer, a review date and an update date, and its stage range cannot run
+  backwards.
+- Added six articles in `packages/content/articles/`: the glucose test, the
+  rear-facing car seat, safe sleep, formula, starting solids, and postpartum
+  mood. Each cites two or three verified sources and points at the step it
+  explains.
+- Added `lintArticle` and `lintArticles`, with an `unsourced-article` rule: a
+  health article must cite a clinical or government source. The lint found one
+  real sentence ("cannot guarantee clean water") and it was rewritten.
+- Added `/read` and `/read/[slug]`, rendered from Markdown by MDX with no
+  components map, plus `SourceBlock`, `RelatedActions` and `ArticleBody`.
+- Added a "Long read —" link to a step that has an article, and a link back
+  from the article to the step.
+- Added print rules for articles, and a test that asserts the print stylesheet
+  is still there.
+- Extended `scripts/check-links.mjs` to read article sources, with a count
+  assertion so a source that stops matching fails the job. 122 links checked,
+  none broken, none moved.
+- Added `/read/glucose-test` to the Lighthouse URLs. All five audited URLs
+  score 1.0/1.0/1.0/1.0.
+
 ### Search over the whole guide (#27)
 
 - Added `packages/content/src/search.ts`: `buildIndex`, `parseQuery`,
