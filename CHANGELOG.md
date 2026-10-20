@@ -9,6 +9,28 @@ changelog written after the fact from memory is a changelog nobody can trust.
 
 ## Unreleased
 
+### Help me choose, for the one step that is a purchase (#29)
+
+- Added `packages/content/src/chooser.ts`: the `Chooser` model (exactly three
+  questions, one to four recommendations), `choose()` — scored, tie-breaking on
+  clause count then declaration order, returning `undefined` when nothing
+  matches — and `chooserIssues()`.
+- Added `Action.chooser` and `Action.noChooser`, and wrapped `coreActions` in
+  `ActionWithChooser`, which makes a `buy` action with neither a build error.
+  Only a `buy` action may carry either field, and not both.
+- Added the high chair chooser to `infant-month-6.json`: three questions
+  (footprint, budget, whether it should last past three) and four
+  recommendations, each with a reason.
+- Added `Choice` to the store — `{ optionId, label, at }` — with `chooseOption`,
+  `clearChoice` and `chosenOption`. A choice is a snapshot, and it is separate
+  from progress: choosing is not doing.
+- Added `Chooser` and `ChooserResultView`, and the `/choose/[actionId]` route.
+  The step now says "Not sure which? Help me choose", or "You chose X. Change
+  it" once a choice is recorded.
+- Added a journey test that walks the three questions, reads the answer, uses
+  it, and finds it on the step; an axe test on `/choose/m6-highchair`; and
+  `/choose/m6-highchair` to the Lighthouse URLs.
+
 ### Long reads, with their sources and a review date (#28)
 
 - Added `packages/content/src/articles.ts`: the `Article` schema, `loadArticles`,

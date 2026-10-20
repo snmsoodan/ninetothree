@@ -109,6 +109,11 @@ test("an article has no violations", async ({ page }) => {
   expect(await audit(page)).toEqual([]);
 });
 
+test("the chooser has no violations", async ({ page }) => {
+  await page.goto("/choose/m6-highchair");
+  expect(await audit(page)).toEqual([]);
+});
+
 test("the safety page has no violations", async ({ page }) => {
   await page.goto("/safety");
   expect(await audit(page)).toEqual([]);
@@ -158,6 +163,7 @@ test("every route has exactly one skip-link target", async ({ page }) => {
     "/search",
     "/read",
     "/read/glucose-test",
+    "/choose/m6-highchair",
     "/safety",
     "/settings",
   ]) {

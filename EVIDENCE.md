@@ -867,6 +867,30 @@ The fix is `settledIds(pack, state)` in `apps/web/src/lib/week.ts`: a step is se
 
 **`/read` is not in the nav.** Five tabs are full, and a long read is reached from the step it explains, which is the only place it is useful. The index exists so a reader who wants to browse can, and so the article page has somewhere to go back to.
 
-## 24. How this file is maintained
+## 24. Help me choose (issue #29)
+
+**The issue asked for a three-question flow that returns one recommendation with a reason, and an AC that every `buy` action has a working chooser or an explicit "no chooser needed".** There is exactly one `buy` action in the shipped content — `m6-highchair`, "Get a high chair that is easy to clean" — with three options. So the AC is thin today. The gate is what makes it hold for the next one.
+
+**A chooser is content, not code.** The three questions and the scored recommendation table live in `packages/content/packs/infant-month-6.json`, next to the options they point at. A clinician or an editor can change the advice without a deploy, and the content lint and the schema run over it like everything else. A chooser written as a component would have been a second place where product advice lives.
+
+**The table is scored, not walked as a tree.** A recommendation matches on a _subset_ of the answers (`when: Record<questionId, answerId[]>`), so adding a fourth question later does not invalidate every leaf. Ties break on the number of clauses matched — the more specific recommendation wins — and then on declaration order, so the result is deterministic. `choose()` returns `undefined` when nothing matches, rather than a default that nobody chose; the caller has to handle it, and the UI has a written state for it.
+
+**A recommendation must carry a `reason`.** The schema requires it. A recommendation with no reason is an advert, and the whole point of the flow is that the answer comes with the argument for it.
+
+**The schema is the AC.** `ActionWithChooser` in `packages/content/src/schema.ts` is `Action.superRefine(...)` and enforces four things: only a `buy` action may carry a `chooser` or a `noChooser`; not both; a `buy` action must have one; and `chooserIssues` must be empty, which checks that every recommendation points at a real option, every `when` names a real question, every answer id exists, and no answer id is declared twice. `coreActions` is now `z.array(ActionWithChooser)`. The next `buy` action cannot ship as a bare list of three things.
+
+**The three questions are the real decision.** Where it lives (footprint), what you want to spend (materials and years, not safety — the `why` says so), and whether it should last past three (buy once or buy twice). The four recommendations cover the combinations that actually differ; the two IKEA entries are the same chair reached from two different budgets, which is honest rather than a gap.
+
+**A choice is a snapshot, not a pointer.** `Choice` is `{ optionId, label, at }` and `chooseOption` takes the label, so a renamed or retired option still reads correctly on the step. This is the same rule as pins and history, for the same reason: content is versioned, and a record of what a parent decided must not change when the content does.
+
+**Choosing is not doing.** `state.choices` is separate from `state.progress`. A parent can pick the chair and still not have bought it, and the step keeps its Done button. The step says "You chose IKEA Antilop. [Change it]" and nothing else.
+
+**`ChooserResultView` is a separate component.** The first draft rendered the answer inline inside `Chooser`, which meant the answer state could only be reached by walking three questions — so it could not be storybooked or axe-audited on its own. Extracting it also removed a `?? optionId` fallback that could never fire, because a recommendation's `optionId` is validated against the options by the schema.
+
+**The no-match state is written, not an error.** "None of these fit." / "Your answers do not point at one of the three. That usually means the honest answer is to wait, or to ask someone who has the room in front of them." No "no results", no retry button, no suggestion to answer differently.
+
+**What this does not do.** The `runnerUp` is one sentence, not a second card. The questions and recommendations are my content, not a clinician's, and they carry the same `reviewedBy: "Clinical review pending"` as everything else. And the mechanism has one user: a car seat, a stroller or a crib chooser would exercise it properly, and none of those actions exist yet.
+
+## 25. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.

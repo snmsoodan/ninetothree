@@ -5,6 +5,7 @@ import Link from "next/link";
 import type { Action } from "@ninetothree/content";
 import { Badge, Button, Dialog, RadioGroup, TextLink, cn } from "@ninetothree/ui";
 import {
+  chosenOption,
   clearProgress,
   isDone,
   isPinned,
@@ -53,14 +54,24 @@ export interface ActionItemProps {
   today: string;
   /** The long read that explains this step, if there is one. */
   readMore?: { href: string; title: string };
+  /** Where the chooser lives, when this step has one. */
+  chooseHref?: string;
 }
 
-export function ActionItem({ action, packId, packTitle, today, readMore }: ActionItemProps) {
+export function ActionItem({
+  action,
+  packId,
+  packTitle,
+  today,
+  readMore,
+  chooseHref,
+}: ActionItemProps) {
   const state = useAppState();
   const done = isDone(state, action.id);
   const skipped = isSkipped(state, action.id);
   const pinned = isPinned(state, action.id);
   const snoozed = isSnoozed(state, action.id, today);
+  const choice = chosenOption(state, action.id);
   const [expanded, setExpanded] = useState(false);
   const [skipOpen, setSkipOpen] = useState(false);
   const [laterOpen, setLaterOpen] = useState(false);
@@ -149,6 +160,32 @@ export function ActionItem({ action, packId, packTitle, today, readMore }: Actio
           >
             {readMore.title}
           </Link>
+        </p>
+      ) : null}
+
+      {chooseHref ? (
+        <p className="mt-3 text-sm text-ink-muted">
+          {choice ? (
+            <>
+              You chose <span className="text-ink">{choice.label}</span>.{" "}
+              <Link
+                href={chooseHref}
+                className="text-ink underline decoration-line-strong decoration-1 underline-offset-[3px] hover:decoration-ink"
+              >
+                Change it
+              </Link>
+            </>
+          ) : (
+            <>
+              Not sure which?{" "}
+              <Link
+                href={chooseHref}
+                className="text-ink underline decoration-line-strong decoration-1 underline-offset-[3px] hover:decoration-ink"
+              >
+                Help me choose
+              </Link>
+            </>
+          )}
         </p>
       ) : null}
 

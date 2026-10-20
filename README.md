@@ -264,6 +264,10 @@ Five CI jobs run on every pull request. Each one fails for exactly one class of 
 
 **The long read is reachable from the step.** A step that has an article renders "Long read — <title>" under its detail, and the article links back to the step it explains. The article page carries its sources, its review date and its reading level, and prints as one column. `ArticleBody` passes no components map to MDX on purpose: an article is prose, and a component map is how content starts rendering a carousel.
 
+**A chooser is content, not code.** The one `buy` action in the guide — the high chair — carries three questions and a scored recommendation table in its pack JSON, next to the options they point at. A recommendation matches on a subset of the answers, so a fourth question later does not invalidate every leaf, and it must carry a reason: a recommendation with no reason is an advert. The schema refuses a `buy` action that has neither a chooser nor a written reason it needs none, so the next one cannot ship as a bare list of three things.
+
+**A choice is a snapshot, not a pointer.** `chooseOption` records the option's label at the time it was chosen, so a renamed or retired option still reads correctly on the step. Choosing is also not doing: the choice lives beside the progress, not in it, and the step keeps its Done button.
+
 **The content schema is a gate, not a suggestion.** A pack with two essentials, no red flag, no source, or a `buy` action with no options fails the build. It has already caught four real content bugs.
 
 **The link check treats 403 as "verify by hand", not "broken".** CDC, CPSC, NHTSA, DOL, medicaid.gov, naeyc.org, adaa.org and ssa.gov block non-browser clients. A 404 or 410 fails the build; a 403 from those hosts is printed for manual review. It found seven dead citations in the first nine packs and eight dead URLs in the first 89 catalogue entries.

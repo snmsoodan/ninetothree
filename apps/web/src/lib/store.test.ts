@@ -6,6 +6,9 @@ import {
   STORAGE_KEY,
   __resetForTests,
   addAppointment,
+  chooseOption,
+  chosenOption,
+  clearChoice,
   clearProgress,
   completeOnboarding,
   completeWeek,
@@ -709,5 +712,66 @@ describe("setProfile", () => {
     setProfile(writeField(getSnapshot().profile, "loss", "none"));
     expect(getSnapshot().profile.loss).toBeUndefined();
     expect(getSnapshot().profile.hasCar).toBe(false);
+  });
+});
+
+describe("choices", () => {
+  it("records the option a parent picked, with its label", () => {
+    chooseOption("m6-highchair", "m6-chair-ikea", "IKEA Antilop", "2026-10-20T10:00:00.000Z");
+    expect(chosenOption(getSnapshot(), "m6-highchair")).toEqual({
+      optionId: "m6-chair-ikea",
+      label: "IKEA Antilop",
+      at: "2026-10-20T10:00:00.000Z",
+    });
+  });
+
+  it("replaces an earlier choice, because changing your mind is normal", () => {
+    chooseOption("m6-highchair", "m6-chair-ikea", "IKEA Antilop");
+    chooseOption("m6-highchair", "m6-chair-stokke", "Stokke Tripp Trapp");
+    expect(chosenOption(getSnapshot(), "m6-highchair")?.optionId).toBe("m6-chair-stokke");
+  });
+
+  it("forgets a choice, so the step offers the chooser again", () => {
+    chooseOption("m6-highchair", "m6-chair-ikea", "IKEA Antilop");
+    clearChoice("m6-highchair");
+    expect(chosenOption(getSnapshot(), "m6-highchair")).toBeUndefined();
+  });
+
+  it("does nothing when there is no choice to forget", () => {
+    const before = getSnapshot();
+    clearChoice("m6-highchair");
+    expect(getSnapshot()).toBe(before);
+  });
+
+  it("keeps a choice across a reload", () => {
+    chooseOption("m6-highchair", "m6-chair-ikea", "IKEA Antilop");
+    __resetForTests();
+    subscribe(() => {});
+    expect(chosenOption(getSnapshot(), "m6-highchair")?.label).toBe("IKEA Antilop");
+  });
+
+  it("drops a stored choice with no option or no label", () => {
+    window.localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        version: 1,
+        choices: {
+          good: { optionId: "a", label: "A", at: "2026-10-20T10:00:00.000Z" },
+          noOption: { label: "A" },
+          noLabel: { optionId: "a" },
+          notAnObject: "a",
+        },
+      }),
+    );
+    __resetForTests();
+    subscribe(() => {});
+    expect(Object.keys(getSnapshot().choices)).toEqual(["good"]);
+  });
+
+  it("treats a non-object choices field as empty", () => {
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ version: 1, choices: ["a"] }));
+    __resetForTests();
+    subscribe(() => {});
+    expect(getSnapshot().choices).toEqual({});
   });
 });

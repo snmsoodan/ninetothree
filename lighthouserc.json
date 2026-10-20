@@ -9,7 +9,8 @@
         "http://localhost:3000/week/pregnancy-w28",
         "http://localhost:3000/library",
         "http://localhost:3000/search",
-        "http://localhost:3000/read/glucose-test"
+        "http://localhost:3000/read/glucose-test",
+        "http://localhost:3000/choose/m6-highchair"
       ],
       "numberOfRuns": 1,
       "settings": {
