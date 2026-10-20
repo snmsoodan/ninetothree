@@ -1,0 +1,174 @@
+{
+  "id": "pregnancy-w28",
+  "kind": "pregnancy",
+  "stageIndex": 28,
+  "stageUnit": "week",
+  "locale": "en-US",
+  "country": "US",
+  "title": "Week 28",
+  "subtitle": "The third trimester starts now. The finish line is real, and it is still twelve weeks away.",
+  "baby": {
+    "size": "About the size of a large eggplant",
+    "development": "The eyes can open and close, and the baby can probably dream. Fat is starting to fill out the skin, which is why the movements you feel are getting stronger and more like rolls than flutters."
+  },
+  "you": {
+    "body": "Your uterus is now about three inches above your belly button. Heartburn and shortness of breath are common as things get crowded. Sleep on your side, not your back.",
+    "mind": "The third trimester often brings a second wave of anxiety, this time about the birth itself rather than the pregnancy. That is normal, and it is worth saying out loud to someone."
+  },
+  "coreActions": [
+    {
+      "id": "w28-glucose",
+      "type": "book",
+      "priority": "essential",
+      "domain": "health-parent",
+      "title": "Get your glucose screening if you haven't",
+      "why": "It is done between 24 and 28 weeks, and this is the last week of that window. It checks for gestational diabetes, which usually has no symptoms.",
+      "detail": "You drink a sweet drink, wait an hour, and have blood drawn. If the one-hour result is high, you will be asked to do a longer three-hour test. A high result is not a diagnosis and it is not your fault. About 1 in 12 pregnant people in the US have gestational diabetes, and most manage it with food changes alone.",
+      "minutes": 90,
+      "options": [
+        {
+          "id": "w28-glucose-ob",
+          "label": "At your OB's office",
+          "detail": "The default. Call today if it is not already on the calendar.",
+          "cost": "varies",
+          "note": "Usually covered as prenatal care with no separate copay."
+        },
+        {
+          "id": "w28-glucose-lab",
+          "label": "At a standalone lab",
+          "detail": "Some OBs send you to a Labcorp or Quest. Faster appointment, same test.",
+          "cost": "varies"
+        }
+      ],
+      "skipIf": "You have already had the test this pregnancy, or your OB has decided to skip it for a clinical reason."
+    },
+    {
+      "id": "w28-tdap",
+      "type": "book",
+      "priority": "recommended",
+      "domain": "health-parent",
+      "title": "Ask about the Tdap shot",
+      "why": "It is recommended in every pregnancy between 27 and 36 weeks, and it is the main way a newborn is protected from whooping cough before they can be vaccinated themselves.",
+      "detail": "You get it during pregnancy even if you had one a few years ago, because the protection you pass on fades. Your partner and anyone who will be around the baby should also be up to date, but they get theirs from their own doctor.",
+      "minutes": 15,
+      "options": [
+        {
+          "id": "w28-tdap-ob",
+          "label": "At your OB visit",
+          "detail": "Ask at your next appointment. Most offices stock it.",
+          "cost": "varies"
+        },
+        {
+          "id": "w28-tdap-pharmacy",
+          "label": "At a pharmacy",
+          "detail": "CVS, Walgreens and most chains give Tdap. Bring your insurance card.",
+          "cost": "varies",
+          "note": "Call first — not every location stocks it for pregnancy."
+        }
+      ],
+      "skipIf": "You have had a severe reaction to Tdap before. Talk to your OB about the alternative."
+    },
+    {
+      "id": "w28-kick-counts",
+      "type": "know",
+      "priority": "recommended",
+      "domain": "health-parent",
+      "title": "Learn your baby's normal movement pattern",
+      "why": "From now on, the most useful thing you can notice is a change from your baby's usual pattern, not a specific number of kicks.",
+      "detail": "Pick a time of day when the baby is usually active and pay attention for a while. You are learning what normal feels like for this baby. If movements clearly slow down or stop, call your OB triage line the same day. Do not wait until morning and do not use a home doppler to reassure yourself — it cannot tell you what you need to know.",
+      "minutes": 10,
+      "options": [],
+      "skipIf": "You have an anterior placenta and have been told movements will feel different. Still learn the pattern, just expect it to be softer."
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "w28-rhogam",
+      "title": "If you are Rh negative",
+      "body": "You will be offered a Rhogam shot around now, usually at 28 weeks. It is a routine injection and it protects this baby and any future ones. If you do not know your blood type, ask — it is in your chart.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w28-sleep-position",
+      "title": "Side sleeping, and what to do if you wake on your back",
+      "body": "Sleeping on your side is recommended from now on. If you wake up on your back, just roll over. You do not need to panic, and you do not need a special pillow unless you want one.",
+      "domain": "sleep"
+    },
+    {
+      "id": "w28-car-seat",
+      "title": "The car seat is not a later problem",
+      "body": "You cannot leave the hospital without one, and the last month is not the time to be learning how the buckles work. A rear-facing infant seat that meets FMVSS 213 is the standard choice. Do not buy a used seat unless you know its full history — a seat that has been in a crash must be replaced.",
+      "domain": "gear"
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "w28-rf-bleeding",
+      "text": "Any vaginal bleeding, or fluid that keeps leaking",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w28-rf-movement",
+      "text": "Movements that have clearly slowed down or stopped",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w28-rf-headache",
+      "text": "A severe headache that will not go away, or seeing spots or flashing lights",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w28-rf-emergency",
+      "text": "Chest pain, trouble breathing, fainting, or a seizure",
+      "escalation": "call-911",
+      "phone": "911"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "w28-visit",
+      "label": "OB visit",
+      "from": 28,
+      "to": 28,
+      "who": "OB or midwife",
+      "note": "Visits are every two weeks from now until 36 weeks, then weekly."
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-acog-gdm",
+      "title": "Gestational Diabetes",
+      "publisher": "ACOG",
+      "url": "https://www.acog.org/womens-health/faqs/gestational-diabetes",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-cdc-tdap",
+      "title": "Tdap Vaccine and Pregnancy",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/vaccines/pregnancy/hcp-toolkit/tdap-vaccine-pregnancy.html",
+      "kind": "government",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-acog-movement",
+      "title": "Changes in Fetal Movement",
+      "publisher": "ACOG",
+      "url": "https://www.acog.org/womens-health/faqs/change-in-fetal-movement",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-nhtsa-seats",
+      "title": "Car Seats and Booster Seats",
+      "publisher": "NHTSA",
+      "url": "https://www.nhtsa.gov/equipment/car-seats-and-booster-seats",
+      "kind": "government",
+      "accessed": "2026-10-20"
+    }
+  ],
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-20",
+  "updatedAt": "2026-10-20"
+}

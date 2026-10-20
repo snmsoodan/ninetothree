@@ -1,0 +1,187 @@
+{
+  "id": "pregnancy-w12",
+  "kind": "pregnancy",
+  "stageIndex": 12,
+  "stageUnit": "week",
+  "locale": "en-US",
+  "country": "US",
+  "title": "Week 12",
+  "subtitle": "The first trimester is ending. For a lot of people, this is the week the fog starts to lift.",
+  "baby": {
+    "size": "About the size of a lime",
+    "development": "All the major organs are formed and will now spend the rest of the pregnancy growing. Fingers and toes are separate. The baby can make a fist."
+  },
+  "you": {
+    "body": "Nausea usually starts to ease between 12 and 14 weeks, though for some people it lasts longer and that is not a sign anything is wrong. Your uterus is moving up out of the pelvis, so you may look slightly pregnant rather than just bloated.",
+    "mind": "The end of the first trimester is often when the anxiety shifts from 'is this real' to 'is this going to be okay'. Both are the same worry wearing different clothes."
+  },
+  "coreActions": [
+    {
+      "id": "w12-nt-scan",
+      "type": "book",
+      "priority": "essential",
+      "domain": "health-parent",
+      "title": "Decide about first-trimester screening",
+      "why": "The nuchal translucency ultrasound and blood test are done between 11 and 14 weeks. If you want them, this is the window.",
+      "detail": "This is a screening, not a diagnosis. It estimates a chance, and a high result means more testing, not a definite answer. You can also decline all of it. There is no wrong choice here, only the one you want. If you would rather not know, say so at your visit and it will not be raised again.",
+      "minutes": 45,
+      "options": [
+        {
+          "id": "w12-nt-ultrasound",
+          "label": "NT ultrasound plus blood work",
+          "detail": "The combined first-trimester screen. Done at 11–14 weeks.",
+          "cost": "varies"
+        },
+        {
+          "id": "w12-nipt",
+          "label": "NIPT blood test",
+          "detail": "A blood draw from you, can be done from 10 weeks. More accurate for the common chromosomal conditions, and no ultrasound needed.",
+          "cost": "$$",
+          "note": "Often covered, but confirm with your insurer — it can be expensive if not."
+        },
+        {
+          "id": "w12-decline",
+          "label": "Decline screening",
+          "detail": "A legitimate choice. You can still have the anatomy scan at 18–22 weeks.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You have already had NIPT or the NT scan this pregnancy."
+    },
+    {
+      "id": "w12-dental",
+      "type": "book",
+      "priority": "recommended",
+      "domain": "health-parent",
+      "title": "Book a dental cleaning",
+      "why": "Pregnancy raises the risk of gum disease, and gum disease is linked to preterm birth. Cleanings are safe in pregnancy and often covered twice a year.",
+      "detail": "Tell the hygienist you are pregnant. Routine X-rays are usually deferred, and local anesthetic is considered safe if you need work done. Do not put off a toothache — untreated infection is worse for the pregnancy than treatment.",
+      "minutes": 60,
+      "options": [
+        {
+          "id": "w12-dental-insurance",
+          "label": "Your regular dentist",
+          "detail": "Most plans cover two cleanings a year. Pregnancy does not change that.",
+          "cost": "varies"
+        },
+        {
+          "id": "w12-dental-school",
+          "label": "A dental school clinic",
+          "detail": "Supervised students, much lower cost, longer appointments.",
+          "cost": "$"
+        }
+      ],
+      "skipIf": "You had a cleaning in the last three months."
+    },
+    {
+      "id": "w12-tell-work",
+      "type": "do",
+      "priority": "optional",
+      "domain": "money",
+      "title": "Look up your employer's leave policy",
+      "why": "You do not have to tell anyone yet, but knowing the numbers now changes what you can plan. FMLA gives 12 weeks unpaid and only if you qualify.",
+      "detail": "Check three things: whether you qualify for FMLA (12 months employed, 1,250 hours, 50+ employees within 75 miles), whether your state has paid family leave, and whether your employer offers anything above the legal minimum. Some short-term disability policies cover part of maternity leave — that is often the thing people miss.",
+      "minutes": 30,
+      "options": [
+        {
+          "id": "w12-leave-hr",
+          "label": "Ask HR for the policy in writing",
+          "detail": "You can ask without announcing. Say you are reviewing benefits.",
+          "cost": "free"
+        },
+        {
+          "id": "w12-leave-dol",
+          "label": "The DOL FMLA page",
+          "detail": "The eligibility rules, in plain language.",
+          "url": "https://www.dol.gov/agencies/whd/fmla",
+          "cost": "free"
+        },
+        {
+          "id": "w12-leave-state",
+          "label": "Your state paid leave program",
+          "detail": "About a dozen states plus DC have one. Check before assuming you have none.",
+          "url": "https://www.dol.gov/agencies/whd/state/paid-leave",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You are not employed, or you already know your leave in detail."
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "w12-exercise",
+      "title": "Exercise is still fine",
+      "body": "150 minutes a week of moderate activity is recommended in an uncomplicated pregnancy. Walking counts. So does prenatal yoga. Avoid contact sports and anything with a fall risk.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w12-sex",
+      "title": "Sex is fine unless you have been told otherwise",
+      "body": "In an uncomplicated pregnancy, sex does not cause miscarriage. Your OB will tell you if there is a reason to avoid it — for example placenta previa or a history of preterm labor.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w12-announcing",
+      "title": "If you are ready to tell people",
+      "body": "There is no right week. Some people tell at 8 weeks, some at 20. The only useful question is: who would you want to have told if something went wrong?",
+      "domain": "mind"
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "w12-rf-bleeding",
+      "text": "Bleeding that fills a pad, or bleeding with pain",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w12-rf-fever",
+      "text": "A fever over 100.4°F",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w12-rf-emergency",
+      "text": "Fainting, chest pain, or trouble breathing",
+      "escalation": "call-911",
+      "phone": "911"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "w12-visit",
+      "label": "Prenatal visit",
+      "from": 12,
+      "to": 12,
+      "who": "OB or midwife",
+      "note": "Often the visit where you hear the heartbeat on a doppler."
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-acog-screening",
+      "title": "Prenatal Genetic Screening Tests",
+      "publisher": "ACOG",
+      "url": "https://www.acog.org/womens-health/faqs/prenatal-genetic-screening-tests",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-acog-dental",
+      "title": "Oral Health Care During Pregnancy",
+      "publisher": "ACOG",
+      "url": "https://www.acog.org/clinical/clinical-guidance/committee-opinion/articles/2013/08/oral-health-care-during-pregnancy-and-throughout-a-womans-lifespan",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-dol-fmla",
+      "title": "Family and Medical Leave Act",
+      "publisher": "US Department of Labor",
+      "url": "https://www.dol.gov/agencies/whd/fmla",
+      "kind": "government",
+      "accessed": "2026-10-20"
+    }
+  ],
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-20",
+  "updatedAt": "2026-10-20"
+}

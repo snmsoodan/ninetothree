@@ -1,0 +1,174 @@
+{
+  "locale": "en-US",
+  "country": "US",
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-20",
+  "updatedAt": "2026-10-20",
+  "id": "pregnancy-w36",
+  "kind": "pregnancy",
+  "stageIndex": 36,
+  "stageUnit": "week",
+  "title": "Week 36",
+  "subtitle": "Full term is close. This is the week to have the bag packed and the car seat installed, not the week to start thinking about it.",
+  "baby": {
+    "size": "About the size of a honeydew melon",
+    "development": "The baby is likely head-down now. Lungs are close to mature. Most of the weight gain from here is fat."
+  },
+  "you": {
+    "body": "Visits are weekly now. You may feel pressure low in the pelvis as the baby drops. Sleep is hard, and that is not a sign of anything except being 36 weeks pregnant.",
+    "mind": "The last month is a strange combination of wanting it over and not feeling ready. Both are true at once for almost everyone."
+  },
+  "coreActions": [
+    {
+      "id": "w36-gbs",
+      "type": "book",
+      "priority": "essential",
+      "domain": "health-baby",
+      "title": "Get your group B strep test",
+      "why": "It is done between 36 and 37 weeks. If you are positive, you get antibiotics in labor and the risk to the baby drops sharply.",
+      "detail": "It is a simple swab, not a pelvic exam, and it takes seconds. About 1 in 4 pregnant people carry group B strep and have no symptoms at all. Being positive is not an infection and it is not a problem — it just changes what happens when you arrive in labor. Put it in your birth plan so nobody has to look it up at 2am.",
+      "minutes": 10,
+      "options": [
+        {
+          "id": "w36-gbs-ob",
+          "label": "At your OB visit",
+          "detail": "Standard. Ask for it if it is not offered.",
+          "cost": "varies"
+        }
+      ],
+      "skipIf": "You have already had the swab this pregnancy."
+    },
+    {
+      "id": "w36-bag",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "home",
+      "title": "Pack the bag",
+      "why": "You will not want to do this at 3am with contractions four minutes apart.",
+      "detail": "For you: ID, insurance card, phone charger with a long cable, comfortable clothes, toiletries, snacks, a going-home outfit. For the baby: a car seat (installed, not in the bag), one outfit, a blanket, diapers. That is genuinely it. The hospital provides most of the rest, and anything you forget can be brought later.",
+      "minutes": 30,
+      "options": [
+        {
+          "id": "w36-bag-list",
+          "label": "Our printable list",
+          "detail": "One page, US Letter, no ads.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "Your bag is already packed and by the door."
+    },
+    {
+      "id": "w36-car-seat",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "safety",
+      "title": "Install the car seat and get it checked",
+      "why": "You cannot leave the hospital without one, and most seats are installed wrong the first time.",
+      "detail": "A rear-facing infant seat meeting FMVSS 213 is the standard choice. The seat should not move more than an inch at the belt path, and the chest clip goes at armpit level, not at the belly. Free inspections are available through NHTSA and Safe Kids — search your ZIP code. Do not buy a used seat unless you know its full history; a seat that has been in any crash must be replaced.",
+      "minutes": 45,
+      "options": [
+        {
+          "id": "w36-seat-inspect",
+          "label": "A free inspection",
+          "detail": "Certified technicians check the install and show you how to do it.",
+          "cost": "free",
+          "url": "https://www.nhtsa.gov/equipment/car-seats-and-booster-seats"
+        },
+        {
+          "id": "w36-seat-video",
+          "label": "A manufacturer video",
+          "detail": "Every seat has one. Watch it for your exact model, not a generic one.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "The seat is installed and checked."
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "w36-version",
+      "title": "If the baby is breech",
+      "body": "An external cephalic version can turn the baby, and it is usually attempted around 36 to 37 weeks. It works about half the time. A planned cesarean is also a normal, safe birth.",
+      "domain": "health-baby"
+    },
+    {
+      "id": "w36-induction",
+      "title": "Induction at 39 weeks",
+      "body": "The ARRIVE trial found that offering induction at 39 weeks to first-time parents did not increase cesarean rates. It is a conversation, not a requirement. Ask what your OB recommends for you specifically.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w36-group-b",
+      "title": "If you test positive",
+      "body": "You will get IV antibiotics in labor, ideally at least four hours before birth. This is routine and it works.",
+      "domain": "health-baby"
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "w36-rf-labor",
+      "text": "Regular contractions before 37 weeks, or fluid leaking",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w36-rf-bleeding",
+      "text": "Any bleeding",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w36-rf-movement",
+      "text": "Movements that have slowed or stopped",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w36-rf-emergency",
+      "text": "Chest pain, trouble breathing, or a seizure",
+      "escalation": "call-911",
+      "phone": "911"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "w36-visit",
+      "label": "Weekly OB visit and GBS swab",
+      "from": 36,
+      "to": 37,
+      "who": "OB or midwife",
+      "note": "Visits are weekly from now until birth."
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-acog-gbs",
+      "title": "Group B Strep and Pregnancy",
+      "publisher": "ACOG",
+      "url": "https://www.acog.org/womens-health/faqs/group-b-strep-and-pregnancy",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-cdc-gbs",
+      "title": "Group B Strep",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/group-b-strep/about/index.html",
+      "kind": "government",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-nhtsa-seats",
+      "title": "Car Seats and Booster Seats",
+      "publisher": "NHTSA",
+      "url": "https://www.nhtsa.gov/equipment/car-seats-and-booster-seats",
+      "kind": "government",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-arrive",
+      "title": "ARRIVE Trial",
+      "publisher": "NEJM",
+      "url": "https://www.nejm.org/doi/full/10.1056/NEJMoa1801181",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    }
+  ]
+}

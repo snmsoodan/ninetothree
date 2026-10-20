@@ -18,25 +18,25 @@ Technical design for V1. The goal is a small, boring, fast, accessible system th
 
 ## 2. Stack
 
-| Layer | Choice | Why |
-|---|---|---|
-| Framework | **Next.js 15 (App Router) + React 19 + TypeScript strict** | RSC, streaming, one codebase for web + email previews |
-| Styling | **Tailwind CSS v4 + CSS variables** | Fast, consistent, themeable |
-| Components | **Radix UI primitives + custom design system** | Accessible by default |
-| Database | **Postgres 16 (Neon)** | Relational content graph, JSONB for flexible fields, FTS |
-| ORM | **Drizzle** | Typed SQL, migrations in git, no magic |
-| Auth | **Auth.js v5** — email magic link + Google + Apple | No password support burden |
-| Payments | **Stripe** Checkout + Customer Portal + webhooks | Standard, low ops |
-| Email | **Resend + React Email** | Same components as the app |
-| Jobs | **Inngest** (or Vercel Cron for V1) | Weekly digest, link checks, recall sync |
-| Search | **Postgres FTS + pg_trgm** | No extra service in V1 |
-| Analytics | **PostHog** (EU cloud) + **Sentry** | Product + errors, privacy-friendly |
-| Feature flags | **DB-backed flags** | No vendor |
-| Hosting | **Vercel** (web) + **Neon** (DB) | Zero-ops |
-| Monorepo | **pnpm workspaces + Turborepo** | Shared packages |
-| Tests | **Vitest + Testing Library + Playwright + axe** | Unit, component, E2E, a11y |
-| Docs | **Storybook 8** | Component catalogue |
-| CI | **GitHub Actions** | Lint, typecheck, test, build, a11y, link check, content validate |
+| Layer         | Choice                                                     | Why                                                              |
+| ------------- | ---------------------------------------------------------- | ---------------------------------------------------------------- |
+| Framework     | **Next.js 15 (App Router) + React 19 + TypeScript strict** | RSC, streaming, one codebase for web + email previews            |
+| Styling       | **Tailwind CSS v4 + CSS variables**                        | Fast, consistent, themeable                                      |
+| Components    | **Radix UI primitives + custom design system**             | Accessible by default                                            |
+| Database      | **Postgres 16 (Neon)**                                     | Relational content graph, JSONB for flexible fields, FTS         |
+| ORM           | **Drizzle**                                                | Typed SQL, migrations in git, no magic                           |
+| Auth          | **Auth.js v5** — email magic link + Google + Apple         | No password support burden                                       |
+| Payments      | **Stripe** Checkout + Customer Portal + webhooks           | Standard, low ops                                                |
+| Email         | **Resend + React Email**                                   | Same components as the app                                       |
+| Jobs          | **Inngest** (or Vercel Cron for V1)                        | Weekly digest, link checks, recall sync                          |
+| Search        | **Postgres FTS + pg_trgm**                                 | No extra service in V1                                           |
+| Analytics     | **PostHog** (EU cloud) + **Sentry**                        | Product + errors, privacy-friendly                               |
+| Feature flags | **DB-backed flags**                                        | No vendor                                                        |
+| Hosting       | **Vercel** (web) + **Neon** (DB)                           | Zero-ops                                                         |
+| Monorepo      | **pnpm workspaces + Turborepo**                            | Shared packages                                                  |
+| Tests         | **Vitest + Testing Library + Playwright + axe**            | Unit, component, E2E, a11y                                       |
+| Docs          | **Storybook 8**                                            | Component catalogue                                              |
+| CI            | **GitHub Actions**                                         | Lint, typecheck, test, build, a11y, link check, content validate |
 
 **Explicitly rejected for V1:** a headless CMS (git is the CMS), a separate search service, a native app, a GraphQL layer, microservices, Kubernetes.
 
@@ -361,19 +361,19 @@ const StagePack = z.object({
 type Profile = {
   parity: number;
   country: string;
-  feeding: 'breast' | 'formula' | 'mixed' | 'undecided';
-  birthType: 'vaginal' | 'assisted' | 'c-section' | 'unknown';
+  feeding: "breast" | "formula" | "mixed" | "undecided";
+  birthType: "vaginal" | "assisted" | "c-section" | "unknown";
   multiples: boolean;
   preterm: boolean;
-  budget: 'low' | 'mid' | 'high';
+  budget: "low" | "mid" | "high";
   hasCar: boolean;
-  housing: 'flat' | 'house';
+  housing: "flat" | "house";
   returningToWorkAt?: number;
   mentalHealthHistory: boolean;
   loss: boolean;
 };
 
-type Pack = { /* stage pack */ };
+type Pack = {/* stage pack */};
 
 function personalize(pack: Pack, profile: Profile): Pack;
 ```
@@ -382,11 +382,15 @@ Rules are declarative:
 
 ```ts
 const rules: Rule[] = [
-  { when: p => p.feeding === 'formula', hide: ['breast-latch', 'supply'] },
-  { when: p => p.parity > 0, hide: ['what-is-a-booking-appointment'] },
-  { when: p => p.birthType === 'c-section', add: ['c-section-recovery'], hide: ['perineal-massage'] },
-  { when: p => p.preterm, add: ['corrected-age-note'], adjustMilestones: true },
-  { when: p => p.loss, mode: 'quiet' },
+  { when: (p) => p.feeding === "formula", hide: ["breast-latch", "supply"] },
+  { when: (p) => p.parity > 0, hide: ["what-is-a-booking-appointment"] },
+  {
+    when: (p) => p.birthType === "c-section",
+    add: ["c-section-recovery"],
+    hide: ["perineal-massage"],
+  },
+  { when: (p) => p.preterm, add: ["corrected-age-note"], adjustMilestones: true },
+  { when: (p) => p.loss, mode: "quiet" },
 ];
 ```
 
@@ -396,17 +400,18 @@ const rules: Rule[] = [
 
 ## 7. Rendering and performance
 
-| Route | Rendering | Cache |
-|---|---|---|
-| Marketing | Static | CDN, 1 year |
-| Auth | Dynamic | No cache |
-| Dashboard | Dynamic (RSC) | `no-store` |
-| Week card | Dynamic, personalized | `private, max-age=0, stale-while-revalidate=60` |
-| Search | Dynamic | `private, max-age=60` |
-| Triage | Static shell + client rules | CDN + service worker |
-| Content pages | Static per locale | CDN, revalidate on publish |
+| Route         | Rendering                   | Cache                                           |
+| ------------- | --------------------------- | ----------------------------------------------- |
+| Marketing     | Static                      | CDN, 1 year                                     |
+| Auth          | Dynamic                     | No cache                                        |
+| Dashboard     | Dynamic (RSC)               | `no-store`                                      |
+| Week card     | Dynamic, personalized       | `private, max-age=0, stale-while-revalidate=60` |
+| Search        | Dynamic                     | `private, max-age=60`                           |
+| Triage        | Static shell + client rules | CDN + service worker                            |
+| Content pages | Static per locale           | CDN, revalidate on publish                      |
 
 **Budgets:**
+
 - LCP < 2.0s on 4G.
 - CLS < 0.05.
 - INP < 200ms.
@@ -440,15 +445,15 @@ const rules: Rule[] = [
 
 ## 10. Email and jobs
 
-| Job | Schedule | What it does |
-|---|---|---|
-| `weekly-digest` | Hourly, per timezone | Sends the week email to users whose week changes today |
-| `appointment-reminder` | Hourly | Sends reminders 24h before |
-| `link-check` | Weekly | HEAD/GET every URL, flags non-200, parked domains, redirects |
-| `recall-sync` | Daily | Pulls the CPSC and NHTSA recall feeds, matches pinned products |
-| `content-stale` | Monthly | Flags packs with `reviewed_at` > 12 months |
-| `trial-ending` | Daily | One email, no guilt |
-| `cleanup` | Daily | Hard-deletes accounts past 30 days |
+| Job                    | Schedule             | What it does                                                   |
+| ---------------------- | -------------------- | -------------------------------------------------------------- |
+| `weekly-digest`        | Hourly, per timezone | Sends the week email to users whose week changes today         |
+| `appointment-reminder` | Hourly               | Sends reminders 24h before                                     |
+| `link-check`           | Weekly               | HEAD/GET every URL, flags non-200, parked domains, redirects   |
+| `recall-sync`          | Daily                | Pulls the CPSC and NHTSA recall feeds, matches pinned products |
+| `content-stale`        | Monthly              | Flags packs with `reviewed_at` > 12 months                     |
+| `trial-ending`         | Daily                | One email, no guilt                                            |
+| `cleanup`              | Daily                | Hard-deletes accounts past 30 days                             |
 
 **Idempotency:** every job writes a `job_runs` row keyed by `(job, run_key)`; re-runs are safe.
 
@@ -456,22 +461,22 @@ const rules: Rule[] = [
 
 ## 11. Security and privacy
 
-| Area | Control |
-|---|---|
-| Transport | HTTPS only, HSTS, secure cookies |
-| Auth | Magic link, rate-limited, single-use, 15-min expiry |
-| Authorisation | Every query scoped by `household_id`; repository layer enforces it |
-| Input | Zod at every boundary; no raw SQL |
-| Secrets | Vercel env vars, never in repo; `gitleaks` in CI |
-| PII | Minimal: email, country, dates, feeding choice. Child names optional |
-| Children's data | No advertising profiles, no sale, no third-party ad pixels |
-| Analytics | PostHog EU, IP anonymised, no session recording on health pages |
-| Retention | Account data deleted 30 days after request; analytics 24 months |
-| Backups | Neon PITR 7 days; monthly restore test |
-| Dependencies | Dependabot, `pnpm audit` in CI, no postinstall scripts |
-| Headers | CSP, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy` |
-| Rate limits | Auth, search, triage, export |
-| Audit | Admin actions logged; content changes versioned |
+| Area            | Control                                                                |
+| --------------- | ---------------------------------------------------------------------- |
+| Transport       | HTTPS only, HSTS, secure cookies                                       |
+| Auth            | Magic link, rate-limited, single-use, 15-min expiry                    |
+| Authorisation   | Every query scoped by `household_id`; repository layer enforces it     |
+| Input           | Zod at every boundary; no raw SQL                                      |
+| Secrets         | Vercel env vars, never in repo; `gitleaks` in CI                       |
+| PII             | Minimal: email, country, dates, feeding choice. Child names optional   |
+| Children's data | No advertising profiles, no sale, no third-party ad pixels             |
+| Analytics       | PostHog EU, IP anonymised, no session recording on health pages        |
+| Retention       | Account data deleted 30 days after request; analytics 24 months        |
+| Backups         | Neon PITR 7 days; monthly restore test                                 |
+| Dependencies    | Dependabot, `pnpm audit` in CI, no postinstall scripts                 |
+| Headers         | CSP, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy` |
+| Rate limits     | Auth, search, triage, export                                           |
+| Audit           | Admin actions logged; content changes versioned                        |
 
 **Compliance posture:** US state privacy laws (CCPA/CPRA and successors) + COPPA-aware (no child-directed accounts); UK GDPR + DPA 2018 and EU GDPR for expansion; WCAG 2.2 AA; WHO Code for formula marketing.
 
@@ -500,18 +505,18 @@ const rules: Rule[] = [
 
 ## 14. Testing strategy
 
-| Layer | Tool | Coverage target |
-|---|---|---|
-| Content schema | Vitest | 100% of packs validate |
-| Rules engine | Vitest | 100% branches |
-| Repositories | Vitest + testcontainers Postgres | 100% of queries |
-| Components | Testing Library + Storybook | Every component has a story + test |
-| Pages | Playwright | Every route renders, no console errors |
-| Journeys | Playwright | Onboarding → week → done → pin → dashboard → email |
-| Accessibility | axe + manual | 0 violations, 100 Lighthouse |
-| Links | Custom checker | 0 broken shipped links |
-| Visual | Playwright screenshots | 0 unintended diffs |
-| Performance | Lighthouse CI | Budgets enforced |
+| Layer          | Tool                             | Coverage target                                    |
+| -------------- | -------------------------------- | -------------------------------------------------- |
+| Content schema | Vitest                           | 100% of packs validate                             |
+| Rules engine   | Vitest                           | 100% branches                                      |
+| Repositories   | Vitest + testcontainers Postgres | 100% of queries                                    |
+| Components     | Testing Library + Storybook      | Every component has a story + test                 |
+| Pages          | Playwright                       | Every route renders, no console errors             |
+| Journeys       | Playwright                       | Onboarding → week → done → pin → dashboard → email |
+| Accessibility  | axe + manual                     | 0 violations, 100 Lighthouse                       |
+| Links          | Custom checker                   | 0 broken shipped links                             |
+| Visual         | Playwright screenshots           | 0 unintended diffs                                 |
+| Performance    | Lighthouse CI                    | Budgets enforced                                   |
 
 **Definition of done for every PR:** lint, typecheck, unit, component, E2E, a11y, build, link check, content validate, screenshots, changelog. No exceptions.
 
@@ -519,12 +524,12 @@ const rules: Rule[] = [
 
 ## 15. Environments and deployment
 
-| Env | Purpose | Data |
-|---|---|---|
-| Local | Dev | Seeded, fake users |
-| Preview | Every PR | Ephemeral Neon branch |
-| Staging | Pre-release | Anonymised |
-| Production | Live | Real |
+| Env        | Purpose     | Data                  |
+| ---------- | ----------- | --------------------- |
+| Local      | Dev         | Seeded, fake users    |
+| Preview    | Every PR    | Ephemeral Neon branch |
+| Staging    | Pre-release | Anonymised            |
+| Production | Live        | Real                  |
 
 - **Migrations:** Drizzle, forward-only, reviewed, run in CI against a branch, then production.
 - **Rollback:** Vercel instant rollback; DB migrations are additive for one release.
@@ -536,16 +541,16 @@ const rules: Rule[] = [
 
 ## 16. Cost estimate (V1, 10k MAU)
 
-| Item | Monthly |
-|---|---|
-| Vercel Pro | $20 |
-| Neon Launch | $19 |
-| Resend | $20 |
-| PostHog | $0–50 |
-| Sentry | $0–26 |
-| Stripe | 1.4% + 20p per transaction |
-| Domain + email | $5 |
-| **Total** | **~$100–150/mo** |
+| Item           | Monthly                    |
+| -------------- | -------------------------- |
+| Vercel Pro     | $20                        |
+| Neon Launch    | $19                        |
+| Resend         | $20                        |
+| PostHog        | $0–50                      |
+| Sentry         | $0–26                      |
+| Stripe         | 1.4% + 20p per transaction |
+| Domain + email | $5                         |
+| **Total**      | **~$100–150/mo**           |
 
 At 10k MAU and 4% paid at $7.99, revenue is ~$3,200/mo. The unit economics work at small scale, which is the point.
 
@@ -579,15 +584,15 @@ A release is V1 when all of these are true:
 
 ## 18. ADRs to write in PR #1
 
-| ADR | Decision |
-|---|---|
-| 0001 | Next.js App Router + RSC |
+| ADR  | Decision                                     |
+| ---- | -------------------------------------------- |
+| 0001 | Next.js App Router + RSC                     |
 | 0002 | Postgres + Drizzle, JSONB for stage payloads |
-| 0003 | Git-based content, not a CMS |
-| 0004 | Rules engine, not LLM, for personalisation |
-| 0005 | PWA first, no native app in V1 |
-| 0006 | US-first locale, locale data not code |
-| 0007 | No formula advertising (WHO Code) |
-| 0008 | Cited search, no chatbot in V1 |
-| 0009 | Free tier includes all safety content |
-| 0010 | Content schema enforces source + red flags |
+| 0003 | Git-based content, not a CMS                 |
+| 0004 | Rules engine, not LLM, for personalisation   |
+| 0005 | PWA first, no native app in V1               |
+| 0006 | US-first locale, locale data not code        |
+| 0007 | No formula advertising (WHO Code)            |
+| 0008 | Cited search, no chatbot in V1               |
+| 0009 | Free tier includes all safety content        |
+| 0010 | Content schema enforces source + red flags   |

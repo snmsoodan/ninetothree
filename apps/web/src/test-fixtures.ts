@@ -1,0 +1,89 @@
+import type { StagePack } from "@ninetothree/content";
+
+/** A small, valid pack for component tests. Not shipped content. */
+export const TEST_PACK: StagePack = {
+  id: "test-week",
+  kind: "pregnancy",
+  stageIndex: 28,
+  stageUnit: "week",
+  locale: "en-US",
+  country: "US",
+  title: "Week 28",
+  subtitle: "The glucose test week",
+  baby: { size: "About the size of an eggplant", development: "The eyes can open now." },
+  you: { body: "Your bump is measuring ahead.", mind: "Sleep is getting harder." },
+  coreActions: [
+    {
+      id: "t-glucose",
+      type: "book",
+      priority: "essential",
+      domain: "health-parent",
+      title: "Book your glucose screening",
+      why: "It checks for gestational diabetes, which has no symptoms.",
+      detail: "You drink a sweet drink and wait an hour.",
+      minutes: 60,
+      options: [
+        {
+          id: "t-glucose-o1",
+          label: "Ask your OB at your next visit",
+          detail: "The usual route.",
+          cost: "free",
+        },
+        {
+          id: "t-glucose-o2",
+          label: "Find a lab near you",
+          url: "https://example.com/labs",
+          cost: "$",
+          note: "Check your insurance first.",
+        },
+      ],
+      skipIf: "You have already had it this pregnancy.",
+    },
+    {
+      id: "t-tdap",
+      type: "do",
+      priority: "recommended",
+      domain: "health-parent",
+      title: "Get your Tdap shot",
+      why: "It protects the baby before they can be vaccinated.",
+      minutes: 15,
+      options: [],
+    },
+    {
+      id: "t-car-seat",
+      type: "buy",
+      priority: "recommended",
+      domain: "gear",
+      title: "Install the car seat",
+      why: "You cannot drive home without one.",
+      minutes: 30,
+      options: [{ id: "t-car-seat-o1", label: "Get a free inspection", cost: "free" }],
+    },
+  ],
+  alsoKnow: [
+    { id: "t-know-1", title: "Kick counts", body: "Ten movements in two hours is the usual rule." },
+  ],
+  redFlags: [
+    { id: "t-rf-1", text: "Bleeding, or fluid that will not stop.", escalation: "call-911" },
+    {
+      id: "t-rf-2",
+      text: "A bad headache with blurred vision.",
+      escalation: "call-ob-triage",
+      phone: "555-0100",
+    },
+  ],
+  appointments: [{ id: "t-appt-1", label: "Glucose screening", from: 24, to: 28, who: "OB" }],
+  sources: [
+    {
+      id: "t-src-1",
+      title: "Screening for gestational diabetes",
+      publisher: "ACOG",
+      url: "https://www.acog.org/",
+      kind: "clinical",
+      accessed: "2026-01-01",
+    },
+  ],
+  reviewedBy: "Clinical review pending",
+  reviewedAt: "2026-01-01",
+  updatedAt: "2026-01-01",
+};

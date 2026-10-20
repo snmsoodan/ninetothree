@@ -21,18 +21,18 @@ The content is commoditized. ACOG, the AAP, What to Expect, BabyCenter, Ovia, Pe
 
 The gap is **decision fatigue and fragmentation**:
 
-| What exists | What's missing |
-|---|---|
-| Endless articles, 40 tabs open | A finite, ordered answer to "what do I do this week?" |
+| What exists                       | What's missing                                                                                                                 |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| Endless articles, 40 tabs open    | A finite, ordered answer to "what do I do this week?"                                                                          |
 | Generic week content for everyone | Content that changes for a C-section, a premature baby, twins, formula feeding, a walk-up apartment, a $0 budget, no insurance |
-| Lists of 200 products | 3 options at 3 price points, with the reason each exists |
-| Trackers that log everything | A plan that tells you what to *do*, then gets out of the way |
-| Communities that can scare you | Calm, cited, clinician-reviewed guidance |
-| Apps that guilt you with streaks | A product that lets you skip a week and still feel on track |
+| Lists of 200 products             | 3 options at 3 price points, with the reason each exists                                                                       |
+| Trackers that log everything      | A plan that tells you what to _do_, then gets out of the way                                                                   |
+| Communities that can scare you    | Calm, cited, clinician-reviewed guidance                                                                                       |
+| Apps that guilt you with streaks  | A product that lets you skip a week and still feel on track                                                                    |
 
 **The moat is execution + trust + personalisation, not the words.** The defensible assets are: a clinically governed content graph, a rules engine that makes the same week feel different for different families, and the habit of the weekly ritual.
 
-**The honest risk:** this is a crowded, well-funded category. The only way in is to be *dramatically* calmer and more actionable than the incumbents, own one region deeply (US first), and earn trust with visible clinical review. Do not try to out-content BabyCenter. Out-*decide* them.
+**The honest risk:** this is a crowded, well-funded category. The only way in is to be _dramatically_ calmer and more actionable than the incumbents, own one region deeply (US first), and earn trust with visible clinical review. Do not try to out-content BabyCenter. Out-_decide_ them.
 
 ---
 
@@ -53,15 +53,15 @@ The gap is **decision fatigue and fragmentation**:
 
 ## The document set
 
-| File | What it answers |
-|---|---|
-| `README.md` | Thesis, rules, decisions, index |
-| `CONTENT_BLUEPRINT.md` | The timeline model, the 13 domains, the week-by-week pregnancy plan (W4–W42 + birth), the 0–3 year plan, and the cross-cutting tracks |
-| `CONTENT_LIBRARY.md` | The link/vendor/app library: multiple real options per need, with the editorial policy for choosing them |
-| `PRODUCT_UX.md` | Onboarding, the Week Card, dashboard, pins, partner mode, search, red flags, personalization, trust, monetization, metrics |
-| `UX_CRAFT.md` | **The design system and the feeling.** Ten calm principles, tone of voice, the first 90 seconds, the annotated Week Card, motion, color, type, microcopy, the never-build list, and the seven tests for calm |
-| `ARCHITECTURE.md` | Stack, data model, content pipeline, security, accessibility, i18n, testing, deployment, V1 definition of done |
-| `TASKS.md` | Epics → issues, ordered, with acceptance criteria and the 30-day plan |
+| File                   | What it answers                                                                                                                                                                                              |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `README.md`            | Thesis, rules, decisions, index                                                                                                                                                                              |
+| `CONTENT_BLUEPRINT.md` | The timeline model, the 13 domains, the week-by-week pregnancy plan (W4–W42 + birth), the 0–3 year plan, and the cross-cutting tracks                                                                        |
+| `CONTENT_LIBRARY.md`   | The link/vendor/app library: multiple real options per need, with the editorial policy for choosing them                                                                                                     |
+| `PRODUCT_UX.md`        | Onboarding, the Week Card, dashboard, pins, partner mode, search, red flags, personalization, trust, monetization, metrics                                                                                   |
+| `UX_CRAFT.md`          | **The design system and the feeling.** Ten calm principles, tone of voice, the first 90 seconds, the annotated Week Card, motion, color, type, microcopy, the never-build list, and the seven tests for calm |
+| `ARCHITECTURE.md`      | Stack, data model, content pipeline, security, accessibility, i18n, testing, deployment, V1 definition of done                                                                                               |
+| `TASKS.md`             | Epics → issues, ordered, with acceptance criteria and the 30-day plan                                                                                                                                        |
 
 **Read them in this order:** `README` → `UX_CRAFT` → `CONTENT_BLUEPRINT` → `CONTENT_LIBRARY` → `PRODUCT_UX` → `ARCHITECTURE` → `TASKS`. The feeling comes before the features, because a calm product is not a feature list.
 
@@ -88,7 +88,11 @@ Everything in the product is a **Stage Pack** — one per week of pregnancy, one
       "time_min": 5,
       "cost": "free",
       "priority": "essential",
-      "cta": { "kind": "external", "label": "Message your provider", "url": "https://www.acog.org/womens-health" },
+      "cta": {
+        "kind": "external",
+        "label": "Message your provider",
+        "url": "https://www.acog.org/womens-health"
+      },
       "options": []
     },
     {
@@ -114,9 +118,24 @@ Everything in the product is a **Stage Pack** — one per week of pregnancy, one
       "priority": "recommended",
       "cta": { "kind": "internal", "label": "Compare 3 options" },
       "options": [
-        { "tier": "budget", "name": "Graco SnugRide 35 Lite LX", "why": "Light, fits most strollers with an adapter, good NHTSA ease-of-use rating", "price": "$100" },
-        { "tier": "mid", "name": "Chicco KeyFit 35", "why": "Installs correctly in small cars more often than anything else", "price": "$250" },
-        { "tier": "premium", "name": "Nuna PIPA rx", "why": "No base needed, one-hand install, best for city parents without a car", "price": "$400" }
+        {
+          "tier": "budget",
+          "name": "Graco SnugRide 35 Lite LX",
+          "why": "Light, fits most strollers with an adapter, good NHTSA ease-of-use rating",
+          "price": "$100"
+        },
+        {
+          "tier": "mid",
+          "name": "Chicco KeyFit 35",
+          "why": "Installs correctly in small cars more often than anything else",
+          "price": "$250"
+        },
+        {
+          "tier": "premium",
+          "name": "Nuna PIPA rx",
+          "why": "No base needed, one-hand install, best for city parents without a car",
+          "price": "$400"
+        }
       ]
     }
   ],
@@ -136,8 +155,16 @@ Everything in the product is a **Stage Pack** — one per week of pregnancy, one
     { "week": 30, "name": "OB visit, then every 2 weeks", "region": "US" }
   ],
   "sources": [
-    { "label": "ACOG — Prenatal care", "url": "https://www.acog.org/womens-health", "reviewed": "2026-09-01" },
-    { "label": "March of Dimes — 24 weeks pregnant", "url": "https://www.marchofdimes.org/", "reviewed": "2026-09-01" }
+    {
+      "label": "ACOG — Prenatal care",
+      "url": "https://www.acog.org/womens-health",
+      "reviewed": "2026-09-01"
+    },
+    {
+      "label": "March of Dimes — 24 weeks pregnant",
+      "url": "https://www.marchofdimes.org/",
+      "reviewed": "2026-09-01"
+    }
   ]
 }
 ```
@@ -148,16 +175,16 @@ Everything in the product is a **Stage Pack** — one per week of pregnancy, one
 
 ## The cadence model
 
-| Period | Cadence | Why |
-|---|---|---|
-| Preconception (optional) | 1 pack | Folic acid, tests, timing, lifestyle |
-| Pregnancy W4–W42 | **Weekly** | Appointments, symptoms and decisions change weekly |
-| Birth week | 1 pack + daily cards for 7 days | The highest-anxiety week of the whole journey |
-| Days 0–14 | **Daily** (short) | Feeding, jaundice, weight, safe sleep |
-| Weeks 2–12 | **Weekly** | Recovery, feeding, sleep, first vaccines |
-| Months 4–12 | **Monthly** | Development, weaning, mobility, childcare |
-| Months 13–36 | **Monthly**, lighter | Language, behavior, toilet training, preschool |
-| Event-triggered | On demand | First tooth, first steps, illness, travel, return to work, nursery start, new pregnancy |
+| Period                   | Cadence                         | Why                                                                                     |
+| ------------------------ | ------------------------------- | --------------------------------------------------------------------------------------- |
+| Preconception (optional) | 1 pack                          | Folic acid, tests, timing, lifestyle                                                    |
+| Pregnancy W4–W42         | **Weekly**                      | Appointments, symptoms and decisions change weekly                                      |
+| Birth week               | 1 pack + daily cards for 7 days | The highest-anxiety week of the whole journey                                           |
+| Days 0–14                | **Daily** (short)               | Feeding, jaundice, weight, safe sleep                                                   |
+| Weeks 2–12               | **Weekly**                      | Recovery, feeding, sleep, first vaccines                                                |
+| Months 4–12              | **Monthly**                     | Development, weaning, mobility, childcare                                               |
+| Months 13–36             | **Monthly**, lighter            | Language, behavior, toilet training, preschool                                          |
+| Event-triggered          | On demand                       | First tooth, first steps, illness, travel, return to work, nursery start, new pregnancy |
 
 **Rule:** the user can always preview ahead, but the default is "this week." The product never dumps the whole timeline at once.
 
@@ -191,24 +218,24 @@ A parent in the US can:
 
 ### Criteria
 
-1. Works for a pregnancy *and* a three-year-old — not "bump", not "baby"
+1. Works for a pregnancy _and_ a three-year-old — not "bump", not "baby"
 2. Warm, not clinical; calm, not cute
 3. Short enough to say out loud without spelling it
 4. Not a baby-brand cliché (no Bloom, Sprout, Bump, Peanut, Huckleberry, Ovia)
 5. **The `.com` is unregistered and costs standard price (~$12/yr), not a five-figure premium**
 6. **The string is unique enough that we rank #1 for our own name on day one**
 
-Criteria 5 and 6 are the ones that kill most "nice" names. A dictionary word like *Tend* or *Harbour* has a taken `.com` and a decade of competing results. A coined or compound name is cheap *and* instantly findable.
+Criteria 5 and 6 are the ones that kill most "nice" names. A dictionary word like _Tend_ or _Harbour_ has a taken `.com` and a decade of competing results. A coined or compound name is cheap _and_ instantly findable.
 
 ### The recommendation: **Nine to Three** — `ninetothree.com`
 
-| Check | Result |
-|---|---|
-| `ninetothree.com` | **Unregistered** — registry whois returns "No match". Standard price. |
-| `ninetothree.co` | Unregistered |
-| `ninetothree.co.uk` | Registered 2015, but it is a **parked GoDaddy lander** — no business behind it, no brand conflict. Possibly buyable for a few hundred pounds. |
-| Existing parenting brand | None found |
-| Search competition | Effectively zero for the exact string |
+| Check                    | Result                                                                                                                                        |
+| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ninetothree.com`        | **Unregistered** — registry whois returns "No match". Standard price.                                                                         |
+| `ninetothree.co`         | Unregistered                                                                                                                                  |
+| `ninetothree.co.uk`      | Registered 2015, but it is a **parked GoDaddy lander** — no business behind it, no brand conflict. Possibly buyable for a few hundred pounds. |
+| Existing parenting brand | None found                                                                                                                                    |
+| Search competition       | Effectively zero for the exact string                                                                                                         |
 
 **Why it works:** it encodes the entire product in three words — **nine** months pregnant to **three** years old. A parent hears it once and knows what we do. It is a unique string, so we own page one immediately. It is easy to spell, easy to say, and has a quiet second meaning (9-to-3, the school day) that suits a calm, non-hectic brand.
 
@@ -216,21 +243,21 @@ Criteria 5 and 6 are the ones that kill most "nice" names. A dictionary word lik
 
 ### Shortlist — all verified unregistered `.com`, all standard price
 
-| Name | What it does | Note |
-|---|---|---|
-| **Nine to Three** | 9 months pregnant → 3 years old. Encodes the scope exactly. | **Recommended** |
-| **Our Little Years** | Warm, clear, describes 0–3 without saying "baby". | `.co` also free |
-| **Calm Weeks** | The promise in two words. Pairs with the no-guilt positioning. | `.co` also free |
-| **Steady Weeks** | Same idea, slightly sturdier. | `.co` also free |
-| **Week One Baby** | Literal, memorable, easy to spell. | `.co` also free |
-| **Bairn Book** | "Bairn" is Scots/Northern English for child — warm, but very UK. | `bairn.com` itself is taken (1997); the compound is free |
-| **Wee Years** | "Wee" is UK, affectionate, short. | `.co` also free |
-| **Rest and Grow** | The 3am promise: rest, and they grow. | — |
-| **Feed and Sleep** | The whole of the first year in two words. | — |
-| **Three Little Years** | Clear, warm, slightly long. | — |
-| **First 1,095 Days** | 3 years exactly. Precise but excludes pregnancy. | — |
-| **The Week Book** | Positions us as the weekly guide. | — |
-| **Brave and Little** | Emotional, distinctive, less descriptive. | — |
+| Name                   | What it does                                                     | Note                                                     |
+| ---------------------- | ---------------------------------------------------------------- | -------------------------------------------------------- |
+| **Nine to Three**      | 9 months pregnant → 3 years old. Encodes the scope exactly.      | **Recommended**                                          |
+| **Our Little Years**   | Warm, clear, describes 0–3 without saying "baby".                | `.co` also free                                          |
+| **Calm Weeks**         | The promise in two words. Pairs with the no-guilt positioning.   | `.co` also free                                          |
+| **Steady Weeks**       | Same idea, slightly sturdier.                                    | `.co` also free                                          |
+| **Week One Baby**      | Literal, memorable, easy to spell.                               | `.co` also free                                          |
+| **Bairn Book**         | "Bairn" is Scots/Northern English for child — warm, but very UK. | `bairn.com` itself is taken (1997); the compound is free |
+| **Wee Years**          | "Wee" is UK, affectionate, short.                                | `.co` also free                                          |
+| **Rest and Grow**      | The 3am promise: rest, and they grow.                            | —                                                        |
+| **Feed and Sleep**     | The whole of the first year in two words.                        | —                                                        |
+| **Three Little Years** | Clear, warm, slightly long.                                      | —                                                        |
+| **First 1,095 Days**   | 3 years exactly. Precise but excludes pregnancy.                 | —                                                        |
+| **The Week Book**      | Positions us as the weekly guide.                                | —                                                        |
+| **Brave and Little**   | Emotional, distinctive, less descriptive.                        | —                                                        |
 
 ### Rejected
 
@@ -244,22 +271,22 @@ Criteria 5 and 6 are the ones that kill most "nice" names. A dictionary word lik
 
 ### Recommendation
 
-**Nine to Three.** It is the only name on the list that is simultaneously free, findable, and *explains the product*. Buy `ninetothree.com` and `ninetothree.co` today for about $25 total, before someone reads this document.
+**Nine to Three.** It is the only name on the list that is simultaneously free, findable, and _explains the product_. Buy `ninetothree.com` and `ninetothree.co` today for about $25 total, before someone reads this document.
 
 ### Brand assets to claim
 
-| Asset | Status |
-|---|---|
-| `ninetothree.com` | **Available** — buy first |
-| `ninetothree.co` | Available |
-| `ninetothree.uk` | Available |
-| `ninetothree.io` | Available |
-| `ninetothree.net`, `.org` | Available |
-| `ninetothree.app` | Registered, not resolving (parked) |
-| `ninetothree.co.uk` | Registered 2015, parked GoDaddy lander — no business behind it |
-| TikTok `@ninetothree` | Available |
-| GitHub `ninetothree` | **Taken** — dormant account, 0 repos, created 2018. Use `ninetothreehq` or `getninetothree` (both free). |
-| Instagram, X | Inconclusive from automated checks — claim manually |
+| Asset                     | Status                                                                                                   |
+| ------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `ninetothree.com`         | **Available** — buy first                                                                                |
+| `ninetothree.co`          | Available                                                                                                |
+| `ninetothree.uk`          | Available                                                                                                |
+| `ninetothree.io`          | Available                                                                                                |
+| `ninetothree.net`, `.org` | Available                                                                                                |
+| `ninetothree.app`         | Registered, not resolving (parked)                                                                       |
+| `ninetothree.co.uk`       | Registered 2015, parked GoDaddy lander — no business behind it                                           |
+| TikTok `@ninetothree`     | Available                                                                                                |
+| GitHub `ninetothree`      | **Taken** — dormant account, 0 repos, created 2018. Use `ninetothreehq` or `getninetothree` (both free). |
+| Instagram, X              | Inconclusive from automated checks — claim manually                                                      |
 
 **Naming conventions:** "Nine to Three" in prose, "NineToThree" in code and handles, `ninetothree` in URLs, package names and the repo root.
 
@@ -275,17 +302,17 @@ Criteria 5 and 6 are the ones that kill most "nice" names. A dictionary word lik
 
 ## Decisions already made (so we don't relitigate them)
 
-| Decision | Choice | Why |
-|---|---|---|
-| Wedge | **US first, en-US** | One vaccine schedule, one benefits system, one car-seat law, one set of emergency numbers. Depth beats breadth. UK is V2. |
-| Platform | Responsive PWA first, native later | One codebase, no app-store gatekeeping, installable, offline. |
-| Content source | Git-based MDX/JSON with Zod schema + clinical review | Versioned, diffable, testable, no CMS lock-in. |
-| Personalization | Rules engine, not LLM | Deterministic, auditable, cheap, safe. AI only for summarization with human review. |
-| Medical advice | Never diagnose. Triage + cite + escalate. | Liability and trust. |
-| Monetization | Subscription + disclosed affiliate, no formula ads | Aligns incentive with the parent, not the advertiser. |
-| Free tier | Current week + 1 prior + 3 pins | Enough to feel the habit, not enough to replace it. |
-| Success metric | Week-12 completion rate and 6-month retention | Not signups, not pageviews. |
-| Brand name | **Nine to Three** (`ninetothree.com`) | Free at standard price, zero search competition, and it encodes the scope: 9 months pregnant → 3 years old. Trademark clearance still required before public build. |
+| Decision        | Choice                                               | Why                                                                                                                                                                 |
+| --------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Wedge           | **US first, en-US**                                  | One vaccine schedule, one benefits system, one car-seat law, one set of emergency numbers. Depth beats breadth. UK is V2.                                           |
+| Platform        | Responsive PWA first, native later                   | One codebase, no app-store gatekeeping, installable, offline.                                                                                                       |
+| Content source  | Git-based MDX/JSON with Zod schema + clinical review | Versioned, diffable, testable, no CMS lock-in.                                                                                                                      |
+| Personalization | Rules engine, not LLM                                | Deterministic, auditable, cheap, safe. AI only for summarization with human review.                                                                                 |
+| Medical advice  | Never diagnose. Triage + cite + escalate.            | Liability and trust.                                                                                                                                                |
+| Monetization    | Subscription + disclosed affiliate, no formula ads   | Aligns incentive with the parent, not the advertiser.                                                                                                               |
+| Free tier       | Current week + 1 prior + 3 pins                      | Enough to feel the habit, not enough to replace it.                                                                                                                 |
+| Success metric  | Week-12 completion rate and 6-month retention        | Not signups, not pageviews.                                                                                                                                         |
+| Brand name      | **Nine to Three** (`ninetothree.com`)                | Free at standard price, zero search competition, and it encodes the scope: 9 months pregnant → 3 years old. Trademark clearance still required before public build. |
 
 ---
 

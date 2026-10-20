@@ -1,0 +1,100 @@
+@import "tailwindcss";
+@import "@ninetothree/ui/tokens.css";
+
+/*
+ * Tailwind only scans the app by default, so every utility used inside the
+ * design system was missing from the build and the whole product rendered
+ * unstyled. The UI package has to be named explicitly.
+ */
+@source "../../../../packages/ui/src";
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    line-height: var(--leading-normal);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Focus is always visible, and it is never red. */
+  :focus-visible {
+    outline: 2px solid var(--color-clay);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background-color: var(--color-clay-wash);
+    color: var(--color-ink);
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    line-height: var(--leading-tight);
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Numbers in a column should line up. */
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@layer utilities {
+  /* The reading measure. Nothing in the product is wider than this. */
+  .measure {
+    max-width: var(--measure);
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+}
+
+/* Print: the week card, on one US Letter page, with the links written out. */
+@media print {
+  :root {
+    --color-paper: #ffffff;
+    --color-ink: #000000;
+    --color-ink-muted: #333333;
+    --color-line: #cccccc;
+  }
+
+  @page {
+    size: letter;
+    margin: 0.75in;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.75em;
+    color: #555555;
+  }
+}

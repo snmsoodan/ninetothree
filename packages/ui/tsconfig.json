@@ -1,0 +1,9 @@
+{
+  "extends": "@ninetothree/config/tsconfig/library.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "noEmit": true,
+    "types": ["vitest/globals", "@testing-library/jest-dom"]
+  },
+  "include": ["src"]
+}
