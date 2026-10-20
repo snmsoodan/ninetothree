@@ -2,7 +2,13 @@
 
 import Link from "next/link";
 import { useMemo } from "react";
-import { PACKS, type StagePack } from "@ninetothree/content";
+import {
+  ARTICLES,
+  PACKS,
+  articleHref,
+  articlesForAction,
+  type StagePack,
+} from "@ninetothree/content";
 import { Badge, Card, CardBody, ProgressRing } from "@ninetothree/ui";
 import { ButtonLink } from "@/components/ButtonLink";
 import { catchUp, personalizePack } from "@ninetothree/rules";
@@ -20,6 +26,12 @@ export interface WeekViewProps {
   pack: StagePack;
   nextId?: string;
   previousId?: string;
+}
+
+/** The long read that explains a step, if one exists. */
+function readMoreFor(actionId: string): { href: string; title: string } | undefined {
+  const [article] = articlesForAction(ARTICLES, actionId);
+  return article ? { href: articleHref(article), title: article.title } : undefined;
 }
 
 export function WeekView({ pack, nextId, previousId }: WeekViewProps) {
@@ -122,6 +134,7 @@ export function WeekView({ pack, nextId, previousId }: WeekViewProps) {
                 packId={pack.id}
                 packTitle={pack.title}
                 today={today}
+                readMore={readMoreFor(action.id)}
               />
             ))}
           </div>

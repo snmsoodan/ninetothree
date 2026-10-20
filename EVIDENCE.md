@@ -830,6 +830,43 @@ The fix is `settledIds(pack, state)` in `apps/web/src/lib/week.ts`: a step is se
 
 **`searchLinks` in `links.ts` is still there and still used by the library filter.** It is a substring match over three fields, which is right for filtering a list you are already looking at. The new `search()` is for the case where you do not know where the answer lives. Two functions, two jobs; the library page was not rewritten.
 
-## 23. How this file is maintained
+## 23. Content pages (issue #28)
+
+**An article is a TypeScript module, not an `.mdx` file on disk.** The issue says "article rendering from MDX", and the body is still Markdown rendered by MDX — but the file itself is `packages/content/articles/glucose-test.ts`, exporting an object whose `body` is a template literal. The reason is deployment: reading `.mdx` from disk at request time works in `next dev` and fails in a serverless deploy, and it would pull `node:fs` into a package that client components import. A typed module gives real newlines, type safety, Zod validation at module load, and no new parser. A broken article fails the build, not a parent at 3am — the same contract as the packs.
+
+**`ArticleBody` passes no components map to `compileMDX`, deliberately.** A components map is how content starts rendering a carousel, a spinner or a modal. An article is prose. The three things the calm rules exist to keep out are exactly the three things a component map invites in.
+
+**The article schema is the pack schema's sibling.** At least one source, `reviewedBy`, `reviewedAt` and `updatedAt` required, a stage range that cannot run backwards, a kebab-case id of at least three characters, and at most six related actions. `loadArticles` reports every problem with the article id and the path inside it, and `assertValidArticles` throws with all of them at once.
+
+**Six articles, each attached to a real action id.** `glucose-test` → `w28-glucose`, `car-seat-rear-facing` → `w36-car-seat`, `safe-sleep` → `m2-safe-sleep`, `formula-feeding` → `pp1-feed`, `starting-solids` → `m6-solids`, `postpartum-mood` → `pp1-you`. A test asserts every `relatedActions` id resolves through `findAction(PACKS, id)`, so an article cannot point at a step that was renamed.
+
+**The step links to the read, and the read links back.** `ActionItem` takes an optional `readMore: { href, title }` and renders "Long read — <title>" after the detail block. `WeekView` computes it with `articlesForAction(ARTICLES, actionId)`. The article page's "The step this goes with" region links to `/week/<packId>#<actionId>-title`, and `resolveRelated` drops an id that no longer exists rather than rendering a dead link.
+
+**The reading level is measured on the prose, not on the Markdown.** `articleProse` strips headings, links, images, code fences, inline code, HTML and blockquotes before `readingGrade` runs. Counting `##` and `](` as words would make every article look harder than it reads; counting a URL as a word would make it look easier. The six articles score 4.0 to 5.9 against the grade-8 ceiling:
+
+| Article                | Grade |
+| ---------------------- | ----- |
+| `formula-feeding`      | 4.0   |
+| `safe-sleep`           | 4.3   |
+| `car-seat-rear-facing` | 4.6   |
+| `glucose-test`         | 4.9   |
+| `starting-solids`      | 4.9   |
+| `postpartum-mood`      | 5.9   |
+
+**The lint found one real sentence and it was rewritten, not excused.** `formula-feeding` said "cannot guarantee clean water". That is a promise in the negative, and `absolute-claim` caught it. The fix was "cannot be sure the water is clean" — better copy, and the rule stayed narrow. This is the second time the lint has paid for itself; the first was "it cannot tell you what you need to know" in `pregnancy-w28`.
+
+**A health article must cite a clinical or government source.** `lintArticle` adds an `unsourced-article` rule: an article whose `domain` starts with `health-` and whose sources are all editorial, charity or vendor fails. The six shipped articles cite ACOG, CDC, NICE, NIH, AAP and NHTSA.
+
+**Two source URLs were 404 before the articles were written.** AAP's `Switching-To-Solid-Foods.aspx` is now `Starting-Solid-Foods.aspx`, and CDC's `reproductive-health/depression-during-and-after-pregnancy/` is now `reproductive-health/depression/index.html`. Both were probed live and replaced before the article that cites them was committed.
+
+**`check-links.mjs` reads the article sources with a regex, and asserts the count.** The script has no TypeScript loader, so it extracts `url: "https://..."` from each article file. A regex that silently stops matching is worse than no check at all, so the script counts the `url:` keys and throws if the extracted count differs. A source that stops matching fails the Links job instead of going unchecked. The run is now 122 links, none broken, none moved, four bot-protected.
+
+**Print is a stylesheet, not a button.** The existing `@media print` block gained `.article-body { font-size: 11pt }`, `break-after: avoid` on headings and `break-inside: avoid` on list items and paragraphs, so an article prints as one column with its sources written out. A journey test walks `document.styleSheets` for the print rule and asserts it is there, because a print stylesheet that is silently dropped by a refactor is invisible until someone is standing at a printer.
+
+**`ArticleBody` has no unit test.** It is an async server component calling `compileMDX`, which `@testing-library/react` cannot render. It is covered by the journey test that walks from a step to the article and back, and by the axe test on `/read/glucose-test`. This is stated here rather than papered over with a shallow mock that would test the mock.
+
+**`/read` is not in the nav.** Five tabs are full, and a long read is reached from the step it explains, which is the only place it is useful. The index exists so a reader who wants to browse can, and so the article page has somewhere to go back to.
+
+## 24. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.

@@ -1,3 +1,4 @@
+import { articleProse, type Article } from "./articles";
 import type { LinkEntry } from "./links";
 import type { StagePack } from "./schema";
 
@@ -19,7 +20,8 @@ export type LintRule =
   | "normative"
   | "reading-level"
   | "alt-text"
-  | "unsourced-red-flag";
+  | "unsourced-red-flag"
+  | "unsourced-article";
 
 export interface LintFinding {
   /** The pack or link id, so a finding can be traced to a file. */
@@ -329,4 +331,52 @@ export function lintLink(link: LinkEntry): LintFinding[] {
 
 export function lintLinks(links: LinkEntry[]): LintFinding[] {
   return links.flatMap(lintLink);
+}
+
+/**
+ * An article is prose at length, which is exactly where a reading level
+ * drifts. The same claim and obligation rules apply to the title, the
+ * summary and the body; the reading level is measured over the body with the
+ * Markdown taken out, because `##` is not a word a parent reads.
+ */
+export function lintArticle(article: Article): LintFinding[] {
+  const findings: LintFinding[] = [];
+
+  findings.push(...checkText(article.id, "title", article.title));
+  findings.push(...checkText(article.id, "summary", article.summary));
+
+  const prose = articleProse(article.body);
+  findings.push(...checkText(article.id, "body", prose));
+
+  const grade = readingGrade(prose);
+  if (grade > MAX_GRADE) {
+    findings.push({
+      subject: article.id,
+      path: "body",
+      rule: "reading-level",
+      message: `Reads at grade ${grade.toFixed(1)}. The ceiling is ${MAX_GRADE}. Shorten the sentences.`,
+      excerpt: `grade ${grade.toFixed(1)}`,
+    });
+  }
+
+  // A health article is a clinical claim at length. It needs a clinical or
+  // government source, not a blog post that agrees with us.
+  if (article.domain.startsWith("health-")) {
+    const backed = article.sources.some((source) => CLINICAL_SOURCE_KINDS.has(source.kind));
+    if (!backed) {
+      findings.push({
+        subject: article.id,
+        path: "sources",
+        rule: "unsourced-article",
+        message: "A health article is a clinical claim. Cite a clinical or government source.",
+        excerpt: article.sources.map((s) => s.publisher).join(", "),
+      });
+    }
+  }
+
+  return findings;
+}
+
+export function lintArticles(articles: Article[]): LintFinding[] {
+  return articles.flatMap(lintArticle);
 }

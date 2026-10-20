@@ -551,3 +551,57 @@ test("search says nothing is here without saying 'no results'", async ({ page })
   await page.getByRole("link", { name: "Open the library" }).click();
   await expect(page).toHaveURL(/\/library$/);
 });
+
+test("a step leads to the long read that explains it, and the read leads back", async ({
+  page,
+}) => {
+  await onboardAsPregnant(page);
+  await page.goto("/week/pregnancy-w28");
+
+  // The step carries the link, so the parent who asks "why" does not have to
+  // go looking for the answer somewhere else.
+  const readMore = page.getByRole("link", { name: "What the glucose test actually measures" });
+  await expect(readMore).toBeVisible();
+  await readMore.click();
+
+  await expect(page).toHaveURL(/\/read\/glucose-test$/);
+  await expect(
+    page.getByRole("heading", { level: 1, name: "What the glucose test actually measures" }),
+  ).toBeVisible();
+
+  // Every article ends with where it came from and who reviewed it.
+  await expect(page.getByRole("region", { name: "Where this comes from" })).toBeVisible();
+  await expect(
+    page.getByText(/Reviewed by Clinical review pending on October 20, 2026/),
+  ).toBeVisible();
+
+  // And it leads back to the step.
+  await page.getByRole("link", { name: "Get your glucose screening if you haven't" }).click();
+  await expect(page).toHaveURL(/\/week\/pregnancy-w28#w28-glucose-title$/);
+});
+
+test("an article prints as one column with its sources written out", async ({ page }) => {
+  await page.goto("/read/glucose-test");
+
+  // The print rules are in the stylesheet, not in a script, so they apply to
+  // the page a parent actually prints.
+  const printRules = await page.evaluate(() => {
+    const found: string[] = [];
+    for (const sheet of Array.from(document.styleSheets)) {
+      let rules: CSSRuleList;
+      try {
+        rules = sheet.cssRules;
+      } catch {
+        continue;
+      }
+      for (const rule of Array.from(rules)) {
+        if (rule instanceof CSSMediaRule && rule.conditionText.includes("print")) {
+          found.push(rule.cssText);
+        }
+      }
+    }
+    return found.join("\n");
+  });
+  expect(printRules).toContain("article-body");
+  expect(printRules).toContain("attr(href)");
+});

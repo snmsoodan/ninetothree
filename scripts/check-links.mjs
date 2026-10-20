@@ -16,6 +16,7 @@ import { join } from "node:path";
 
 const PACKS = "packages/content/packs";
 const LINKS = "packages/content/links";
+const ARTICLES = "packages/content/articles";
 const UA =
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0 Safari/537.36";
 const TIMEOUT_MS = 20_000;
@@ -119,6 +120,25 @@ async function collect() {
   for (const file of linkFiles) {
     const entries = JSON.parse(await readFile(join(LINKS, file), "utf8"));
     for (const link of entries) add(urls, link.url, link.id);
+  }
+
+  // Articles are typed modules, not JSON, and this script has no TypeScript
+  // loader. The `url:` field is a string literal in every one of them, so it
+  // is read with a regex — and the count is checked against the number of
+  // `url:` keys, so a source that stops matching fails loudly instead of
+  // quietly going unchecked.
+  const articleFiles = (await readdir(ARTICLES)).filter((f) => f.endsWith(".ts"));
+  for (const file of articleFiles) {
+    const text = await readFile(join(ARTICLES, file), "utf8");
+    const id = /id:\s*"([^"]+)"/.exec(text)?.[1] ?? file;
+    const found = [...text.matchAll(/url:\s*"(https?:\/\/[^"]+)"/g)].map((m) => m[1]);
+    const declared = (text.match(/^\s*url:/gm) ?? []).length;
+    if (found.length !== declared) {
+      throw new Error(
+        `${file}: found ${found.length} URLs but ${declared} url: keys. The article source check would miss one.`,
+      );
+    }
+    for (const url of found) add(urls, url, id);
   }
 
   return urls;

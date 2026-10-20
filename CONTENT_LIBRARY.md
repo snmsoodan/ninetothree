@@ -394,3 +394,61 @@ The first run against real content flagged one sentence: "it cannot tell you wha
 - **It does not check facts.** A confidently wrong sentence with a citation passes every rule.
 - **It does not lint the UI chrome.** Button labels, empty states and error messages are covered by the banned-word list in `UX_CRAFT.md`, which is a design review, not a build step.
 - **The `alt-text` rule is a guard, not a check.** The schema has no image field today, so it is vacuous. It fires the day someone adds one without alt text.
+
+## 10. Long reads
+
+A week holds three steps and about two hundred characters each. Some things do not fit: what a test actually measures, why a seat faces backwards, what the difference is between a hard fortnight and something that needs help. Those are articles.
+
+### An article is a module, not a file on disk
+
+Articles live in `packages/content/articles/` as typed `.ts` modules:
+
+```ts
+export const glucoseTest: Article = {
+  id: "glucose-test",
+  title: "What the glucose test actually measures",
+  summary: "One sentence a parent can read on a phone.",
+  domain: "health-parent",
+  stages: { from: { kind: "pregnancy", index: 24 }, to: { kind: "pregnancy", index: 28 } },
+  relatedActions: ["w28-glucose"],
+  sources: [/* at least one */],
+  reviewedBy: "Clinical review pending",
+  reviewedAt: "2026-10-20",
+  updatedAt: "2026-10-20",
+  body: `## A heading
+
+Markdown, with real newlines.`,
+};
+```
+
+The body is Markdown and is rendered by MDX. The file is a module because reading `.mdx` from disk at request time works in `next dev` and fails in a deploy, and because a typed module is validated by Zod at module load — a broken article fails the build, not a parent at 3am. This is the same contract as the packs.
+
+### What the schema requires
+
+| Field            | Rule                                                           |
+| ---------------- | -------------------------------------------------------------- |
+| `id`             | kebab-case, at least three characters, unique across articles  |
+| `title`          | at most 120 characters                                         |
+| `summary`        | at most 240 characters                                         |
+| `domain`         | one of the thirteen domains                                    |
+| `stages`         | a range that cannot run backwards                              |
+| `relatedActions` | at most six, and every id must resolve to a real step          |
+| `sources`        | at least one, each with a publisher, a kind and an access date |
+| `reviewedBy`     | required — "Clinical review pending" until a clinician signs   |
+| `reviewedAt`     | required, `YYYY-MM-DD`                                         |
+| `updatedAt`      | required, `YYYY-MM-DD`                                         |
+| `body`           | non-empty Markdown                                             |
+
+### The same lint, plus one rule
+
+Articles go through the same six rules as the packs, measured on `articleProse(body)` — the Markdown stripped out, so `##` and `](` are not counted as words. The six shipped articles score 4.0 to 5.9 against the grade-8 ceiling.
+
+One rule is article-only: **`unsourced-article`**. An article whose `domain` starts with `health-` must cite at least one `clinical` or `government` source. A health claim cited only to a vendor is not a citation.
+
+### How a reader finds one
+
+A step that has an article renders "Long read — <title>" under its detail. The article page carries "The step this goes with", which links back to `/week/<packId>#<actionId>-title`. `/read` is the index, and it is not in the nav: five tabs are full, and a long read is reached from the step it explains.
+
+### Print
+
+An article prints as one column with its sources written out. The rules are in the `@media print` block of `globals.css`: `font-size: 11pt`, `break-after: avoid` on headings, `break-inside: avoid` on list items and paragraphs. A journey test asserts the print rule is still in the stylesheet, because a print stylesheet dropped by a refactor is invisible until someone is standing at a printer.

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import type { Action } from "@ninetothree/content";
 import { Badge, Button, Dialog, RadioGroup, TextLink, cn } from "@ninetothree/ui";
 import {
@@ -50,9 +51,11 @@ export interface ActionItemProps {
   packTitle: string;
   /** ISO date. Passed in so the snooze answer is the same on server and client. */
   today: string;
+  /** The long read that explains this step, if there is one. */
+  readMore?: { href: string; title: string };
 }
 
-export function ActionItem({ action, packId, packTitle, today }: ActionItemProps) {
+export function ActionItem({ action, packId, packTitle, today, readMore }: ActionItemProps) {
   const state = useAppState();
   const done = isDone(state, action.id);
   const skipped = isSkipped(state, action.id);
@@ -135,6 +138,18 @@ export function ActionItem({ action, packId, packTitle, today }: ActionItemProps
           </button>
           {expanded ? <p className="mt-2 text-base text-ink-muted">{action.detail}</p> : null}
         </div>
+      ) : null}
+
+      {readMore ? (
+        <p className="mt-3 text-sm text-ink-muted">
+          Long read —{" "}
+          <Link
+            href={readMore.href}
+            className="text-ink underline decoration-line-strong decoration-1 underline-offset-[3px] hover:decoration-ink"
+          >
+            {readMore.title}
+          </Link>
+        </p>
       ) : null}
 
       {action.options.length > 0 ? (

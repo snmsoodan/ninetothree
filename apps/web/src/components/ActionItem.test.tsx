@@ -37,6 +37,30 @@ describe("ActionItem", () => {
     expect(screen.queryByText("Do this one")).not.toBeInTheDocument();
   });
 
+  it("links to the long read that explains the step", () => {
+    render(
+      <ActionItem
+        action={glucose}
+        packId="pregnancy-w28"
+        packTitle="Week 28"
+        today="2027-01-07"
+        readMore={{ href: "/read/glucose-test", title: "What the glucose test measures" }}
+      />,
+    );
+    expect(screen.getByText(/Long read/)).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "What the glucose test measures" })).toHaveAttribute(
+      "href",
+      "/read/glucose-test",
+    );
+  });
+
+  it("says nothing about a long read when there is not one", () => {
+    render(
+      <ActionItem action={glucose} packId="pregnancy-w28" packTitle="Week 28" today="2027-01-07" />,
+    );
+    expect(screen.queryByText(/Long read/)).not.toBeInTheDocument();
+  });
+
   it("says 'minute' for a one-minute action", () => {
     render(
       <ActionItem

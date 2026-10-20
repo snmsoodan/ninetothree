@@ -1,6 +1,7 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { lintLinks, lintPacks, type LintFinding } from "../lint";
+import { ARTICLES } from "../article-registry";
+import { lintArticles, lintLinks, lintPacks, type LintFinding } from "../lint";
 import { LINKS } from "../link-registry";
 import { loadPacks } from "../loader";
 
@@ -64,7 +65,14 @@ if (issues.length > 0) {
 
 report(lintPacks(packs), "content lint problem(s)");
 report(lintLinks(LINKS), "catalogue lint problem(s)");
+report(lintArticles(ARTICLES), "article lint problem(s)");
 
 if (process.exitCode !== 1) {
   console.log(`✓ ${LINKS.length} catalogue entries pass the same lint`);
+  console.log(`✓ ${ARTICLES.length} articles pass the same lint`);
+  for (const article of ARTICLES) {
+    console.log(
+      `  ${article.id.padEnd(24)} ${String(article.sources.length)} sources · reviewed ${article.reviewedAt}`,
+    );
+  }
 }
