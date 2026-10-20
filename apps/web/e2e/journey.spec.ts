@@ -466,3 +466,38 @@ test("a week can be closed with steps still open, and taken back", async ({ page
   await expect(page.getByText("That’s this week.")).toHaveCount(0);
   await expect(page.getByRole("button", { name: "I’m done with this week" })).toBeVisible();
 });
+
+test("a loss pauses the weekly guide, and nothing is deleted", async ({ page }) => {
+  await onboardAsPregnant(page);
+  await expect(page.getByRole("heading", { level: 1, name: "Week 28" })).toBeVisible();
+
+  await page.getByRole("link", { name: "Settings" }).click();
+  await expect(page).toHaveURL(/\/settings$/);
+  await page
+    .getByRole("radiogroup", { name: "A loss" })
+    .getByRole("radio", { name: "A baby died" })
+    .click();
+
+  // The dashboard stops showing a week.
+  await page.getByRole("link", { name: "This week" }).click();
+  await expect(page).toHaveURL(/\/$/);
+  await expect(page.getByText("The weekly guide is paused.")).toBeVisible();
+  await expect(page.getByRole("link", { name: "Open this week" })).toHaveCount(0);
+
+  // So does the week page itself.
+  await page.goto("/week/pregnancy-w28");
+  await expect(page.getByText("The weekly guide is paused.")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Done" })).toHaveCount(0);
+
+  // The safety page is untouched, because a parent who has lost a baby
+  // still needs the emergency numbers.
+  await page.getByRole("link", { name: "Open the safety page" }).click();
+  await expect(page).toHaveURL(/\/safety$/);
+  await expect(page.getByRole("link", { name: "911" })).toBeVisible();
+
+  // Turning it back on brings the week back.
+  await page.goto("/settings");
+  await page.getByRole("radiogroup", { name: "A loss" }).getByRole("radio", { name: "No" }).click();
+  await page.goto("/week/pregnancy-w28");
+  await expect(page.getByRole("button", { name: "Done" }).first()).toBeVisible();
+});

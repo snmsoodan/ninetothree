@@ -57,6 +57,7 @@ const STORIES = [
   "app-appointmentlist--scheduled",
   "app-sharecard--default",
   "app-progressline--some-progress",
+  "app-quietweek--default",
   "app-weekcompletion--open",
   "app-weekcompletion--settled",
   "app-weekcompletion--forced",

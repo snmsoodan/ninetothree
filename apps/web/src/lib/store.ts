@@ -420,6 +420,15 @@ export function updateProfile(profile: Profile): void {
 }
 
 /**
+ * Replaces the profile outright. `updateProfile` merges, which cannot express
+ * a field being cleared: a key deleted from the new object is put back by the
+ * spread of the old one. Anything that can clear a field must use this.
+ */
+export function setProfile(profile: Profile): void {
+  set({ ...state, profile });
+}
+
+/**
  * Changing a date is not starting over. A parent who corrects a due date
  * keeps their pins, their progress, and their profile.
  */

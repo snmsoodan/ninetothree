@@ -232,4 +232,13 @@ describe("WeekView", () => {
     render(<WeekView pack={TEST_PACK} />);
     expect(screen.getByText("1 of 3")).toBeInTheDocument();
   });
+
+  it("shows no week at all after a loss, and says why", () => {
+    updateProfile({ loss: "pregnancy" });
+    render(<WeekView pack={TEST_PACK} />);
+    expect(screen.getByText("The weekly guide is paused.")).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "The 3 things" })).not.toBeInTheDocument();
+    expect(screen.queryByText("The baby")).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Done" })).not.toBeInTheDocument();
+  });
 });

@@ -250,6 +250,10 @@ Five CI jobs run on every pull request. Each one fails for exactly one class of 
 
 **A week finishes two ways.** Either every step is settled, or the parent presses "I'm done with this week" and confirms. The record keeps which one happened, because only a week closed with steps still open has anything to reopen — so that is the only week that offers Reopen.
 
+**A rule that adds a step still lives in content.** Personalisation has three kinds of rule — hide, add, adjust — and all three have an id and a written reason, so "why am I not seeing this?" is answered by a rule rather than a shrug. But a rule only decides _whether_ a step appears; the pack decides _what_ it is, through `profileActions`. That keeps an added step inside the schema, the content lint, and clinical review, instead of putting clinical copy in the rules package where none of those gates reach it. No pack uses it yet, because writing the first one is a clinical decision.
+
+**Loss is a mode, not a preference.** A parent who tells us about a loss gets a quiet panel instead of a week: no steps, no red flags, no appointments, no weekly email. Nothing is deleted, and the safety page is untouched — a parent who has lost a baby still needs the emergency numbers. Turning it off in Settings brings the week back.
+
 **The content schema is a gate, not a suggestion.** A pack with two essentials, no red flag, no source, or a `buy` action with no options fails the build. It has already caught four real content bugs.
 
 **The link check treats 403 as "verify by hand", not "broken".** CDC, CPSC, NHTSA, DOL, medicaid.gov, naeyc.org, adaa.org and ssa.gov block non-browser clients. A 404 or 410 fails the build; a 403 from those hosts is printed for manual review. It found seven dead citations in the first nine packs and eight dead URLs in the first 89 catalogue entries.

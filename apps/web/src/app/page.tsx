@@ -10,6 +10,7 @@ import { PinList, type PinItem } from "@/components/PinList";
 import { ProgressLine } from "@/components/ProgressLine";
 import { ShareCard } from "@/components/ShareCard";
 import { WeekSummaryCard } from "@/components/WeekSummaryCard";
+import { QuietWeek } from "@/components/QuietWeek";
 import { resolvePins } from "@/lib/pins";
 import { removePin, stageInput, useAppState, useHydrated } from "@/lib/store";
 import { weekProgress } from "@/lib/week";
@@ -63,17 +64,22 @@ export default function DashboardPage() {
 
   const progress = weekProgress(pack, state);
   const ahead = nextPack(PACKS, pack);
+  const quiet = state.profile.loss !== undefined;
 
   return (
     <AppShell stage={label}>
       <div className="space-y-10">
-        <WeekSummaryCard
-          pack={pack}
-          progress={progress}
-          stage={label}
-          href={`/week/${pack.id}`}
-          nextHref={ahead ? `/week/${ahead.id}` : undefined}
-        />
+        {quiet ? (
+          <QuietWeek />
+        ) : (
+          <WeekSummaryCard
+            pack={pack}
+            progress={progress}
+            stage={label}
+            href={`/week/${pack.id}`}
+            nextHref={ahead ? `/week/${ahead.id}` : undefined}
+          />
+        )}
         <PinList pins={pins} onUnpin={removePin} />
         <AppointmentList appointments={pack.appointments} unit={pack.stageUnit} />
         <ShareCard stage={label} />

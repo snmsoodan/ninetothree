@@ -58,6 +58,7 @@ export function ProfilePreview({ packs, profile }: ProfilePreviewProps) {
   }, [packs, profile]);
 
   const empty = steps.length === 0 && options.length === 0;
+  const quiet = profile.loss !== undefined;
 
   return (
     <section aria-labelledby="preview-heading" className="mt-8">
@@ -67,7 +68,11 @@ export function ProfilePreview({ packs, profile }: ProfilePreviewProps) {
       <p className="mt-2 text-sm text-ink-muted">
         Across the whole guide, not just this week. It changes as you change the settings above.
       </p>
-      {empty ? (
+      {quiet ? (
+        <p className="mt-3 text-sm text-ink">
+          The weekly guide is paused, so there is no week to change. Nothing has been deleted.
+        </p>
+      ) : empty ? (
         <p className="mt-3 text-sm text-ink-faint">Nothing is hidden right now.</p>
       ) : (
         <div className="mt-3 space-y-5">
