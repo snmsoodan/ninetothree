@@ -228,6 +228,8 @@ Five CI jobs run on every pull request. Each one fails for exactly one class of 
 
 **The link check treats 403 as "verify by hand", not "broken".** CDC, CPSC, NHTSA, DOL, medicaid.gov, naeyc.org, adaa.org and ssa.gov block non-browser clients. A 404 or 410 fails the build; a 403 from those hosts is printed for manual review. It found seven dead citations in the first nine packs and eight dead URLs in the first 89 catalogue entries.
 
+**A 200 is not proof the link is right.** The checker follows the redirect and fails when a link now lands on a different site or a different page. It found nine such links in the shipped catalogue, including two Penguin Random House book URLs that returned 200 while serving a completely different book, and an app URL that now serves a product recall. A status check only proves a server is up.
+
 **The link check also runs weekly, on a schedule.** A citation that was live when it was written can rot while nobody is pushing. The `Links` job runs every Monday at 13:00 UTC against `main`, so a dead link is found by CI rather than by a parent at 3am. It retries a 5xx or a network failure twice before reporting, because a Cloudflare handshake failure is not a broken citation.
 
 **Every component has a story, and every story is rendered in CI.** `pnpm storybook` opens the design system on the app's real tokens and paper background. The Storybook job does not just build it — it loads all 20 stories in a browser, fails on any console error, asserts the CSS custom properties actually resolve, and runs axe on each one. A story that builds is not a story that renders: PR #54 shipped a completely unstyled product while 304 unit tests passed.

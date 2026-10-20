@@ -1,7 +1,7 @@
 [
   {
     "id": "acog-womens-health",
-    "title": "ACOG \u2014 Women's Health",
+    "title": "ACOG — Women's Health",
     "url": "https://www.acog.org/womens-health",
     "publisher": "American College of Obstetricians and Gynecologists",
     "type": "authoritative",
@@ -26,7 +26,7 @@
   },
   {
     "id": "cdc-pregnancy",
-    "title": "CDC \u2014 Pregnancy",
+    "title": "CDC — Pregnancy",
     "url": "https://www.cdc.gov/pregnancy/",
     "publisher": "Centers for Disease Control and Prevention",
     "type": "authoritative",
@@ -51,7 +51,7 @@
   },
   {
     "id": "cdc-vaccine-schedule",
-    "title": "CDC \u2014 Immunization schedules",
+    "title": "CDC — Immunization schedules",
     "url": "https://www.cdc.gov/vaccines/hcp/imz-schedules/",
     "publisher": "Centers for Disease Control and Prevention",
     "type": "authoritative",
@@ -76,7 +76,7 @@
   },
   {
     "id": "cdc-milestones",
-    "title": "CDC \u2014 Learn the Signs. Act Early.",
+    "title": "CDC — Learn the Signs. Act Early.",
     "url": "https://www.cdc.gov/act-early/milestones/index.html",
     "publisher": "Centers for Disease Control and Prevention",
     "type": "authoritative",
@@ -251,8 +251,8 @@
   },
   {
     "id": "nhtsa-car-seats",
-    "title": "NHTSA \u2014 Car seats and booster seats",
-    "url": "https://www.nhtsa.gov/equipment/car-seats-and-booster-seats",
+    "title": "NHTSA — Car seats and booster seats",
+    "url": "https://www.nhtsa.gov/vehicle-safety/car-seats-and-booster-seats",
     "publisher": "National Highway Traffic Safety Administration",
     "type": "authoritative",
     "domains": ["safety", "gear"],
@@ -276,7 +276,7 @@
   },
   {
     "id": "cpsc-recalls",
-    "title": "CPSC \u2014 Recalls",
+    "title": "CPSC — Recalls",
     "url": "https://www.cpsc.gov/Recalls",
     "publisher": "Consumer Product Safety Commission",
     "type": "authoritative",
@@ -301,7 +301,7 @@
   },
   {
     "id": "ecfr-cribs",
-    "title": "16 CFR 1219 \u2014 Full-size cribs",
+    "title": "16 CFR 1219 — Full-size cribs",
     "url": "https://www.ecfr.gov/current/title-16/chapter-II/subchapter-B/part-1219",
     "publisher": "Electronic Code of Federal Regulations",
     "type": "authoritative",
@@ -326,8 +326,8 @@
   },
   {
     "id": "fda-infant-formula",
-    "title": "FDA \u2014 Infant formula",
-    "url": "https://www.fda.gov/food/resources-you-food/infant-formula",
+    "title": "FDA — Infant formula",
+    "url": "https://www.fda.gov/food/resources-you-food/infant-formula-homepage",
     "publisher": "Food and Drug Administration",
     "type": "authoritative",
     "domains": ["feeding"],
@@ -351,8 +351,8 @@
   },
   {
     "id": "womenshealth-breastfeeding",
-    "title": "Office on Women's Health \u2014 Breastfeeding",
-    "url": "https://www.womenshealth.gov/breastfeeding",
+    "title": "Office on Women's Health — Breastfeeding",
+    "url": "https://womenshealth.gov/breastfeeding",
     "publisher": "US Department of Health and Human Services",
     "type": "authoritative",
     "domains": ["feeding"],
@@ -376,7 +376,7 @@
   },
   {
     "id": "cdc-infant-nutrition",
-    "title": "CDC \u2014 Infant and toddler nutrition",
+    "title": "CDC — Infant and toddler nutrition",
     "url": "https://www.cdc.gov/infant-toddler-nutrition/index.html",
     "publisher": "Centers for Disease Control and Prevention",
     "type": "authoritative",
@@ -402,7 +402,7 @@
   {
     "id": "usda-wic",
     "title": "WIC",
-    "url": "https://www.fns.usda.gov/wic",
+    "url": "https://www.fna.usda.gov/wic",
     "publisher": "US Department of Agriculture",
     "type": "authoritative",
     "domains": ["money", "nutrition"],
@@ -427,7 +427,7 @@
   {
     "id": "snap",
     "title": "SNAP",
-    "url": "https://www.fns.usda.gov/snap/supplemental-nutrition-assistance-program",
+    "url": "https://www.fna.usda.gov/snap/supplemental-nutrition-assistance-program",
     "publisher": "US Department of Agriculture",
     "type": "authoritative",
     "domains": ["money", "nutrition"],
@@ -451,8 +451,8 @@
   },
   {
     "id": "medicaid-pregnancy",
-    "title": "Medicaid \u2014 Pregnancy coverage",
-    "url": "https://www.healthcare.gov/medicaid-chip/eligibility/",
+    "title": "Medicaid — Pregnancy coverage",
+    "url": "https://www.healthcare.gov/medicaid-chip/",
     "publisher": "Centers for Medicare & Medicaid Services",
     "type": "authoritative",
     "domains": ["money", "health-parent"],
@@ -476,7 +476,7 @@
   },
   {
     "id": "insurekidsnow",
-    "title": "InsureKidsNow \u2014 CHIP",
+    "title": "InsureKidsNow — CHIP",
     "url": "https://www.insurekidsnow.gov/",
     "publisher": "Centers for Medicare & Medicaid Services",
     "type": "authoritative",
@@ -501,7 +501,7 @@
   },
   {
     "id": "dol-fmla",
-    "title": "DOL \u2014 FMLA",
+    "title": "DOL — FMLA",
     "url": "https://www.dol.gov/agencies/whd/fmla",
     "publisher": "US Department of Labor",
     "type": "authoritative",
@@ -526,7 +526,7 @@
   },
   {
     "id": "irs-child-tax-credit",
-    "title": "IRS \u2014 Child Tax Credit",
+    "title": "IRS — Child Tax Credit",
     "url": "https://www.irs.gov/credits-deductions/individuals/child-tax-credit",
     "publisher": "Internal Revenue Service",
     "type": "authoritative",
@@ -577,7 +577,7 @@
   {
     "id": "maternal-mental-health-hotline",
     "title": "National Maternal Mental Health Hotline",
-    "url": "https://mchb.hrsa.gov/national-maternal-mental-health-hotline",
+    "url": "https://mchb.hrsa.gov/programs-impact/national-maternal-mental-health-hotline",
     "publisher": "Health Resources and Services Administration",
     "type": "authoritative",
     "domains": ["mind"],
@@ -701,7 +701,7 @@
   },
   {
     "id": "asha-speech",
-    "title": "ASHA \u2014 Speech and language",
+    "title": "ASHA — Speech and language",
     "url": "https://www.asha.org/public/",
     "publisher": "American Speech-Language-Hearing Association",
     "type": "authoritative",
@@ -726,7 +726,7 @@
   },
   {
     "id": "cdc-autism",
-    "title": "CDC \u2014 Autism",
+    "title": "CDC — Autism",
     "url": "https://www.cdc.gov/autism/",
     "publisher": "Centers for Disease Control and Prevention",
     "type": "authoritative",
@@ -751,7 +751,7 @@
   },
   {
     "id": "ecta-center",
-    "title": "ECTA Center \u2014 Early Intervention",
+    "title": "ECTA Center — Early Intervention",
     "url": "https://ectacenter.org/",
     "publisher": "Early Childhood Technical Assistance Center",
     "type": "authoritative",
@@ -827,7 +827,7 @@
   {
     "id": "head-start",
     "title": "Head Start",
-    "url": "https://www.acf.hhs.gov/ohs",
+    "url": "https://acf.gov/ohs",
     "publisher": "Office of Head Start",
     "type": "authoritative",
     "domains": ["childcare", "money"],
@@ -852,7 +852,7 @@
   {
     "id": "nurse-family-partnership",
     "title": "Nurse-Family Partnership",
-    "url": "https://www.nursefamilypartnership.org/",
+    "url": "https://changent.org/what-we-do/nurse-family-partnership/",
     "publisher": "Nurse-Family Partnership",
     "type": "charity",
     "domains": ["health-parent", "mind"],
@@ -951,8 +951,8 @@
   },
   {
     "id": "uslca",
-    "title": "USLCA \u2014 Find a lactation consultant",
-    "url": "https://www.uslca.org/",
+    "title": "USLCA — Find a lactation consultant",
+    "url": "https://uslca.org/",
     "publisher": "US Lactation Consultant Association",
     "type": "authoritative",
     "domains": ["feeding"],
@@ -1002,7 +1002,7 @@
   {
     "id": "acnm",
     "title": "American College of Nurse-Midwives",
-    "url": "https://www.midwife.org/",
+    "url": "https://midwife.org/",
     "publisher": "American College of Nurse-Midwives",
     "type": "authoritative",
     "domains": ["health-parent"],
@@ -1027,7 +1027,7 @@
   {
     "id": "ican",
     "title": "ICAN",
-    "url": "https://www.ican-online.org/",
+    "url": "https://ican-online.org/",
     "publisher": "International Cesarean Awareness Network",
     "type": "charity",
     "domains": ["health-parent", "mind"],
@@ -1102,7 +1102,7 @@
   {
     "id": "211",
     "title": "211",
-    "url": "https://www.211.org/",
+    "url": "https://211.org/",
     "publisher": "United Way",
     "type": "local-service",
     "domains": ["money", "childcare", "mind"],
@@ -1151,7 +1151,7 @@
   },
   {
     "id": "cdc-lead",
-    "title": "CDC \u2014 Lead prevention",
+    "title": "CDC — Lead prevention",
     "url": "https://www.cdc.gov/lead-prevention/",
     "publisher": "Centers for Disease Control and Prevention",
     "type": "authoritative",
@@ -1176,7 +1176,7 @@
   },
   {
     "id": "cdc-drowning",
-    "title": "CDC \u2014 Drowning prevention",
+    "title": "CDC — Drowning prevention",
     "url": "https://www.cdc.gov/drowning/",
     "publisher": "Centers for Disease Control and Prevention",
     "type": "authoritative",

@@ -134,7 +134,7 @@ async function probeOnce(url) {
       signal: controller.signal,
       headers: { "user-agent": UA, accept: "text/html,*/*" },
     });
-    return { status: response.status };
+    return { status: response.status, finalUrl: response.url };
   } catch (error) {
     return { status: 0, error: error instanceof Error ? error.message : String(error) };
   } finally {
@@ -157,6 +157,35 @@ async function probe(url) {
   return result;
 }
 
+function registrable(host) {
+  return host.split(".").slice(-2).join(".");
+}
+
+function lastSegment(url) {
+  const segments = new URL(url).pathname.split("/").filter(Boolean);
+  return (segments.at(-1) ?? "").toLowerCase();
+}
+
+/**
+ * A 200 is not proof the link is right. Penguin Random House served a 200 for
+ * a book URL that had been reassigned to a different book, and a rebranded
+ * charity served a 200 for a page that was no longer theirs. Both would have
+ * shipped. A link that now lands somewhere else is a link whose promise may no
+ * longer be true, so it fails and a human confirms the destination.
+ */
+function movedTo(url, finalUrl) {
+  if (!finalUrl) return null;
+  const from = new URL(url);
+  const to = new URL(finalUrl);
+  if (from.href === to.href) return null;
+  if (registrable(from.host) !== registrable(to.host)) return "a different site";
+  const before = lastSegment(url);
+  const after = lastSegment(finalUrl);
+  if (before === after) return null;
+  if (before.startsWith(after) || after.startsWith(before)) return null;
+  return "a different page";
+}
+
 function classify(url, result) {
   if (result.status === 0) return "unreachable";
   if (result.status >= 200 && result.status < 400) return "ok";
@@ -174,7 +203,13 @@ for (let i = 0; i < entries.length; i += CONCURRENCY) {
     ...(await Promise.all(
       batch.map(async ([url, packs]) => {
         const result = await probe(url);
-        return { url, packs, result, verdict: classify(url, result) };
+        return {
+          url,
+          packs,
+          result,
+          verdict: classify(url, result),
+          moved: movedTo(url, result.finalUrl),
+        };
       }),
     )),
   );
@@ -182,6 +217,7 @@ for (let i = 0; i < entries.length; i += CONCURRENCY) {
 
 const broken = results.filter((r) => r.verdict === "broken" || r.verdict === "unreachable");
 const manual = results.filter((r) => r.verdict === "bot-protected");
+const moved = results.filter((r) => r.verdict === "ok" && r.moved);
 
 for (const r of results) {
   const mark = r.verdict === "ok" ? "ok  " : r.verdict === "bot-protected" ? "403 " : "FAIL";
@@ -195,12 +231,22 @@ if (manual.length > 0) {
   for (const r of manual) console.log(`  ${r.url}  (${r.packs.join(", ")})`);
 }
 
+if (moved.length > 0) {
+  console.error(`\n${moved.length} link(s) now land somewhere else:`);
+  for (const r of moved) {
+    console.error(`  ${r.url}  (${r.packs.join(", ")})`);
+    console.error(`    -> ${r.result.finalUrl}  [${r.moved}]`);
+  }
+  console.error("\nPoint the entry at the destination, or confirm the destination is still the right place.");
+}
+
 if (broken.length > 0) {
   console.error(`\n${broken.length} broken link(s):`);
   for (const r of broken) {
     console.error(`  ${r.url}  ${r.result.status || r.result.error}  (${r.packs.join(", ")})`);
   }
-  process.exit(1);
 }
 
-console.log(`\n${results.length} links checked, none broken.`);
+if (broken.length > 0 || moved.length > 0) process.exit(1);
+
+console.log(`\n${results.length} links checked, none broken, none moved.`);

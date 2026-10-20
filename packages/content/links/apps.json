@@ -29,7 +29,7 @@
   {
     "id": "app-nara-baby",
     "title": "Nara Baby",
-    "url": "https://narababy.com/",
+    "url": "https://apps.apple.com/us/app/nara-baby-pregnancy-tracker/id1444639029",
     "publisher": "Nara Baby",
     "type": "app",
     "domains": ["sleep", "feeding", "health-baby"],
@@ -50,7 +50,8 @@
     "lastChecked": "2026-10-20",
     "affiliate": false,
     "reviewedBy": "Clinical review pending",
-    "platforms": ["ios", "android"]
+    "platforms": ["ios"],
+    "note": "The company's own site now leads with a formula recall, so this links straight to the App Store."
   },
   {
     "id": "app-cdc-milestone-tracker",

@@ -2,7 +2,7 @@
   {
     "id": "nhtsa-inspection",
     "title": "Find a free car seat inspection",
-    "url": "https://www.nhtsa.gov/equipment/car-seats-and-booster-seats#installation-help-inspection",
+    "url": "https://www.nhtsa.gov/vehicle-safety/car-seats-and-booster-seats#installation-help-inspection",
     "publisher": "National Highway Traffic Safety Administration",
     "type": "local-service",
     "domains": ["gear", "safety"],
@@ -26,8 +26,8 @@
   },
   {
     "id": "cpsc-crib-safety",
-    "title": "CPSC \u2014 Crib safety",
-    "url": "https://www.cpsc.gov/Safety-Education/Safety-Education-Centers/cribs",
+    "title": "CPSC — Crib safety",
+    "url": "https://www.cpsc.gov/SafeSleep",
     "publisher": "Consumer Product Safety Commission",
     "type": "authoritative",
     "domains": ["gear", "safety"],
@@ -51,7 +51,7 @@
   },
   {
     "id": "wirecutter-baby",
-    "title": "Wirecutter \u2014 Baby and kid",
+    "title": "Wirecutter — Baby and kid",
     "url": "https://www.nytimes.com/wirecutter/baby-kid/",
     "publisher": "The New York Times",
     "type": "editorial",
@@ -77,7 +77,7 @@
   },
   {
     "id": "consumer-reports-car-seats",
-    "title": "Consumer Reports \u2014 Car seats",
+    "title": "Consumer Reports — Car seats",
     "url": "https://www.consumerreports.org/babies-kids/car-seats/",
     "publisher": "Consumer Reports",
     "type": "editorial",

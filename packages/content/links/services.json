@@ -2,7 +2,7 @@
   {
     "id": "childbirth-classes",
     "title": "Lamaze International",
-    "url": "https://www.lamaze.org/",
+    "url": "https://lamaze.org/",
     "publisher": "Lamaze International",
     "type": "course",
     "domains": ["health-parent"],
@@ -27,7 +27,7 @@
   {
     "id": "breastfeeding-class",
     "title": "WIC breastfeeding support",
-    "url": "https://www.fns.usda.gov/wic/breastfeeding",
+    "url": "https://www.fna.usda.gov/wic/breastfeeding",
     "publisher": "US Department of Agriculture",
     "type": "local-service",
     "domains": ["feeding"],

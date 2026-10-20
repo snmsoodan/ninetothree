@@ -2,9 +2,9 @@
   {
     "id": "book-expecting-better",
     "title": "Expecting Better",
-    "url": "https://www.penguinrandomhouse.com/books/313267/expecting-better-by-emily-osterm/",
-    "publisher": "Emily Oster / Penguin Random House",
-    "type": "book",
+    "url": "https://parentdata.org/",
+    "publisher": "Emily Oster / ParentData",
+    "type": "editorial",
     "domains": ["health-parent"],
     "stages": {
       "from": {
@@ -23,7 +23,7 @@
     "lastChecked": "2026-10-20",
     "affiliate": false,
     "reviewedBy": "Clinical review pending",
-    "note": "Written by an economist, not a clinician. Read it alongside your provider, not instead of them."
+    "note": "The publisher's book page now points at a different title. This is the author's own site, which is free and updated more often than the book."
   },
   {
     "id": "parentdata",
@@ -104,9 +104,9 @@
   {
     "id": "book-whole-brain-child",
     "title": "The Whole-Brain Child",
-    "url": "https://www.penguinrandomhouse.com/books/205936/the-whole-brain-child-by-daniel-j-siegel-and-tina-payne-bryson/",
-    "publisher": "Daniel Siegel & Tina Payne Bryson / Penguin Random House",
-    "type": "book",
+    "url": "https://drdansiegel.com/",
+    "publisher": "Dan Siegel",
+    "type": "editorial",
     "domains": ["mind", "play"],
     "stages": {
       "from": {
@@ -124,7 +124,8 @@
     "language": "en-US",
     "lastChecked": "2026-10-20",
     "affiliate": false,
-    "reviewedBy": "Clinical review pending"
+    "reviewedBy": "Clinical review pending",
+    "note": "The publisher's book page now points at a different title. This is the author's own site."
   },
   {
     "id": "book-how-to-talk",

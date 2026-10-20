@@ -400,6 +400,35 @@ Two patterns are worth recording because they will recur:
 
 **ACOG returned a transient 525 once and 200 the next run.** A Cloudflare SSL handshake failure is not a broken citation. The checker now retries status 0 and any 5xx twice with linear backoff before it reports a failure. Without that, the weekly job would have gone red on a link that was fine.
 
+### A 200 is not proof the link is right
+
+The first version of this catalogue passed the link check and was still wrong. CI caught one of them — the FDA formula page 404'd from a GitHub runner while returning 200 from my laptop — and chasing that redirect exposed the rest.
+
+**Two book links returned 200 while serving a completely different book.** Penguin Random House had reassigned the book IDs:
+
+| Entry                    | What the URL actually served                |
+| ------------------------ | ------------------------------------------- |
+| `book-expecting-better`  | _The Far Side of the Sun_ by Kate Furnivall |
+| `book-whole-brain-child` | _Worst Instincts_ by Wendy Kaminer          |
+
+A parent who tapped "Expecting Better" would have landed on a novel. A status check cannot see this, because the server is perfectly happy.
+
+**One app link returned 200 while serving a product recall.** `narababy.com` redirects to `nara.com`, which is Nara Organics — the same company, but the page it serves today is a voluntary recall of all Nara infant formula. A parent looking for a baby tracker would have landed on a recall notice. The entry now links the App Store listing directly.
+
+**Two organisations had rebranded, so the publisher name in the data was wrong.** The Blue Dot Project is now part of Postpartum Support International; Nurse-Family Partnership is now part of Changent. Both old domains still resolve, so nothing failed.
+
+**Two agencies had renamed themselves.** USDA's Food and Nutrition Service is now the Food and Nutrition Administration (`fns.usda.gov` → `fna.usda.gov`), and ACF moved off `acf.hhs.gov`. CPSC moved its crib page to `/SafeSleep`. NHTSA moved car seats to `/vehicle-safety/`. March of Dimes moved prenatal care. None of these were broken; all of them were stale.
+
+So the checker now follows the redirect and compares the destination:
+
+- **A redirect to a different registrable domain fails.** A link that leaves the site it named is a link whose publisher may no longer be right.
+- **A redirect whose final path segment is unrelated to the original fails.** `/books/313267/expecting-better-by-emily-osterm/` → `/books/313267/the-far-side-of-the-sun-by-kate-furnivall/` is not a move, it is a different page.
+- **A redirect that only drops `www`, adds a trailing slash, or keeps the same last segment passes.** Those are housekeeping, not a change of destination.
+
+That rule found nine links in the shipped catalogue. All nine are fixed, and the check now reads `115 links checked, none broken, none moved.`
+
+The lesson generalises: **a link checker that only reads status codes is checking that a server is up, not that a citation is true.**
+
 ### A type the blueprint was missing
 
 Wirecutter, Consumer Reports, ParentData and Happiest Baby are neither `authoritative` (they are not a regulator or a clinical body) nor `commercial` (they do not sell the thing they are reviewing). Filing them under either would have been a lie in the data. `editorial` was added to `LINK_TYPES`, to `CONTENT_LIBRARY.md` §2, and to the SQL constraint in `ARCHITECTURE.md` in the same commit.
@@ -429,6 +458,7 @@ Three of the content tests are the ones that matter, because they assert a produ
 - **89 is a seed, not a library.** The blueprint implies hundreds. This covers every stage and every domain at least once; it does not yet cover any of them deeply.
 - **The browse page is not the "help me choose" experience.** `/library` is a searchable list. The guided comparison that issue #29 describes, and the in-context links that issue #28 describes, are not built.
 - **No link has been clicked by a parent.** Whether "why it is here" is the sentence that helps is a guess.
+- **Four links cannot be checked at all.** `nejm.org`, `naeyc.org`, `simonandschuster.com` and `nytimes.com` return 403 to every non-browser client. They are printed for manual review on every run, and the redirect check cannot see them either — so `book-how-to-talk` is the one book link whose destination is unverified.
 
 ---
 
