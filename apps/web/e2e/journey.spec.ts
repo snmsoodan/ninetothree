@@ -373,3 +373,40 @@ test("a finished step is recorded, and the record can be taken away", async ({ p
   await page.getByRole("button", { name: "Download JSON" }).click();
   expect((await json).suggestedFilename()).toMatch(/^ninetothree-history-\d{4}-\d{2}-\d{2}\.json$/);
 });
+
+test("changing a setting re-personalizes the week without a reload", async ({ page }) => {
+  await onboardAsPregnant(page);
+
+  // A marker on window survives client-side navigation and dies on a reload,
+  // so it is the proof that the AC's "without a reload" is actually true.
+  await page.goto("/week/pregnancy-w36");
+  await page.evaluate(() => {
+    (window as unknown as { __noReload?: boolean }).__noReload = true;
+  });
+  await expect(page.getByText("Install the car seat and get it checked")).toBeVisible();
+
+  await page.getByRole("link", { name: "Settings" }).click();
+  await expect(page).toHaveURL(/\/settings$/);
+
+  // The car seat step is hidden the moment the answer changes, and the
+  // settings screen says which rule did it.
+  await page.getByRole("radiogroup", { name: "A car" }).getByRole("radio", { name: "No" }).click();
+  await expect(
+    page.getByText("You told us you do not have a car, so car seat steps are hidden."),
+  ).toBeVisible();
+
+  // Back to the week the long way round, so every hop is client-side.
+  await page.getByRole("link", { name: "This week" }).click();
+  await expect(page).toHaveURL(/\/$/);
+  await page.getByRole("link", { name: "Open this week" }).click();
+  await expect(page).toHaveURL(/\/week\/pregnancy-w28$/);
+  await page.getByRole("link", { name: "Next →" }).click();
+  await expect(page).toHaveURL(/\/week\/pregnancy-w36$/);
+
+  await expect(page.getByText("Install the car seat and get it checked")).toHaveCount(0);
+  await expect(page.getByText("Get your group B strep test")).toBeVisible();
+
+  expect(
+    await page.evaluate(() => (window as unknown as { __noReload?: boolean }).__noReload),
+  ).toBe(true);
+});

@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { useMemo } from "react";
 import { PACKS, type StagePack } from "@ninetothree/content";
-import { Badge, ButtonLink, Card, CardBody, Progress } from "@ninetothree/ui";
+import { Badge, Card, CardBody, Progress } from "@ninetothree/ui";
+import { ButtonLink } from "@/components/ButtonLink";
 import { catchUp, completion, personalizePack } from "@ninetothree/rules";
 import { ActionItem } from "./ActionItem";
 import { CatchUp } from "./CatchUp";

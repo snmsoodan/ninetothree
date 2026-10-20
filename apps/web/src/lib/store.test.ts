@@ -24,6 +24,7 @@ import {
   subscribe,
   togglePin,
   updateAppointment,
+  updateDates,
   updateProfile,
 } from "./store";
 
@@ -219,6 +220,38 @@ describe("updateProfile", () => {
     updateProfile({ feeding: "breast" });
     updateProfile({ feeding: "formula" });
     expect(getSnapshot().profile.feeding).toBe("formula");
+  });
+});
+
+describe("updateDates", () => {
+  it("changes the due date without touching anything else", () => {
+    completeOnboarding({
+      status: "pregnant",
+      dueDate: "2026-12-01",
+      profile: { feeding: "breast" },
+    });
+    markDone(step("a1"));
+    togglePin(pin("a1"));
+    updateDates({ dueDate: "2026-12-08" });
+    const state = getSnapshot();
+    expect(state.dueDate).toBe("2026-12-08");
+    expect(state.profile.feeding).toBe("breast");
+    expect(state.progress.a1?.status).toBe("done");
+    expect(state.pins).toHaveLength(1);
+  });
+
+  it("switches from pregnant to parent and sets the birth date", () => {
+    completeOnboarding({ status: "pregnant", dueDate: "2026-12-01", profile: {} });
+    updateDates({ status: "parent", birthDate: "2026-11-28" });
+    const state = getSnapshot();
+    expect(state.status).toBe("parent");
+    expect(state.birthDate).toBe("2026-11-28");
+  });
+
+  it("leaves a date alone when it is not in the patch", () => {
+    completeOnboarding({ status: "pregnant", dueDate: "2026-12-01", profile: {} });
+    updateDates({ status: "pregnant" });
+    expect(getSnapshot().dueDate).toBe("2026-12-01");
   });
 });
 

@@ -320,6 +320,22 @@ export function updateProfile(profile: Profile): void {
   set({ ...state, profile: { ...state.profile, ...profile } });
 }
 
+/**
+ * Changing a date is not starting over. A parent who corrects a due date
+ * keeps their pins, their progress, and their profile.
+ */
+export function updateDates(input: {
+  status?: "pregnant" | "parent";
+  dueDate?: string;
+  birthDate?: string;
+}): void {
+  const next: AppState = { ...state };
+  if (input.status) next.status = input.status;
+  if (input.dueDate !== undefined) next.dueDate = input.dueDate;
+  if (input.birthDate !== undefined) next.birthDate = input.birthDate;
+  set(next);
+}
+
 export function resetAll(): void {
   set({ ...EMPTY_STATE });
   if (typeof window !== "undefined") {

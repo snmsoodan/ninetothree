@@ -92,6 +92,22 @@ describe("ButtonLink", () => {
     expect(link.className).toContain("min-h-9");
     expect(link.className).toContain("w-full");
   });
+
+  it("renders whatever element it is given, so an app can pass its router", () => {
+    function FakeLink({ href, children }: { href: string; children: React.ReactNode }) {
+      return (
+        <a href={href} data-router="yes">
+          {children}
+        </a>
+      );
+    }
+    render(
+      <ButtonLink as={FakeLink} href="/week">
+        Next
+      </ButtonLink>,
+    );
+    expect(screen.getByRole("link", { name: "Next" })).toHaveAttribute("data-router", "yes");
+  });
 });
 
 describe("Card", () => {

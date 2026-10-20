@@ -1,6 +1,17 @@
 import { describe, expect, it } from "vitest";
 import type { Action, StagePack } from "@ninetothree/content";
-import { completion, leadAction, personalizePack, RULES } from "./personalize";
+import {
+  completion,
+  leadAction,
+  OPTION_RULES,
+  personalizePack,
+  PROFILE_FIELDS,
+  PROFILE_GROUPS,
+  readField,
+  RULES,
+  writeField,
+  type Profile,
+} from "./personalize";
 
 function action(overrides: Partial<Action> & { id: string }): Action {
   return {
@@ -356,5 +367,180 @@ describe("completion", () => {
 
   it("ignores ids that are not in the pack", () => {
     expect(completion(pack([action({ id: "a" })]), ["a", "zzz"])).toBe(1);
+  });
+});
+
+describe("OPTION_RULES", () => {
+  const tight = OPTION_RULES.find((r) => r.id === "tight-budget")!;
+
+  it("every option rule has a written reason", () => {
+    for (const rule of OPTION_RULES) {
+      expect(rule.reason.length).toBeGreaterThan(20);
+    }
+  });
+
+  it("trims the most expensive option when money is tight", () => {
+    const chair = action({
+      id: "chair",
+      title: "Get a high chair",
+      options: [
+        { id: "cheap", label: "A cheap one", cost: "$" },
+        { id: "dear", label: "A dear one", cost: "$$$" },
+      ],
+    });
+    const result = personalizePack(pack([chair]), { budget: "tight" });
+    expect(result.pack.coreActions[0]?.options.map((o) => o.id)).toEqual(["cheap"]);
+    expect(result.trimmed).toEqual([
+      {
+        actionId: "chair",
+        optionId: "dear",
+        ruleId: "tight-budget",
+        reason: tight.reason,
+      },
+    ]);
+  });
+
+  it("leaves the options alone when money is not tight", () => {
+    const chair = action({
+      id: "chair",
+      title: "Get a high chair",
+      options: [
+        { id: "cheap", label: "A cheap one", cost: "$" },
+        { id: "dear", label: "A dear one", cost: "$$$" },
+      ],
+    });
+    const result = personalizePack(pack([chair]), { budget: "ok" });
+    expect(result.pack.coreActions[0]?.options).toHaveLength(2);
+    expect(result.trimmed).toEqual([]);
+  });
+
+  it("never leaves an action with no way to do it", () => {
+    const chair = action({
+      id: "chair",
+      title: "Get a high chair",
+      options: [{ id: "dear", label: "A dear one", cost: "$$$" }],
+    });
+    const result = personalizePack(pack([chair]), { budget: "tight" });
+    expect(result.pack.coreActions[0]?.options).toHaveLength(1);
+    expect(result.trimmed).toEqual([]);
+  });
+
+  it("does not touch an action with no options", () => {
+    const result = personalizePack(pack([action({ id: "a" })]), { budget: "tight" });
+    expect(result.trimmed).toEqual([]);
+  });
+
+  it("reports nothing at all when every action was hidden", () => {
+    const carSeat = action({
+      id: "car",
+      title: "Install the car seat",
+      domain: "safety",
+      options: [{ id: "dear", label: "A dear one", cost: "$$$" }],
+    });
+    const result = personalizePack(pack([carSeat]), { hasCar: false, budget: "tight" });
+    // A pack is never emptied: if every action was hidden, the rules were
+    // wrong, so the original pack is shown and nothing is reported.
+    expect(result.pack.coreActions).toHaveLength(1);
+    expect(result.hidden).toEqual([]);
+    expect(result.trimmed).toEqual([]);
+  });
+});
+
+describe("PROFILE_FIELDS", () => {
+  it("covers every field on the profile", () => {
+    const keys = PROFILE_FIELDS.map((f) => f.key).sort();
+    const expected: (keyof Profile)[] = [
+      "budget",
+      "country",
+      "delivery",
+      "feeding",
+      "firstBaby",
+      "hasCar",
+      "housing",
+      "mentalHealthHistory",
+      "multiples",
+      "preterm",
+      "support",
+      "work",
+    ];
+    expect(keys).toEqual(expected);
+  });
+
+  it("names a rule that exists, or says nothing changes", () => {
+    for (const field of PROFILE_FIELDS) {
+      if (field.ruleId) {
+        const known = [...RULES, ...OPTION_RULES].some((r) => r.id === field.ruleId);
+        expect(known, `${field.key} names an unknown rule ${field.ruleId}`).toBe(true);
+      } else {
+        // A field with no rule must not claim to hide anything.
+        expect(field.effect, `${field.key} claims to hide without a rule`).not.toMatch(/^Hides/);
+      }
+    }
+  });
+
+  it("gives every field at least two options and a label", () => {
+    for (const field of PROFILE_FIELDS) {
+      expect(field.label.length).toBeGreaterThan(0);
+      expect(field.options.length).toBeGreaterThanOrEqual(2);
+    }
+  });
+
+  it("puts every field in a group that the screen renders", () => {
+    for (const field of PROFILE_FIELDS) {
+      expect(PROFILE_GROUPS, `${field.key} is in an unknown group`).toContain(field.group);
+    }
+    for (const group of PROFILE_GROUPS) {
+      expect(
+        PROFILE_FIELDS.some((f) => f.group === group),
+        `${group} is empty`,
+      ).toBe(true);
+    }
+  });
+
+  it("only marks a field read-only when the product cannot honour the rest", () => {
+    const readOnly = PROFILE_FIELDS.filter((f) => f.readOnly).map((f) => f.key);
+    expect(readOnly).toEqual(["country"]);
+  });
+
+  it("uses yes and no for every boolean field", () => {
+    for (const field of PROFILE_FIELDS.filter((f) => f.type === "boolean")) {
+      expect(field.options.map((o) => o.value)).toEqual(["yes", "no"]);
+    }
+  });
+});
+
+describe("readField", () => {
+  it("returns undefined for a field that was never set", () => {
+    expect(readField({}, "feeding")).toBeUndefined();
+  });
+
+  it("turns a boolean into yes or no", () => {
+    expect(readField({ hasCar: true }, "hasCar")).toBe("yes");
+    expect(readField({ hasCar: false }, "hasCar")).toBe("no");
+  });
+
+  it("passes a choice through", () => {
+    expect(readField({ feeding: "formula" }, "feeding")).toBe("formula");
+  });
+});
+
+describe("writeField", () => {
+  it("stores a boolean field as a boolean", () => {
+    expect(writeField({}, "hasCar", "no")).toEqual({ hasCar: false });
+    expect(writeField({}, "firstBaby", "yes")).toEqual({ firstBaby: true });
+  });
+
+  it("stores a choice field as a string", () => {
+    expect(writeField({}, "feeding", "formula")).toEqual({ feeding: "formula" });
+  });
+
+  it("ignores a key that is not a profile field", () => {
+    const profile: Profile = { feeding: "breast" };
+    expect(writeField(profile, "nope" as keyof Profile, "x")).toBe(profile);
+  });
+
+  it("round-trips through readField", () => {
+    const written = writeField({}, "mentalHealthHistory", "yes");
+    expect(readField(written, "mentalHealthHistory")).toBe("yes");
   });
 });

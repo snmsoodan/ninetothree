@@ -1,4 +1,4 @@
-import type { AnchorHTMLAttributes } from "react";
+import type { AnchorHTMLAttributes, ElementType } from "react";
 import { cn } from "../cn";
 import type { ButtonSize, ButtonVariant } from "./Button";
 
@@ -6,6 +6,12 @@ export interface ButtonLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement>
   variant?: ButtonVariant;
   size?: ButtonSize;
   block?: boolean;
+  /**
+   * The element to render. Defaults to a plain anchor, which is a full page
+   * load. An app that has a client-side router should pass its own link
+   * component so a tap does not reload the page.
+   */
+  as?: ElementType;
 }
 
 const variants: Record<ButtonVariant, string> = {
@@ -32,12 +38,13 @@ export function ButtonLink({
   variant = "primary",
   size = "md",
   block = false,
+  as: Component = "a",
   className,
   children,
   ...props
 }: ButtonLinkProps) {
   return (
-    <a
+    <Component
       className={cn(
         "inline-flex items-center justify-center rounded-md font-medium",
         "transition-colors duration-[var(--duration-base)] ease-[var(--ease-calm)]",
@@ -50,6 +57,6 @@ export function ButtonLink({
       {...props}
     >
       {children}
-    </a>
+    </Component>
   );
 }

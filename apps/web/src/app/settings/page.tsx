@@ -1,25 +1,49 @@
 "use client";
 
-import { useState } from "react";
-import { Button, ButtonLink, Card, CardBody, Dialog, RadioGroup } from "@ninetothree/ui";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { PACKS } from "@ninetothree/content";
+import { PROFILE_FIELDS, PROFILE_GROUPS, readField, writeField } from "@ninetothree/rules";
+import { Button, Card, CardBody, Dialog, RadioGroup } from "@ninetothree/ui";
+import { ButtonLink } from "@/components/ButtonLink";
 import { AppShell } from "@/components/AppShell";
-import { resetAll, updateProfile, useAppState } from "@/lib/store";
+import { ProfilePreview } from "@/components/ProfilePreview";
+import {
+  resetAll,
+  stageInput,
+  updateDates,
+  updateProfile,
+  useAppState,
+  useHydrated,
+} from "@/lib/store";
 
-const FEEDING = [
-  { value: "breast", label: "Breastfeeding" },
-  { value: "formula", label: "Formula" },
-  { value: "both", label: "Both" },
-  { value: "undecided", label: "Not decided yet" },
-];
-
-const FIRST_BABY = [
-  { value: "yes", label: "Yes, my first" },
-  { value: "no", label: "No, I have done this before" },
+const STATUS = [
+  { value: "pregnant", label: "I am pregnant" },
+  { value: "parent", label: "My baby is here" },
 ];
 
 export default function SettingsPage() {
   const state = useAppState();
+  const ready = useHydrated();
+  const router = useRouter();
   const [confirmOpen, setConfirmOpen] = useState(false);
+
+  useEffect(() => {
+    if (ready && !state.onboarded) router.replace("/onboarding");
+  }, [ready, state.onboarded, router]);
+
+  const input = stageInput(state);
+
+  if (!ready || !input) {
+    return (
+      <AppShell stage="Settings">
+        <p className="text-base text-ink-muted">One moment.</p>
+      </AppShell>
+    );
+  }
+
+  const dateLabel = state.status === "pregnant" ? "Due date" : "Birth date";
+  const dateValue = state.status === "pregnant" ? (state.dueDate ?? "") : (state.birthDate ?? "");
 
   return (
     <AppShell stage="Settings">
@@ -33,27 +57,42 @@ export default function SettingsPage() {
           <h2 id="dates-heading" className="font-display text-2xl text-ink">
             Your dates
           </h2>
+          <p className="mt-2 text-sm text-ink-muted">
+            Changing a date moves the guide. Your pins and your progress stay where they are.
+          </p>
           <Card className="mt-3">
-            <CardBody className="pt-5">
-              <dl className="space-y-2 text-base">
-                <div className="flex justify-between gap-3">
-                  <dt className="text-ink-muted">Status</dt>
-                  <dd className="text-ink">
-                    {state.status === "pregnant" ? "Pregnant" : "Parent"}
-                  </dd>
-                </div>
-                <div className="flex justify-between gap-3">
-                  <dt className="text-ink-muted">
-                    {state.status === "pregnant" ? "Due date" : "Birth date"}
-                  </dt>
-                  <dd className="text-ink tabular">
-                    {state.dueDate ?? state.birthDate ?? "Not set"}
-                  </dd>
-                </div>
-              </dl>
-              <p className="mt-3 text-sm text-ink-faint">
-                To change these, start over below. Your pins and progress are kept.
-              </p>
+            <CardBody className="space-y-5 pt-5">
+              <div>
+                <h3 className="text-sm font-medium text-ink-muted">Where you are</h3>
+                <RadioGroup
+                  name="settings-status"
+                  label="Where you are"
+                  value={state.status}
+                  onValueChange={(value) =>
+                    updateDates({ status: value === "pregnant" ? "pregnant" : "parent" })
+                  }
+                  options={STATUS}
+                  className="mt-2"
+                />
+              </div>
+              <div>
+                <label htmlFor="settings-date" className="text-sm font-medium text-ink-muted">
+                  {dateLabel}
+                </label>
+                <input
+                  id="settings-date"
+                  type="date"
+                  value={dateValue}
+                  onChange={(event) =>
+                    updateDates(
+                      state.status === "pregnant"
+                        ? { dueDate: event.target.value }
+                        : { birthDate: event.target.value },
+                    )
+                  }
+                  className="mt-2 w-full rounded-md border border-line-strong bg-paper-raised px-4 py-3 text-base text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-clay"
+                />
+              </div>
             </CardBody>
           </Card>
         </section>
@@ -65,35 +104,50 @@ export default function SettingsPage() {
           <p className="mt-2 text-sm text-ink-muted">
             These only remove steps that do not apply. They never remove a warning.
           </p>
-          <div className="mt-4 space-y-6">
-            <div>
-              <h3 className="text-sm font-medium text-ink-muted">Feeding</h3>
-              <RadioGroup
-                name="settings-feeding"
-                label="Feeding"
-                value={state.profile.feeding ?? "undecided"}
-                onValueChange={(value) =>
-                  updateProfile({ ...state.profile, feeding: value as never })
-                }
-                options={FEEDING}
-                className="mt-2"
-              />
-            </div>
-            <div>
-              <h3 className="text-sm font-medium text-ink-muted">First baby</h3>
-              <RadioGroup
-                name="settings-first"
-                label="First baby"
-                value={state.profile.firstBaby === false ? "no" : "yes"}
-                onValueChange={(value) =>
-                  updateProfile({ ...state.profile, firstBaby: value === "yes" })
-                }
-                options={FIRST_BABY}
-                className="mt-2"
-              />
-            </div>
+          <div className="mt-4 space-y-8">
+            {PROFILE_GROUPS.map((group) => {
+              const fields = PROFILE_FIELDS.filter((field) => field.group === group);
+              if (fields.length === 0) return null;
+              return (
+                <div key={group}>
+                  <h3 className="text-sm font-medium text-ink-muted">{group}</h3>
+                  <div className="mt-3 space-y-5">
+                    {fields.map((field) => {
+                      const value = readField(state.profile, field.key);
+                      if (field.readOnly) {
+                        const shown = field.options.find((o) => o.value === value);
+                        return (
+                          <div key={field.key}>
+                            <p className="text-base text-ink">{field.label}</p>
+                            <p className="mt-1 text-sm text-ink-muted">
+                              {shown?.label ?? "Not set"}. {field.effect}
+                            </p>
+                          </div>
+                        );
+                      }
+                      return (
+                        <div key={field.key}>
+                          <RadioGroup
+                            name={`settings-${field.key}`}
+                            label={field.label}
+                            value={value}
+                            onValueChange={(next) =>
+                              updateProfile(writeField(state.profile, field.key, next))
+                            }
+                            options={field.options}
+                          />
+                          <p className="mt-1 text-sm text-ink-faint">{field.effect}</p>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </section>
+
+        <ProfilePreview packs={PACKS} profile={state.profile} />
 
         <section aria-labelledby="data-heading" className="mt-10">
           <h2 id="data-heading" className="font-display text-2xl text-ink">
@@ -134,7 +188,8 @@ export default function SettingsPage() {
           }
         >
           <p className="text-base text-ink-muted">
-            If you only want to change your due date, you can do that without erasing anything.
+            If you only want to change your due date, you can do that above without erasing
+            anything.
           </p>
         </Dialog>
       </div>
