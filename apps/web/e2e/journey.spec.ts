@@ -501,3 +501,24 @@ test("a loss pauses the weekly guide, and nothing is deleted", async ({ page }) 
   await page.goto("/week/pregnancy-w28");
   await expect(page.getByRole("button", { name: "Done" }).first()).toBeVisible();
 });
+
+test("the week can be worked through with the keyboard alone", async ({ page }) => {
+  await onboardAsPregnant(page);
+  await page.goto("/week/pregnancy-w28");
+
+  // The skip link is the first stop, and it goes to the content.
+  await page.keyboard.press("Tab");
+  await expect(page.getByRole("link", { name: "Skip to content" })).toBeFocused();
+  await page.keyboard.press("Enter");
+  await expect(page).toHaveURL(/#main$/);
+
+  // Tab until the first step's Done button, then press it.
+  const done = page.getByRole("button", { name: "Done" }).first();
+  for (let i = 0; i < 40; i += 1) {
+    if (await done.evaluate((el) => el === document.activeElement)) break;
+    await page.keyboard.press("Tab");
+  }
+  await expect(done).toBeFocused();
+  await page.keyboard.press("Enter");
+  await expect(page.getByRole("button", { name: "Undo" }).first()).toBeVisible();
+});

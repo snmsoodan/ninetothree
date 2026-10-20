@@ -788,6 +788,22 @@ The fix is `settledIds(pack, state)` in `apps/web/src/lib/week.ts`: a step is se
 
 **What this does not do yet.** `profileActions` has no content. `suppressesEmail` has no caller. Loss mode has no effect on the appointment schedule, which is generated from the due date and is arguably the next thing a parent in loss mode needs to be able to turn off.
 
-## 21. How this file is maintained
+## 21. The week card (issue #18)
+
+**The week was already server-rendered, and nothing proved it.** `WeekView` is a client component, but Next.js server-renders client components for the initial HTML, and the initial render uses `EMPTY_STATE` rather than waiting for hydration. So the week, the baby/you sections, all three steps, the also-know list, the red flags, the appointments and the sources are all in the HTML the server sends. That was true before this PR and no test said so, which means the next refactor could have broken it silently.
+
+**A `no-js` Playwright project turns JavaScript off entirely.** `javaScriptEnabled: false` in the browser context, four tests: the week renders in full, all three steps are there, the red flags are not behind a script, and the library and safety page render too. This is the AC, tested rather than asserted.
+
+**The also-know and red-flag sections are not drawers.** The issue asks for an "also-know drawer" and a "red-flag drawer". `UX_CRAFT.md` says a red flag is never collapsed, and a drawer that needs a script to open is a drawer a parent on one bar of signal cannot open. Both sections are plain, always-visible markup. This is a deliberate deviation from the issue's wording, and the design system wins.
+
+**The three-action cap was already enforced and already tested.** `coreActions: z.array(Action).min(1).max(3)` in `packages/content/src/schema.ts`, with a test that four actions is a schema error. Nothing to do.
+
+**LCP is 609 ms on `/week/pregnancy-w28`**, measured by Lighthouse in CI, against an AC of 2 s. The other two audited URLs are 485 ms and 568 ms.
+
+**A keyboard path test, not just an axe run.** Tab from the top: the skip link is the first stop and Enter moves focus to `#main`; then Tab until the first step's Done button is focused and press Enter, and the step is done. axe proves the markup is legal; this proves the page can be operated.
+
+**`CHANGELOG.md` starts here.** The DoD asks for a changelog entry and there was no changelog. It is created with this PR and the one before it, and says plainly that earlier work is in the git log and in this file rather than reconstructed from memory.
+
+## 22. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.
