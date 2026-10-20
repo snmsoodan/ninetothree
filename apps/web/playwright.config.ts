@@ -11,11 +11,30 @@ export default defineConfig({
     baseURL: "http://127.0.0.1:3000",
     trace: "on-first-retry",
   },
-  projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
-  webServer: {
-    command: "pnpm build && pnpm start --port 3000",
-    url: "http://127.0.0.1:3000",
-    reuseExistingServer: !process.env.CI,
-    timeout: 180_000,
-  },
+  projects: [
+    {
+      name: "chromium",
+      testIgnore: /storybook\.spec\.ts/,
+      use: { ...devices["Desktop Chrome"] },
+    },
+    {
+      name: "storybook",
+      testMatch: /storybook\.spec\.ts/,
+      use: { ...devices["Desktop Chrome"], baseURL: "http://127.0.0.1:6006" },
+    },
+  ],
+  webServer: [
+    {
+      command: "pnpm build && pnpm start --port 3000",
+      url: "http://127.0.0.1:3000",
+      reuseExistingServer: !process.env.CI,
+      timeout: 180_000,
+    },
+    {
+      command: "pnpm build-storybook && npx http-server storybook-static -p 6006 -s",
+      url: "http://127.0.0.1:6006",
+      reuseExistingServer: !process.env.CI,
+      timeout: 180_000,
+    },
+  ],
 });

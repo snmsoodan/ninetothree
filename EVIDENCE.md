@@ -304,6 +304,54 @@ All three files were restored and the full gate re-run green afterwards.
 
 ---
 
-## 9. How this file is maintained
+## 9. Storybook (issue #58)
+
+Every issue's definition of done has required a story per component since the first one. Three PRs shipped without it. This closes the gap.
+
+### What it is
+
+Storybook 10 on `@storybook/react-vite`, configured in `apps/web/.storybook`, rendering on the app's real `globals.css` and design tokens. `pnpm storybook` opens it; `pnpm build:storybook` builds the static site.
+
+Three things had to be solved to make it render the product rather than a lookalike:
+
+1. **`next/link` and `next/navigation` do not exist in a Vite app.** Both are aliased to shims that render the same markup and return a fixed pathname. Stories are about how a component looks and reads, not about client-side navigation.
+2. **Story files live outside the Vite root**, so the React plugin's automatic JSX runtime did not reach them and JSX compiled to `React.createElement` with no `React` in scope. Every story threw `ReferenceError: React is not defined`. Fixed by setting `esbuild.jsx = "automatic"` in `viteFinal`.
+3. **The a11y addon and Playwright both run axe**, and collided with "Axe is already running". The addon is now `manual: true` — a developer clicks Run when they want it, and Playwright owns the gate.
+
+### The stories
+
+11 UI primitives and 6 app components, 20 stories. Each one is a state a parent can actually reach, not a prop matrix: `ActionItem` with three price bands, `RedFlagList` compact and full, `CatchUp` closed, `WeekView` first week and last week, `Dialog` with content long enough to scroll.
+
+### The check that matters
+
+The Storybook job does not just build. It loads every story in Chromium and asserts three things:
+
+| Assertion                                                  | Why                                                                               |
+| ---------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| No console errors and no page errors                       | A story that throws is a component that throws                                    |
+| `--color-ink` resolves and the paper background is painted | A story that builds is not a story that renders                                   |
+| axe WCAG 2.2 AA, zero violations                           | The design system's contrast is checked at the component level, not only on pages |
+
+The second one exists because of PR #54: Tailwind v4 only scanned the app directory, so the entire design system was missing from the build and the product rendered unstyled while 304 unit tests passed. A build-only Storybook job would have missed that too.
+
+### What it proves
+
+| Check                        | Result                                                                    |
+| ---------------------------- | ------------------------------------------------------------------------- |
+| Stories                      | 20, all rendering                                                         |
+| Storybook Playwright project | 20 passing                                                                |
+| App Playwright project       | 19 passing                                                                |
+| Unit tests                   | 333 passing, coverage thresholds unchanged                                |
+| Full gate                    | format, lint, typecheck, content, test, build, e2e, storybook — all green |
+
+### What this PR does not prove
+
+- **No visual regression baseline.** A story can render correctly and still look wrong; nothing compares it to yesterday. Chromatic or Playwright screenshots would catch that.
+- **Stories are not tested for interaction.** A story that renders is not a story whose dialog opens. Those paths are covered by the component tests, not by Storybook.
+- **The shims are not Next.js.** A story cannot catch a routing bug, because there is no router.
+
+---
+
+## 10. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.

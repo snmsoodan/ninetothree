@@ -227,6 +227,8 @@ Four CI jobs run on every pull request. Each one fails for exactly one class of 
 
 **The link check treats 403 as "verify by hand", not "broken".** CDC, CPSC, NHTSA, DOL, medicaid.gov, naeyc.org, adaa.org and ssa.gov block non-browser clients. A 404 or 410 fails the build; a 403 from those hosts is printed for manual review. It found seven dead citations in the first nine packs.
 
+**Every component has a story, and every story is rendered in CI.** `pnpm storybook` opens the design system on the app's real tokens and paper background. The Storybook job does not just build it — it loads all 20 stories in a browser, fails on any console error, asserts the CSS custom properties actually resolve, and runs axe on each one. A story that builds is not a story that renders: PR #54 shipped a completely unstyled product while 304 unit tests passed.
+
 **The Lighthouse budget is a hard floor, not a target.** Accessibility must be 1.0. A route transition that dimmed the page to 60% opacity for 160ms failed five axe runs with 65 contrast violations each — that is the kind of thing this job exists to catch.
 
 ---
