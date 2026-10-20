@@ -179,9 +179,30 @@ test("skipping is allowed and reversible", async ({ page }) => {
   await page.getByRole("radio", { name: /Skip without saying why/ }).click();
   await page.getByRole("button", { name: "Skip it" }).click();
 
-  await expect(page.getByRole("button", { name: "Undo skip" }).first()).toBeVisible();
-  await page.getByRole("button", { name: "Undo skip" }).first().click();
+  await expect(page.getByText("Skipped").first()).toBeVisible();
+  await page.getByRole("button", { name: "Undo" }).first().click();
   await expect(page.getByRole("button", { name: "Skip" }).first()).toBeVisible();
+});
+
+test("a step can be set aside, and it comes back on its own", async ({ page }) => {
+  await onboardToWeek(page);
+
+  const first = page.getByRole("heading", { level: 3 }).first();
+  const title = (await first.textContent()) ?? "";
+
+  await page.getByRole("button", { name: "Later" }).first().click();
+  await expect(page.getByRole("dialog")).toBeVisible();
+  await page.getByRole("radio", { name: /Tomorrow/ }).click();
+  await page.getByRole("button", { name: "Set it aside" }).click();
+
+  // It leaves the list, and the page says where it went rather than going quiet.
+  await expect(page.getByRole("heading", { level: 3, name: title })).toHaveCount(0);
+  await expect(page.getByText(/1 step set aside for now/)).toBeVisible();
+
+  // And it can be brought back without waiting.
+  await page.getByRole("button", { name: "Show it now" }).click();
+  await expect(page.getByRole("heading", { level: 3, name: title })).toBeVisible();
+  await expect(page.getByText(/set aside for now/)).toHaveCount(0);
 });
 
 test("the design system is actually applied", async ({ page }) => {

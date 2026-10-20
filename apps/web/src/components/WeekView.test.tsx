@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { WeekView } from "./WeekView";
 import { TEST_PACK } from "@/test-fixtures";
-import { __resetForTests, markDone, updateProfile } from "@/lib/store";
+import { __resetForTests, markDone, snooze, updateProfile } from "@/lib/store";
 
 vi.mock("next/navigation", () => ({
   usePathname: () => "/week/test-week",
@@ -153,9 +153,14 @@ describe("WeekView", () => {
   });
 
   it("pluralises the hidden count", () => {
-    updateProfile({ hasCar: false, feeding: "formula" });
-    render(<WeekView pack={TEST_PACK} />);
-    expect(screen.getByText(/1 step hidden/)).toBeInTheDocument();
+    updateProfile({ hasCar: false });
+    const second = {
+      ...TEST_PACK.coreActions[2]!,
+      id: "t-car-seat-two",
+      title: "Check the car seat again",
+    };
+    render(<WeekView pack={{ ...TEST_PACK, coreActions: [...TEST_PACK.coreActions, second] }} />);
+    expect(screen.getByText(/2 steps hidden/)).toBeInTheDocument();
   });
 
   it("links to the next and previous week", () => {
@@ -168,6 +173,53 @@ describe("WeekView", () => {
     render(<WeekView pack={TEST_PACK} />);
     expect(screen.queryByRole("link", { name: /Next/ })).not.toBeInTheDocument();
     expect(screen.queryByRole("link", { name: /Last one/ })).not.toBeInTheDocument();
+  });
+
+  it("takes a snoozed step out of the list and says where it went", () => {
+    const action = TEST_PACK.coreActions[0]!;
+    snooze(
+      { id: action.id, title: action.title, packId: TEST_PACK.id, packTitle: TEST_PACK.title },
+      "2999-01-01",
+    );
+    render(<WeekView pack={TEST_PACK} />);
+    expect(screen.queryByRole("heading", { name: action.title })).not.toBeInTheDocument();
+    expect(screen.getByText(/1 step set aside for now/)).toBeInTheDocument();
+    expect(screen.getByText("The 2 things")).toBeInTheDocument();
+  });
+
+  it("brings a snoozed step back on request", async () => {
+    const user = userEvent.setup();
+    const action = TEST_PACK.coreActions[0]!;
+    snooze(
+      { id: action.id, title: action.title, packId: TEST_PACK.id, packTitle: TEST_PACK.title },
+      "2999-01-01",
+    );
+    render(<WeekView pack={TEST_PACK} />);
+    await user.click(screen.getByRole("button", { name: "Show it now" }));
+    expect(screen.getByRole("heading", { name: action.title })).toBeInTheDocument();
+    expect(screen.queryByText(/set aside for now/)).not.toBeInTheDocument();
+  });
+
+  it("pluralises the set-aside count", () => {
+    for (const action of TEST_PACK.coreActions.slice(0, 2)) {
+      snooze(
+        { id: action.id, title: action.title, packId: TEST_PACK.id, packTitle: TEST_PACK.title },
+        "2999-01-01",
+      );
+    }
+    render(<WeekView pack={TEST_PACK} />);
+    expect(screen.getByText(/2 steps set aside for now/)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Show them now" })).toBeInTheDocument();
+  });
+
+  it("still counts a snoozed step against the week, because it is coming back", () => {
+    const action = TEST_PACK.coreActions[0]!;
+    snooze(
+      { id: action.id, title: action.title, packId: TEST_PACK.id, packTitle: TEST_PACK.title },
+      "2999-01-01",
+    );
+    render(<WeekView pack={TEST_PACK} />);
+    expect(screen.getByText("0 of 3 done")).toBeInTheDocument();
   });
 
   it("keeps a done action done across a re-render", () => {

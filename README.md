@@ -240,6 +240,10 @@ Five CI jobs run on every pull request. Each one fails for exactly one class of 
 
 **Internal links go through the router.** The design system's `ButtonLink` renders a plain anchor, which is right for a framework-free package and wrong for an app: "Next →" was reloading the page. `apps/web/src/components/ButtonLink.tsx` binds `as={Link}`, and the e2e test that proves a setting re-personalizes the week without a reload is what caught it.
 
+**Snoozing is not skipping.** Skipping says "this is not for me" and the step is gone. Snoozing says "not today" and the step comes back on its own, so the parent does not have to remember it. The two were indistinguishable in the copy, so the "Not this week" skip reason now says "It will not come back on its own." A snoozed step still counts against the week's completion, because it is coming back — and the page says "N steps set aside for now" rather than leaving the progress bar mysteriously short.
+
+**A double tap is one intention.** The Done button used to be replaced in place by Undo, so a fast double tap on a phone marked a step done and then immediately undid it. The status word now sits where the button was, so the second tap lands on text, and Undo moves to the end of the row. `markDone` and `markSkipped` are also idempotent: a retry preserves the first timestamp and the first reason.
+
 **The content schema is a gate, not a suggestion.** A pack with two essentials, no red flag, no source, or a `buy` action with no options fails the build. It has already caught four real content bugs.
 
 **The link check treats 403 as "verify by hand", not "broken".** CDC, CPSC, NHTSA, DOL, medicaid.gov, naeyc.org, adaa.org and ssa.gov block non-browser clients. A 404 or 410 fails the build; a 403 from those hosts is printed for manual review. It found seven dead citations in the first nine packs and eight dead URLs in the first 89 catalogue entries.

@@ -11,7 +11,7 @@ import { CatchUp } from "./CatchUp";
 import { RedFlagList } from "./RedFlagList";
 import { SourceList } from "./SourceList";
 import { AppShell } from "./AppShell";
-import { useAppState } from "@/lib/store";
+import { isSnoozed, unsnooze, useAppState } from "@/lib/store";
 
 export interface WeekViewProps {
   pack: StagePack;
@@ -21,6 +21,7 @@ export interface WeekViewProps {
 
 export function WeekView({ pack, nextId, previousId }: WeekViewProps) {
   const state = useAppState();
+  const today = new Date().toISOString().slice(0, 10);
 
   const { pack: personalized, hidden } = useMemo(
     () => personalizePack(pack, state.profile),
@@ -33,6 +34,11 @@ export function WeekView({ pack, nextId, previousId }: WeekViewProps) {
 
   const done = completion(personalized, doneIds);
   const allDone = done === 1;
+
+  // A snoozed step is not done and not skipped, so it still counts against
+  // completion — it is coming back. It just is not in the way today.
+  const visible = personalized.coreActions.filter((a) => !isSnoozed(state, a.id, today));
+  const setAside = personalized.coreActions.filter((a) => isSnoozed(state, a.id, today));
 
   const doneEverywhere = useMemo(
     () =>
@@ -95,18 +101,34 @@ export function WeekView({ pack, nextId, previousId }: WeekViewProps) {
 
         <section aria-labelledby="actions-heading" className="mt-8">
           <h2 id="actions-heading" className="font-display text-2xl text-ink">
-            {personalized.coreActions.length === 1
-              ? "The one thing"
-              : `The ${personalized.coreActions.length} things`}
+            {visible.length === 1 ? "The one thing" : `The ${visible.length} things`}
           </h2>
           <p className="mt-1 text-sm text-ink-muted">
             That is the whole week. Everything else can wait.
           </p>
           <div className="mt-4 space-y-3">
-            {personalized.coreActions.map((action) => (
-              <ActionItem key={action.id} action={action} packId={pack.id} packTitle={pack.title} />
+            {visible.map((action) => (
+              <ActionItem
+                key={action.id}
+                action={action}
+                packId={pack.id}
+                packTitle={pack.title}
+                today={today}
+              />
             ))}
           </div>
+          {setAside.length > 0 ? (
+            <p className="mt-3 text-sm text-ink-faint">
+              {setAside.length} step{setAside.length === 1 ? "" : "s"} set aside for now.{" "}
+              <button
+                type="button"
+                onClick={() => setAside.forEach((action) => unsnooze(action.id))}
+                className="underline underline-offset-2 hover:text-ink"
+              >
+                Show {setAside.length === 1 ? "it" : "them"} now
+              </button>
+            </p>
+          ) : null}
           {hidden.length > 0 ? (
             <p className="mt-3 text-sm text-ink-faint">
               {hidden.length} step{hidden.length === 1 ? "" : "s"} hidden because of what you told

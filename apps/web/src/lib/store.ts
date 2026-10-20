@@ -80,6 +80,25 @@ export interface CustomAppointment {
   at: string;
 }
 
+/**
+ * A snooze is a snapshot too, and it is not a skip.
+ *
+ * Skipping says "this is not for me". Snoozing says "not today" — the step
+ * comes back on its own, without the parent having to remember it. It carries
+ * the title and week for the same reason a pin does: the step has to be
+ * nameable on the day it returns even if the content moved on.
+ */
+export interface SnoozedEntry {
+  id: string;
+  title: string;
+  packId: string;
+  packTitle: string;
+  /** ISO date, YYYY-MM-DD. The step comes back on this date. */
+  until: string;
+  /** ISO timestamp. */
+  at: string;
+}
+
 export interface AppState {
   version: 1;
   onboarded: boolean;
@@ -90,6 +109,7 @@ export interface AppState {
   progress: Record<string, ProgressEntry>;
   pins: Pin[];
   appointments: CustomAppointment[];
+  snoozed: Record<string, SnoozedEntry>;
 }
 
 export const EMPTY_STATE: AppState = {
@@ -100,6 +120,7 @@ export const EMPTY_STATE: AppState = {
   progress: {},
   pins: [],
   appointments: [],
+  snoozed: {},
 };
 
 let state: AppState = EMPTY_STATE;
@@ -157,6 +178,25 @@ function migrateAppointments(raw: unknown): CustomAppointment[] {
   );
 }
 
+function migrateSnoozed(raw: unknown): Record<string, SnoozedEntry> {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return {};
+  const snoozed: Record<string, SnoozedEntry> = {};
+  for (const [id, entry] of Object.entries(raw as Record<string, unknown>)) {
+    if (!entry || typeof entry !== "object") continue;
+    const value = entry as Partial<SnoozedEntry>;
+    if (typeof value.until !== "string") continue;
+    snoozed[id] = {
+      id,
+      title: value.title ?? "",
+      packId: value.packId ?? "",
+      packTitle: value.packTitle ?? "",
+      until: value.until,
+      at: value.at ?? "",
+    };
+  }
+  return snoozed;
+}
+
 function hydrate(): void {
   if (hydrated || typeof window === "undefined") return;
   hydrated = true;
@@ -171,6 +211,7 @@ function hydrate(): void {
       profile: parsed.profile ?? {},
       pins: migratePins(parsed.pins),
       appointments: migrateAppointments(parsed.appointments),
+      snoozed: migrateSnoozed(parsed.snoozed),
     };
     emit();
   } catch {
@@ -244,7 +285,12 @@ export function completeOnboarding(input: {
   });
 }
 
+/**
+ * Idempotent on purpose. A double tap on a phone is one intention, not two,
+ * and the second one must not move the timestamp or re-announce the change.
+ */
 export function markDone(input: ProgressSnapshot, at = new Date().toISOString()): void {
+  if (state.progress[input.id]?.status === "done") return;
   set({
     ...state,
     progress: {
@@ -265,6 +311,7 @@ export function markSkipped(
   reason?: string,
   at = new Date().toISOString(),
 ): void {
+  if (state.progress[input.id]?.status === "skipped") return;
   const entry: ProgressEntry = {
     status: "skipped",
     at,
@@ -281,6 +328,27 @@ export function clearProgress(actionId: string): void {
   const next = { ...state.progress };
   delete next[actionId];
   set({ ...state, progress: next });
+}
+
+/**
+ * Snooze until a date. The step leaves the week and comes back on its own,
+ * which is the difference between "not today" and "not for me".
+ */
+export function snooze(
+  input: ProgressSnapshot,
+  until: string,
+  at = new Date().toISOString(),
+): void {
+  set({
+    ...state,
+    snoozed: { ...state.snoozed, [input.id]: { ...input, until, at } },
+  });
+}
+
+export function unsnooze(actionId: string): void {
+  const next = { ...state.snoozed };
+  delete next[actionId];
+  set({ ...state, snoozed: next });
 }
 
 export function togglePin(
@@ -355,6 +423,16 @@ export function isDone(state: AppState, actionId: string): boolean {
 
 export function isSkipped(state: AppState, actionId: string): boolean {
   return state.progress[actionId]?.status === "skipped";
+}
+
+/**
+ * True while the snooze is still in the future. `today` is passed in rather
+ * than read from the clock so the answer is the same on the server and the
+ * client, and so a test can move time without faking timers.
+ */
+export function isSnoozed(state: AppState, actionId: string, today: string): boolean {
+  const entry = state.snoozed[actionId];
+  return Boolean(entry && entry.until > today);
 }
 
 export function isPinned(state: AppState, actionId: string): boolean {
