@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Button, Card, CardBody, Dialog, RadioGroup } from "@ninetothree/ui";
+import { Button, ButtonLink, Card, CardBody, Dialog, RadioGroup } from "@ninetothree/ui";
 import { AppShell } from "@/components/AppShell";
 import { resetAll, updateProfile, useAppState } from "@/lib/store";
 
@@ -102,9 +102,14 @@ export default function SettingsPage() {
           <p className="mt-2 text-base text-ink-muted">
             It lives in this browser. Clearing it cannot be undone.
           </p>
-          <Button variant="quiet" className="mt-3" onClick={() => setConfirmOpen(true)}>
-            Erase everything
-          </Button>
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            <ButtonLink href="/history" variant="quiet">
+              See your history
+            </ButtonLink>
+            <Button variant="quiet" onClick={() => setConfirmOpen(true)}>
+              Erase everything
+            </Button>
+          </div>
         </section>
 
         <Dialog

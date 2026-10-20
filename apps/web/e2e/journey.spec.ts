@@ -343,3 +343,33 @@ test("the library offers more than one place to go, and can be narrowed", async 
   await expect(page.getByText("Nothing matches that yet.")).toBeVisible();
   await expect(page.getByText(/Try a broader word/)).toBeVisible();
 });
+
+test("a finished step is recorded, and the record can be taken away", async ({ page }) => {
+  await onboardToWeek(page);
+
+  // Finish one thing, and note what it was called.
+  const firstAction = page.getByRole("button", { name: "Done" }).first();
+  await firstAction.click();
+  await expect(page.getByRole("button", { name: "Undo" }).first()).toBeVisible();
+
+  // History is reached from Settings, not the nav: it is a record, not a place
+  // a parent needs every day.
+  await page.goto("/settings");
+  await page.getByRole("link", { name: "See your history" }).click();
+  await expect(page).toHaveURL(/\/history$/);
+  await expect(page.getByRole("heading", { level: 1, name: "Your history" })).toBeVisible();
+
+  // The step is there, under its week, with the day it happened.
+  await expect(page.getByText("Get your glucose screening if you haven't")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Week 28" })).toBeVisible();
+  await expect(page.getByText(/1 step across 1 week/)).toBeVisible();
+
+  // The export is a real file, and it is named for the product.
+  const csv = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Download CSV" }).click();
+  expect((await csv).suggestedFilename()).toMatch(/^ninetothree-history-\d{4}-\d{2}-\d{2}\.csv$/);
+
+  const json = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Download JSON" }).click();
+  expect((await json).suggestedFilename()).toMatch(/^ninetothree-history-\d{4}-\d{2}-\d{2}\.json$/);
+});

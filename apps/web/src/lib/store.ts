@@ -16,12 +16,34 @@ export const STORAGE_KEY = "ninetothree.v1";
 
 export type ProgressStatus = "done" | "skipped";
 
+/**
+ * What a parent did, and what it was called when they did it.
+ *
+ * History is a snapshot for the same reason a pin is: content is versioned,
+ * and an action can be renamed or retired between releases. If a progress
+ * entry were a bare id, a rename would rewrite a parent's history and a
+ * retirement would erase it. The snapshot is what the history falls back to
+ * when the action is no longer in the registry; when it still is, the live
+ * content wins.
+ */
 export interface ProgressEntry {
   status: ProgressStatus;
   /** ISO timestamp. Used for the weekly email and for nothing else. */
   at: string;
   /** Why it was skipped. Optional, and never required. */
   reason?: string;
+  /** The action's title at the moment it was marked. */
+  title?: string;
+  packId?: string;
+  packTitle?: string;
+}
+
+/** The minimum a caller must know to record progress honestly. */
+export interface ProgressSnapshot {
+  id: string;
+  title: string;
+  packId: string;
+  packTitle: string;
 }
 
 /**
@@ -222,25 +244,36 @@ export function completeOnboarding(input: {
   });
 }
 
-export function markDone(actionId: string, at = new Date().toISOString()): void {
-  set({
-    ...state,
-    progress: { ...state.progress, [actionId]: { status: "done", at } },
-  });
-}
-
-export function markSkipped(
-  actionId: string,
-  reason?: string,
-  at = new Date().toISOString(),
-): void {
+export function markDone(input: ProgressSnapshot, at = new Date().toISOString()): void {
   set({
     ...state,
     progress: {
       ...state.progress,
-      [actionId]: reason ? { status: "skipped", at, reason } : { status: "skipped", at },
+      [input.id]: {
+        status: "done",
+        at,
+        title: input.title,
+        packId: input.packId,
+        packTitle: input.packTitle,
+      },
     },
   });
+}
+
+export function markSkipped(
+  input: ProgressSnapshot,
+  reason?: string,
+  at = new Date().toISOString(),
+): void {
+  const entry: ProgressEntry = {
+    status: "skipped",
+    at,
+    title: input.title,
+    packId: input.packId,
+    packTitle: input.packTitle,
+  };
+  if (reason) entry.reason = reason;
+  set({ ...state, progress: { ...state.progress, [input.id]: entry } });
 }
 
 /** Undo. A parent who taps the wrong thing should not have to live with it. */
