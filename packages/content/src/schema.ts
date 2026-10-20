@@ -146,6 +146,17 @@ export const AlsoKnow = z.object({
 });
 export type AlsoKnow = z.infer<typeof AlsoKnow>;
 
+/**
+ * A step that only appears for some parents. `when` names a rule in
+ * `packages/rules`; the rule decides whether, the pack decides what. This
+ * keeps added content inside the schema, the lint, and clinical review.
+ */
+export const ProfileAction = z.object({
+  when: z.string().min(1).max(60),
+  action: Action,
+});
+export type ProfileAction = z.infer<typeof ProfileAction>;
+
 export const StagePack = z
   .object({
     id: z
@@ -180,6 +191,8 @@ export const StagePack = z
 
     /** The product rule: at most three. Enforced here, not in review. */
     coreActions: z.array(Action).min(1).max(3),
+    /** Steps that only some parents see. Never counted against the three. */
+    profileActions: z.array(ProfileAction).max(3).optional(),
     alsoKnow: z.array(AlsoKnow).max(8).default([]),
     /** At least one. A pack with no red flags is a pack that has not been thought about. */
     redFlags: z.array(RedFlag).min(1),
@@ -196,6 +209,7 @@ export const StagePack = z
     const seen = new Set<string>();
     const all = [
       ...pack.coreActions.map((a) => a.id),
+      ...(pack.profileActions ?? []).map((a) => a.action.id),
       ...pack.alsoKnow.map((a) => a.id),
       ...pack.redFlags.map((a) => a.id),
       ...pack.appointments.map((a) => a.id),

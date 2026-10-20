@@ -106,3 +106,11 @@ describe("ProfilePreview", () => {
     expect(screen.getByText("Nothing is hidden right now.")).toBeInTheDocument();
   });
 });
+
+describe("ProfilePreview in loss mode", () => {
+  it("says the guide is paused rather than that nothing is hidden", () => {
+    render(<ProfilePreview packs={[pack([action({ id: "a1" })])]} profile={{ loss: "baby" }} />);
+    expect(screen.getByText(/The weekly guide is paused/)).toBeInTheDocument();
+    expect(screen.queryByText("Nothing is hidden right now.")).not.toBeInTheDocument();
+  });
+});

@@ -8,7 +8,11 @@ import {
   PROFILE_FIELDS,
   PROFILE_GROUPS,
   readField,
-  RULES,
+  HIDE_RULES,
+  ADD_RULES,
+  ADJUST_RULES,
+  RULE_IDS,
+  suppressesEmail,
   writeField,
   type Profile,
 } from "./personalize";
@@ -53,14 +57,14 @@ function pack(actions: Action[]): StagePack {
   } as StagePack;
 }
 
-describe("RULES", () => {
-  const noCar = RULES.find((r) => r.id === "no-car")!;
-  const formula = RULES.find((r) => r.id === "formula-feeding")!;
-  const notFirst = RULES.find((r) => r.id === "not-first-baby")!;
-  const stayingHome = RULES.find((r) => r.id === "staying-home")!;
+describe("HIDE_RULES", () => {
+  const noCar = HIDE_RULES.find((r) => r.id === "no-car")!;
+  const formula = HIDE_RULES.find((r) => r.id === "formula-feeding")!;
+  const notFirst = HIDE_RULES.find((r) => r.id === "not-first-baby")!;
+  const stayingHome = HIDE_RULES.find((r) => r.id === "staying-home")!;
 
   it("every rule has a written reason", () => {
-    for (const rule of RULES) {
+    for (const rule of [...HIDE_RULES, ...ADD_RULES, ...ADJUST_RULES, ...OPTION_RULES]) {
       expect(rule.reason.length).toBeGreaterThan(20);
     }
   });
@@ -457,6 +461,7 @@ describe("PROFILE_FIELDS", () => {
       "firstBaby",
       "hasCar",
       "housing",
+      "loss",
       "mentalHealthHistory",
       "multiples",
       "preterm",
@@ -469,7 +474,7 @@ describe("PROFILE_FIELDS", () => {
   it("names a rule that exists, or says nothing changes", () => {
     for (const field of PROFILE_FIELDS) {
       if (field.ruleId) {
-        const known = [...RULES, ...OPTION_RULES].some((r) => r.id === field.ruleId);
+        const known = RULE_IDS.includes(field.ruleId);
         expect(known, `${field.key} names an unknown rule ${field.ruleId}`).toBe(true);
       } else {
         // A field with no rule must not claim to hide anything.
@@ -542,5 +547,206 @@ describe("writeField", () => {
   it("round-trips through readField", () => {
     const written = writeField({}, "mentalHealthHistory", "yes");
     expect(readField(written, "mentalHealthHistory")).toBe("yes");
+  });
+});
+
+describe("ADD_RULES", () => {
+  const alone = ADD_RULES.find((r) => r.id === "alone-support")!;
+
+  it("fires only when the parent is doing this alone", () => {
+    expect(alone.adds({ support: "alone" })).toBe(true);
+    expect(alone.adds({ support: "partner" })).toBe(false);
+    expect(alone.adds({})).toBe(false);
+  });
+
+  it("puts the pack's profile action in, and reports the rule that did it", () => {
+    const support = action({ id: "p-support", title: "Line up one person to call" });
+    const withProfileAction: StagePack = {
+      ...pack([action({ id: "a1" })]),
+      profileActions: [{ when: "alone-support", action: support }],
+    };
+
+    const result = personalizePack(withProfileAction, { support: "alone" });
+    expect(result.pack.coreActions.map((a) => a.id)).toEqual(["a1", "p-support"]);
+    expect(result.added).toEqual([
+      { actionId: "p-support", ruleId: "alone-support", reason: alone.reason },
+    ]);
+  });
+
+  it("leaves the pack alone when the rule does not fire", () => {
+    const withProfileAction: StagePack = {
+      ...pack([action({ id: "a1" })]),
+      profileActions: [{ when: "alone-support", action: action({ id: "p-support" }) }],
+    };
+    const result = personalizePack(withProfileAction, { support: "partner" });
+    expect(result.pack.coreActions.map((a) => a.id)).toEqual(["a1"]);
+    expect(result.added).toEqual([]);
+  });
+
+  it("ignores a profile action naming a rule that does not exist", () => {
+    const withProfileAction: StagePack = {
+      ...pack([action({ id: "a1" })]),
+      profileActions: [{ when: "no-such-rule", action: action({ id: "p-support" }) }],
+    };
+    const result = personalizePack(withProfileAction, { support: "alone" });
+    expect(result.pack.coreActions.map((a) => a.id)).toEqual(["a1"]);
+    expect(result.added).toEqual([]);
+  });
+
+  it("does not add a step the pack already has", () => {
+    const duplicate = action({ id: "a1" });
+    const withProfileAction: StagePack = {
+      ...pack([duplicate]),
+      profileActions: [{ when: "alone-support", action: duplicate }],
+    };
+    const result = personalizePack(withProfileAction, { support: "alone" });
+    expect(result.pack.coreActions.map((a) => a.id)).toEqual(["a1"]);
+    expect(result.added).toEqual([]);
+  });
+});
+
+describe("ADJUST_RULES", () => {
+  const mindFirst = ADJUST_RULES.find((r) => r.id === "mind-first")!;
+
+  it("moves the mind step to the front when mental health has been hard", () => {
+    const body = action({ id: "a1", domain: "health-parent" });
+    const mind = action({ id: "a2", domain: "mind" });
+    const result = personalizePack(pack([body, mind]), { mentalHealthHistory: true });
+    expect(result.pack.coreActions.map((a) => a.id)).toEqual(["a2", "a1"]);
+  });
+
+  it("leaves the order alone otherwise", () => {
+    const body = action({ id: "a1", domain: "health-parent" });
+    const mind = action({ id: "a2", domain: "mind" });
+    const result = personalizePack(pack([body, mind]), {});
+    expect(result.pack.coreActions.map((a) => a.id)).toEqual(["a1", "a2"]);
+  });
+
+  it("does nothing to a pack with no mind step", () => {
+    const only = pack([action({ id: "a1" })]);
+    expect(mindFirst.adjust(only, { mentalHealthHistory: true })).toBe(only);
+  });
+
+  it("sees a step that an add rule put in", () => {
+    const mind = action({ id: "p-mind", domain: "mind" });
+    const withProfileAction: StagePack = {
+      ...pack([action({ id: "a1" })]),
+      profileActions: [{ when: "alone-support", action: mind }],
+    };
+    const result = personalizePack(withProfileAction, {
+      support: "alone",
+      mentalHealthHistory: true,
+    });
+    expect(result.pack.coreActions.map((a) => a.id)).toEqual(["p-mind", "a1"]);
+  });
+});
+
+describe("loss mode", () => {
+  it("empties the week, and says it is quiet", () => {
+    const result = personalizePack(pack([action({ id: "a1" })]), { loss: "pregnancy" });
+    expect(result.quiet).toBe(true);
+    expect(result.pack.coreActions).toEqual([]);
+    expect(result.pack.redFlags).toEqual([]);
+    expect(result.pack.appointments).toEqual([]);
+    expect(result.pack.alsoKnow).toEqual([]);
+    expect(result.pack.baby).toBeUndefined();
+    expect(result.pack.you).toBeUndefined();
+    expect(result.pack.subtitle).toBeUndefined();
+  });
+
+  it("keeps the pack's identity and its sources", () => {
+    const result = personalizePack(pack([action({ id: "a1" })]), { loss: "baby" });
+    expect(result.pack.id).toBe("test-pack");
+    expect(result.pack.sources).toHaveLength(1);
+    expect(result.pack.reviewedBy).toBe("Test");
+  });
+
+  it("reports nothing hidden, trimmed, or added, because nothing was decided", () => {
+    const result = personalizePack(pack([action({ id: "a1" })]), {
+      loss: "baby",
+      hasCar: false,
+      budget: "tight",
+    });
+    expect(result.hidden).toEqual([]);
+    expect(result.trimmed).toEqual([]);
+    expect(result.added).toEqual([]);
+  });
+
+  it("is not quiet for any other profile", () => {
+    expect(personalizePack(pack([action({ id: "a1" })]), {}).quiet).toBe(false);
+  });
+
+  it("suppresses the weekly email, and only in loss mode", () => {
+    expect(suppressesEmail({ loss: "pregnancy" })).toBe(true);
+    expect(suppressesEmail({ loss: "baby" })).toBe(true);
+    expect(suppressesEmail({})).toBe(false);
+    expect(suppressesEmail({ mentalHealthHistory: true })).toBe(false);
+  });
+});
+
+describe("the loss field", () => {
+  it("clears the mode when the parent says no", () => {
+    const withLoss = writeField({}, "loss", "baby");
+    expect(withLoss.loss).toBe("baby");
+    expect(writeField(withLoss, "loss", "none").loss).toBeUndefined();
+  });
+
+  it("reads back as the value the radio group uses", () => {
+    expect(readField({ loss: "pregnancy" }, "loss")).toBe("pregnancy");
+    expect(readField({}, "loss")).toBeUndefined();
+  });
+});
+
+/**
+ * One fixture per rule, keyed by rule id. The test below fails when a rule
+ * is added without one, which is the point: a rule nobody exercised is a
+ * rule nobody has thought about.
+ */
+const RULE_FIXTURES: Record<string, { profile: Profile; expect: "hides" | "adds" | "adjusts" }> = {
+  "no-car": { profile: { hasCar: false }, expect: "hides" },
+  "formula-feeding": { profile: { feeding: "formula" }, expect: "hides" },
+  "not-first-baby": { profile: { firstBaby: false }, expect: "hides" },
+  "staying-home": { profile: { work: "staying-home" }, expect: "hides" },
+  "tight-budget": { profile: { budget: "tight" }, expect: "hides" },
+  "alone-support": { profile: { support: "alone" }, expect: "adds" },
+  "mind-first": { profile: { mentalHealthHistory: true }, expect: "adjusts" },
+};
+
+describe("every rule has a fixture", () => {
+  it("covers every rule id the product can report", () => {
+    expect(Object.keys(RULE_FIXTURES).sort()).toEqual([...RULE_IDS].sort());
+  });
+
+  it("each fixture actually changes something", () => {
+    const body = action({ id: "a1", domain: "health-parent" });
+    const mind = action({ id: "a2", domain: "mind" });
+    const carSeat = action({
+      id: "a3",
+      domain: "safety",
+      title: "Install the car seat",
+      options: [
+        { id: "cheap", label: "A cheap one", cost: "$" },
+        { id: "dear", label: "A dear one", cost: "$$$" },
+      ],
+    });
+    const feed = action({ id: "a4", domain: "feeding", title: "Learn to latch" });
+    const firstVisit = action({ id: "a5", title: "Book your first prenatal visit" });
+    const childcare = action({ id: "a6", domain: "childcare" });
+    const support = action({ id: "p-support" });
+    const fixturePack: StagePack = {
+      ...pack([body, mind, carSeat, feed, firstVisit, childcare]),
+      profileActions: [{ when: "alone-support", action: support }],
+    };
+
+    for (const [id, fixture] of Object.entries(RULE_FIXTURES)) {
+      const result = personalizePack(fixturePack, fixture.profile);
+      const reported =
+        result.hidden.length > 0 || result.trimmed.length > 0 || result.added.length > 0;
+      // A reorder reports nothing, so compare the pack itself as well.
+      const reordered =
+        result.pack.coreActions.map((a) => a.id).join() !==
+        fixturePack.coreActions.map((a) => a.id).join();
+      expect(reported || reordered, `rule ${id} changed nothing`).toBe(true);
+    }
   });
 });

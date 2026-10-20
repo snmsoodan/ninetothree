@@ -14,6 +14,7 @@ import { AppShell } from "./AppShell";
 import { isSnoozed, unsnooze, useAppState } from "@/lib/store";
 import { weekProgress } from "@/lib/week";
 import { WeekCompletion } from "./WeekCompletion";
+import { QuietWeek } from "./QuietWeek";
 
 export interface WeekViewProps {
   pack: StagePack;
@@ -25,10 +26,11 @@ export function WeekView({ pack, nextId, previousId }: WeekViewProps) {
   const state = useAppState();
   const today = new Date().toISOString().slice(0, 10);
 
-  const { pack: personalized, hidden } = useMemo(
-    () => personalizePack(pack, state.profile),
-    [pack, state.profile],
-  );
+  const {
+    pack: personalized,
+    hidden,
+    quiet,
+  } = useMemo(() => personalizePack(pack, state.profile), [pack, state.profile]);
 
   const progress = weekProgress(personalized, state);
 
@@ -46,6 +48,16 @@ export function WeekView({ pack, nextId, previousId }: WeekViewProps) {
   );
 
   const catchUpResult = useMemo(() => catchUp(PACKS, pack, doneEverywhere), [pack, doneEverywhere]);
+
+  if (quiet) {
+    return (
+      <AppShell stage={pack.title}>
+        <div className="measure">
+          <QuietWeek />
+        </div>
+      </AppShell>
+    );
+  }
 
   return (
     <AppShell stage={pack.title}>

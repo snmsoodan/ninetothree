@@ -764,6 +764,30 @@ The fix is `settledIds(pack, state)` in `apps/web/src/lib/week.ts`: a step is se
 
 **What this does not do yet.** `state.completed` is written but nothing reads it except `weekProgress`. The history page and the JSON/CSV export do not surface it, and the weekly email (#33) will want it. That is a gap, not a decision.
 
-## 20. How this file is maintained
+## 20. Personalisation rules (issue #22)
+
+**Three kinds of rule, one id space.** The issue asks for "hide/add/adjust". Only hide existed. `HIDE_RULES` (4), `ADD_RULES` (1), `ADJUST_RULES` (1) and `OPTION_RULES` (1) are now separate tables unioned in `RULE_IDS`, so a rule id is unique across the product and `PROFILE_FIELDS[].ruleId` can be checked against one list.
+
+**`add` keeps content in content.** A rule decides _whether_ a step appears; the pack decides _what_ it is, via `profileActions: [{ when: <ruleId>, action }]`. An added step is therefore still schema-checked, still linted, still clinically reviewed, and still counted in the pack's id-uniqueness check. The alternative — a rule that constructs an action in code — would put clinical copy in the rules package where none of those gates reach it.
+
+**`profileActions` is inert today.** No pack uses it. Adding a step is a clinical decision, not an engineering one, so the mechanism is tested with a fixture and documented as unused rather than filled with invented content. The one `ADD_RULES` entry, `alone-support`, fires on `support: "alone"` and will do nothing until a clinician writes the step.
+
+**`adjust` formalises what was hardcoded.** The "put the mind step first when mental health has been hard" reorder used to live inside `personalizePack` with no id and no reason, so it could not be reported, tested by id, or turned off. It is now `mind-first`, and it runs after `add` so it can see a step an add rule just put in.
+
+**Loss is a mode, not a preference.** `profile.loss` short-circuits `personalizePack` to `quietResult`, which strips `subtitle`, `baby`, `you`, `coreActions`, `alsoKnow`, `redFlags` and `appointments` and keeps `sources` and provenance. `quiet: true` is what the UI branches on. `suppressesEmail(profile)` is the switch the weekly email (#33) will read; it has no caller yet.
+
+**Loss mode does not touch the safety page.** `/safety` is a separate route that never goes through `personalizePack`, so the emergency numbers survive. That is the point: a parent who has lost a baby still needs 911 and the poison control number, and possibly more than before.
+
+**`clearValue` exists because absence is meaningful.** `loss: "none"` must delete the key, not store the string, or `profile.loss` would be truthy and the guide would go quiet forever. `writeField` deletes when the value equals the field's `clearValue`.
+
+**A real bug this exposed: `updateProfile` could not clear a field.** It merges (`{ ...state.profile, ...profile }`), so a key deleted from the new object is put straight back by the spread of the old one. Setting "A loss" to "No" left the guide paused. Fixed by adding `setProfile(profile)`, which replaces outright, and using it wherever `writeField` has already produced a complete profile. The e2e test caught this; no unit test would have, because the unit test would have called `writeField` and asserted on its return value rather than on the store.
+
+**The quiet panel says what changed, what did not, and where the two things that still work are.** No sympathy card, no advice, no euphemism, no "sorry". `QuietWeek` reads: "The weekly guide is paused. / You told us about a loss. We have stopped showing the week, and we have stopped sending the weekly email. / Nothing you wrote down has been deleted. The safety page is still here, and so is everything you pinned." with `[ Open the safety page ]` and `[ Change this in settings ]`. The dashboard shows the same panel in place of the week card, and `ProfilePreview` says the guide is paused rather than "Nothing is hidden right now".
+
+**Every rule has a fixture, and a test enforces it.** `RULE_FIXTURES` maps each of the seven rule ids to a profile that fires it, and two tests assert that the map covers `RULE_IDS` exactly and that each fixture actually changes something — reported, or reordered. A rule added without a fixture fails CI, which is the point: a rule nobody exercised is a rule nobody has thought about.
+
+**What this does not do yet.** `profileActions` has no content. `suppressesEmail` has no caller. Loss mode has no effect on the appointment schedule, which is generated from the due date and is arguably the next thing a parent in loss mode needs to be able to turn off.
+
+## 21. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.

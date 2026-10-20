@@ -1,4 +1,5 @@
 import { renderHook } from "@testing-library/react";
+import { writeField } from "@ninetothree/rules";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   EMPTY_STATE,
@@ -24,6 +25,7 @@ import {
   markDone,
   markSkipped,
   resetAll,
+  setProfile,
   snooze,
   stageInput,
   subscribe,
@@ -695,5 +697,17 @@ describe("week completion", () => {
     __resetForTests();
     subscribe(() => {});
     expect(getSnapshot().completed["test-week"]?.forced).toBe(false);
+  });
+});
+
+describe("setProfile", () => {
+  it("replaces the profile, so a cleared field stays cleared", () => {
+    subscribe(() => {});
+    updateProfile({ loss: "baby", hasCar: false });
+    expect(getSnapshot().profile.loss).toBe("baby");
+
+    setProfile(writeField(getSnapshot().profile, "loss", "none"));
+    expect(getSnapshot().profile.loss).toBeUndefined();
+    expect(getSnapshot().profile.hasCar).toBe(false);
   });
 });

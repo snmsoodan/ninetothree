@@ -16,6 +16,11 @@ export type Work = "returning" | "staying-home" | "undecided";
 export type Support = "partner" | "alone" | "other";
 export type Budget = "tight" | "ok" | "comfortable";
 export type Housing = "own" | "rent" | "shared" | "temporary";
+/**
+ * A pregnancy or a baby that ended. This is not a preference — it is a mode.
+ * When it is set, the guide stops showing a week at all.
+ */
+export type Loss = "pregnancy" | "baby";
 
 export interface Profile {
   country?: Country;
@@ -30,9 +35,10 @@ export interface Profile {
   preterm?: boolean;
   budget?: Budget;
   housing?: Housing;
+  loss?: Loss;
 }
 
-export interface Rule {
+export interface HideRule {
   id: string;
   /** Shown to the user if they ask why something is hidden. */
   reason: string;
@@ -41,10 +47,11 @@ export interface Rule {
 }
 
 /**
- * The rule table. Order matters only for which reason is reported first.
- * Keep this list short — every rule is a way the product can be wrong.
+ * Rules that take a step away. Order matters only for which reason is
+ * reported first. Keep this list short — every rule is a way the product
+ * can be wrong.
  */
-export const RULES: Rule[] = [
+export const HIDE_RULES: HideRule[] = [
   {
     id: "no-car",
     reason: "You told us you do not have a car, so car seat steps are hidden.",
@@ -94,6 +101,61 @@ export const OPTION_RULES: OptionRule[] = [
   },
 ];
 
+/**
+ * Rules that put a step in. The rule decides *whether*; the pack decides
+ * *what*, through its `profileActions` array. Content stays in content, so
+ * an added step is still schema-checked, linted, and clinically reviewed.
+ */
+export interface AddRule {
+  id: string;
+  reason: string;
+  adds: (profile: Profile) => boolean;
+}
+
+export const ADD_RULES: AddRule[] = [
+  {
+    id: "alone-support",
+    reason:
+      "You told us you are doing this without a partner, so we add a step about lining up one person to call.",
+    adds: (profile) => profile.support === "alone",
+  },
+];
+
+/**
+ * Rules that change a pack without removing anything from it: reordering,
+ * and anything else that leaves every step in place. These used to be
+ * hardcoded inside `personalizePack`, which meant a parent asking "why is
+ * this first?" got a shrug instead of a rule id.
+ */
+export interface AdjustRule {
+  id: string;
+  reason: string;
+  adjust: (pack: StagePack, profile: Profile) => StagePack;
+}
+
+export const ADJUST_RULES: AdjustRule[] = [
+  {
+    id: "mind-first",
+    reason:
+      "You told us mental health has been hard before, so the step about how you are feeling comes first.",
+    adjust: (pack, profile) => {
+      if (!profile.mentalHealthHistory) return pack;
+      const mind = pack.coreActions.filter((a) => a.domain === "mind");
+      if (mind.length === 0) return pack;
+      const rest = pack.coreActions.filter((a) => a.domain !== "mind");
+      return { ...pack, coreActions: [...mind, ...rest] };
+    },
+  },
+];
+
+/** Every rule id the product can report, in one place. */
+export const RULE_IDS: string[] = [
+  ...HIDE_RULES.map((r) => r.id),
+  ...ADD_RULES.map((r) => r.id),
+  ...ADJUST_RULES.map((r) => r.id),
+  ...OPTION_RULES.map((r) => r.id),
+];
+
 export interface HiddenAction {
   actionId: string;
   ruleId: string;
@@ -107,12 +169,25 @@ export interface TrimmedOption {
   reason: string;
 }
 
+export interface AddedAction {
+  actionId: string;
+  ruleId: string;
+  reason: string;
+}
+
 export interface PersonalizeResult {
   pack: StagePack;
   /** Action ids that were hidden, with the rule that hid them. */
   hidden: HiddenAction[];
   /** Options removed from actions that stayed, with the rule that removed them. */
   trimmed: TrimmedOption[];
+  /** Actions put in by a rule, with the rule that added them. */
+  added: AddedAction[];
+  /**
+   * True when the guide has nothing to say this week. The week page renders
+   * a quiet panel instead of a week, and the weekly email is not sent.
+   */
+  quiet: boolean;
 }
 
 /**
@@ -123,11 +198,16 @@ export interface PersonalizeResult {
  * comes up when the parent has told us it matters to them.
  */
 export function personalizePack(pack: StagePack, profile: Profile): PersonalizeResult {
+  // Loss is a mode, not a preference. There is no week to show, so there is
+  // nothing to hide, trim, add, or reorder — the whole pack goes quiet.
+  if (profile.loss) return quietResult(pack);
+
   const hidden: HiddenAction[] = [];
   const trimmed: TrimmedOption[] = [];
+  const added: AddedAction[] = [];
 
   const kept = pack.coreActions.filter((action) => {
-    const rule = RULES.find((r) => r.hides(action, profile));
+    const rule = HIDE_RULES.find((r) => r.hides(action, profile));
     if (rule) {
       hidden.push({ actionId: action.id, ruleId: rule.id, reason: rule.reason });
       return false;
@@ -162,20 +242,59 @@ export function personalizePack(pack: StagePack, profile: Profile): PersonalizeR
     return { ...action, options };
   });
 
-  const ordered = profile.mentalHealthHistory
-    ? [...withOptions].sort((a, b) => {
-        const aMind = a.domain === "mind" ? 0 : 1;
-        const bMind = b.domain === "mind" ? 0 : 1;
-        if (aMind !== bMind) return aMind - bMind;
-        return 0;
-      })
-    : withOptions;
+  // Add before adjusting, so a rule that reorders sees the added step too.
+  const withAdded = [...withOptions];
+  for (const entry of pack.profileActions ?? []) {
+    const rule = ADD_RULES.find((r) => r.id === entry.when);
+    if (!rule || !rule.adds(profile)) continue;
+    if (withAdded.some((a) => a.id === entry.action.id)) continue;
+    withAdded.push(entry.action);
+    added.push({ actionId: entry.action.id, ruleId: rule.id, reason: rule.reason });
+  }
+
+  const adjusted = ADJUST_RULES.reduce((current, rule) => rule.adjust(current, profile), {
+    ...pack,
+    coreActions: withAdded,
+  });
 
   return {
-    pack: { ...pack, coreActions: ordered },
+    pack: adjusted,
     hidden: kept.length > 0 ? hidden : [],
     trimmed: kept.length > 0 ? trimmed : [],
+    added: kept.length > 0 ? added : [],
+    quiet: false,
   };
+}
+
+/**
+ * The pack with nothing in it. Sources and provenance stay, because the
+ * pack is still a pack; everything a parent would read goes.
+ */
+function quietResult(pack: StagePack): PersonalizeResult {
+  return {
+    pack: {
+      ...pack,
+      subtitle: undefined,
+      baby: undefined,
+      you: undefined,
+      coreActions: [],
+      alsoKnow: [],
+      redFlags: [],
+      appointments: [],
+    },
+    hidden: [],
+    trimmed: [],
+    added: [],
+    quiet: true,
+  };
+}
+
+/**
+ * Whether the weekly email should be sent. It should not, in loss mode.
+ * The email job (#33) does not exist yet; this is the switch it will read.
+ */
+export function suppressesEmail(profile: Profile): boolean {
+  return profile.loss !== undefined;
 }
 
 /** The one action to lead with. Essential first, then recommended, then the rest. */
@@ -215,6 +334,8 @@ export interface ProfileField {
   group: string;
   /** Shown but not editable, because the product cannot honour the other values yet. */
   readOnly?: boolean;
+  /** A value that means "unset", for a field whose absence is meaningful. */
+  clearValue?: string;
 }
 
 /** The order the settings screen renders its sections in. */
@@ -348,6 +469,19 @@ export const PROFILE_FIELDS: ProfileField[] = [
     ruleId: "tight-budget",
   },
   {
+    key: "loss",
+    group: "You",
+    label: "A loss",
+    effect: "Stops the weekly guide and the weekly email. Nothing is deleted.",
+    type: "choice",
+    clearValue: "none",
+    options: [
+      { value: "none", label: "No" },
+      { value: "pregnancy", label: "A pregnancy ended" },
+      { value: "baby", label: "A baby died" },
+    ],
+  },
+  {
     key: "housing",
     group: "Home and money",
     label: "Housing",
@@ -378,5 +512,10 @@ export function writeField(profile: Profile, key: keyof Profile, value: string):
   const field = PROFILE_FIELDS.find((f) => f.key === key);
   if (!field) return profile;
   if (field.type === "boolean") return { ...profile, [key]: value === "yes" };
+  if (field.clearValue !== undefined && value === field.clearValue) {
+    const next = { ...profile };
+    delete next[key];
+    return next;
+  }
   return { ...profile, [key]: value };
 }

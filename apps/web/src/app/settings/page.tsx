@@ -12,7 +12,7 @@ import {
   resetAll,
   stageInput,
   updateDates,
-  updateProfile,
+  setProfile,
   useAppState,
   useHydrated,
 } from "@/lib/store";
@@ -132,7 +132,7 @@ export default function SettingsPage() {
                             label={field.label}
                             value={value}
                             onValueChange={(next) =>
-                              updateProfile(writeField(state.profile, field.key, next))
+                              setProfile(writeField(state.profile, field.key, next))
                             }
                             options={field.options}
                           />
