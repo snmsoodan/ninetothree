@@ -3,7 +3,9 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
+import type { RedFlag } from "@ninetothree/content";
 import { cn } from "@ninetothree/ui";
+import { HelpNow } from "./HelpNow";
 
 const NAV = [
   // The week view is a detail page of "This week", so it keeps the tab lit.
@@ -18,9 +20,11 @@ export interface AppShellProps {
   children: ReactNode;
   /** Shown in the header. "Week 28", "Month 6". */
   stage?: string;
+  /** The current week's warning signs, so the drawer can show them. */
+  flags?: RedFlag[];
 }
 
-export function AppShell({ children, stage }: AppShellProps) {
+export function AppShell({ children, stage, flags }: AppShellProps) {
   const pathname = usePathname();
 
   // A soft settle, not a transition. Transform only — dimming the text
@@ -44,8 +48,13 @@ export function AppShell({ children, stage }: AppShellProps) {
           >
             Nine to Three
           </Link>
-          <div className="flex items-center gap-4">
-            {stage ? <span className="text-sm text-ink-muted tabular">{stage}</span> : null}
+          <div className="flex items-center gap-3">
+            {/* The stage is repeated in the body of every page, so it is the
+                first thing to go when the header runs out of room. */}
+            {stage ? (
+              <span className="hidden text-sm text-ink-muted tabular sm:inline">{stage}</span>
+            ) : null}
+            <HelpNow flags={flags} />
             <Link
               href="/search"
               className="text-sm text-ink-muted underline decoration-1 underline-offset-2 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-clay"

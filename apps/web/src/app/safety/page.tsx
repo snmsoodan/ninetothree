@@ -1,20 +1,10 @@
 "use client";
 
-import { ESCALATION_COPY, PACKS, type Escalation } from "@ninetothree/content";
+import { ESCALATION_COPY, PACKS } from "@ninetothree/content";
 import { Card, CardBody, TextLink } from "@ninetothree/ui";
 import { AppShell } from "@/components/AppShell";
 import { ButtonLink } from "@/components/ButtonLink";
-
-const NUMBERS: { key: Escalation; detail: string }[] = [
-  { key: "call-911", detail: "Anything that feels like an emergency. Trust that." },
-  {
-    key: "call-poison-control",
-    detail: "Swallowed something, or a question about a dose.",
-  },
-  { key: "call-988", detail: "If you are thinking about hurting yourself." },
-  { key: "call-psi", detail: "Someone to talk to about how you feel." },
-  { key: "call-dv-hotline", detail: "Free, confidential, 24 hours." },
-];
+import { HELP_NUMBERS } from "@/lib/help";
 
 export default function SafetyPage() {
   const flags = PACKS.flatMap((pack) =>
@@ -44,7 +34,7 @@ export default function SafetyPage() {
             Who to call
           </h2>
           <ul className="mt-3 space-y-2">
-            {NUMBERS.map(({ key, detail }) => {
+            {HELP_NUMBERS.map(({ key, detail }) => {
               const copy = ESCALATION_COPY[key];
               return (
                 <li key={key}>

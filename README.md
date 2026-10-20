@@ -280,6 +280,12 @@ Five CI jobs run on every pull request. Each one fails for exactly one class of 
 
 **A number and its dial string cannot drift apart.** The triage outcome derives `tel:` from the phone number it prints, rather than reading a separate `href` field. The fallback that read `href` first was unreachable, and removing it took the component to 100% branch coverage.
 
+**Help is a link before it is a drawer.** The header control is a real `<a href="/safety">`. A plain click opens a drawer with the numbers and this week's warning signs; a modified click opens a new tab; with JavaScript off it navigates. The guard is an exported pure function, `isPlainClick`, so the five ways a click can be modified are tested without a DOM.
+
+**A red flag is never personalized away.** A test runs every pack against 35 profiles — one per answer for all 13 fields, plus one that fires several rules at once — and asserts the red flags come out identical every time. Loss mode is the one exception: the week is not shown at all, and the safety page still lists every flag.
+
+**A page about how a parent feels carries the numbers.** `/read/postpartum-mood` renders the crisis footer whether or not the article mentions 988, because the worst moment is not the time to hope the prose covered it.
+
 **The content schema is a gate, not a suggestion.** A pack with two essentials, no red flag, no source, or a `buy` action with no options fails the build. It has already caught four real content bugs.
 
 **The link check treats 403 as "verify by hand", not "broken".** CDC, CPSC, NHTSA, DOL, medicaid.gov, naeyc.org, adaa.org and ssa.gov block non-browser clients. A 404 or 410 fails the build; a 403 from those hosts is printed for manual review. It found seven dead citations in the first nine packs and eight dead URLs in the first 89 catalogue entries.

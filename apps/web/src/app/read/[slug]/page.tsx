@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { ARTICLES, PACKS, findAction, getArticle } from "@ninetothree/content";
 import { AppShell } from "@/components/AppShell";
 import { ArticleBody } from "@/components/ArticleBody";
+import { CrisisFooter } from "@/components/CrisisFooter";
 import { RelatedActions, resolveRelated } from "@/components/RelatedActions";
 import { SourceBlock } from "@/components/SourceBlock";
 
@@ -58,6 +59,10 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           reviewedAt={article.reviewedAt}
           updatedAt={article.updatedAt}
         />
+
+        {/* A page about how a parent feels carries the numbers, every time,
+            whether or not the article happens to mention them. */}
+        {article.domain === "mind" ? <CrisisFooter /> : null}
       </article>
     </AppShell>
   );
