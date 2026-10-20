@@ -9,6 +9,7 @@ import { Card, CardBody, CardFooter, CardHeader } from "./Card";
 import { Checkbox } from "./Checkbox";
 import { Dialog } from "./Dialog";
 import { Progress } from "./Progress";
+import { ProgressRing } from "./ProgressRing";
 import { RadioGroup } from "./RadioGroup";
 import { Tabs } from "./Tabs";
 import { TextLink } from "./TextLink";
@@ -200,6 +201,56 @@ describe("Progress", () => {
     render(<Progress value={40} label="This week" hideValue />);
     expect(screen.queryByText("40%")).not.toBeInTheDocument();
     expect(screen.getByRole("progressbar")).toBeInTheDocument();
+  });
+});
+
+describe("ProgressRing", () => {
+  it("exposes the value to assistive tech", () => {
+    render(<ProgressRing value={40} label="1 of 3 steps done or skipped" />);
+    const ring = screen.getByRole("progressbar", { name: "1 of 3 steps done or skipped" });
+    expect(ring).toHaveAttribute("aria-valuenow", "40");
+    expect(ring).toHaveAttribute("aria-valuemin", "0");
+    expect(ring).toHaveAttribute("aria-valuemax", "100");
+  });
+
+  it("clamps out-of-range values", () => {
+    const { rerender } = render(<ProgressRing value={-20} label="This week" />);
+    expect(screen.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "0");
+    rerender(<ProgressRing value={180} label="This week" />);
+    expect(screen.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "100");
+  });
+
+  it("rounds fractional values", () => {
+    render(<ProgressRing value={33.6} label="This week" />);
+    expect(screen.getByRole("progressbar")).toHaveAttribute("aria-valuenow", "34");
+  });
+
+  it("draws the arc in proportion to the value", () => {
+    const { container, rerender } = render(<ProgressRing value={0} label="This week" />);
+    const arc = () => container.querySelectorAll("circle")[1] as SVGCircleElement;
+    const full = Number(arc().getAttribute("stroke-dasharray"));
+    expect(Number(arc().getAttribute("stroke-dashoffset"))).toBeCloseTo(full, 5);
+
+    rerender(<ProgressRing value={50} label="This week" />);
+    expect(Number(arc().getAttribute("stroke-dashoffset"))).toBeCloseTo(full / 2, 5);
+  });
+
+  it("shows a tick only when the ring closes", () => {
+    const { container, rerender } = render(<ProgressRing value={99} label="This week" />);
+    expect(container.querySelectorAll("svg")).toHaveLength(1);
+
+    rerender(<ProgressRing value={100} label="This week" />);
+    expect(container.querySelectorAll("svg")).toHaveLength(2);
+  });
+
+  it("never prints a percentage, because a week is not a score", () => {
+    render(<ProgressRing value={67} label="This week" />);
+    expect(screen.queryByText("67%")).not.toBeInTheDocument();
+  });
+
+  it("takes a size", () => {
+    render(<ProgressRing value={40} label="This week" size={28} />);
+    expect(screen.getByRole("progressbar")).toHaveStyle({ width: "28px", height: "28px" });
   });
 });
 

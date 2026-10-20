@@ -7,6 +7,7 @@ import {
   addAppointment,
   clearProgress,
   completeOnboarding,
+  completeWeek,
   getServerSnapshot,
   getSnapshot,
   isHydrated,
@@ -16,8 +17,10 @@ import {
   movePin,
   removeAppointment,
   removePin,
+  reopenWeek,
   isSkipped,
   isSnoozed,
+  isWeekComplete,
   markDone,
   markSkipped,
   resetAll,
@@ -607,5 +610,90 @@ describe("stageInput", () => {
   it("returns null when the status and the date disagree", () => {
     expect(stageInput({ ...EMPTY_STATE, status: "parent", dueDate: "2026-12-01" })).toBeNull();
     expect(stageInput({ ...EMPTY_STATE, status: "pregnant", birthDate: "2026-01-01" })).toBeNull();
+  });
+});
+
+describe("week completion", () => {
+  it("records when a week was finished, and whether it was forced", () => {
+    completeWeek("test-week", true, "2026-06-15T10:00:00.000Z");
+    expect(getSnapshot().completed["test-week"]).toEqual({
+      at: "2026-06-15T10:00:00.000Z",
+      forced: true,
+    });
+    expect(isWeekComplete(getSnapshot(), "test-week")).toBe(true);
+  });
+
+  it("is idempotent: a second call keeps the first timestamp and the first reason", () => {
+    completeWeek("test-week", false, "2026-06-15T10:00:00.000Z");
+    completeWeek("test-week", true, "2026-06-20T10:00:00.000Z");
+    expect(getSnapshot().completed["test-week"]).toEqual({
+      at: "2026-06-15T10:00:00.000Z",
+      forced: false,
+    });
+  });
+
+  it("stamps the current time when no time is given", () => {
+    completeWeek("test-week", false);
+    expect(getSnapshot().completed["test-week"]?.at).toMatch(/^\d{4}-\d{2}-\d{2}T/);
+  });
+
+  it("reopens a week, and reopening twice is harmless", () => {
+    completeWeek("test-week", true);
+    reopenWeek("test-week");
+    expect(isWeekComplete(getSnapshot(), "test-week")).toBe(false);
+    reopenWeek("test-week");
+    expect(getSnapshot().completed).toEqual({});
+  });
+
+  it("leaves other weeks alone", () => {
+    completeWeek("test-week", true);
+    completeWeek("other-week", false);
+    reopenWeek("test-week");
+    expect(isWeekComplete(getSnapshot(), "other-week")).toBe(true);
+  });
+
+  it("survives a reload", () => {
+    completeWeek("test-week", true, "2026-06-15T10:00:00.000Z");
+    __resetForTests();
+    subscribe(() => {});
+    expect(isWeekComplete(getSnapshot(), "test-week")).toBe(true);
+  });
+
+  it("drops a stored entry with no timestamp", () => {
+    window.localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ version: 1, completed: { "test-week": { forced: true } } }),
+    );
+    __resetForTests();
+    subscribe(() => {});
+    expect(getSnapshot().completed).toEqual({});
+  });
+
+  it("treats a non-object entry and a non-object map as empty", () => {
+    window.localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ version: 1, completed: { "test-week": null } }),
+    );
+    __resetForTests();
+    subscribe(() => {});
+    expect(getSnapshot().completed).toEqual({});
+
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ version: 1, completed: [] }));
+    __resetForTests();
+    subscribe(() => {});
+    expect(getSnapshot().completed).toEqual({});
+  });
+
+  it("defaults a missing forced flag to false rather than truthy", () => {
+    window.localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        version: 1,
+        completed: { "test-week": { at: "2026-06-15T10:00:00.000Z" } },
+      }),
+    );
+    __resetForTests();
+    subscribe(() => {});
+    expect(getSnapshot().completed["test-week"]?.forced).toBe(false);
   });
 });

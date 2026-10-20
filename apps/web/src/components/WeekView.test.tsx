@@ -65,7 +65,7 @@ describe("WeekView", () => {
 
   it("shows quiet progress, not a score", () => {
     render(<WeekView pack={TEST_PACK} />);
-    expect(screen.getByText("0 of 3 done")).toBeInTheDocument();
+    expect(screen.getByText("0 of 3")).toBeInTheDocument();
     expect(screen.queryByText(/%/)).not.toBeInTheDocument();
   });
 
@@ -73,7 +73,7 @@ describe("WeekView", () => {
     const user = userEvent.setup();
     render(<WeekView pack={TEST_PACK} />);
     await user.click(screen.getAllByRole("button", { name: "Done" })[0]!);
-    expect(screen.getByText("1 of 3 done")).toBeInTheDocument();
+    expect(screen.getByText("1 of 3")).toBeInTheDocument();
   });
 
   it("says so when everything is done", async () => {
@@ -82,7 +82,7 @@ describe("WeekView", () => {
     for (const button of screen.getAllByRole("button", { name: "Done" })) {
       await user.click(button);
     }
-    expect(screen.getByText("All three done")).toBeInTheDocument();
+    expect(screen.getByText("That\u2019s this week.")).toBeInTheDocument();
   });
 
   it("shows the also-know section", () => {
@@ -219,7 +219,7 @@ describe("WeekView", () => {
       "2999-01-01",
     );
     render(<WeekView pack={TEST_PACK} />);
-    expect(screen.getByText("0 of 3 done")).toBeInTheDocument();
+    expect(screen.getByText("0 of 3")).toBeInTheDocument();
   });
 
   it("keeps a done action done across a re-render", () => {
@@ -230,6 +230,6 @@ describe("WeekView", () => {
       packTitle: TEST_PACK.title,
     });
     render(<WeekView pack={TEST_PACK} />);
-    expect(screen.getByText("1 of 3 done")).toBeInTheDocument();
+    expect(screen.getByText("1 of 3")).toBeInTheDocument();
   });
 });

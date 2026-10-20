@@ -165,7 +165,7 @@ test("a finished week stops asking and says when the next one arrives", async ({
   }
 
   await page.getByRole("link", { name: "This week", exact: true }).click();
-  await expect(page.getByText("You are done for this week.")).toBeVisible();
+  await expect(page.getByText("That’s this week.")).toBeVisible();
   await expect(page.getByText("Nothing else to do until Monday.")).toBeVisible();
   await expect(page.getByRole("link", { name: "Open this week" })).not.toBeVisible();
   await expect(page.getByRole("link", { name: "Look ahead" })).toBeVisible();
@@ -430,4 +430,39 @@ test("changing a setting re-personalizes the week without a reload", async ({ pa
   expect(
     await page.evaluate(() => (window as unknown as { __noReload?: boolean }).__noReload),
   ).toBe(true);
+});
+
+test("a week finishes when its steps are settled, and says so once", async ({ page }) => {
+  await onboardToWeek(page);
+
+  // Skipping is settling. A parent who skips all three is not stuck at 0%.
+  for (let i = 0; i < 3; i += 1) {
+    await page.getByRole("button", { name: "Skip" }).first().click();
+    await page.getByRole("radio", { name: /Not this week/ }).click();
+    await page.getByRole("button", { name: "Skip it" }).click();
+    await expect(page.getByRole("dialog")).toHaveCount(0);
+  }
+
+  await expect(page.getByText("That’s this week.")).toBeVisible();
+  await expect(page.getByText("Nothing else to do until Monday.")).toBeVisible();
+  await expect(page.getByRole("link", { name: "Look ahead" })).toBeVisible();
+  await expect(page.getByRole("link", { name: "Go to dashboard" })).toBeVisible();
+
+  // Nothing to reopen: every step is resolved.
+  await expect(page.getByRole("button", { name: "Reopen this week" })).toHaveCount(0);
+});
+
+test("a week can be closed with steps still open, and taken back", async ({ page }) => {
+  await onboardToWeek(page);
+
+  await page.getByRole("button", { name: "I’m done with this week" }).click();
+  await expect(page.getByText("Mark this week done?")).toBeVisible();
+  await page.getByRole("button", { name: "Mark it done" }).click();
+
+  await expect(page.getByText("That’s this week.")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Reopen this week" })).toBeVisible();
+
+  await page.getByRole("button", { name: "Reopen this week" }).click();
+  await expect(page.getByText("That’s this week.")).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "I’m done with this week" })).toBeVisible();
 });

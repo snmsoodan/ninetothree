@@ -3,15 +3,17 @@
 import Link from "next/link";
 import { useMemo } from "react";
 import { PACKS, type StagePack } from "@ninetothree/content";
-import { Badge, Card, CardBody, Progress } from "@ninetothree/ui";
+import { Badge, Card, CardBody, ProgressRing } from "@ninetothree/ui";
 import { ButtonLink } from "@/components/ButtonLink";
-import { catchUp, completion, personalizePack } from "@ninetothree/rules";
+import { catchUp, personalizePack } from "@ninetothree/rules";
 import { ActionItem } from "./ActionItem";
 import { CatchUp } from "./CatchUp";
 import { RedFlagList } from "./RedFlagList";
 import { SourceList } from "./SourceList";
 import { AppShell } from "./AppShell";
 import { isSnoozed, unsnooze, useAppState } from "@/lib/store";
+import { weekProgress } from "@/lib/week";
+import { WeekCompletion } from "./WeekCompletion";
 
 export interface WeekViewProps {
   pack: StagePack;
@@ -28,12 +30,7 @@ export function WeekView({ pack, nextId, previousId }: WeekViewProps) {
     [pack, state.profile],
   );
 
-  const doneIds = personalized.coreActions
-    .filter((a) => state.progress[a.id]?.status === "done")
-    .map((a) => a.id);
-
-  const done = completion(personalized, doneIds);
-  const allDone = done === 1;
+  const progress = weekProgress(personalized, state);
 
   // A snoozed step is not done and not skipped, so it still counts against
   // completion — it is coming back. It just is not in the way today.
@@ -64,16 +61,15 @@ export function WeekView({ pack, nextId, previousId }: WeekViewProps) {
           <h1 className="mt-1 font-display text-3xl text-ink">{pack.subtitle ?? pack.title}</h1>
         </header>
 
-        <div className="mt-5">
-          <Progress
-            value={done * 100}
-            label={
-              allDone
-                ? "All three done"
-                : `${doneIds.length} of ${personalized.coreActions.length} done`
-            }
-            hideValue
+        <div className="mt-5 flex items-center gap-3">
+          <ProgressRing
+            value={progress.percent}
+            label={`${progress.settled} of ${progress.total} steps done or skipped`}
+            size={44}
           />
+          <span className="text-sm text-ink-muted tabular">
+            {progress.settled} of {progress.total}
+          </span>
         </div>
 
         {pack.baby || pack.you ? (
@@ -139,6 +135,12 @@ export function WeekView({ pack, nextId, previousId }: WeekViewProps) {
             </p>
           ) : null}
         </section>
+
+        <WeekCompletion
+          packId={pack.id}
+          progress={progress}
+          nextHref={nextId ? `/week/${nextId}` : undefined}
+        />
 
         <CatchUp items={catchUpResult.items} stageLabel={pack.title} />
 
