@@ -77,3 +77,21 @@ test("the catch-up list has no violations", async ({ page }) => {
   await expect(page.locator("#catchup-list")).toBeVisible();
   expect(await audit(page)).toEqual([]);
 });
+
+test("every route has exactly one skip-link target", async ({ page }) => {
+  await onboard(page);
+  for (const path of [
+    "/",
+    "/onboarding",
+    "/week",
+    "/week/pregnancy-w28",
+    "/shelf",
+    "/safety",
+    "/settings",
+  ]) {
+    await page.goto(path);
+    await expect(page.locator("#main")).toHaveCount(1);
+    const href = await page.getByRole("link", { name: "Skip to content" }).getAttribute("href");
+    expect(href).toBe("#main");
+  }
+});

@@ -19,7 +19,7 @@ export default function CurrentWeekPage() {
 
   if (!input) {
     return (
-      <main className="mx-auto max-w-lg px-5 py-16">
+      <main id="main" tabIndex={-1} className="mx-auto max-w-lg px-5 py-16">
         <p className="text-base text-ink-muted">Setting up your week.</p>
       </main>
     );
@@ -30,7 +30,7 @@ export default function CurrentWeekPage() {
 
   if (!pack) {
     return (
-      <main className="mx-auto max-w-lg px-5 py-16">
+      <main id="main" tabIndex={-1} className="mx-auto max-w-lg px-5 py-16">
         <h1 className="font-display text-2xl text-ink">Nothing for this week yet</h1>
         <p className="mt-2 text-base text-ink-muted">
           We are still writing this one. Your last guide is still on your shelf.

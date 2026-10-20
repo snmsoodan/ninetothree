@@ -15,7 +15,11 @@ export default function Home() {
   }, [ready, state.onboarded, router]);
 
   return (
-    <main className="mx-auto flex min-h-dvh max-w-lg items-center justify-center px-5">
+    <main
+      id="main"
+      tabIndex={-1}
+      className="mx-auto flex min-h-dvh max-w-lg items-center justify-center px-5"
+    >
       <p className="text-base text-ink-muted">One moment.</p>
     </main>
   );

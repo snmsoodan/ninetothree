@@ -230,6 +230,80 @@ A second, smaller one: the skip link already existed in `layout.tsx`, and I wrot
 
 ---
 
-## 8. How this file is maintained
+## 8. The CI pipeline (issue #3)
+
+A green build is only worth something if it fails for the right reason. This PR adds four jobs, each owning exactly one class of mistake, and then proves each one fails on purpose.
+
+### The four jobs
+
+| Job            | Owns                                                       | Command                                                                                                |
+| -------------- | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| **verify**     | formatting, lint, types, content schema, unit tests, build | `pnpm format:check && pnpm lint && pnpm typecheck && pnpm content:validate && pnpm test && pnpm build` |
+| **e2e**        | parent-facing journeys and WCAG 2.2 AA                     | `pnpm test:e2e`                                                                                        |
+| **links**      | every cited source URL still resolves                      | `pnpm links:check`                                                                                     |
+| **lighthouse** | performance, accessibility, best practices, console errors | `pnpm lighthouse`                                                                                      |
+
+### The link checker found seven dead citations
+
+`scripts/check-links.mjs` reads every `sources[].url` out of the nine shipped packs and probes it with a browser user agent, six at a time. On its first run it found seven citations that no longer resolve — in content that had already passed schema validation, unit tests, and a full build. A parent clicking any of them would have hit a 404.
+
+| Pack                | Was                                                              | Now                                                |
+| ------------------- | ---------------------------------------------------------------- | -------------------------------------------------- |
+| `pregnancy-w8`      | ACOG oral health committee opinion                               | ADA pregnancy oral health topic                    |
+| `pregnancy-w12`     | March of Dimes `your-first-prenatal-care-visit.aspx`             | March of Dimes prenatal care                       |
+| `pregnancy-w20`     | ACOG `change-in-fetal-movement`                                  | ACOG special tests for monitoring fetal well-being |
+| `pregnancy-w28`     | CDC `vaccines/pregnancy/hcp-toolkit/tdap-vaccine-pregnancy.html` | CDC Tdap for healthcare providers                  |
+| `pregnancy-w28`     | ACOG `induction-of-labor`                                        | ACOG labor induction FAQ                           |
+| `pregnancy-w39`     | CPSC `Safety-Education/Safety-Guides/cribs`                      | eCFR 16 CFR 1219 (the actual crib standard)        |
+| `postpartum-week-1` | healthychildren `Jaundice-in-Newborns.aspx`                      | healthychildren `Jaundice.aspx`                    |
+
+Two hosts — `postpartum.net` and `nejm.org` — return 403 to any non-browser client. They are reported as "bot-protected" and pass, because a false failure on a live link is worse than a manual check. The `BOT_PROTECTED` set covers CDC, CPSC, NHTSA, DOL, medicaid.gov, naeyc.org, adaa.org, ssa.gov and ACOG.
+
+### Lighthouse found three real defects
+
+The budget is a hard floor, not a target: performance ≥ 0.9, **accessibility = 1.0**, best practices ≥ 0.95, SEO ≥ 0.9, and any console error fails the job.
+
+1. **No favicon.** Every page 404'd on `/favicon.ico`, which fails `errors-in-console`. Added `apps/web/src/app/icon.svg` — a clay rounded square with a paper clock ring and dots at 9 and 3.
+2. **The skip link was not focusable.** It used `sr-only`, which clips to 1×1. Lighthouse's `skip-link` audit requires the link to be reachable by keyboard. Changed to `absolute -translate-y-24 focus:translate-y-0`, so it is off-screen but focusable, and slides in on focus.
+3. **Three routes had no skip-link target.** `/onboarding`, `/`, and the `/week` loading and empty states rendered `<main>` without `id="main"`. The skip link pointed at nothing. All four now have `id="main" tabIndex={-1}`.
+
+Both audited URLs now score **1.0 / 1.0 / 1.0 / 1.0**.
+
+### The font flake
+
+The e2e job failed once on PR #56 with `An error occurred in next/font` / `TypeError: Cannot read properties of null (reading '1')`. `next/font/google` fetches from Google Fonts at build time, and that fetch occasionally returns a malformed response. The e2e job now caches `apps/web/.next/cache`, which removes the fetch on a warm cache.
+
+**This is a mitigation, not a fix.** The real fix is self-hosting the two fonts, which removes the network dependency entirely. That is tracked as follow-up work rather than done here, because it changes the font loading strategy and deserves its own PR.
+
+### Proving each job fails on purpose
+
+| Deliberate break                        | Job that caught it | Result                                                       |
+| --------------------------------------- | ------------------ | ------------------------------------------------------------ |
+| Two `essential` actions in one pack     | verify             | `content:validate` exits 1, names the pack and both actions  |
+| A source URL changed to a 404           | links              | `FAIL 404 …`, `1 broken source link(s)`, exits 1             |
+| `opacity-40` on the onboarding `<main>` | lighthouse         | `categories.accessibility failure`, found 0.95, expected ≥ 1 |
+
+All three files were restored and the full gate re-run green afterwards.
+
+### What it proves
+
+| Check        | Result                                                                     |
+| ------------ | -------------------------------------------------------------------------- |
+| Unit tests   | 333 passing across four packages                                           |
+| e2e          | 19 passing, including the new skip-link-target test on 7 routes            |
+| Source links | 29 checked, 0 broken, 2 bot-protected                                      |
+| Lighthouse   | 1.0 / 1.0 / 1.0 / 1.0 on `/onboarding` and `/week/pregnancy-w28`           |
+| Full gate    | format, lint, typecheck, content, test, build, e2e, lighthouse — all green |
+
+### What this PR does not prove
+
+- **The Lighthouse budget runs on two URLs, not all seven.** `/shelf`, `/safety`, `/settings` and `/week` are covered by axe in the e2e job but not by the performance budget.
+- **`numberOfRuns: 1`.** Lighthouse scores vary by a few points between runs; a single run can pass a budget that a median would fail. Raising it to 3 triples CI time.
+- **The link checker only checks that a URL resolves, not that it still says what the pack claims.** A page can move and keep a 200. Only a human re-reading the citation catches that.
+- **No WebKit or Firefox.** The e2e matrix is chromium only.
+
+---
+
+## 9. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.
