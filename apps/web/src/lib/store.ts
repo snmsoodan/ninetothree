@@ -43,6 +43,21 @@ export interface Pin {
   at: string;
 }
 
+/**
+ * An appointment the parent added themselves. The generated schedule is
+ * derived from the due date and never stored; only what a parent typed is.
+ */
+export interface CustomAppointment {
+  id: string;
+  label: string;
+  /** ISO date, YYYY-MM-DD. */
+  date: string;
+  who?: string;
+  note?: string;
+  /** ISO timestamp. */
+  at: string;
+}
+
 export interface AppState {
   version: 1;
   onboarded: boolean;
@@ -52,6 +67,7 @@ export interface AppState {
   profile: Profile;
   progress: Record<string, ProgressEntry>;
   pins: Pin[];
+  appointments: CustomAppointment[];
 }
 
 export const EMPTY_STATE: AppState = {
@@ -61,6 +77,7 @@ export const EMPTY_STATE: AppState = {
   profile: {},
   progress: {},
   pins: [],
+  appointments: [],
 };
 
 let state: AppState = EMPTY_STATE;
@@ -106,6 +123,18 @@ function migratePins(raw: unknown): Pin[] {
   return pins;
 }
 
+function migrateAppointments(raw: unknown): CustomAppointment[] {
+  if (!Array.isArray(raw)) return [];
+  return raw.filter(
+    (entry): entry is CustomAppointment =>
+      Boolean(entry) &&
+      typeof entry === "object" &&
+      typeof (entry as CustomAppointment).id === "string" &&
+      typeof (entry as CustomAppointment).label === "string" &&
+      typeof (entry as CustomAppointment).date === "string",
+  );
+}
+
 function hydrate(): void {
   if (hydrated || typeof window === "undefined") return;
   hydrated = true;
@@ -119,6 +148,7 @@ function hydrate(): void {
       ...parsed,
       profile: parsed.profile ?? {},
       pins: migratePins(parsed.pins),
+      appointments: migrateAppointments(parsed.appointments),
     };
     emit();
   } catch {
@@ -294,4 +324,34 @@ export function stageInput(state: AppState): StageInputValue | null {
     return { status: "parent", birthDate: state.birthDate };
   }
   return null;
+}
+
+export function addAppointment(
+  input: { label: string; date: string; who?: string; note?: string },
+  at = new Date().toISOString(),
+): void {
+  const id = `own-${at}-${state.appointments.length}`;
+  set({
+    ...state,
+    appointments: [...state.appointments, { id, ...input, at }],
+  });
+}
+
+export function updateAppointment(
+  id: string,
+  patch: Partial<Pick<CustomAppointment, "label" | "date" | "who" | "note">>,
+): void {
+  set({
+    ...state,
+    appointments: state.appointments.map((appointment) =>
+      appointment.id === id ? { ...appointment, ...patch } : appointment,
+    ),
+  });
+}
+
+export function removeAppointment(id: string): void {
+  set({
+    ...state,
+    appointments: state.appointments.filter((appointment) => appointment.id !== id),
+  });
 }

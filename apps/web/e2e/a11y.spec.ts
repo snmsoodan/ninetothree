@@ -43,6 +43,19 @@ test("the dashboard has no violations", async ({ page }) => {
   expect(await audit(page)).toEqual([]);
 });
 
+test("the appointments page has no violations", async ({ page }) => {
+  await onboard(page);
+  await page.goto("/appointments");
+  expect(await audit(page)).toEqual([]);
+});
+
+test("the appointments form has no violations", async ({ page }) => {
+  await onboard(page);
+  await page.goto("/appointments");
+  await page.getByRole("button", { name: "Add an appointment" }).click();
+  expect(await audit(page)).toEqual([]);
+});
+
 test("the week page has no violations", async ({ page }) => {
   await onboardToWeek(page);
   expect(await audit(page)).toEqual([]);
@@ -110,6 +123,7 @@ test("every route has exactly one skip-link target", async ({ page }) => {
     "/week",
     "/week/pregnancy-w28",
     "/shelf",
+    "/appointments",
     "/library",
     "/safety",
     "/settings",

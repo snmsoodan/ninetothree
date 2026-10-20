@@ -638,6 +638,30 @@ introduced here.
 
 **What this could not test:** the shelf's reorder and filter are covered by one Playwright journey and by unit tests on `movePin`, but no test asserts the order survives a reload — `state survives a reload` covers progress and pins, not their order. The six-pin cap is unit-tested, not exercised end to end, because reaching seven pins needs seven actions across several weeks.
 
-## 14. How this file is maintained
+## 14. Appointments (issue #25)
+
+**The cadence is the content, not a list of dates.** A due date moves — a dating scan revises it, a parent corrects a typo, a pregnancy is dated from a transfer. A schedule that cannot move with it is a calendar, not a guide. So `packages/content/src/schedule.ts` stores the _rule_ (`routine(from, to, step, who)`) and derives the dates:
+
+```
+dateForWeek(dueDate, week) = dueDate - (40 - week) * 7 days
+```
+
+Computed in UTC, so a parent in a state that observes DST does not see a visit slide by a day in March.
+
+**The US schedule is ACOG's, written out and tested visit by visit.** First visit 6–8 weeks; routine visits every 4 weeks from 12 to 28; the anatomy scan at 18–22; the glucose screen at 24–28; Tdap at 27–36; Rhogam at 28; every 2 weeks from 30 to 36; GBS at 36–37; weekly from 37 to 39; the due-date visit at 40; post-dates monitoring at 41; induction discussion at 42. `schedule.test.ts` asserts the cadence explicitly rather than snapshotting a list, so a change to the rule fails a named test.
+
+**The UK schedule exists and is not shipped.** `UK_SCHEDULE` follows NICE, and it is genuinely different, not a translation: the 25-week and 31-week visits carry `firstBabyOnly`, because NICE schedules fewer visits for a second pregnancy. `ENABLED_LOCALES` is `["en-US"]` and there is no UI to switch. The code is there so V2 is a flag, not a rewrite; the PR says so rather than implying UK support.
+
+**ICS is all-day, because a prenatal visit is a day.** `VALUE=DATE` with an exclusive `DTEND`, `TRANSP:TRANSPARENT`. Inventing 9am would put a fabricated time in a parent's calendar and make them early or late to an appointment nobody gave them a time for. Text is escaped for `\ ; , \n` and lines are folded at 75 characters with a leading space, per RFC 5545.
+
+**Only the first open window is badged.** At 28 weeks the glucose screen, Tdap, Rhogam and the 28-week visit all have open windows. Four badges reading "This is the window you are in" is noise, and noise is what this product exists to remove. `firstNow = items.findIndex(i => i.status === "now")` marks one.
+
+**`formatDate` is hand-rolled, not `Intl`.** `Intl.DateTimeFormat` can resolve differently on the server and the client, which produces a hydration mismatch and a visible re-render. A `MONTHS` array cannot disagree with itself.
+
+**The generated schedule is never stored.** Only what a parent typed is (`AppState.appointments`). Storing derived dates would freeze them: change the due date, and the stored schedule would be wrong with no way to tell.
+
+**What this could not test:** the ICS file is unit-tested for escaping and folding, but no test opens the downloaded file in a real calendar application. `/appointments` is not in `lighthouserc.json` because it redirects to `/onboarding` without localStorage and LHCI cannot seed it — the same gap as `/`. The US schedule's 4-weekly visits start at 12, not 8, on the reading that the first visit (6–8) covers the 8-week slot; a clinician may want both. Both schedules are unreviewed clinically.
+
+## 15. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.

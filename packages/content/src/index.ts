@@ -40,3 +40,22 @@ export {
   type LintRule,
   type LintFinding,
 } from "./lint";
+
+export {
+  SCHEDULES,
+  ENABLED_LOCALES,
+  US_SCHEDULE,
+  UK_SCHEDULE,
+  appointmentsFor,
+  buildIcs,
+  dateForWeek,
+  scheduleFor,
+} from "./schedule";
+export type {
+  AppointmentStatus,
+  AppointmentsOptions,
+  DatedAppointment,
+  Locale,
+  Schedule,
+  ScheduleEntry,
+} from "./schedule";

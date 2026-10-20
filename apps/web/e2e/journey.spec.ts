@@ -46,6 +46,49 @@ test("a new parent can get from the front door to a finished step", async ({ pag
   await expect(page.getByText(/1 step done/)).toBeVisible();
 });
 
+test("the appointment schedule is dated from the due date, and can be added to", async ({
+  page,
+}) => {
+  await onboardAsPregnant(page);
+
+  await page.getByRole("link", { name: "See the whole schedule" }).click();
+  await expect(page).toHaveURL(/\/appointments$/);
+  await expect(page.getByRole("heading", { level: 1, name: "Appointments" })).toBeVisible();
+
+  // The ACOG cadence, dated. The anatomy scan is the window a 28-week
+  // pregnancy is in, so it is the one that is marked.
+  await expect(page.getByRole("heading", { name: "Anatomy scan" })).toBeVisible();
+  await expect(page.getByText("This is the window you are in")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Glucose screening" })).toBeVisible();
+
+  // A parent's own appointment joins the same list.
+  await page.getByRole("button", { name: "Add an appointment" }).click();
+  await page.getByLabel("What is it").fill("Dentist");
+  await page.getByLabel("When").fill("2026-11-02");
+  await page.getByLabel("Anything to remember").fill("Tell them you are pregnant.");
+  await page.getByRole("button", { name: "Add it" }).click();
+
+  await expect(page.getByRole("heading", { name: "Dentist" })).toBeVisible();
+  await expect(page.getByText("Tell them you are pregnant.")).toBeVisible();
+
+  // Editing keeps the date and changes the label.
+  await page.getByRole("button", { name: "Edit Dentist" }).click();
+  await page.getByLabel("What is it").fill("Dentist, moved");
+  await page.getByRole("button", { name: "Save" }).click();
+  await expect(page.getByRole("heading", { name: "Dentist, moved" })).toBeVisible();
+
+  // Deleting removes it and leaves the generated schedule alone.
+  await page.getByRole("button", { name: "Delete Dentist, moved" }).click();
+  await expect(page.getByRole("heading", { name: "Dentist, moved" })).not.toBeVisible();
+  await expect(page.getByRole("heading", { name: "Anatomy scan" })).toBeVisible();
+
+  // The calendar file is offered, and it is a calendar.
+  const download = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Add to calendar" }).click();
+  const file = await download;
+  expect(file.suggestedFilename()).toBe("nine-to-three-appointments.ics");
+});
+
 test("the shelf reorders, filters, and holds more than the dashboard shows", async ({ page }) => {
   await onboardToWeek(page);
 

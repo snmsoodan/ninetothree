@@ -4,6 +4,7 @@ import {
   EMPTY_STATE,
   STORAGE_KEY,
   __resetForTests,
+  addAppointment,
   clearProgress,
   completeOnboarding,
   getServerSnapshot,
@@ -13,6 +14,7 @@ import {
   isDone,
   isPinned,
   movePin,
+  removeAppointment,
   removePin,
   isSkipped,
   markDone,
@@ -21,6 +23,7 @@ import {
   stageInput,
   subscribe,
   togglePin,
+  updateAppointment,
   updateProfile,
 } from "./store";
 
@@ -221,6 +224,54 @@ describe("resetAll", () => {
     expect(() => markDone("a1")).not.toThrow();
     expect(isDone(getSnapshot(), "a1")).toBe(true);
     setItem.mockRestore();
+  });
+
+  it("adds, edits, and removes an appointment of the parent's own", () => {
+    addAppointment({ label: "Dentist", date: "2026-11-02" }, "2026-10-20T00:00:00.000Z");
+    const [added] = getSnapshot().appointments;
+    expect(added).toMatchObject({ label: "Dentist", date: "2026-11-02" });
+    expect(added?.id).toMatch(/^own-/);
+
+    updateAppointment(added!.id, { label: "Dentist, moved", note: "Bring the form." });
+    expect(getSnapshot().appointments[0]).toMatchObject({
+      label: "Dentist, moved",
+      note: "Bring the form.",
+      date: "2026-11-02",
+    });
+
+    removeAppointment(added!.id);
+    expect(getSnapshot().appointments).toEqual([]);
+  });
+
+  it("leaves other appointments alone when one is edited", () => {
+    addAppointment({ label: "A", date: "2026-11-02" }, "2026-10-20T00:00:00.000Z");
+    addAppointment({ label: "B", date: "2026-11-03" }, "2026-10-20T00:00:01.000Z");
+    const [first] = getSnapshot().appointments;
+    updateAppointment(first!.id, { label: "A, edited" });
+    expect(getSnapshot().appointments.map((a) => a.label)).toEqual(["A, edited", "B"]);
+  });
+
+  it("drops a stored appointment that is missing its date", () => {
+    window.localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        ...EMPTY_STATE,
+        appointments: [
+          { id: "own-1", label: "No date" },
+          { id: "own-2", label: "Fine", date: "2026-11-02" },
+        ],
+      }),
+    );
+    const unsubscribe = subscribe(() => {});
+    expect(getSnapshot().appointments.map((a) => a.id)).toEqual(["own-2"]);
+    unsubscribe();
+  });
+
+  it("treats a non-array appointments field as empty", () => {
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...EMPTY_STATE, appointments: 7 }));
+    const unsubscribe = subscribe(() => {});
+    expect(getSnapshot().appointments).toEqual([]);
+    unsubscribe();
   });
 
   it("clears the stored copy too", () => {
