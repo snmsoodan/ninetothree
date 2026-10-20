@@ -102,6 +102,12 @@ export const Action = z.object({
   options: z.array(Option).max(4).default([]),
   /** When it is fine to ignore this. Skip is a first-class action. */
   skipIf: z.string().max(200).optional(),
+  /**
+   * The words a parent would type to find this, when they differ from the
+   * words a clinician would write. "Ultrasound" for an anatomy scan.
+   * Searchable, never shown.
+   */
+  keywords: z.array(z.string().min(2).max(30)).max(6).optional(),
 });
 export type Action = z.infer<typeof Action>;
 

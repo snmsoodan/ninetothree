@@ -58,6 +58,8 @@ const STORIES = [
   "app-sharecard--default",
   "app-progressline--some-progress",
   "app-quietweek--default",
+  "app-searchresults--results",
+  "app-searchresults--nothing-found",
   "app-weekcompletion--open",
   "app-weekcompletion--settled",
   "app-weekcompletion--forced",

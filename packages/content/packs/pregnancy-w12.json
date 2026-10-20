@@ -46,7 +46,8 @@
           "cost": "free"
         }
       ],
-      "skipIf": "You have already had NIPT or the NT scan this pregnancy."
+      "skipIf": "You have already had NIPT or the NT scan this pregnancy.",
+      "keywords": ["nuchal", "screening", "down syndrome"]
     },
     {
       "id": "w12-dental",
@@ -71,7 +72,8 @@
           "cost": "$"
         }
       ],
-      "skipIf": "You had a cleaning in the last three months."
+      "skipIf": "You had a cleaning in the last three months.",
+      "keywords": ["dentist", "teeth", "gums"]
     },
     {
       "id": "w12-tell-work",
@@ -104,7 +106,8 @@
           "cost": "free"
         }
       ],
-      "skipIf": "You are not employed, or you already know your leave in detail."
+      "skipIf": "You are not employed, or you already know your leave in detail.",
+      "keywords": ["maternity leave", "fmla", "hr"]
     }
   ],
   "alsoKnow": [

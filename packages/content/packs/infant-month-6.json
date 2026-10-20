@@ -48,7 +48,8 @@
           "cost": "$"
         }
       ],
-      "skipIf": "Your pediatrician has recommended a different start date for a medical reason."
+      "skipIf": "Your pediatrician has recommended a different start date for a medical reason.",
+      "keywords": ["weaning", "purees", "baby food"]
     },
     {
       "id": "m6-highchair",
@@ -79,7 +80,8 @@
           "cost": "$$"
         }
       ],
-      "skipIf": "You already have a high chair with a footrest and a harness."
+      "skipIf": "You already have a high chair with a footrest and a harness.",
+      "keywords": ["high chair", "feeding chair", "seat"]
     },
     {
       "id": "m6-sitter",
@@ -112,7 +114,8 @@
           "url": "https://www.care.com"
         }
       ],
-      "skipIf": "You have childcare arranged, or you are not returning to work."
+      "skipIf": "You have childcare arranged, or you are not returning to work.",
+      "keywords": ["daycare", "nursery", "childcare"]
     }
   ],
   "alsoKnow": [

@@ -804,6 +804,32 @@ The fix is `settledIds(pack, state)` in `apps/web/src/lib/week.ts`: a step is se
 
 **`CHANGELOG.md` starts here.** The DoD asks for a changelog entry and there was no changelog. It is created with this PR and the one before it, and says plainly that earlier work is in the git log and in this file rather than reconstructed from memory.
 
-## 22. How this file is maintained
+## 22. Search (issue #27)
+
+**The issue says "Postgres FTS + trigram". There is no Postgres, and there should not be.** The content is nine JSON packs and eighty-nine catalogue entries, validated by Zod at module load and shipped in the bundle. That is a few hundred kilobytes of text. A parent searching at 3am should not wait for a round trip to a database that would hold the same bytes. So the index is built in memory at module load and searched in the browser, and the AC — a relevant cited result for the top 100 queries, p95 under 300 ms — is met without a server.
+
+**The index is built from the content, so a new pack is searchable without a deploy step.** `buildIndex(packs, links)` produces one document per core action, one per also-know item, one per week, and one per catalogue entry. Nothing is hand-maintained: adding a pack to `packages/content/packs/` adds its steps to search on the next build.
+
+**Scoring is a small, explainable ladder.** A term in the title scores 10, a declared keyword 8, a title prefix 6, a title substring 4, a body word 3, a body substring 2. Matching every term multiplies the total by 1.5, so "car seat" ranks the car-seat step above a step that mentions a car and a seat separately. Ties break on title, so the order is stable.
+
+**Typo tolerance is trigram Dice similarity, and only on the title.** `similarity("gloucose", "glucose")` is above the 0.55 floor and finds the glucose screening. Fuzzy matching is deliberately not applied to the body: a fuzzy hit in a paragraph is how search starts returning nonsense. A query that matches nothing returns nothing, and the page says so in the product's voice.
+
+**The four queries that failed first were a content gap, not a search bug.** "ultrasound", "vaccines", "daycare" and "feeding" are the words a parent types; the packs said "anatomy scan", "2-month visit", "childcare" and "feed". The fix was a `keywords` field on `Action` — the content author declaring the parent's word — not a synonym table in the search code. Twenty-seven actions now declare keywords. This is the right place for it: a clinician reviewing a pack can see and correct the words a parent will search for.
+
+**`keywords` is `.optional()`, not `.default([])`.** A default makes the field required in the inferred type, which breaks every `as StagePack` fixture cast with `TS2352`. This is the second time that has bitten; the note is in the schema.
+
+**The 100-query fixture is the AC, written as a table.** `QUERIES` in `search.test.ts` is 100 `[query, expectedId]` pairs — the words a parent would actually type, including "what does my insurance cover", "whooping cough", "group b strep", "988", "211" and "how to talk". Each is asserted to return its expected result in the top five. A separate test times all 100 and asserts p95 under 300 ms; the real figure is single-digit milliseconds per query.
+
+**Every result is cited.** A step carries its pack's source ids and says "Week 28 · 3 sources". A catalogue entry says it is checked and cited in the library. A result with no citation is not in the index at all.
+
+**The no-results copy is prescribed, not improvised.** "Nothing here for that." then "Try a shorter word, or browse the library — everything we link to is in one place." with a link to `/library`. No "No results found", no "Oops", no count. A test asserts those three strings are absent, because the banned-words list is a rule and rules need tests.
+
+**Search is a header link, not a sixth tab.** The bottom nav has five tabs and five is already tight at 320px. Search is a utility, not a place you live, so it sits in the header next to the stage label.
+
+**`/search` is now audited by Lighthouse**, which the other four non-onboarding routes are not: it has no onboarding gate, so LHCI can reach it without seeding localStorage. All four audited URLs score 1.0/1.0/1.0/1.0, and `/search` LCP is 568 ms.
+
+**`searchLinks` in `links.ts` is still there and still used by the library filter.** It is a substring match over three fields, which is right for filtering a list you are already looking at. The new `search()` is for the case where you do not know where the answer lives. Two functions, two jobs; the library page was not rewritten.
+
+## 23. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.

@@ -38,7 +38,8 @@ const PLATFORM_LABEL: Record<NonNullable<LinkEntry["platforms"]>[number], string
  */
 export function LinkCard({ link }: LinkCardProps) {
   return (
-    <Card>
+    // The id is the anchor a search result lands on.
+    <Card id={link.id}>
       <CardBody className="pt-5">
         <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
           <h3 className="font-display text-lg text-ink">

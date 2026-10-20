@@ -522,3 +522,32 @@ test("the week can be worked through with the keyboard alone", async ({ page }) 
   await page.keyboard.press("Enter");
   await expect(page.getByRole("button", { name: "Undo" }).first()).toBeVisible();
 });
+
+test("search finds a step by the word a parent would use, and cites it", async ({ page }) => {
+  await onboardAsPregnant(page);
+  await page.goto("/search");
+
+  // "ultrasound" is not in the anatomy scan's title. The pack declares it.
+  await page.getByLabel("What are you looking for?").fill("ultrasound");
+  const result = page.getByRole("link", { name: "Book your anatomy scan" });
+  await expect(result).toBeVisible();
+  await expect(page.getByText("Week 20 · 3 sources")).toBeVisible();
+
+  // The result lands on the step itself, not the top of the week.
+  await result.click();
+  await expect(page).toHaveURL(/\/week\/pregnancy-w20#w20-anatomy-title$/);
+  await expect(page.getByRole("heading", { name: "Book your anatomy scan" })).toBeVisible();
+});
+
+test("search says nothing is here without saying 'no results'", async ({ page }) => {
+  await onboardAsPregnant(page);
+  await page.goto("/search");
+
+  await page.getByLabel("What are you looking for?").fill("stroller");
+  await expect(page.getByText("Nothing here for that.")).toBeVisible();
+  await expect(page.getByText(/no results/i)).toHaveCount(0);
+  await expect(page.getByText(/oops/i)).toHaveCount(0);
+
+  await page.getByRole("link", { name: "Open the library" }).click();
+  await expect(page).toHaveURL(/\/library$/);
+});

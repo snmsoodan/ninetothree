@@ -44,7 +44,15 @@ export function AppShell({ children, stage }: AppShellProps) {
           >
             Nine to Three
           </Link>
-          {stage ? <span className="text-sm text-ink-muted tabular">{stage}</span> : null}
+          <div className="flex items-center gap-4">
+            {stage ? <span className="text-sm text-ink-muted tabular">{stage}</span> : null}
+            <Link
+              href="/search"
+              className="text-sm text-ink-muted underline decoration-1 underline-offset-2 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-clay"
+            >
+              Search
+            </Link>
+          </div>
         </div>
       </header>
 
