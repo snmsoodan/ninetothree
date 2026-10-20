@@ -79,6 +79,18 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile
 
+      # next/font fetches Google Fonts at build time. Without this cache a
+      # network hiccup fails the build with "An error occurred in next/font",
+      # which is what happened on PR #56.
+      - name: Cache Next.js build
+        uses: actions/cache@v4
+        with:
+          path: apps/web/.next/cache
+          key: next-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('apps/web/src/**', 'packages/**/src/**') }}
+          restore-keys: |
+            next-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-
+            next-${{ runner.os }}-
+
       - name: Install browsers
         run: pnpm --filter @ninetothree/web exec playwright install --with-deps chromium
 
@@ -91,4 +103,70 @@ jobs:
         with:
           name: playwright-report
           path: apps/web/playwright-report
+          retention-days: 7
+
+  links:
+    name: Source links
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      # A dead citation is worse than no citation: it tells a parent at 3am
+      # that the product is not maintained. 403s from bot-protected hosts are
+      # reported for manual review, not failed.
+      - name: Check every cited source resolves
+        run: pnpm links:check
+
+  lighthouse:
+    name: Lighthouse budget
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      # next/font fetches Google Fonts at build time. Without this cache a
+      # network hiccup fails the build with "An error occurred in next/font",
+      # which is what happened on PR #56.
+      - name: Cache Next.js build
+        uses: actions/cache@v4
+        with:
+          path: apps/web/.next/cache
+          key: next-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-${{ hashFiles('apps/web/src/**', 'packages/**/src/**') }}
+          restore-keys: |
+            next-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}-
+            next-${{ runner.os }}-
+
+      - name: Build
+        run: pnpm build
+
+      - name: Assert the budget
+        run: pnpm lighthouse
+
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse
+          path: .lighthouseci
           retention-days: 7

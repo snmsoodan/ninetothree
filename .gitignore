@@ -15,5 +15,8 @@ playwright-report/
 test-results/
 storybook-static/
 
+# Lighthouse reports
+.lighthouseci/
+
 # TypeScript incremental build cache
 *.tsbuildinfo

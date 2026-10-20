@@ -46,7 +46,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <div id="app-root">
           <a
             href="#main"
-            className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-ink focus:px-4 focus:py-2 focus:text-base focus:text-paper focus:outline-2 focus:outline-offset-2 focus:outline-clay"
+            // Parked above the viewport rather than clipped with sr-only: a
+            // clipped 1x1 element is not focusable, and Lighthouse is right
+            // to say so. This keeps real dimensions and slides in on focus.
+            className="absolute left-4 top-4 z-50 -translate-y-24 rounded-md bg-ink px-4 py-2 text-base text-paper transition-transform duration-[var(--duration-fast)] ease-[var(--ease-calm)] focus:translate-y-0 focus:outline-2 focus:outline-offset-2 focus:outline-clay"
           >
             Skip to content
           </a>

@@ -212,6 +212,25 @@ A parent in the US can:
 
 ---
 
+## How it is verified
+
+Four CI jobs run on every pull request. Each one fails for exactly one class of mistake, so a red build tells you what broke without reading a log.
+
+| Job                   | Fails when                                                                        | Command                                                                                                |
+| --------------------- | --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| **Verify**            | formatting, lint, types, content schema, unit tests, or the build is wrong        | `pnpm format:check && pnpm lint && pnpm typecheck && pnpm content:validate && pnpm test && pnpm build` |
+| **End to end**        | a parent-facing journey breaks, or axe finds a WCAG 2.2 AA violation              | `pnpm test:e2e`                                                                                        |
+| **Source links**      | a pack cites a URL that no longer resolves                                        | `pnpm links:check`                                                                                     |
+| **Lighthouse budget** | performance < 0.9, accessibility < 1.0, best practices < 0.95, or a console error | `pnpm lighthouse`                                                                                      |
+
+**The content schema is a gate, not a suggestion.** A pack with two essentials, no red flag, no source, or a `buy` action with no options fails the build. It has already caught four real content bugs.
+
+**The link check treats 403 as "verify by hand", not "broken".** CDC, CPSC, NHTSA, DOL, medicaid.gov, naeyc.org, adaa.org and ssa.gov block non-browser clients. A 404 or 410 fails the build; a 403 from those hosts is printed for manual review. It found seven dead citations in the first nine packs.
+
+**The Lighthouse budget is a hard floor, not a target.** Accessibility must be 1.0. A route transition that dimmed the page to 60% opacity for 160ms failed five axe runs with 65 contrast violations each — that is the kind of thing this job exists to catch.
+
+---
+
 ## Naming
 
 **Decision: the name is Nine to Three.** The original placeholder, "Nest", should not ship — Google Nest, Nestlé (infant formula, directly hostile to our WHO Code position) and Nest thermostats own the word. We would be unfindable in search and permanently explaining ourselves.

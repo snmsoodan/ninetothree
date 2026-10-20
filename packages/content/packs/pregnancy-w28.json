@@ -147,7 +147,7 @@
       "id": "src-cdc-tdap",
       "title": "Tdap Vaccine and Pregnancy",
       "publisher": "CDC",
-      "url": "https://www.cdc.gov/vaccines/pregnancy/hcp-toolkit/tdap-vaccine-pregnancy.html",
+      "url": "https://www.cdc.gov/vaccines/vpd/dtap-tdap-td/hcp/index.html",
       "kind": "government",
       "accessed": "2026-10-20"
     },
@@ -155,7 +155,7 @@
       "id": "src-acog-movement",
       "title": "Changes in Fetal Movement",
       "publisher": "ACOG",
-      "url": "https://www.acog.org/womens-health/faqs/change-in-fetal-movement",
+      "url": "https://www.acog.org/womens-health/faqs/special-tests-for-monitoring-fetal-well-being",
       "kind": "clinical",
       "accessed": "2026-10-20"
     },

@@ -7,7 +7,7 @@ export const metadata: Metadata = {
 
 export default function OnboardingPage() {
   return (
-    <main>
+    <main id="main" tabIndex={-1}>
       <OnboardingFlow />
     </main>
   );

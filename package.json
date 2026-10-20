@@ -14,10 +14,13 @@
     "test:e2e": "turbo run test:e2e",
     "content:validate": "pnpm --filter @ninetothree/content validate",
     "format": "prettier --write \"**/*.{ts,tsx,md,json,css}\"",
-    "format:check": "prettier --check \"**/*.{ts,tsx,md,json,css}\""
+    "format:check": "prettier --check \"**/*.{ts,tsx,md,json,css}\"",
+    "links:check": "node scripts/check-links.mjs",
+    "lighthouse": "lhci autorun"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.5",
+    "@lhci/cli": "^0.15.1",
     "@next/eslint-plugin-next": "^15.5.28",
     "eslint": "^9.39.5",
     "eslint-plugin-jsx-a11y": "^6.10.2",
