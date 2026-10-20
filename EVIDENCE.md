@@ -192,6 +192,44 @@ The surface is `CatchUp`, a closed-by-default disclosure below the week's own th
 
 ---
 
-## 7. How this file is maintained
+## 7. App shell and navigation (issue #5)
+
+The shell is the only thing a parent sees on every page, so its failures are the most expensive ones in the product.
+
+### What it does
+
+- **A skip link** as the first focusable element, so a keyboard user does not tab through the brand and four nav items on every page.
+- **Focus moves to the new page's heading on navigation.** Next.js does not do this. Without it a screen reader user clicks "Shelf" and hears nothing — the page changed underneath them and their focus is still on a link that now points somewhere else. The hook lives in the root layout, not in `AppShell`, because `AppShell` remounts on every navigation and would reset the "first render" guard.
+- **The active tab is marked by position and weight**, not colour alone: a 2px clay top border plus `font-medium`. A shade difference between `ink` and `ink-muted` is not a signal to a colour-blind parent.
+- **A soft settle on route change**, transform-only, 160ms, collapsing to 0ms under `prefers-reduced-motion`.
+- **The bottom nav respects the iPhone home indicator** with `env(safe-area-inset-bottom)`.
+
+### What it proves
+
+| Check                                                 | Result                                                          |
+| ----------------------------------------------------- | --------------------------------------------------------------- |
+| `AppShell` tests                                      | 8 passing, 100% coverage                                        |
+| `RouteFocus` tests                                    | 4 passing, 100% coverage                                        |
+| e2e: skip link is first in the tab order and works    | passing                                                         |
+| e2e: focus lands on the new `h1` after each nav click | passing                                                         |
+| e2e: all four routes reachable by keyboard alone      | passing                                                         |
+| e2e: axe on all six surfaces                          | zero violations                                                 |
+| Full gate                                             | 333 unit tests, 18 e2e, lint, typecheck, format, content, build |
+
+### The defect this PR found
+
+**The route transition dimmed the whole page to 60% opacity.** It looked fine and every unit test passed. Then five of the eight axe tests failed with 65 contrast violations each — the entire page, for the length of the fade. A low-vision parent would see the text wash out on every single navigation. Replaced with a 4px transform, which cannot affect contrast, and added an e2e assertion that `#main` stays at `opacity: 1` so a fade cannot come back.
+
+A second, smaller one: the skip link already existed in `layout.tsx`, and I wrote a second one in `AppShell` before noticing. Two skip links is worse than one — the duplicate is gone and the original now has a visible focus ring.
+
+### What this PR does not prove
+
+- **Only chromium.** Focus behaviour differs in WebKit and Firefox, and neither is in the matrix.
+- **No screen reader was run.** Focus movement is asserted through `document.activeElement`, which is necessary but not sufficient — NVDA and VoiceOver announce differently.
+- **The settle is a guess.** 160ms and 4px were chosen by eye, not tested with a parent.
+
+---
+
+## 8. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.

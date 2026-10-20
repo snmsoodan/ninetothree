@@ -1,11 +1,17 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { AppShell } from "./AppShell";
 
+let pathname = "/week";
+
 vi.mock("next/navigation", () => ({
-  usePathname: () => "/week",
+  usePathname: () => pathname,
   useRouter: () => ({ replace: vi.fn(), push: vi.fn() }),
 }));
+
+beforeEach(() => {
+  pathname = "/week";
+});
 
 describe("AppShell", () => {
   it("renders the children", () => {
@@ -63,5 +69,27 @@ describe("AppShell", () => {
       </AppShell>,
     );
     expect(screen.getByRole("main")).toHaveAttribute("id", "main");
+  });
+
+  it("makes the main region programmatically focusable", () => {
+    render(
+      <AppShell>
+        <p>Content</p>
+      </AppShell>,
+    );
+    expect(screen.getByRole("main")).toHaveAttribute("tabindex", "-1");
+  });
+
+  it("marks the active tab with more than a colour", () => {
+    render(
+      <AppShell>
+        <p>Content</p>
+      </AppShell>,
+    );
+    const active = screen
+      .getAllByRole("link", { name: "This week" })
+      .find((el) => el.getAttribute("aria-current") === "page")!;
+    expect(active.className).toContain("border-clay");
+    expect(active.className).toContain("font-medium");
   });
 });
