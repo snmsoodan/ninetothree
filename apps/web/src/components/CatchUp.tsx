@@ -54,7 +54,18 @@ export function CatchUp({ items, stageLabel }: CatchUpProps) {
               <h3 className="mt-1 font-display text-lg text-ink">{item.action.title}</h3>
               <p className="mt-1 text-base text-ink-muted">{item.action.why}</p>
               <div className="mt-3 flex flex-wrap items-center gap-3">
-                <Button size="sm" variant="quiet" onClick={() => markDone(item.action.id)}>
+                <Button
+                  size="sm"
+                  variant="quiet"
+                  onClick={() =>
+                    markDone({
+                      id: item.action.id,
+                      title: item.action.title,
+                      packId: item.packId,
+                      packTitle: item.packTitle,
+                    })
+                  }
+                >
                   Done
                 </Button>
                 <Link

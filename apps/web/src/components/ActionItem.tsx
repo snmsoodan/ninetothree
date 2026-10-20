@@ -154,7 +154,10 @@ export function ActionItem({ action, packId, packTitle }: ActionItemProps) {
             Undo
           </Button>
         ) : (
-          <Button size="sm" onClick={() => markDone(action.id)}>
+          <Button
+            size="sm"
+            onClick={() => markDone({ id: action.id, title: action.title, packId, packTitle })}
+          >
             Done
           </Button>
         )}
@@ -183,7 +186,10 @@ export function ActionItem({ action, packId, packTitle }: ActionItemProps) {
             </Button>
             <Button
               onClick={() => {
-                markSkipped(action.id, reason === "no-reason" ? undefined : reason);
+                markSkipped(
+                  { id: action.id, title: action.title, packId, packTitle },
+                  reason === "no-reason" ? undefined : reason,
+                );
                 setSkipOpen(false);
               }}
             >

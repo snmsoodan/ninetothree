@@ -56,6 +56,12 @@ test("the appointments form has no violations", async ({ page }) => {
   expect(await audit(page)).toEqual([]);
 });
 
+test("the history page has no violations", async ({ page }) => {
+  await onboard(page);
+  await page.goto("/history");
+  expect(await audit(page)).toEqual([]);
+});
+
 test("the week page has no violations", async ({ page }) => {
   await onboardToWeek(page);
   expect(await audit(page)).toEqual([]);
@@ -124,6 +130,7 @@ test("every route has exactly one skip-link target", async ({ page }) => {
     "/week/pregnancy-w28",
     "/shelf",
     "/appointments",
+    "/history",
     "/library",
     "/safety",
     "/settings",

@@ -171,7 +171,12 @@ describe("WeekView", () => {
   });
 
   it("keeps a done action done across a re-render", () => {
-    markDone(TEST_PACK.coreActions[0]!.id);
+    markDone({
+      id: TEST_PACK.coreActions[0]!.id,
+      title: TEST_PACK.coreActions[0]!.title,
+      packId: TEST_PACK.id,
+      packTitle: TEST_PACK.title,
+    });
     render(<WeekView pack={TEST_PACK} />);
     expect(screen.getByText("1 of 3 done")).toBeInTheDocument();
   });

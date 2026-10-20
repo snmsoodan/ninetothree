@@ -27,6 +27,11 @@ import {
   updateProfile,
 } from "./store";
 
+/** The minimum a caller must know to record progress honestly. */
+function step(id: string) {
+  return { id, title: `Step ${id}`, packId: "test-week", packTitle: "Week 28" };
+}
+
 beforeEach(() => {
   window.localStorage.clear();
   __resetForTests();
@@ -70,35 +75,44 @@ describe("completeOnboarding", () => {
 });
 
 describe("progress", () => {
-  it("marks an action done with a timestamp", () => {
-    markDone("a1", "2026-06-15T10:00:00.000Z");
-    expect(getSnapshot().progress.a1).toEqual({ status: "done", at: "2026-06-15T10:00:00.000Z" });
+  it("marks an action done with a timestamp and a snapshot", () => {
+    markDone(step("a1"), "2026-06-15T10:00:00.000Z");
+    expect(getSnapshot().progress.a1).toEqual({
+      status: "done",
+      at: "2026-06-15T10:00:00.000Z",
+      title: "Step a1",
+      packId: "test-week",
+      packTitle: "Week 28",
+    });
     expect(isDone(getSnapshot(), "a1")).toBe(true);
   });
 
   it("marks an action skipped without a reason", () => {
-    markSkipped("a1", undefined, "2026-06-15T10:00:00.000Z");
+    markSkipped(step("a1"), undefined, "2026-06-15T10:00:00.000Z");
     expect(getSnapshot().progress.a1).toEqual({
       status: "skipped",
       at: "2026-06-15T10:00:00.000Z",
+      title: "Step a1",
+      packId: "test-week",
+      packTitle: "Week 28",
     });
     expect(isSkipped(getSnapshot(), "a1")).toBe(true);
   });
 
   it("marks an action skipped with a reason", () => {
-    markSkipped("a1", "not-now", "2026-06-15T10:00:00.000Z");
+    markSkipped(step("a1"), "not-now", "2026-06-15T10:00:00.000Z");
     expect(getSnapshot().progress.a1?.reason).toBe("not-now");
   });
 
   it("replaces a skip with a done", () => {
-    markSkipped("a1");
-    markDone("a1");
+    markSkipped(step("a1"));
+    markDone(step("a1"));
     expect(isDone(getSnapshot(), "a1")).toBe(true);
     expect(isSkipped(getSnapshot(), "a1")).toBe(false);
   });
 
   it("undoes a done", () => {
-    markDone("a1");
+    markDone(step("a1"));
     clearProgress("a1");
     expect(getSnapshot().progress.a1).toBeUndefined();
     expect(isDone(getSnapshot(), "a1")).toBe(false);
@@ -110,8 +124,8 @@ describe("progress", () => {
   });
 
   it("keeps other actions when one is undone", () => {
-    markDone("a1");
-    markDone("a2");
+    markDone(step("a1"));
+    markDone(step("a2"));
     clearProgress("a1");
     expect(Object.keys(getSnapshot().progress)).toEqual(["a2"]);
   });
@@ -211,7 +225,7 @@ describe("updateProfile", () => {
 describe("resetAll", () => {
   it("returns to the empty state", () => {
     completeOnboarding({ status: "pregnant", dueDate: "2026-12-01", profile: {} });
-    markDone("a1");
+    markDone(step("a1"));
     togglePin(pin("a1"));
     resetAll();
     expect(getSnapshot()).toEqual(EMPTY_STATE);
@@ -221,7 +235,7 @@ describe("resetAll", () => {
     const setItem = vi.spyOn(window.localStorage, "setItem").mockImplementation(() => {
       throw new Error("QuotaExceededError");
     });
-    expect(() => markDone("a1")).not.toThrow();
+    expect(() => markDone(step("a1"))).not.toThrow();
     expect(isDone(getSnapshot(), "a1")).toBe(true);
     setItem.mockRestore();
   });
@@ -275,7 +289,7 @@ describe("resetAll", () => {
   });
 
   it("clears the stored copy too", () => {
-    markDone("a1");
+    markDone(step("a1"));
     expect(window.localStorage.getItem(STORAGE_KEY)).not.toBeNull();
     resetAll();
     expect(window.localStorage.getItem(STORAGE_KEY)).toBeNull();
@@ -284,7 +298,7 @@ describe("resetAll", () => {
 
 describe("persistence", () => {
   it("writes to localStorage on every change", () => {
-    markDone("a1");
+    markDone(step("a1"));
     const raw = window.localStorage.getItem(STORAGE_KEY);
     expect(raw).not.toBeNull();
     expect(JSON.parse(raw!).progress.a1.status).toBe("done");
@@ -366,7 +380,7 @@ describe("persistence", () => {
     const spy = vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
       throw new Error("QuotaExceededError");
     });
-    expect(() => markDone("a1")).not.toThrow();
+    expect(() => markDone(step("a1"))).not.toThrow();
     expect(isDone(getSnapshot(), "a1")).toBe(true);
     spy.mockRestore();
   });
@@ -423,7 +437,7 @@ describe("subscribe", () => {
     const b = vi.fn();
     const unsubA = subscribe(a);
     const unsubB = subscribe(b);
-    markDone("a1");
+    markDone(step("a1"));
     expect(a).toHaveBeenCalledTimes(1);
     expect(b).toHaveBeenCalledTimes(1);
     unsubA();
@@ -434,7 +448,7 @@ describe("subscribe", () => {
     const listener = vi.fn();
     const unsubscribe = subscribe(listener);
     unsubscribe();
-    markDone("a1");
+    markDone(step("a1"));
     expect(listener).not.toHaveBeenCalled();
   });
 });

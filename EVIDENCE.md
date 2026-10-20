@@ -662,6 +662,30 @@ Computed in UTC, so a parent in a state that observes DST does not see a visit s
 
 **What this could not test:** the ICS file is unit-tested for escaping and folding, but no test opens the downloaded file in a real calendar application. `/appointments` is not in `lighthouserc.json` because it redirects to `/onboarding` without localStorage and LHCI cannot seed it — the same gap as `/`. The US schedule's 4-weekly visits start at 12, not 8, on the reading that the first visit (6–8) covers the 8-week slot; a clinician may want both. Both schedules are unreviewed clinically.
 
-## 15. How this file is maintained
+## 15. Progress and history (issue #26)
+
+**History is a snapshot, not a pointer, for the same reason a pin is.** The acceptance criterion is that history stays accurate after content is re-versioned. A progress entry keyed only by action id would not survive that: rename an action and a parent's record silently rewrites itself; retire one and the record of having done it disappears. So `ProgressEntry` carries the title and the week it had at the moment it was marked, and `apps/web/src/lib/history.ts` resolves in this order:
+
+1. the action still exists → live title and week, `retired: false`
+2. the action is gone but the entry has a snapshot → the snapshot, `retired: true`
+3. neither → "A step from an earlier version" / "Earlier version", `retired: true`
+
+**Unlike a pin, a nameless entry is kept.** A pin that cannot be resolved is dropped, because a shelf of dead links is worse than a shorter shelf. A history entry that cannot be resolved is kept, because the record of having done something is the point, and the date is still true even when the title is not.
+
+**"Notes" in the issue means the skip reasons the product already collects.** There is no free-text notes field and no issue for one. A skip reason is a sentence a parent typed at the moment they decided not to do something, which is exactly the note worth keeping; inventing a second, emptier field would be a feature nobody asked for.
+
+**The export is a history document, not a state dump.** `buildExport` produces something a parent can read, print, or hand to a clinician: what they did, when, and why they skipped. The restorable form — the one that can be imported back into the app — belongs with issue #41 (export and delete), and the PR says so rather than implying this is a backup.
+
+**CSV is one table in long format.** A parent opening the file in a spreadsheet wants one sheet, not three. A `kind` column (`action` / `pin` / `appointment`) keeps it to one.
+
+**CSV formula injection is a real risk here, because a skip reason is free text a parent typed.** A cell beginning `=`, `+`, `-`, `@`, tab or carriage return is prefixed with an apostrophe before quoting, so a spreadsheet treats it as text rather than a formula. Values containing `,` `"` CR or LF, or with leading or trailing space, are quoted. Line endings are CRLF with a trailing CRLF, per RFC 4180.
+
+**`formatDay` is hand-rolled, not `Intl`,** for the same hydration reason as `formatDate` in the appointment schedule.
+
+**`/history` is reached from Settings, not the nav.** The five bottom tabs are full, and a record is something a parent consults occasionally, not a place they need every day. This is a product decision made here, not one the brief specified.
+
+**What this could not test:** the downloaded files are asserted by filename and by unit tests over their contents, but no test opens the CSV in a spreadsheet application or the JSON in a third-party importer. `/history` is not in `lighthouserc.json` for the same reason as `/` and `/appointments` — it redirects to `/onboarding` without localStorage and LHCI cannot seed it. The history is not yet paginated; a parent three years in will have a long page, and that is a real gap rather than a deliberate choice.
+
+## 16. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.
