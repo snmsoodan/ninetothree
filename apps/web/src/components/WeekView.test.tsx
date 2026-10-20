@@ -24,6 +24,62 @@ describe("WeekView", () => {
     expect(screen.getAllByText("Week 28").length).toBeGreaterThan(0);
   });
 
+  it("links a step to the long read that explains it", () => {
+    const pack = {
+      ...TEST_PACK,
+      coreActions: [{ ...TEST_PACK.coreActions[0]!, id: "w28-glucose" }],
+    };
+    render(<WeekView pack={pack} />);
+    expect(
+      screen.getByRole("link", { name: /What the glucose test actually measures/ }),
+    ).toHaveAttribute("href", "/read/glucose-test");
+  });
+
+  it("offers the chooser on a step that has one", () => {
+    const pack = {
+      ...TEST_PACK,
+      coreActions: [
+        {
+          ...TEST_PACK.coreActions[0]!,
+          chooser: {
+            questions: [
+              {
+                id: "q1",
+                question: "One?",
+                answers: [
+                  { id: "a", label: "A" },
+                  { id: "b", label: "B" },
+                ],
+              },
+              {
+                id: "q2",
+                question: "Two?",
+                answers: [
+                  { id: "a", label: "A" },
+                  { id: "b", label: "B" },
+                ],
+              },
+              {
+                id: "q3",
+                question: "Three?",
+                answers: [
+                  { id: "a", label: "A" },
+                  { id: "b", label: "B" },
+                ],
+              },
+            ],
+            recommendations: [{ optionId: "o1", when: { q1: ["a"] }, reason: "Because." }],
+          },
+        },
+      ],
+    };
+    render(<WeekView pack={pack} />);
+    expect(screen.getByRole("link", { name: "Help me choose" })).toHaveAttribute(
+      "href",
+      `/choose/${TEST_PACK.coreActions[0]!.id}`,
+    );
+  });
+
   it("falls back to the title when there is no subtitle", () => {
     render(<WeekView pack={{ ...TEST_PACK, subtitle: undefined }} />);
     expect(screen.getByRole("heading", { level: 1, name: "Week 28" })).toBeInTheDocument();

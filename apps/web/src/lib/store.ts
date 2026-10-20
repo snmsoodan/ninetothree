@@ -14,6 +14,44 @@ import type { Profile } from "@ninetothree/rules";
 
 export const STORAGE_KEY = "ninetothree.v1";
 
+/**
+ * The onboarding draft lives under its own key, not inside `AppState`.
+ *
+ * A half-finished onboarding is not the parent's state — it is a form they
+ * walked away from. Keeping it out of `AppState` means it never reaches the
+ * history export, the dashboard, or a sync target.
+ */
+export const DRAFT_KEY = "ninetothree.onboarding.v1";
+
+/** A draft older than this is a different pregnancy. Start again. */
+export const DRAFT_TTL_DAYS = 7;
+
+export type OnboardingStep = "status" | "date" | "country" | "feeding" | "first" | "ready";
+
+export const ONBOARDING_STEPS: OnboardingStep[] = [
+  "status",
+  "date",
+  "country",
+  "feeding",
+  "first",
+  "ready",
+];
+
+/**
+ * The draft is the form's own state, nothing more. `""` means "not answered
+ * yet", which is different from an answer of "undecided".
+ */
+export interface OnboardingDraft {
+  step: OnboardingStep;
+  status: "pregnant" | "parent";
+  date: string;
+  country: string;
+  feeding: string;
+  firstBaby: string;
+  /** ISO timestamp of the last change, used for the TTL. */
+  at: string;
+}
+
 export type ProgressStatus = "done" | "skipped";
 
 /**
@@ -345,6 +383,76 @@ export function completeOnboarding(input: {
     birthDate: input.birthDate,
     profile: input.profile,
   });
+  clearDraft();
+}
+
+/**
+ * Reads a half-finished onboarding, or nothing.
+ *
+ * Every field is checked, because this is the one place a parent's own
+ * storage can hand us a shape we did not write. A draft that fails any check
+ * is treated as absent rather than repaired — a repaired form is a form that
+ * silently answers a question the parent did not.
+ */
+export function readDraft(now = new Date()): OnboardingDraft | null {
+  let raw: string | null = null;
+  try {
+    raw = window.localStorage.getItem(DRAFT_KEY);
+  } catch {
+    return null;
+  }
+  if (!raw) return null;
+
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(raw);
+  } catch {
+    return null;
+  }
+  if (!parsed || typeof parsed !== "object") return null;
+
+  const draft = parsed as Partial<OnboardingDraft>;
+  if (typeof draft.step !== "string" || !ONBOARDING_STEPS.includes(draft.step as OnboardingStep)) {
+    return null;
+  }
+  if (draft.status !== "pregnant" && draft.status !== "parent") return null;
+  if (typeof draft.date !== "string" || draft.date === "" || typeof draft.at !== "string") {
+    return null;
+  }
+
+  const age = now.getTime() - Date.parse(draft.at);
+  if (!Number.isFinite(age) || age > DRAFT_TTL_DAYS * 86_400_000) return null;
+
+  return {
+    step: draft.step as OnboardingStep,
+    status: draft.status,
+    date: draft.date,
+    country: typeof draft.country === "string" ? draft.country : "",
+    feeding: typeof draft.feeding === "string" ? draft.feeding : "",
+    firstBaby: typeof draft.firstBaby === "string" ? draft.firstBaby : "",
+    at: draft.at,
+  };
+}
+
+/**
+ * No `typeof window` guard: on the server the access throws a ReferenceError,
+ * which is exactly what the catch is for. A guard would be a branch that can
+ * never be taken in a browser and can never be tested.
+ */
+export function saveDraft(draft: OnboardingDraft): void {
+  try {
+    window.localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+  } catch {
+    // A draft is a convenience. Losing it costs the parent one screen.
+  }
+}
+
+export function clearDraft(): void {
+  try {
+    window.localStorage.removeItem(DRAFT_KEY);
+  } catch {
+    // Nothing to do.
+  }
 }
 
 /**
@@ -523,6 +631,7 @@ export function clearChoice(actionId: string): void {
 
 export function resetAll(): void {
   set({ ...EMPTY_STATE });
+  clearDraft();
   if (typeof window !== "undefined") {
     try {
       window.localStorage.removeItem(STORAGE_KEY);

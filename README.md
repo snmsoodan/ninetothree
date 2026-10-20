@@ -268,6 +268,12 @@ Five CI jobs run on every pull request. Each one fails for exactly one class of 
 
 **A choice is a snapshot, not a pointer.** `chooseOption` records the option's label at the time it was chosen, so a renamed or retired option still reads correctly on the step. Choosing is also not doing: the choice lives beside the progress, not in it, and the step keeps its Done button.
 
+**Country is detected, not asked.** Onboarding reads the device's time zone first and its language second, and shows the guess as a guess. The zone list is 36 explicit US zones and 5 UK zones rather than an `America/` prefix match, because `America/Toronto` and `America/Mexico_City` are not the United States. A parent in London with a US phone still lives in London.
+
+**A skipped question is not a guess.** Three of the six onboarding questions can be skipped, and a skipped one is left out of the profile rather than filled with a default. The product should not act on an answer nobody gave.
+
+**An answer that changes nothing is a bug.** The `feeding` question was recorded and had no effect, because the rule that was meant to act on it matched words the content did not use. The fix was not to hide the step — eight to twelve feeds a day is true of a bottle too — but to trim the two lactation-consultant options from it. A question the product asks has to do something.
+
 **The content schema is a gate, not a suggestion.** A pack with two essentials, no red flag, no source, or a `buy` action with no options fails the build. It has already caught four real content bugs.
 
 **The link check treats 403 as "verify by hand", not "broken".** CDC, CPSC, NHTSA, DOL, medicaid.gov, naeyc.org, adaa.org and ssa.gov block non-browser clients. A 404 or 410 fails the build; a 403 from those hosts is printed for manual review. It found seven dead citations in the first nine packs and eight dead URLs in the first 89 catalogue entries.

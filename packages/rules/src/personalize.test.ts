@@ -404,6 +404,34 @@ describe("OPTION_RULES", () => {
     ]);
   });
 
+  it("trims breastfeeding support when the parent is formula feeding", () => {
+    const feed = action({
+      id: "feed",
+      domain: "feeding",
+      title: "Feed the baby eight to twelve times a day",
+      options: [
+        { id: "lc", label: "A lactation consultant", detail: "Covered by most plans." },
+        { id: "llli", label: "La Leche League" },
+        { id: "formula", label: "Formula", detail: "Ready to feed is easiest." },
+      ],
+    });
+    const result = personalizePack(pack([feed]), { feeding: "formula" });
+    expect(result.pack.coreActions[0]?.options.map((o) => o.id)).toEqual(["formula"]);
+    expect(result.trimmed.map((t) => t.ruleId)).toEqual(["formula-options", "formula-options"]);
+  });
+
+  it("keeps the step when every option was breastfeeding support", () => {
+    const feed = action({
+      id: "feed",
+      domain: "feeding",
+      title: "Find a lactation consultant",
+      options: [{ id: "lc", label: "A lactation consultant" }],
+    });
+    const result = personalizePack(pack([feed]), { feeding: "formula" });
+    expect(result.pack.coreActions[0]?.options).toHaveLength(1);
+    expect(result.trimmed).toEqual([]);
+  });
+
   it("leaves the options alone when money is not tight", () => {
     const chair = action({
       id: "chair",
@@ -708,6 +736,7 @@ const RULE_FIXTURES: Record<string, { profile: Profile; expect: "hides" | "adds"
   "not-first-baby": { profile: { firstBaby: false }, expect: "hides" },
   "staying-home": { profile: { work: "staying-home" }, expect: "hides" },
   "tight-budget": { profile: { budget: "tight" }, expect: "hides" },
+  "formula-options": { profile: { feeding: "formula" }, expect: "hides" },
   "alone-support": { profile: { support: "alone" }, expect: "adds" },
   "mind-first": { profile: { mentalHealthHistory: true }, expect: "adjusts" },
 };
@@ -729,7 +758,15 @@ describe("every rule has a fixture", () => {
         { id: "dear", label: "A dear one", cost: "$$$" },
       ],
     });
-    const feed = action({ id: "a4", domain: "feeding", title: "Learn to latch" });
+    const feed = action({
+      id: "a4",
+      domain: "feeding",
+      title: "Learn to latch",
+      options: [
+        { id: "lc", label: "A lactation consultant" },
+        { id: "bottle", label: "A bottle" },
+      ],
+    });
     const firstVisit = action({ id: "a5", title: "Book your first prenatal visit" });
     const childcare = action({ id: "a6", domain: "childcare" });
     const support = action({ id: "p-support" });

@@ -891,6 +891,30 @@ The fix is `settledIds(pack, state)` in `apps/web/src/lib/week.ts`: a step is se
 
 **What this does not do.** The `runnerUp` is one sentence, not a second card. The questions and recommendations are my content, not a clinician's, and they carry the same `reviewedBy: "Clinical review pending"` as everything else. And the mechanism has one user: a car seat, a stroller or a crib chooser would exercise it properly, and none of those actions exist yet.
 
-## 25. How this file is maintained
+## 25. Onboarding (issue #16)
+
+**The issue asked for six steps, ninety seconds, skip where allowed, auto-detected country, and resume if abandoned, with an AC that the e2e completes in under ninety seconds and that every answer changes the first week card.** The flow had four steps and no country, no resume and no skip. It now has six, and the two ACs are measured rather than asserted.
+
+**The AC "every answer changes the first week card" cannot hold literally for one week.** The rules that fire against shipped content are spread across the whole guide: `no-car` hides `w36-car-seat`, `not-first-baby` hides `w8-first-visit` and `w20-childbirth-class`, `staying-home` hides `m6-sitter`, `tight-budget` trims two options on `m6-highchair` and `m6-sitter`. None of them touch week 28, which is where a parent who takes the "assume I am 28 weeks" shortcut lands. The honest reading is "every answer changes the first week card **at some starting point**", and `apps/web/src/lib/onboarding.test.ts` proves it one answer at a time, at the starting point where it matters. Country is outside "every answer" because it is detected rather than asked, and because the week card's appointments come from the pack JSON, not from `appointmentsFor` — the second test in that file proves country changes the schedule and not the card.
+
+**The `feeding` answer changed nothing, and that was a real gap.** The `formula-feeding` hide rule matches `/breastfeed|latch|milk supply|pump/i` against a step's title and `why`. `pp1-feed`'s title is "Feed the baby eight to twelve times a day" and its `why` says "builds your supply" — so the rule never fired, on any pack. Hiding the whole step would have been the wrong fix: eight to twelve feeds a day is true of a bottle too, and the step's advice about waking a baby who sleeps past three hours applies either way. The right fix was an option rule. `formula-options` trims the two lactation-consultant options from `pp1-feed` and leaves the formula option and the step itself. The `feeding` field's `effect` text changed from "Hides breastfeeding-specific steps" to "Hides breastfeeding support", because the first was not true.
+
+**Country is detected, not asked.** A parent should not type something the device already knows, and a wrong guess is one tap to fix. `detectCountry()` reads the IANA time zone first and `navigator.language` second, because a parent in London with a US phone still lives in London. The zone list is 36 explicit US zones and 5 UK zones rather than an `America/` prefix match, because `America/Toronto` and `America/Mexico_City` are not the United States. `isCovered` reads `ENABLED_LOCALES` from the schedule module, so the country gate and the appointment schedule cannot drift apart.
+
+**A guess the parent can see is an answer.** The first draft pre-selected the country radio from the guess but left the `country` state empty, so the parent saw an answer that was never recorded. The guess now sets the state too. It is set in the mount effect rather than during render, because the server has no `navigator` and a different zone, and a render-time guess is a hydration mismatch.
+
+**A skipped question is not a guess.** `feeding` and `firstBaby` default to `""` rather than to `"undecided"` or `"yes"`, and `finish()` omits an unanswered field from the profile entirely. Writing a default would have made the product act on an answer the parent did not give.
+
+**The draft lives under its own key, with a seven-day TTL.** `ninetothree.onboarding.v1` is separate from `ninetothree.v1`, because a half-finished onboarding is not the parent's state and must never reach the history export or a sync target. A draft from three months ago should not resume at "ready" with a stale date, so `readDraft` rejects anything older than a week. `completeOnboarding` and `resetAll` both clear it.
+
+**Resume uses `useEffect`, not a `useState` initializer.** The server renders step 1, so a client initializer that read the draft would be a hydration mismatch. A `loaded` flag stops the initial mount from overwriting the draft with step 1.
+
+**`computeStage` must not run before the date is answered.** It throws `Invalid date: ` on an empty string, and hoisting it to the top of the component made it run on the first render. It now lives in an extracted `StartingAt` component that only renders on the payoff screen.
+
+**The ninety seconds are measured.** The e2e records `Date.now()` at the start and asserts the elapsed time at the end; it takes about 480 ms. The same test reads the stored profile back out of localStorage and asserts the three answers landed.
+
+**What this does not do.** Country does not change the week card, because the card's appointments are content. Locale-aware escalation numbers — 911 against 999 — would be a real feature and belong to #31 and #46. The draft is plain localStorage: not encrypted, not scoped, cleared on completion and on `resetAll`.
+
+## 26. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.

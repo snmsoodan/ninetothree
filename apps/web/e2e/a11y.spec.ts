@@ -21,8 +21,10 @@ async function onboard(page: Page) {
   await page.goto("/onboarding");
   await page.getByRole("button", { name: /I am pregnant/ }).click();
   await page.getByRole("button", { name: /assume I am 28 weeks/ }).click();
-  await page.getByRole("button", { name: "Continue" }).click();
-  await page.getByRole("button", { name: "Continue" }).click();
+  // date, country, feeding, first baby
+  for (let i = 0; i < 4; i += 1) {
+    await page.getByRole("button", { name: "Continue" }).click();
+  }
   await page.getByRole("button", { name: "Show me" }).click();
   await expect(page).toHaveURL(/\/$/);
 }
