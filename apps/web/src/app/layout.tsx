@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Newsreader } from "next/font/google";
 import { ToastProvider } from "@ninetothree/ui";
+import { RouteFocus } from "@/components/RouteFocus";
 import "./globals.css";
 
 const inter = Inter({
@@ -45,10 +46,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <div id="app-root">
           <a
             href="#main"
-            className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-ink focus:px-4 focus:py-2 focus:text-paper"
+            className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-ink focus:px-4 focus:py-2 focus:text-base focus:text-paper focus:outline-2 focus:outline-offset-2 focus:outline-clay"
           >
             Skip to content
           </a>
+          <RouteFocus />
           <ToastProvider>{children}</ToastProvider>
         </div>
       </body>

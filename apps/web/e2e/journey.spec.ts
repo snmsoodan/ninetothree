@@ -134,3 +134,48 @@ test("a late joiner gets a short catch-up, not a backlog", async ({ page }) => {
   await page.locator("#catchup-list").getByRole("button", { name: "Done" }).first().click();
   await expect(page.getByRole("heading", { name: "Book your anatomy scan" })).toHaveCount(0);
 });
+
+test("a keyboard user can skip the nav and never loses focus", async ({ page }) => {
+  await onboardAsPregnant(page);
+
+  // Land on the page fresh so focus starts at the top of the document.
+  await page.goto("/week");
+
+  // The skip link is the first thing Tab reaches.
+  await page.keyboard.press("Tab");
+  const skip = page.getByRole("link", { name: "Skip to content" });
+  await expect(skip).toBeFocused();
+  await expect(skip).toBeVisible();
+
+  await page.keyboard.press("Enter");
+  await expect(page.locator("#main")).toBeFocused();
+
+  // Navigating by keyboard moves focus to the new page's heading, so a
+  // screen reader announces where the parent landed.
+  await page.getByRole("link", { name: "Shelf" }).click();
+  await expect(page).toHaveURL(/\/shelf$/);
+  await expect(page.getByRole("heading", { level: 1 })).toBeFocused();
+
+  // The settle must never dim the text: a fade would drop the page below
+  // AA for its duration, which is a real cost to a low-vision parent.
+  await expect(page.locator("#main")).toHaveCSS("opacity", "1");
+
+  await page.getByRole("link", { name: "Safety" }).click();
+  await expect(page).toHaveURL(/\/safety$/);
+  await expect(page.getByRole("heading", { level: 1 })).toBeFocused();
+});
+
+test("every route is reachable with the keyboard alone", async ({ page }) => {
+  await onboardAsPregnant(page);
+
+  for (const [label, url] of [
+    ["Shelf", /\/shelf$/],
+    ["Safety", /\/safety$/],
+    ["Settings", /\/settings$/],
+    ["This week", /\/week$/],
+  ] as const) {
+    await page.getByRole("link", { name: label }).focus();
+    await page.keyboard.press("Enter");
+    await expect(page).toHaveURL(url);
+  }
+});
