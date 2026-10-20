@@ -8,6 +8,7 @@ import { cn } from "@ninetothree/ui";
 const NAV = [
   { href: "/week", label: "This week" },
   { href: "/shelf", label: "Shelf" },
+  { href: "/library", label: "Library" },
   { href: "/safety", label: "Safety" },
   { href: "/settings", label: "Settings" },
 ] as const;
@@ -71,7 +72,8 @@ export function AppShell({ children, stage }: AppShellProps) {
                   href={item.href}
                   aria-current={active ? "page" : undefined}
                   className={cn(
-                    "flex h-16 items-center justify-center border-t-2 text-sm",
+                    "flex h-16 items-center justify-center border-t-2 px-1 text-center",
+                    "text-xs leading-tight sm:text-sm",
                     "transition-colors duration-[var(--duration-fast)] ease-[var(--ease-calm)]",
                     // The active tab is marked by position and weight, not
                     // colour alone — a shade difference is not a signal.

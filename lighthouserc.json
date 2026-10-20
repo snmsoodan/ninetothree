@@ -4,7 +4,11 @@
       "startServerCommand": "pnpm --filter @ninetothree/web start",
       "startServerReadyPattern": "Ready in",
       "startServerReadyTimeout": 60000,
-      "url": ["http://localhost:3000/onboarding", "http://localhost:3000/week/pregnancy-w28"],
+      "url": [
+        "http://localhost:3000/onboarding",
+        "http://localhost:3000/week/pregnancy-w28",
+        "http://localhost:3000/library"
+      ],
       "numberOfRuns": 1,
       "settings": {
         "preset": "desktop",

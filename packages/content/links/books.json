@@ -1,0 +1,155 @@
+[
+  {
+    "id": "book-expecting-better",
+    "title": "Expecting Better",
+    "url": "https://parentdata.org/",
+    "publisher": "Emily Oster / ParentData",
+    "type": "editorial",
+    "domains": ["health-parent"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "postpartum",
+        "index": 0
+      }
+    },
+    "cost": "$$",
+    "why": "The data behind the pregnancy rules, so you can decide which ones matter to you.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending",
+    "note": "The publisher's book page now points at a different title. This is the author's own site, which is free and updated more often than the book."
+  },
+  {
+    "id": "parentdata",
+    "title": "ParentData",
+    "url": "https://parentdata.org/",
+    "publisher": "Emily Oster",
+    "type": "editorial",
+    "domains": ["health-baby", "sleep", "feeding"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 0
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "The evidence behind the first-years advice, updated as new studies land. Free, and the same approach as Cribsheet.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "happiest-baby",
+    "title": "Happiest Baby",
+    "url": "https://www.happiestbaby.com/",
+    "publisher": "Harvey Karp",
+    "type": "editorial",
+    "domains": ["sleep"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 0
+      },
+      "to": {
+        "kind": "infant",
+        "index": 6
+      }
+    },
+    "cost": "free",
+    "why": "The five S's, explained by the person who named them. The only newborn soothing method you will remember at 3am.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending",
+    "note": "The site also sells the SNOO. The soothing method is free and does not need it."
+  },
+  {
+    "id": "book-precious-little-sleep",
+    "title": "Precious Little Sleep",
+    "url": "https://www.preciouslittlesleep.com/",
+    "publisher": "Alexis Dubief",
+    "type": "book",
+    "domains": ["sleep"],
+    "stages": {
+      "from": {
+        "kind": "infant",
+        "index": 2
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "$$",
+    "why": "Sleep from four months on, with options rather than one method. Honest about what each one costs.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "book-whole-brain-child",
+    "title": "The Whole-Brain Child",
+    "url": "https://drdansiegel.com/",
+    "publisher": "Dan Siegel",
+    "type": "editorial",
+    "domains": ["mind", "play"],
+    "stages": {
+      "from": {
+        "kind": "toddler",
+        "index": 12
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 60
+      }
+    },
+    "cost": "$$",
+    "why": "Why a two-year-old cannot reason, and what to do instead of reasoning with them.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending",
+    "note": "The publisher's book page now points at a different title. This is the author's own site."
+  },
+  {
+    "id": "book-how-to-talk",
+    "title": "How to Talk So Little Kids Will Listen",
+    "url": "https://www.simonandschuster.com/books/How-to-Talk-So-Little-Kids-Will-Listen/Joanna-Faber/9781501131639",
+    "publisher": "Joanna Faber & Julie King / Simon & Schuster",
+    "type": "book",
+    "domains": ["mind"],
+    "stages": {
+      "from": {
+        "kind": "toddler",
+        "index": 12
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 84
+      }
+    },
+    "cost": "$$",
+    "why": "Scripts for the specific situations, not a philosophy. Useful from about eighteen months.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  }
+]

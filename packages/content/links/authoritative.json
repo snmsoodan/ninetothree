@@ -1,0 +1,1202 @@
+[
+  {
+    "id": "acog-womens-health",
+    "title": "ACOG — Women's Health",
+    "url": "https://www.acog.org/womens-health",
+    "publisher": "American College of Obstetricians and Gynecologists",
+    "type": "authoritative",
+    "domains": ["health-parent"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "postpartum",
+        "index": 0
+      }
+    },
+    "cost": "free",
+    "why": "The body that sets US prenatal care standards. Start here for anything about appointments, screening windows, or symptoms.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "cdc-pregnancy",
+    "title": "CDC — Pregnancy",
+    "url": "https://www.cdc.gov/pregnancy/",
+    "publisher": "Centers for Disease Control and Prevention",
+    "type": "authoritative",
+    "domains": ["health-parent", "health-baby"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "postpartum",
+        "index": 0
+      }
+    },
+    "cost": "free",
+    "why": "Vaccines, infections, and the things that are genuinely risky in pregnancy, in plain language.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "cdc-vaccine-schedule",
+    "title": "CDC — Immunization schedules",
+    "url": "https://www.cdc.gov/vaccines/hcp/imz-schedules/",
+    "publisher": "Centers for Disease Control and Prevention",
+    "type": "authoritative",
+    "domains": ["health-baby"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 0
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "The schedule your pediatrician is following. Useful when you want to know what is coming and why.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "cdc-milestones",
+    "title": "CDC — Learn the Signs. Act Early.",
+    "url": "https://www.cdc.gov/act-early/milestones/index.html",
+    "publisher": "Centers for Disease Control and Prevention",
+    "type": "authoritative",
+    "domains": ["milestones", "health-baby"],
+    "stages": {
+      "from": {
+        "kind": "infant",
+        "index": 2
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "What most children do by each age, and the specific things worth asking about. Written to inform, not to score.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "healthychildren",
+    "title": "HealthyChildren.org",
+    "url": "https://www.healthychildren.org/",
+    "publisher": "American Academy of Pediatrics",
+    "type": "authoritative",
+    "domains": ["health-baby", "feeding", "sleep", "safety"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 0
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "The AAP's parent-facing site. The most reliable plain-language answer to a pediatric question.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "march-of-dimes",
+    "title": "March of Dimes",
+    "url": "https://www.marchofdimes.org/",
+    "publisher": "March of Dimes",
+    "type": "charity",
+    "domains": ["health-parent", "health-baby"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "infant",
+        "index": 12
+      }
+    },
+    "cost": "free",
+    "why": "Pregnancy and newborn health, with a strong section on preterm birth and what to expect if it happens.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "nichd",
+    "title": "NICHD",
+    "url": "https://www.nichd.nih.gov/",
+    "publisher": "National Institutes of Health",
+    "type": "authoritative",
+    "domains": ["health-parent", "health-baby"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "infant",
+        "index": 12
+      }
+    },
+    "cost": "free",
+    "why": "The research arm. Go here when you want the study behind a claim rather than a summary of it.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "mothertobaby",
+    "title": "MotherToBaby",
+    "url": "https://mothertobaby.org/",
+    "publisher": "Organization of Teratology Information Specialists",
+    "type": "authoritative",
+    "domains": ["health-parent"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "infant",
+        "index": 12
+      }
+    },
+    "cost": "free",
+    "why": "Free, evidence-based answers on whether a medication or exposure is safe in pregnancy and while breastfeeding.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "lactmed",
+    "title": "LactMed",
+    "url": "https://www.ncbi.nlm.nih.gov/books/NBK501922/",
+    "publisher": "National Library of Medicine",
+    "type": "authoritative",
+    "domains": ["feeding", "health-parent"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 0
+      },
+      "to": {
+        "kind": "infant",
+        "index": 24
+      }
+    },
+    "cost": "free",
+    "why": "The drug-by-drug database for breastfeeding. What to check before you take anything.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "safetosleep",
+    "title": "Safe to Sleep",
+    "url": "https://safetosleep.nichd.nih.gov/",
+    "publisher": "National Institutes of Health",
+    "type": "authoritative",
+    "domains": ["sleep", "safety"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 0
+      },
+      "to": {
+        "kind": "infant",
+        "index": 12
+      }
+    },
+    "cost": "free",
+    "why": "The safe-sleep rules, from the agency that funds the research behind them.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "nhtsa-car-seats",
+    "title": "NHTSA — Car seats and booster seats",
+    "url": "https://www.nhtsa.gov/vehicle-safety/car-seats-and-booster-seats",
+    "publisher": "National Highway Traffic Safety Administration",
+    "type": "authoritative",
+    "domains": ["safety", "gear"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "Ease-of-use ratings, the current recommendations, and where to get a free installation check. A seat that installs correctly every time beats a seat with better test numbers.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "cpsc-recalls",
+    "title": "CPSC — Recalls",
+    "url": "https://www.cpsc.gov/Recalls",
+    "publisher": "Consumer Product Safety Commission",
+    "type": "authoritative",
+    "domains": ["safety", "gear"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "The official recall list. Check anything secondhand before it goes in the nursery.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "ecfr-cribs",
+    "title": "16 CFR 1219 — Full-size cribs",
+    "url": "https://www.ecfr.gov/current/title-16/chapter-II/subchapter-B/part-1219",
+    "publisher": "Electronic Code of Federal Regulations",
+    "type": "authoritative",
+    "domains": ["safety", "gear"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "infant",
+        "index": 12
+      }
+    },
+    "cost": "free",
+    "why": "The actual federal crib standard. Dense, but it is the thing a crib has to meet to be legal to sell.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "cdc-formula-feeding",
+    "title": "Tips for Infant Formula Feeding",
+    "url": "https://www.cdc.gov/infant-toddler-nutrition/formula-feeding/index.html",
+    "publisher": "Centers for Disease Control and Prevention",
+    "type": "authoritative",
+    "domains": ["feeding"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 0
+      },
+      "to": {
+        "kind": "infant",
+        "index": 12
+      }
+    },
+    "cost": "free",
+    "why": "How to mix, store and warm formula safely, and when to throw it out.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "womenshealth-breastfeeding",
+    "title": "Office on Women's Health — Breastfeeding",
+    "url": "https://womenshealth.gov/breastfeeding",
+    "publisher": "US Department of Health and Human Services",
+    "type": "authoritative",
+    "domains": ["feeding"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 0
+      },
+      "to": {
+        "kind": "infant",
+        "index": 24
+      }
+    },
+    "cost": "free",
+    "why": "A calm, complete starting point, including your right to pump at work.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "cdc-infant-nutrition",
+    "title": "CDC — Infant and toddler nutrition",
+    "url": "https://www.cdc.gov/infant-toddler-nutrition/index.html",
+    "publisher": "Centers for Disease Control and Prevention",
+    "type": "authoritative",
+    "domains": ["nutrition", "feeding"],
+    "stages": {
+      "from": {
+        "kind": "infant",
+        "index": 4
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "When to start solids, what to offer, and the foods to avoid in the first year.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "usda-wic",
+    "title": "WIC",
+    "url": "https://www.fna.usda.gov/wic",
+    "publisher": "US Department of Agriculture",
+    "type": "authoritative",
+    "domains": ["money", "nutrition"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 60
+      }
+    },
+    "cost": "free",
+    "why": "Food benefits for pregnancy and the first years. Income limits are higher than most people assume.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "snap",
+    "title": "SNAP",
+    "url": "https://www.fna.usda.gov/snap/supplemental-nutrition-assistance-program",
+    "publisher": "US Department of Agriculture",
+    "type": "authoritative",
+    "domains": ["money", "nutrition"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "The larger food program. Applying takes about twenty minutes and does not affect immigration status for most families.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "medicaid-pregnancy",
+    "title": "Medicaid — Pregnancy coverage",
+    "url": "https://www.healthcare.gov/medicaid-chip/",
+    "publisher": "Centers for Medicare & Medicaid Services",
+    "type": "authoritative",
+    "domains": ["money", "health-parent"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "postpartum",
+        "index": 12
+      }
+    },
+    "cost": "free",
+    "why": "Pregnancy Medicaid covers far more people than standard Medicaid. Worth checking even if you think you earn too much.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "insurekidsnow",
+    "title": "InsureKidsNow — CHIP",
+    "url": "https://www.insurekidsnow.gov/",
+    "publisher": "Centers for Medicare & Medicaid Services",
+    "type": "authoritative",
+    "domains": ["money", "health-baby"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 0
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "Low-cost or free coverage for a child, separate from the parents' plan.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "dol-fmla",
+    "title": "DOL — FMLA",
+    "url": "https://www.dol.gov/agencies/whd/fmla",
+    "publisher": "US Department of Labor",
+    "type": "authoritative",
+    "domains": ["money"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "infant",
+        "index": 12
+      }
+    },
+    "cost": "free",
+    "why": "Twelve weeks of job-protected leave, and who actually qualifies. The eligibility rules surprise people.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "irs-child-tax-credit",
+    "title": "IRS — Child Tax Credit",
+    "url": "https://www.irs.gov/credits-deductions/individuals/child-tax-credit",
+    "publisher": "Internal Revenue Service",
+    "type": "authoritative",
+    "domains": ["money"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 0
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "What you can claim and when. A new baby changes your withholding, not just your refund.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "988-lifeline",
+    "title": "988 Suicide & Crisis Lifeline",
+    "url": "https://988lifeline.org/",
+    "publisher": "Substance Abuse and Mental Health Services Administration",
+    "type": "authoritative",
+    "domains": ["mind"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "Call or text 988, any hour. For intrusive thoughts, panic, or the feeling that you cannot do this.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "maternal-mental-health-hotline",
+    "title": "National Maternal Mental Health Hotline",
+    "url": "https://mchb.hrsa.gov/programs-impact/national-maternal-mental-health-hotline",
+    "publisher": "Health Resources and Services Administration",
+    "type": "authoritative",
+    "domains": ["mind"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "infant",
+        "index": 12
+      }
+    },
+    "cost": "free",
+    "why": "1-833-TLC-MAMA. Staffed by people trained for pregnancy and postpartum specifically, 24 hours.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "poison-control",
+    "title": "Poison Control",
+    "url": "https://www.poison.org/",
+    "publisher": "America's Poison Centers",
+    "type": "authoritative",
+    "domains": ["safety", "health-baby"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 0
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "1-800-222-1222. Free, 24 hours, and faster than the internet for a swallowed button battery or a mouthful of diaper cream.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "psi",
+    "title": "Postpartum Support International",
+    "url": "https://www.postpartum.net/",
+    "publisher": "Postpartum Support International",
+    "type": "charity",
+    "domains": ["mind"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "infant",
+        "index": 24
+      }
+    },
+    "cost": "free",
+    "why": "A helpline, free support groups, and a provider directory. The first place to go when it is more than the baby blues.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "nami",
+    "title": "NAMI",
+    "url": "https://www.nami.org/",
+    "publisher": "National Alliance on Mental Illness",
+    "type": "charity",
+    "domains": ["mind"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "Support groups and family programs, including ones for partners who are struggling.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "zerotothree",
+    "title": "ZERO TO THREE",
+    "url": "https://www.zerotothree.org/",
+    "publisher": "ZERO TO THREE",
+    "type": "charity",
+    "domains": ["milestones", "play", "mind"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 0
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "Development from a baby's point of view. The best writing on what is actually happening in the first three years.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "asha-speech",
+    "title": "ASHA — Speech and language",
+    "url": "https://www.asha.org/public/",
+    "publisher": "American Speech-Language-Hearing Association",
+    "type": "authoritative",
+    "domains": ["milestones", "health-baby"],
+    "stages": {
+      "from": {
+        "kind": "infant",
+        "index": 2
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "What is typical at each age, and how to tell a delay from a difference.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "cdc-autism",
+    "title": "CDC — Autism",
+    "url": "https://www.cdc.gov/autism/",
+    "publisher": "Centers for Disease Control and Prevention",
+    "type": "authoritative",
+    "domains": ["milestones", "health-baby"],
+    "stages": {
+      "from": {
+        "kind": "infant",
+        "index": 6
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "The signs, the screening schedule, and what early intervention actually looks like.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "ecta-center",
+    "title": "ECTA Center — Early Intervention",
+    "url": "https://ectacenter.org/",
+    "publisher": "Early Childhood Technical Assistance Center",
+    "type": "authoritative",
+    "domains": ["milestones", "money"],
+    "stages": {
+      "from": {
+        "kind": "infant",
+        "index": 0
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "How to request a free developmental evaluation under IDEA Part C. You can self-refer in every state.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "naeyc",
+    "title": "NAEYC",
+    "url": "https://www.naeyc.org/",
+    "publisher": "National Association for the Education of Young Children",
+    "type": "authoritative",
+    "domains": ["childcare", "play"],
+    "stages": {
+      "from": {
+        "kind": "infant",
+        "index": 0
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "What a good early-childhood program looks like, and how accreditation works.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "childcareaware",
+    "title": "Child Care Aware",
+    "url": "https://www.childcareaware.org/",
+    "publisher": "Child Care Aware of America",
+    "type": "charity",
+    "domains": ["childcare", "money"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "A searchable directory of licensed care by ZIP code, plus the questions worth asking on a tour.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "head-start",
+    "title": "Head Start",
+    "url": "https://acf.gov/ohs",
+    "publisher": "Office of Head Start",
+    "type": "authoritative",
+    "domains": ["childcare", "money"],
+    "stages": {
+      "from": {
+        "kind": "infant",
+        "index": 0
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "Free early education for eligible families, including Early Head Start for under-threes.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "nurse-family-partnership",
+    "title": "Nurse-Family Partnership",
+    "url": "https://changent.org/what-we-do/nurse-family-partnership/",
+    "publisher": "Nurse-Family Partnership",
+    "type": "charity",
+    "domains": ["health-parent", "mind"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "infant",
+        "index": 24
+      }
+    },
+    "cost": "free",
+    "why": "A free nurse who visits through pregnancy and the first two years. First-time, low-income parents are eligible.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "safekids",
+    "title": "Safe Kids Worldwide",
+    "url": "https://www.safekids.org/",
+    "publisher": "Safe Kids Worldwide",
+    "type": "charity",
+    "domains": ["safety"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 0
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "Free car seat checks and home safety events, searchable by ZIP code.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "cribsforkids",
+    "title": "Cribs for Kids",
+    "url": "https://cribsforkids.org/",
+    "publisher": "Cribs for Kids",
+    "type": "charity",
+    "domains": ["safety", "gear", "money"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "infant",
+        "index": 12
+      }
+    },
+    "cost": "free",
+    "why": "A safe sleep space for families who cannot afford one. Ask your hospital social worker.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "llli",
+    "title": "La Leche League",
+    "url": "https://www.llli.org/",
+    "publisher": "La Leche League International",
+    "type": "charity",
+    "domains": ["feeding"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 0
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 24
+      }
+    },
+    "cost": "free",
+    "why": "Free peer support, in person and by phone. Useful at 2am when the latch still hurts.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "uslca",
+    "title": "USLCA — Find a lactation consultant",
+    "url": "https://uslca.org/",
+    "publisher": "US Lactation Consultant Association",
+    "type": "authoritative",
+    "domains": ["feeding"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 0
+      },
+      "to": {
+        "kind": "infant",
+        "index": 12
+      }
+    },
+    "cost": "varies",
+    "why": "An IBCLC is the credential that matters. Many insurance plans cover the visit at no cost.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "dona",
+    "title": "DONA International",
+    "url": "https://www.dona.org/",
+    "publisher": "DONA International",
+    "type": "authoritative",
+    "domains": ["health-parent"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "postpartum",
+        "index": 12
+      }
+    },
+    "cost": "varies",
+    "why": "A doula is continuous support, not a medical role. This is the largest certifying body.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "acnm",
+    "title": "American College of Nurse-Midwives",
+    "url": "https://midwife.org/",
+    "publisher": "American College of Nurse-Midwives",
+    "type": "authoritative",
+    "domains": ["health-parent"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "postpartum",
+        "index": 0
+      }
+    },
+    "cost": "varies",
+    "why": "How to find a certified nurse-midwife, and what their scope of practice actually is.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "ican",
+    "title": "ICAN",
+    "url": "https://ican-online.org/",
+    "publisher": "International Cesarean Awareness Network",
+    "type": "charity",
+    "domains": ["health-parent", "mind"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "postpartum",
+        "index": 12
+      }
+    },
+    "cost": "free",
+    "why": "For a VBAC question, or for processing a birth that did not go the way you planned.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "fed-is-best",
+    "title": "Fed is Best Foundation",
+    "url": "https://fedisbest.org/",
+    "publisher": "Fed is Best Foundation",
+    "type": "charity",
+    "domains": ["feeding", "mind"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 0
+      },
+      "to": {
+        "kind": "infant",
+        "index": 12
+      }
+    },
+    "cost": "free",
+    "why": "For when breastfeeding is not working and the advice you are getting is making it worse.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "solid-starts",
+    "title": "Solid Starts",
+    "url": "https://solidstarts.com/",
+    "publisher": "Solid Starts",
+    "type": "charity",
+    "domains": ["nutrition", "feeding"],
+    "stages": {
+      "from": {
+        "kind": "infant",
+        "index": 4
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 24
+      }
+    },
+    "cost": "free",
+    "why": "A free food database showing how to serve each food safely at each age. The choking guidance is specific and correct.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "211",
+    "title": "211",
+    "url": "https://211.org/",
+    "publisher": "United Way",
+    "type": "local-service",
+    "domains": ["money", "childcare", "mind"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "One number for local help: food, rent, utilities, childcare, counseling. Dial 211 or search by ZIP.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "saferproducts",
+    "title": "SaferProducts.gov",
+    "url": "https://www.saferproducts.gov/",
+    "publisher": "Consumer Product Safety Commission",
+    "type": "authoritative",
+    "domains": ["safety", "gear"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "Report a product that hurt your child, and read what other parents reported.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "cdc-lead",
+    "title": "CDC — Lead prevention",
+    "url": "https://www.cdc.gov/lead-prevention/",
+    "publisher": "Centers for Disease Control and Prevention",
+    "type": "authoritative",
+    "domains": ["safety", "health-baby"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "Older housing, imported toys, and the blood test that is easy to skip.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "cdc-drowning",
+    "title": "CDC — Drowning prevention",
+    "url": "https://www.cdc.gov/drowning/",
+    "publisher": "Centers for Disease Control and Prevention",
+    "type": "authoritative",
+    "domains": ["safety"],
+    "stages": {
+      "from": {
+        "kind": "infant",
+        "index": 6
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "Drowning is the leading cause of death for children 1 to 4. The layers of protection, in order.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  }
+]

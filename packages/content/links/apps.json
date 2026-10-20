@@ -1,0 +1,320 @@
+[
+  {
+    "id": "app-huckleberry",
+    "title": "Huckleberry",
+    "url": "https://huckleberrycare.com/",
+    "publisher": "Huckleberry",
+    "type": "app",
+    "domains": ["sleep"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 0
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "varies",
+    "why": "The most specific sleep guidance available, including wake windows by age. The free tier is enough for most families.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending",
+    "note": "The paid sleep plans are expensive. Try the free wake-window chart first.",
+    "platforms": ["ios", "android"]
+  },
+  {
+    "id": "app-nara-baby",
+    "title": "Nara Baby",
+    "url": "https://apps.apple.com/us/app/nara-baby-pregnancy-tracker/id1444639029",
+    "publisher": "Nara Baby",
+    "type": "app",
+    "domains": ["sleep", "feeding", "health-baby"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 0
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 24
+      }
+    },
+    "cost": "free",
+    "why": "A tracker that stays free and does not turn into a second job. Good for sharing between two phones.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending",
+    "platforms": ["ios"],
+    "note": "The company's own site now leads with a formula recall, so this links straight to the App Store."
+  },
+  {
+    "id": "app-cdc-milestone-tracker",
+    "title": "CDC Milestone Tracker",
+    "url": "https://www.cdc.gov/act-early/milestones-app/index.html",
+    "publisher": "Centers for Disease Control and Prevention",
+    "type": "app",
+    "domains": ["milestones"],
+    "stages": {
+      "from": {
+        "kind": "infant",
+        "index": 2
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 60
+      }
+    },
+    "cost": "free",
+    "why": "The official milestone checklist, with photo reminders. No account, no ads, no data collection.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending",
+    "platforms": ["ios", "android"]
+  },
+  {
+    "id": "app-kinedu",
+    "title": "Kinedu",
+    "url": "https://www.kinedu.com/",
+    "publisher": "Kinedu",
+    "type": "app",
+    "domains": ["play", "milestones"],
+    "stages": {
+      "from": {
+        "kind": "infant",
+        "index": 0
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 48
+      }
+    },
+    "cost": "varies",
+    "why": "Short daily play activities matched to your baby's age, with the developmental reason behind each one.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending",
+    "platforms": ["ios", "android"]
+  },
+  {
+    "id": "app-lovevery",
+    "title": "Lovevery",
+    "url": "https://lovevery.com/",
+    "publisher": "Lovevery",
+    "type": "app",
+    "domains": ["play"],
+    "stages": {
+      "from": {
+        "kind": "infant",
+        "index": 0
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "$$$",
+    "why": "Play kits by stage, with a free app of activity ideas. The kits are good and the subscription is not required.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending",
+    "note": "The app works without buying a kit.",
+    "platforms": ["ios", "android"]
+  },
+  {
+    "id": "app-peanut",
+    "title": "Peanut",
+    "url": "https://www.peanut-app.io/",
+    "publisher": "Peanut",
+    "type": "app",
+    "domains": ["mind", "mind"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "A social app for mothers, by stage and by neighborhood. The closest thing to the group you would have had in person.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending",
+    "platforms": ["ios", "android"]
+  },
+  {
+    "id": "app-ovia",
+    "title": "Ovia Pregnancy",
+    "url": "https://www.oviahealth.com/",
+    "publisher": "Ovia Health",
+    "type": "app",
+    "domains": ["health-parent"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "postpartum",
+        "index": 0
+      }
+    },
+    "cost": "free",
+    "why": "Week-by-week pregnancy tracking with a symptom checker that is more careful than most.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending",
+    "platforms": ["ios", "android"]
+  },
+  {
+    "id": "app-what-to-expect",
+    "title": "What to Expect",
+    "url": "https://www.whattoexpect.com/",
+    "publisher": "What to Expect",
+    "type": "app",
+    "domains": ["health-parent", "mind"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "The largest community, which is both the reason to use it and the reason to be careful in it.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending",
+    "note": "The forums are unmoderated medical advice. Use the week pages, not the boards.",
+    "platforms": ["ios", "android"]
+  },
+  {
+    "id": "app-expectful",
+    "title": "Expectful",
+    "url": "https://expectful.com/",
+    "publisher": "Expectful",
+    "type": "app",
+    "domains": ["mind"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "infant",
+        "index": 12
+      }
+    },
+    "cost": "varies",
+    "why": "Guided meditation written for pregnancy and the postpartum period, not generic calm-app content.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending",
+    "platforms": ["ios", "android"]
+  },
+  {
+    "id": "app-solid-starts",
+    "title": "Solid Starts",
+    "url": "https://solidstarts.com/app/",
+    "publisher": "Solid Starts",
+    "type": "app",
+    "domains": ["nutrition", "feeding"],
+    "stages": {
+      "from": {
+        "kind": "infant",
+        "index": 4
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 24
+      }
+    },
+    "cost": "free",
+    "why": "The food database in your pocket, at the grocery store, when you cannot remember how to cut a grape.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending",
+    "platforms": ["ios", "android"]
+  },
+  {
+    "id": "app-hatch",
+    "title": "Hatch",
+    "url": "https://www.hatch.co/",
+    "publisher": "Hatch",
+    "type": "app",
+    "domains": ["sleep"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 0
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "$$$",
+    "why": "A sound machine and a night light on one schedule. The app is the reason it works.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending",
+    "note": "Requires the Hatch device.",
+    "platforms": ["ios", "android"]
+  },
+  {
+    "id": "app-nanit",
+    "title": "Nanit",
+    "url": "https://www.nanit.com/",
+    "publisher": "Nanit",
+    "type": "app",
+    "domains": ["sleep", "safety"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 0
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 24
+      }
+    },
+    "cost": "$$$",
+    "why": "A camera that shows breathing motion without a wearable. Useful for some parents, anxiety-inducing for others.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending",
+    "note": "No monitor prevents SIDS. Follow the safe-sleep rules instead.",
+    "platforms": ["ios", "android"]
+  }
+]

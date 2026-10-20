@@ -180,7 +180,7 @@ create table link_catalogue (
   url text not null,
   publisher text,
   country text[] not null default '{US}',
-  type text not null check (type in ('authoritative','charity','community','commercial','app','course','book','local-service')),
+  type text not null check (type in ('authoritative','charity','community','editorial','commercial','app','course','book','local-service')),
   domains text[] not null,
   cost text,
   why text,

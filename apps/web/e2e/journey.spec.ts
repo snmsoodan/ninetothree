@@ -170,12 +170,43 @@ test("every route is reachable with the keyboard alone", async ({ page }) => {
 
   for (const [label, url] of [
     ["Shelf", /\/shelf$/],
+    ["Library", /\/library$/],
     ["Safety", /\/safety$/],
     ["Settings", /\/settings$/],
     ["This week", /\/week$/],
   ] as const) {
-    await page.getByRole("link", { name: label }).focus();
+    // Scope to the nav: the library page has outbound links whose names
+    // contain "Safety", and a bare role query would match those too.
+    await page
+      .getByRole("navigation", { name: "Main" })
+      .getByRole("link", { name: label, exact: true })
+      .focus();
     await page.keyboard.press("Enter");
     await expect(page).toHaveURL(url);
   }
+});
+
+test("the library offers more than one place to go, and can be narrowed", async ({ page }) => {
+  await onboardAsPregnant(page);
+  await page.getByRole("link", { name: "Library" }).click();
+  await expect(page).toHaveURL(/\/library$/);
+
+  // Every card is a real outbound link, and none of them is a dead "#".
+  const links = page.locator("main a[target=_blank]");
+  expect(await links.count()).toBeGreaterThan(20);
+  for (const href of await links.evaluateAll((els) =>
+    els.map((el) => el.getAttribute("href") ?? ""),
+  )) {
+    expect(href).toMatch(/^https:\/\//);
+  }
+
+  // Narrowing to one need keeps only that need, and says how many are left.
+  await page.getByLabel("What do you need?").selectOption("sleep");
+  await expect(page.getByText(/^\d+ places?\.$/)).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Official guidance" })).toBeVisible();
+
+  // A search that matches nothing says so, and does not pretend otherwise.
+  await page.getByLabel("Search").fill("zzzzzz");
+  await expect(page.getByText("Nothing matches that yet.")).toBeVisible();
+  await expect(page.getByText(/Try a broader word/)).toBeVisible();
 });

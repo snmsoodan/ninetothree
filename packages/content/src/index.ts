@@ -10,3 +10,21 @@ export {
   type PackIssue,
 } from "./loader";
 export { PACKS, PACKS_BY_ID, getPack } from "./registry";
+export {
+  LINK_TYPES,
+  LinkType,
+  PLATFORMS,
+  Platform,
+  StageRef,
+  stageOrdinal,
+  LinkEntry,
+  loadLinks,
+  assertValidLinks,
+  linksForStage,
+  linksForDomain,
+  searchLinks,
+  groupByType,
+  type LinkIssue,
+  type LinkLoadResult,
+} from "./links";
+export { LINKS, LINKS_BY_ID, getLink } from "./link-registry";

@@ -1,0 +1,252 @@
+[
+  {
+    "id": "cdc-breastfeeding",
+    "title": "CDC \u2014 Breastfeeding",
+    "url": "https://www.cdc.gov/breastfeeding/",
+    "publisher": "Centers for Disease Control and Prevention",
+    "type": "authoritative",
+    "domains": ["feeding"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 0
+      },
+      "to": {
+        "kind": "infant",
+        "index": 24
+      }
+    },
+    "cost": "free",
+    "why": "Pumping, storage times, and what is normal in the first weeks. The storage chart is the one to bookmark.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "healthychildren-baby",
+    "title": "HealthyChildren \u2014 Baby",
+    "url": "https://www.healthychildren.org/English/ages-stages/baby/Pages/default.aspx",
+    "publisher": "American Academy of Pediatrics",
+    "type": "authoritative",
+    "domains": ["health-baby", "sleep", "feeding"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 0
+      },
+      "to": {
+        "kind": "infant",
+        "index": 12
+      }
+    },
+    "cost": "free",
+    "why": "The AAP's month-by-month pages for the first year, including the things worth calling about.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "healthychildren-toddler",
+    "title": "HealthyChildren \u2014 Toddler",
+    "url": "https://www.healthychildren.org/English/ages-stages/toddler/Pages/default.aspx",
+    "publisher": "American Academy of Pediatrics",
+    "type": "authoritative",
+    "domains": ["health-baby", "mind", "play"],
+    "stages": {
+      "from": {
+        "kind": "toddler",
+        "index": 12
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "Behavior, sleep, and discipline for the second and third years, without the shame.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "pbs-kids",
+    "title": "PBS KIDS",
+    "url": "https://www.pbskids.org/",
+    "publisher": "Public Broadcasting Service",
+    "type": "charity",
+    "domains": ["play"],
+    "stages": {
+      "from": {
+        "kind": "toddler",
+        "index": 18
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 60
+      }
+    },
+    "cost": "free",
+    "why": "Free games and videos with no ads and no autoplay rabbit hole. The safest screen time there is.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "cdc-hearing",
+    "title": "CDC \u2014 Hearing loss in children",
+    "url": "https://www.cdc.gov/hearing-loss-children/",
+    "publisher": "Centers for Disease Control and Prevention",
+    "type": "authoritative",
+    "domains": ["health-baby", "milestones"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 0
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "Newborn screening, the re-test that gets missed, and the milestones that depend on hearing.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "mouthhealthy",
+    "title": "MouthHealthy",
+    "url": "https://www.mouthhealthy.org/",
+    "publisher": "American Dental Association",
+    "type": "authoritative",
+    "domains": ["health-baby", "health-parent"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "Pregnancy dental care is safe and often skipped. Also when the first tooth needs a dentist.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "childcare-gov",
+    "title": "ChildCare.gov",
+    "url": "https://childcare.gov/",
+    "publisher": "US Department of Health and Human Services",
+    "type": "authoritative",
+    "domains": ["childcare", "money"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "The federal childcare finder, with state licensing records and subsidy information in one place.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "march-of-dimes-support",
+    "title": "March of Dimes \u2014 Find support",
+    "url": "https://www.marchofdimes.org/find-support",
+    "publisher": "March of Dimes",
+    "type": "charity",
+    "domains": ["mind", "health-parent"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "infant",
+        "index": 12
+      }
+    },
+    "cost": "free",
+    "why": "Support groups for loss, NICU stays, and high-risk pregnancy. Searchable by state.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "nichd-preterm",
+    "title": "NICHD \u2014 Preterm birth",
+    "url": "https://www.nichd.nih.gov/health/topics/preterm",
+    "publisher": "National Institutes of Health",
+    "type": "authoritative",
+    "domains": ["health-baby"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 20
+      },
+      "to": {
+        "kind": "infant",
+        "index": 12
+      }
+    },
+    "cost": "free",
+    "why": "What is known about why labor starts early, and what the research says about the NICU.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "cdc-child-development",
+    "title": "CDC \u2014 Child development",
+    "url": "https://www.cdc.gov/child-development/",
+    "publisher": "Centers for Disease Control and Prevention",
+    "type": "authoritative",
+    "domains": ["milestones", "health-baby"],
+    "stages": {
+      "from": {
+        "kind": "infant",
+        "index": 0
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "Positive parenting, developmental screening, and what to do when something feels off.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  }
+]

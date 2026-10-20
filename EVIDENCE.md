@@ -352,6 +352,125 @@ The second one exists because of PR #54: Tailwind v4 only scanned the app direct
 
 ---
 
-## 10. How this file is maintained
+## 10. The link catalogue (issue #9)
+
+The blueprint promised "multiple options for them to choose" at every stage. This is the data layer for that promise: 89 places to go, each one probed live before it was committed.
+
+### What was built
+
+| File                                    | What it is                                                                    |
+| --------------------------------------- | ----------------------------------------------------------------------------- |
+| `packages/content/src/links.ts`         | The schema, the stage-ordinal helper, and five query functions                |
+| `packages/content/src/link-registry.ts` | `LINKS`, validated at module load — a bad entry fails the build, not a parent |
+| `packages/content/links/*.json`         | 89 entries in seven files, grouped by what a parent is looking for            |
+| `apps/web/src/components/LinkCard.tsx`  | One card: why it is here, what it costs, where it runs                        |
+| `apps/web/src/app/library/page.tsx`     | A browse surface with search and a domain filter                              |
+
+| Type            | Count | Examples                                                   |
+| --------------- | ----- | ---------------------------------------------------------- |
+| `authoritative` | 48    | ACOG, CDC, CPSC, NHTSA, FDA, NIH, SSA, 988                 |
+| `app`           | 12    | Huckleberry, Wonder Weeks, CDC Milestone Tracker, Peanut   |
+| `book`          | 6     | Expecting Better, The Whole-Brain Child, Preemie Parenting |
+| `community`     | 3     | r/beyondthebump, Peanut, local La Leche League             |
+| `editorial`     | 10    | Wirecutter, Consumer Reports, ParentData, Happiest Baby    |
+| `commercial`    | 4     | Car seat and crib buying guides                            |
+| `local-service` | 6     | 211, WIC, Poison Control, DV hotline, Early Intervention   |
+
+### What it found
+
+**Eight of the 89 URLs I first wrote were dead.** Every one was replaced with a live path, not deleted:
+
+| Entry                       | Was                                                  | Now                                                           |
+| --------------------------- | ---------------------------------------------------- | ------------------------------------------------------------- |
+| `cdc-milestones`            | `/ncbddd/actearly/milestones/index.html`             | `/act-early/milestones/index.html`                            |
+| `app-cdc-milestone-tracker` | `/ncbddd/actearly/milestones-app.html`               | `/act-early/milestones-app/index.html`                        |
+| `cdc-infant-nutrition`      | `/nutrition/infantandtoddlernutrition/`              | `/infant-toddler-nutrition/index.html`                        |
+| `fda-infant-formula`        | `/food/people-risk-foodborne-illness/infant-formula` | `/food/resources-you-food/infant-formula`                     |
+| `medicaid-pregnancy`        | `medicaid.gov/medicaid/eligibility/index.html`       | `healthcare.gov/medicaid-chip/eligibility/`                   |
+| `snap`                      | `fns.usda.gov/snap/recipients`                       | `fns.usda.gov/snap/supplemental-nutrition-assistance-program` |
+| `breastfeeding-class`       | `fns.usda.gov/wic/breastfeeding-promotion-support`   | `fns.usda.gov/wic/breastfeeding`                              |
+| `book-cribsheet`            | `penguinrandomhouse.com/books/.../cribsheet`         | `parentdata.org/` (retyped `editorial`)                       |
+
+Two patterns are worth recording because they will recur:
+
+- **CDC restructured its site.** Every `/ncbddd/actearly/*` and `/nutrition/infantandtoddlernutrition/*` path is gone. The new roots are `/act-early/*` and `/infant-toddler-nutrition/*`.
+- **Penguin Random House book slugs are unreliable.** `expecting-better` and `whole-brain-child` resolve; `cribsheet` and `happiest-baby` do not. Linking a publisher's book page is not a stable strategy — link the author's own site instead.
+
+**Six hosts return 403 to every non-browser client but are live.** `thebluedotproject.org`, `cribsforkids.org`, `simonandschuster.com`, `nytimes.com`, `naeyc.org`, `postpartum.net`. The checker prints these for manual review rather than failing, because a 403 from Cloudflare is not a dead link.
+
+**ACOG returned a transient 525 once and 200 the next run.** A Cloudflare SSL handshake failure is not a broken citation. The checker now retries status 0 and any 5xx twice with linear backoff before it reports a failure. Without that, the weekly job would have gone red on a link that was fine.
+
+### A 200 is not proof the link is right
+
+The first version of this catalogue passed the link check and was still wrong. CI caught one of them — the FDA formula page 404'd from a GitHub runner while returning 200 from my laptop — and chasing that redirect exposed the rest.
+
+**Two book links returned 200 while serving a completely different book.** Penguin Random House had reassigned the book IDs:
+
+| Entry                    | What the URL actually served                |
+| ------------------------ | ------------------------------------------- |
+| `book-expecting-better`  | _The Far Side of the Sun_ by Kate Furnivall |
+| `book-whole-brain-child` | _Worst Instincts_ by Wendy Kaminer          |
+
+A parent who tapped "Expecting Better" would have landed on a novel. A status check cannot see this, because the server is perfectly happy.
+
+**One app link returned 200 while serving a product recall.** `narababy.com` redirects to `nara.com`, which is Nara Organics — the same company, but the page it serves today is a voluntary recall of all Nara infant formula. A parent looking for a baby tracker would have landed on a recall notice. The entry now links the App Store listing directly.
+
+**Two organisations had rebranded, so the publisher name in the data was wrong.** The Blue Dot Project is now part of Postpartum Support International; Nurse-Family Partnership is now part of Changent. Both old domains still resolve, so nothing failed.
+
+**Two agencies had renamed themselves.** USDA's Food and Nutrition Service is now the Food and Nutrition Administration (`fns.usda.gov` → `fna.usda.gov`), and ACF moved off `acf.hhs.gov`. CPSC moved its crib page to `/SafeSleep`. NHTSA moved car seats to `/vehicle-safety/`. March of Dimes moved prenatal care. None of these were broken; all of them were stale.
+
+So the checker now follows the redirect and compares the destination:
+
+- **A redirect to a different registrable domain fails.** A link that leaves the site it named is a link whose publisher may no longer be right.
+- **A redirect whose final path segment is unrelated to the original fails.** `/books/313267/expecting-better-by-emily-osterm/` → `/books/313267/the-far-side-of-the-sun-by-kate-furnivall/` is not a move, it is a different page.
+- **A redirect that only drops `www`, adds a trailing slash, or keeps the same last segment passes.** Those are housekeeping, not a change of destination.
+
+That rule found nine links in the shipped catalogue. All nine are fixed, and the check now reads `115 links checked, none broken, none moved.`
+
+The lesson generalises: **a link checker that only reads status codes is checking that a server is up, not that a citation is true.**
+
+### Two things CI can see that a laptop cannot
+
+**`fda.gov` returns 404 to a GitHub runner and 200 to a laptop.** The same URL, the same user agent, the same redirect chain. The FDA's CDN answers datacenter IPs differently. The entry was replaced with CDC's _Tips for Infant Formula Feeding_, which covers the actionable half — how to mix, store and warm formula — and which CI can actually verify. The FDA still regulates formula; the catalogue just cannot prove an FDA link is alive from a runner, and a link the gate cannot check is a link that will rot silently.
+
+**`ecfr.gov` answers a bot with a redirect to `unblock.federalregister.gov`.** That is a "prove you are human" wall, not a move, and the new redirect rule would have failed the build on a link that is fine. Challenge hosts are now recognised and reported as bot-protected instead.
+
+Both are recorded here rather than worked around quietly, because the next person to add a link will hit the same two walls.
+
+### A type the blueprint was missing
+
+Wirecutter, Consumer Reports, ParentData and Happiest Baby are neither `authoritative` (they are not a regulator or a clinical body) nor `commercial` (they do not sell the thing they are reviewing). Filing them under either would have been a lie in the data. `editorial` was added to `LINK_TYPES`, to `CONTENT_LIBRARY.md` §2, and to the SQL constraint in `ARCHITECTURE.md` in the same commit.
+
+### What it proves
+
+| Check                        | Result                                                                    |
+| ---------------------------- | ------------------------------------------------------------------------- |
+| Catalogue entries            | 89, all schema-valid, all ids unique                                      |
+| Links probed live            | 115 (89 catalogue + 26 pack sources), 0 broken                            |
+| Content tests                | 44 passing, 100% coverage on all five content files                       |
+| Component tests              | 11 passing, 100% coverage on `LinkCard`                                   |
+| Stories                      | 4, all rendering, zero axe violations                                     |
+| App Playwright project       | 22 passing                                                                |
+| Storybook Playwright project | 24 passing                                                                |
+| Lighthouse                   | 1.0 / 1.0 / 1.0 / 1.0 on `/onboarding`, `/week/pregnancy-w28`, `/library` |
+
+Three of the content tests are the ones that matter, because they assert a product promise rather than a schema rule:
+
+- **"covers every stage of the timeline, so no week is empty"** — every stage from pregnancy week 4 to toddler month 36 has at least one link.
+- **"offers more than one option for every domain a parent has to act on"** — the blueprint's "multiple options" is a test, not a hope.
+- **"is US-first"** — every entry lists `US` in `country`.
+
+### What this PR does not prove
+
+- **Nothing here has been read by a clinician.** All 89 entries say `"reviewedBy": "Clinical review pending"`. The links resolve; whether the advice behind them is right for a given family is unverified.
+- **89 is a seed, not a library.** The blueprint implies hundreds. This covers every stage and every domain at least once; it does not yet cover any of them deeply.
+- **The browse page is not the "help me choose" experience.** `/library` is a searchable list. The guided comparison that issue #29 describes, and the in-context links that issue #28 describes, are not built.
+- **No link has been clicked by a parent.** Whether "why it is here" is the sentence that helps is a guess.
+- **Four links cannot be checked at all.** `nejm.org`, `naeyc.org`, `simonandschuster.com` and `nytimes.com` return 403 to every non-browser client. They are printed for manual review on every run, and the redirect check cannot see them either — so `book-how-to-talk` is the one book link whose destination is unverified.
+- **`fda.gov` cannot be verified from CI at all**, which is why the formula entry now points at CDC. Any future FDA citation will need the same treatment or a manual check.
+
+---
+
+## 11. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.
