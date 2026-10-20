@@ -31,20 +31,21 @@ The screens, the flows, the rules, and the copy. This is the part that decides w
 
 **Goal:** personalize the first week card before the user sees it. Every question must change what they see.
 
-| Step | Question | Why it changes the product | Skip? |
-|---|---|---|---|
-| 1 | Are you pregnant, or is your baby already here? | Sets the timeline | No |
-| 2 | Due date or baby's birth date | Anchors every week | No |
-| 3 | Country | Vaccines, benefits, emergency numbers, links | No (auto-detect, confirm) |
-| 4 | Is this your first baby? | Hides "you know this" content for second-time parents | Yes |
-| 5 | How are you feeding / planning to feed? | Formula, breast, mixed, undecided variants | Yes ("decide later") |
-| 6 | What's worrying you most right now? (multi-select) | Pins 1–2 relevant cards to the top of week 1 | Yes |
+| Step | Question                                           | Why it changes the product                            | Skip?                     |
+| ---- | -------------------------------------------------- | ----------------------------------------------------- | ------------------------- |
+| 1    | Are you pregnant, or is your baby already here?    | Sets the timeline                                     | No                        |
+| 2    | Due date or baby's birth date                      | Anchors every week                                    | No                        |
+| 3    | Country                                            | Vaccines, benefits, emergency numbers, links          | No (auto-detect, confirm) |
+| 4    | Is this your first baby?                           | Hides "you know this" content for second-time parents | Yes                       |
+| 5    | How are you feeding / planning to feed?            | Formula, breast, mixed, undecided variants            | Yes ("decide later")      |
+| 6    | What's worrying you most right now? (multi-select) | Pins 1–2 relevant cards to the top of week 1          | Yes                       |
 
 **Then:** "Here's your week 24." No paywall, no tour, no 12-slide carousel. The product is the first card.
 
 **Copy rules:** second person, present tense, no exclamation marks, no "congratulations!" confetti, no gendered assumptions beyond what the user selected.
 
 **Edge cases:**
+
 - **Loss:** if a user reports a loss, immediately switch to a quiet mode: pause all weekly content, show bereavement support, never send a "your baby is 12 weeks" email. This is a hard requirement.
 - **Preterm:** recalculate the timeline to corrected age, and say so.
 - **Twins/multiples:** duplicate the baby-specific cards, keep the parent cards single.
@@ -172,16 +173,17 @@ The dashboard is a **shelf**, not a feed. It answers: "what's now, what did I sa
 
 A pin is a **durable bookmark with context**. It can be:
 
-| Pin type | Example | What it shows on the dashboard |
-|---|---|---|
-| Action | "Book 28w OB visit" | Title + due date + done state |
-| Product | "Cybex Cloud T" | Product + price + link |
-| Article | "Signs of preterm labor" | Title + 2-min read |
-| Appointment | "Anomaly scan, 12 Nov" | Date + location + prep note |
-| Note | "Ask about GBS" | Free text |
-| Checklist | "Hospital bag" | Progress (4/12) |
+| Pin type    | Example                  | What it shows on the dashboard |
+| ----------- | ------------------------ | ------------------------------ |
+| Action      | "Book 28w OB visit"      | Title + due date + done state  |
+| Product     | "Cybex Cloud T"          | Product + price + link         |
+| Article     | "Signs of preterm labor" | Title + 2-min read             |
+| Appointment | "Anomaly scan, 12 Nov"   | Date + location + prep note    |
+| Note        | "Ask about GBS"          | Free text                      |
+| Checklist   | "Hospital bag"           | Progress (4/12)                |
 
 **Rules:**
+
 - Pin from anywhere: week card, search, article, product, appointment.
 - Pins are per-user, not per-household, unless explicitly shared.
 - Pins never expire. A pin from week 12 is still there at week 30.
@@ -198,6 +200,7 @@ The partner is a **first-class user**, not a guest.
 **Invite flow:** share a link → partner creates an account → chooses role ("partner", "grandparent", "friend") → sees a reduced view.
 
 **What the partner sees:**
+
 - This week's "how to help" card (1 action, 1 read).
 - Shared pins.
 - Assigned jobs (e.g. "install car seat", "pack hospital bag", "book childbirth class").
@@ -205,11 +208,12 @@ The partner is a **first-class user**, not a guest.
 - A "what not to say" card (seriously — "you look tired" is not helpful).
 
 **What the partner does not see:**
+
 - The parent's private notes.
 - Mental-health check-in results, unless the parent shares them.
 - Browsing history.
 
-**The weekly partner card** is the retention feature for the *primary* user: it converts guilt into teamwork.
+**The weekly partner card** is the retention feature for the _primary_ user: it converts guilt into teamwork.
 
 ---
 
@@ -264,6 +268,7 @@ What's happening?
 ```
 
 **Rules:**
+
 - Every path ends in one of three actions: **call emergency**, **call your provider today**, **monitor at home**.
 - Never "you're fine."
 - Never a probability.
@@ -279,24 +284,24 @@ This is the highest-liability feature. It is also the highest-trust feature. Bui
 
 The same week must feel different for different families. The engine is a **rules table**, not an LLM.
 
-| Input | Variant |
-|---|---|
-| `parity = 0` | Show "what's happening" explainers |
-| `parity >= 1` | Hide basics, show "what's different this time" |
-| `feeding = formula` | Hide breastfeeding cards, show sterilising and formula prep |
-| `feeding = breast` | Show latch, supply, pump, mastitis |
-| `feeding = mixed` | Show both, plus combination-feeding guilt card |
-| `birth = c-section` | Recovery, wound care, feeding positions, no driving, lifting limits |
-| `birth = preterm` | Corrected age, NICU pack, adjusted milestones |
-| `multiples = true` | Duplicate baby cards, twin feeding, twin sleep, higher cost |
-| `country = US` | US schedule, US benefits, 911 / Poison Control |
-| `country = US` | OB schedule, CDC vaccines, 911, insurance |
-| `budget = low` | Free options first, benefits check, second-hand guidance |
-| `housing = flat` | Pram storage, stair safety, no garden |
-| `car = false` | Hide car seat, show sling and public transport |
-| `work = returning at 6m` | Childcare, pumping, leave admin |
-| `mental_health_history = true` | Earlier EPDS, more support cards, no "just relax" |
-| `loss = true` | Quiet mode, no weekly content, bereavement support |
+| Input                          | Variant                                                             |
+| ------------------------------ | ------------------------------------------------------------------- |
+| `parity = 0`                   | Show "what's happening" explainers                                  |
+| `parity >= 1`                  | Hide basics, show "what's different this time"                      |
+| `feeding = formula`            | Hide breastfeeding cards, show sterilising and formula prep         |
+| `feeding = breast`             | Show latch, supply, pump, mastitis                                  |
+| `feeding = mixed`              | Show both, plus combination-feeding guilt card                      |
+| `birth = c-section`            | Recovery, wound care, feeding positions, no driving, lifting limits |
+| `birth = preterm`              | Corrected age, NICU pack, adjusted milestones                       |
+| `multiples = true`             | Duplicate baby cards, twin feeding, twin sleep, higher cost         |
+| `country = US`                 | US schedule, US benefits, 911 / Poison Control                      |
+| `country = US`                 | OB schedule, CDC vaccines, 911, insurance                           |
+| `budget = low`                 | Free options first, benefits check, second-hand guidance            |
+| `housing = flat`               | Pram storage, stair safety, no garden                               |
+| `car = false`                  | Hide car seat, show sling and public transport                      |
+| `work = returning at 6m`       | Childcare, pumping, leave admin                                     |
+| `mental_health_history = true` | Earlier EPDS, more support cards, no "just relax"                   |
+| `loss = true`                  | Quiet mode, no weekly content, bereavement support                  |
 
 **Rules are data, not code.** A content editor can add a rule without a deploy. Every rule has a test.
 
@@ -309,6 +314,7 @@ The same week must feel different for different families. The engine is a **rule
 **Subject:** `Week 24: book your OB visit, learn the preterm signs, choose a car seat`
 
 **Body:**
+
 - One line: "16 weeks to go."
 - 3 actions, each with a one-line why and a link.
 - One "how to help" card for the partner.
@@ -316,6 +322,7 @@ The same week must feel different for different families. The engine is a **rule
 - "Open your week →"
 
 **Rules:**
+
 - One email per week, maximum. No re-engagement drips, no "we miss you."
 - If the user hasn't opened in 3 weeks, reduce to one email per month, then stop. Do not guilt.
 - If the user reports a loss, stop all emails immediately.
@@ -324,11 +331,13 @@ The same week must feel different for different families. The engine is a **rule
 ### Push notifications
 
 Only for:
+
 - An appointment tomorrow.
 - A pinned reminder the user set.
 - A red-flag content update (rare, e.g. a product recall on a pinned car seat).
 
 Never for:
+
 - "Your baby is 12 weeks!"
 - "You haven't opened Nine to Three in a while."
 - Marketing.
@@ -337,16 +346,16 @@ Never for:
 
 ## 11. Trust and safety surfaces
 
-| Surface | What it shows |
-|---|---|
-| **Source line** | Every health card: publisher, link, `last_reviewed`, reviewer role |
+| Surface                   | What it shows                                                                 |
+| ------------------------- | ----------------------------------------------------------------------------- |
+| **Source line**           | Every health card: publisher, link, `last_reviewed`, reviewer role            |
 | **Clinical review badge** | "Reviewed by an OB-GYN and a pediatrician" — with names/roles where permitted |
-| **Editorial policy** | Public page: how we choose, what we refuse, how we handle corrections |
-| **Corrections** | Public changelog for content changes that affect safety |
-| **Affiliate disclosure** | Inline on every commercial link |
-| **Data policy** | Plain-English: what we store, why, how to delete |
-| **Crisis footer** | On every mental-health page: local crisis number |
-| **"Not medical advice"** | Persistent, but not so loud it undermines trust |
+| **Editorial policy**      | Public page: how we choose, what we refuse, how we handle corrections         |
+| **Corrections**           | Public changelog for content changes that affect safety                       |
+| **Affiliate disclosure**  | Inline on every commercial link                                               |
+| **Data policy**           | Plain-English: what we store, why, how to delete                              |
+| **Crisis footer**         | On every mental-health page: local crisis number                              |
+| **"Not medical advice"**  | Persistent, but not so loud it undermines trust                               |
 
 ---
 
@@ -354,12 +363,12 @@ Never for:
 
 ### The value ladder
 
-| Tier | Price | What you get |
-|---|---|---|
-| **Free** | $0 | This week + last week, 3 pins, basic search, red flags, weekly email |
-| **Plus** | $7.99/mo or $59/yr | Full timeline (all weeks), unlimited pins, partner, offline, printable packs, appointment reminders, personalized gear list, data export |
-| **Family** | $99/yr | Up to 5 caregivers, multiples, grandparent view, shared calendar |
-| **B2B** | Custom | Employer benefit, insurer, health system, fertility clinic |
+| Tier       | Price              | What you get                                                                                                                             |
+| ---------- | ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| **Free**   | $0                 | This week + last week, 3 pins, basic search, red flags, weekly email                                                                     |
+| **Plus**   | $7.99/mo or $59/yr | Full timeline (all weeks), unlimited pins, partner, offline, printable packs, appointment reminders, personalized gear list, data export |
+| **Family** | $99/yr             | Up to 5 caregivers, multiples, grandparent view, shared calendar                                                                         |
+| **B2B**    | Custom             | Employer benefit, insurer, health system, fertility clinic                                                                               |
 
 ### Why people pay
 
@@ -395,24 +404,24 @@ Never for:
 
 ### Supporting metrics
 
-| Metric | Target (V1) | Why |
-|---|---|---|
-| Onboarding completion | ≥ 80% | The first card must be reached |
-| First action completed in session 1 | ≥ 55% | Activation |
-| Return within 7 days | ≥ 45% | Habit |
-| Week-4 retention | ≥ 45% | Early signal |
-| Week-12 retention | ≥ 35% | The real test |
-| Median actions completed/week | ≥ 2 of 3 | Usefulness |
-| Pins per active user | ≥ 2 | Investment |
-| Partner invite rate | ≥ 25% | The multiplier |
-| Free → paid by week 8 | 3–5% | Monetisation |
-| Monthly churn | < 5% | Durability |
-| NPS | ≥ 50 | Love |
-| "Would be very disappointed without it" | ≥ 40% | Sean Ellis test |
-| Content with source + review date | 100% | Trust |
-| Red-flag paths clinician-reviewed | 100% | Safety |
-| Lighthouse a11y | 100 | Accessibility |
-| Link check failures | 0 shipped | Quality |
+| Metric                                  | Target (V1) | Why                            |
+| --------------------------------------- | ----------- | ------------------------------ |
+| Onboarding completion                   | ≥ 80%       | The first card must be reached |
+| First action completed in session 1     | ≥ 55%       | Activation                     |
+| Return within 7 days                    | ≥ 45%       | Habit                          |
+| Week-4 retention                        | ≥ 45%       | Early signal                   |
+| Week-12 retention                       | ≥ 35%       | The real test                  |
+| Median actions completed/week           | ≥ 2 of 3    | Usefulness                     |
+| Pins per active user                    | ≥ 2         | Investment                     |
+| Partner invite rate                     | ≥ 25%       | The multiplier                 |
+| Free → paid by week 8                   | 3–5%        | Monetisation                   |
+| Monthly churn                           | < 5%        | Durability                     |
+| NPS                                     | ≥ 50        | Love                           |
+| "Would be very disappointed without it" | ≥ 40%       | Sean Ellis test                |
+| Content with source + review date       | 100%        | Trust                          |
+| Red-flag paths clinician-reviewed       | 100%        | Safety                         |
+| Lighthouse a11y                         | 100         | Accessibility                  |
+| Link check failures                     | 0 shipped   | Quality                        |
 
 ### What we deliberately do not measure
 
@@ -451,6 +460,7 @@ Never for:
 > Your baby is about the length of an ear of corn. Her hearing is sharp now, and she may startle at loud sounds.
 >
 > **This week:**
+>
 > 1. **Book your 28-week OB visit.** Blood pressure, weight and fundal height. 5 minutes. Free. → Message your provider
 > 2. **Learn the signs of preterm labor.** 24 weeks is when a baby may survive with intensive care. Knowing when to call matters. → 2-minute card
 > 3. **Choose a car seat.** You can't leave hospital without one. → Compare 3 options

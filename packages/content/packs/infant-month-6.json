@@ -1,0 +1,213 @@
+{
+  "locale": "en-US",
+  "country": "US",
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-20",
+  "updatedAt": "2026-10-20",
+  "id": "infant-month-6",
+  "kind": "infant",
+  "stageIndex": 6,
+  "stageUnit": "month",
+  "title": "Month 6",
+  "subtitle": "Food starts this month. It is messy, it is slow, and almost none of it is about nutrition yet.",
+  "baby": {
+    "development": "Most babies can sit with support and are starting to reach and grab. The tongue-thrust reflex fades, which is what makes swallowing possible. Teeth may be arriving."
+  },
+  "you": {
+    "body": "If you are breastfeeding, your supply is established and may feel less full. That is normal and not a sign it is dropping.",
+    "mind": "Starting solids is the first place where other people's opinions arrive in force. Pick a lane and ignore the noise."
+  },
+  "coreActions": [
+    {
+      "id": "m6-solids",
+      "type": "do",
+      "priority": "essential",
+      "domain": "feeding",
+      "title": "Start solids, one food at a time",
+      "why": "Around six months, milk alone stops being enough for iron. The first foods matter less than the fact that you start.",
+      "detail": "Start with iron-rich foods — pureed meat, beans, or iron-fortified cereal. One new food every few days so you can spot a reaction. Milk stays the main source of nutrition until about 12 months; food is practice. No honey before 12 months, no cow's milk as a drink before 12 months, no juice before 12 months, and nothing round and hard.",
+      "minutes": 30,
+      "options": [
+        {
+          "id": "m6-puree",
+          "label": "Spoon-fed purees",
+          "detail": "Easier to control, less mess, and a fine choice.",
+          "cost": "$"
+        },
+        {
+          "id": "m6-blw",
+          "label": "Baby-led weaning",
+          "detail": "Soft finger foods the baby feeds themselves. More mess, more control for the baby.",
+          "cost": "$",
+          "url": "https://solidstarts.com"
+        },
+        {
+          "id": "m6-combo",
+          "label": "Both",
+          "detail": "Most families end up here. There is no rule against it.",
+          "cost": "$"
+        }
+      ],
+      "skipIf": "Your pediatrician has recommended a different start date for a medical reason."
+    },
+    {
+      "id": "m6-highchair",
+      "type": "buy",
+      "priority": "recommended",
+      "domain": "gear",
+      "title": "Get a high chair that is easy to clean",
+      "why": "You will use it three times a day for two years. The only features that matter are a footrest, a five-point harness, and a tray that goes in the dishwasher.",
+      "detail": "A footrest matters more than it sounds — a baby whose feet dangle cannot sit stably, and unstable sitting makes eating harder. Avoid anything with fabric you cannot wipe. Do not use a hook-on seat until the baby can sit fully independently.",
+      "minutes": 20,
+      "options": [
+        {
+          "id": "m6-chair-ikea",
+          "label": "IKEA Antilop",
+          "detail": "About $25, wipes clean, footrest available separately. The default answer.",
+          "cost": "$"
+        },
+        {
+          "id": "m6-chair-stokke",
+          "label": "Stokke Tripp Trapp",
+          "detail": "Expensive, grows with the child, holds resale value.",
+          "cost": "$$$"
+        },
+        {
+          "id": "m6-chair-convertible",
+          "label": "A convertible chair",
+          "detail": "Turns into a booster later. Good if space is tight.",
+          "cost": "$$"
+        }
+      ],
+      "skipIf": "You already have a high chair with a footrest and a harness."
+    },
+    {
+      "id": "m6-sitter",
+      "type": "book",
+      "priority": "optional",
+      "domain": "childcare",
+      "title": "Start looking for childcare if you need it",
+      "why": "Waitlists in most US cities run six to eighteen months. Six months is the month to get on them, not twelve.",
+      "detail": "Ask three questions of every place: what is the staff-to-child ratio, what is the turnover, and can I visit unannounced. Licensing records are public in every state — look yours up. NAEYC accreditation is a meaningful signal but not the only one.",
+      "minutes": 45,
+      "options": [
+        {
+          "id": "m6-care-center",
+          "label": "A licensed center",
+          "detail": "Structured, more expensive, longer hours.",
+          "cost": "$$$",
+          "url": "https://childcare.gov"
+        },
+        {
+          "id": "m6-care-home",
+          "label": "A licensed home provider",
+          "detail": "Smaller groups, often cheaper, more flexible.",
+          "cost": "$$"
+        },
+        {
+          "id": "m6-care-nanny",
+          "label": "A nanny",
+          "detail": "Most expensive, most flexible, and you are the employer.",
+          "cost": "$$$",
+          "url": "https://www.care.com"
+        }
+      ],
+      "skipIf": "You have childcare arranged, or you are not returning to work."
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "m6-water",
+      "title": "Water",
+      "body": "A little water in an open cup with meals is fine from six months. Do not give juice, and do not give water in place of milk.",
+      "domain": "nutrition"
+    },
+    {
+      "id": "m6-allergens",
+      "title": "Allergens",
+      "body": "Introduce peanut, egg, dairy, wheat, soy, fish, and sesame early and keep them in the diet. Delaying them increases the risk of allergy, it does not reduce it.",
+      "domain": "nutrition"
+    },
+    {
+      "id": "m6-teeth",
+      "title": "Teeth",
+      "body": "Wipe the gums and any teeth with a soft cloth twice a day. First dental visit by the first tooth or the first birthday, whichever comes first.",
+      "domain": "health-baby"
+    },
+    {
+      "id": "m6-sitting",
+      "title": "Sitting",
+      "body": "Sitting with support is not sitting independently. Do not leave a baby propped on a bed or sofa.",
+      "domain": "safety"
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "m6-rf-choking",
+      "text": "Choking — cannot breathe, cough, or make sound",
+      "escalation": "call-911",
+      "phone": "911"
+    },
+    {
+      "id": "m6-rf-allergy",
+      "text": "Swelling of the lips or face, hives with trouble breathing",
+      "escalation": "call-911",
+      "phone": "911"
+    },
+    {
+      "id": "m6-rf-fever",
+      "text": "A fever over 100.4°F with unusual sleepiness or a rash",
+      "escalation": "call-pediatrician"
+    },
+    {
+      "id": "m6-rf-mood",
+      "text": "You are having thoughts of harming yourself or the baby",
+      "escalation": "call-988",
+      "phone": "988"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "m6-visit",
+      "label": "6-month well visit and vaccines",
+      "from": 6,
+      "to": 6,
+      "who": "Pediatrician",
+      "note": "DTaP, IPV, Hib, PCV, rotavirus."
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-cdc-solids",
+      "title": "When, What, and How to Introduce Solid Foods",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/infant-toddler-nutrition/foods-and-drinks/when-what-and-how-to-introduce-solid-foods.html",
+      "kind": "government",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-aap-allergens",
+      "title": "Early Allergen Introduction",
+      "publisher": "AAP",
+      "url": "https://www.healthychildren.org/English/ages-stages/baby/feeding-nutrition/Pages/starting-solid-foods.aspx",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-childcare-gov",
+      "title": "Find Child Care",
+      "publisher": "ChildCare.gov",
+      "url": "https://childcare.gov",
+      "kind": "government",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-solidstarts",
+      "title": "Starting Solids",
+      "publisher": "Solid Starts",
+      "url": "https://solidstarts.com",
+      "kind": "editorial",
+      "accessed": "2026-10-20"
+    }
+  ]
+}

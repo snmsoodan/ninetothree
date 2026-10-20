@@ -1,6 +1,6 @@
 # Nine to Three — UX Craft
 
-> The product is not the content. The product is the feeling of closing the tab and thinking *"right, I know what I'm doing."*
+> The product is not the content. The product is the feeling of closing the tab and thinking _"right, I know what I'm doing."_
 
 This document is the design system, the tone of voice, and the interaction rules. It is binding. If a feature cannot be built within these rules, the feature changes, not the rules.
 
@@ -16,7 +16,7 @@ Not exciting. Not delightful. Not gamified. **Calm is the feature.** Excitement 
 
 The test we design against:
 
-> *"I opened it, I did the three things, I closed it. I felt like I was doing this right."*
+> _"I opened it, I did the three things, I closed it. I felt like I was doing this right."_
 
 If a screen makes someone feel behind, judged, sold to, or overwhelmed, it has failed — no matter how good it looks.
 
@@ -29,7 +29,7 @@ These are ranked. When two conflict, the lower number wins.
 1. **One thing at a time.** Never two primary actions on one screen. If there are two, one of them is secondary and must look it.
 2. **Nothing moves unless the user moved it.** No autoplay, no carousels, no scroll-triggered animation, no pulsing badges. Motion is a response, never an invitation.
 3. **No red unless something is actually wrong.** Red is reserved for red flags and destructive actions. Errors in forms are amber. "You're behind" does not exist as a concept.
-4. **No numbers that make you feel late.** No streaks, no percentages, no "3 of 7 done", no countdowns. Progress is shown as *what you've done*, never as *what you haven't*.
+4. **No numbers that make you feel late.** No streaks, no percentages, no "3 of 7 done", no countdowns. Progress is shown as _what you've done_, never as _what you haven't_.
 5. **Every screen answers "what do I do now?"** If a screen cannot answer that in one sentence, it is not a screen — it is a settings page.
 6. **The product never asks for more than it gives.** One question in onboarding, not nine. One notification a week, not a stream.
 7. **Silence is a feature.** No badge counts. No "we miss you". No re-engagement push. If we have nothing useful to say, we say nothing.
@@ -49,19 +49,19 @@ Not a doctor (too clinical). Not a midwife (too clinical in a different way). No
 
 ### Rules
 
-| Rule | Do | Don't |
-|---|---|---|
-| Second person, present tense | "You might feel sick this week." | "Many women experience nausea." |
-| Short sentences. One idea each. | "Take the folic acid. Any brand." | "It is recommended that you consider taking a folic acid supplement." |
-| Name the feeling, then the action | "This bit is boring. Here's the short version." | "Don't worry!" |
-| **US English** | "diaper", "mom", "pediatrician", "prenatal", "labor", "insurance" | "nappy", "mum", "GP", "antenatal", "labour", "the NHS" |
-| Plain words | "use", "help", "start" | "utilize", "facilitate", "commence" |
-| Numbers as digits | "3 things", "week 24" | "three things" |
-| No exclamation marks. Ever. | "You're 24 weeks." | "You're 24 weeks!" |
-| No emoji in product copy | — | 🎉 👶 ✨ |
-| No "should" | "Most people do X. You can skip it." | "You should do X." |
-| No false reassurance | "Call your OB triage if the bleeding gets heavier." | "Don't worry, it's probably nothing." |
-| No urgency we invented | "Book this by 25 weeks." | "Hurry! Only 2 weeks left!" |
+| Rule                              | Do                                                                | Don't                                                                 |
+| --------------------------------- | ----------------------------------------------------------------- | --------------------------------------------------------------------- |
+| Second person, present tense      | "You might feel sick this week."                                  | "Many women experience nausea."                                       |
+| Short sentences. One idea each.   | "Take the folic acid. Any brand."                                 | "It is recommended that you consider taking a folic acid supplement." |
+| Name the feeling, then the action | "This bit is boring. Here's the short version."                   | "Don't worry!"                                                        |
+| **US English**                    | "diaper", "mom", "pediatrician", "prenatal", "labor", "insurance" | "nappy", "mum", "GP", "antenatal", "labour", "the NHS"                |
+| Plain words                       | "use", "help", "start"                                            | "utilize", "facilitate", "commence"                                   |
+| Numbers as digits                 | "3 things", "week 24"                                             | "three things"                                                        |
+| No exclamation marks. Ever.       | "You're 24 weeks."                                                | "You're 24 weeks!"                                                    |
+| No emoji in product copy          | —                                                                 | 🎉 👶 ✨                                                              |
+| No "should"                       | "Most people do X. You can skip it."                              | "You should do X."                                                    |
+| No false reassurance              | "Call your OB triage if the bleeding gets heavier."               | "Don't worry, it's probably nothing."                                 |
+| No urgency we invented            | "Book this by 25 weeks."                                          | "Hurry! Only 2 weeks left!"                                           |
 
 ### Words we use
 
@@ -74,12 +74,15 @@ Not a doctor (too clinical). Not a midwife (too clinical in a different way). No
 ### The three hardest sentences, written properly
 
 **When the parent is behind:**
+
 > "You're on week 26. The last few weeks are still here if you want them — nothing expires."
 
 **When the parent is frightened:**
+
 > "Call your OB triage now. This is one of the things they want to hear about today, not tomorrow."
 
 **When the parent has done nothing:**
+
 > "Nothing to catch up on. Start with this week."
 
 ---
@@ -154,7 +157,7 @@ Four checkboxes, all optional, one screen. This is the entire personalisation in
         [ Start with the first one ]
 ```
 
-**This is the moment.** They have been in the product for 40 seconds and it has already told them something useful. No tour. No tooltip overlay. No "here's your dashboard". The first screen after onboarding *is* the product.
+**This is the moment.** They have been in the product for 40 seconds and it has already told them something useful. No tour. No tooltip overlay. No "here's your dashboard". The first screen after onboarding _is_ the product.
 
 ### What we never do in onboarding
 
@@ -163,7 +166,7 @@ Four checkboxes, all optional, one screen. This is the entire personalisation in
 - No "how did you hear about us".
 - No notification permission request. Ever, at onboarding. We ask once, in week 2, in context.
 - No cookie banner wall. Analytics is cookieless or consent-gated with a single line.
-- No account required to see this week. The account exists to *remember*, not to *enter*.
+- No account required to see this week. The account exists to _remember_, not to _enter_.
 
 ---
 
@@ -221,18 +224,18 @@ The Week Card is the product. Everything else is support.
 
 ### The rules behind it
 
-| Element | Rule |
-|---|---|
-| **Header** | Week number, and a count. "3 things" — never "3 of 3". |
-| **Baby line** | One sentence. Size comparison plus one fact. Never a paragraph. |
-| **Core actions** | Maximum three. Hard limit, enforced in the schema. |
-| **Action title** | A verb the parent can do. "Book", "know", "start", "buy", "call". |
-| **Action body** | Two sentences maximum. What it is, and why it matters. |
-| **Primary button** | The completion. "I've booked it", "I know this now", "Done". |
+| Element              | Rule                                                                                                  |
+| -------------------- | ----------------------------------------------------------------------------------------------------- |
+| **Header**           | Week number, and a count. "3 things" — never "3 of 3".                                                |
+| **Baby line**        | One sentence. Size comparison plus one fact. Never a paragraph.                                       |
+| **Core actions**     | Maximum three. Hard limit, enforced in the schema.                                                    |
+| **Action title**     | A verb the parent can do. "Book", "know", "start", "buy", "call".                                     |
+| **Action body**      | Two sentences maximum. What it is, and why it matters.                                                |
+| **Primary button**   | The completion. "I've booked it", "I know this now", "Done".                                          |
 | **Secondary button** | Always a skip. "Not this week", "Later", "Skip". Never hidden, never greyed out, never guilt-tripped. |
-| **Also this week** | Maximum eight one-liners. Scannable. No images. |
-| **Sources** | Always visible, never behind a click. At least one. |
-| **Reviewed date** | Always visible. Trust is a date, not a badge. |
+| **Also this week**   | Maximum eight one-liners. Scannable. No images.                                                       |
+| **Sources**          | Always visible, never behind a click. At least one.                                                   |
+| **Reviewed date**    | Always visible. Trust is a date, not a badge.                                                         |
 
 ### What happens when you tap "I've booked it"
 
@@ -240,7 +243,7 @@ The card does not disappear. It **settles**:
 
 - The action collapses to a single line with a small tick
 - The tick is a muted sage, not a bright green
-- A single line appears: *"Done. We'll remind you the day before."*
+- A single line appears: _"Done. We'll remind you the day before."_
 - The next action scrolls gently into view — 200ms, ease-out, no bounce
 - Nothing else on the page moves
 
@@ -281,7 +284,7 @@ Never "No data". Always a sentence that tells them what will appear and when.
 
 Skeletons that match the final layout. No spinners. No progress bars. No "Loading…".
 
-If it takes longer than 400ms, the skeleton is already there. If it takes longer than 3s, we show a single line: *"Still working. This is a slow one."*
+If it takes longer than 400ms, the skeleton is already there. If it takes longer than 3s, we show a single line: _"Still working. This is a slow one."_
 
 ### Error
 
@@ -333,14 +336,14 @@ Red background at 8% opacity, red text at full contrast, red left border. Never 
 
 Motion exists to explain a change of state. Nothing else.
 
-| Interaction | Duration | Easing |
-|---|---|---|
-| Button press | 80ms | ease-out |
-| Card settle (action done) | 200ms | cubic-bezier(0.2, 0, 0, 1) |
-| Page transition | 120ms fade | linear |
-| Sheet open | 240ms | cubic-bezier(0.2, 0, 0, 1) |
-| Accordion | 180ms | ease-out |
-| Skeleton shimmer | 1.6s loop | linear, 8% opacity delta |
+| Interaction               | Duration   | Easing                     |
+| ------------------------- | ---------- | -------------------------- |
+| Button press              | 80ms       | ease-out                   |
+| Card settle (action done) | 200ms      | cubic-bezier(0.2, 0, 0, 1) |
+| Page transition           | 120ms fade | linear                     |
+| Sheet open                | 240ms      | cubic-bezier(0.2, 0, 0, 1) |
+| Accordion                 | 180ms      | ease-out                   |
+| Skeleton shimmer          | 1.6s loop  | linear, 8% opacity delta   |
 
 **Never:** bounce, spring, overshoot, parallax, scroll-triggered reveals, confetti, lottie celebrations, animated illustrations.
 
@@ -352,22 +355,23 @@ Motion exists to explain a change of state. Nothing else.
 
 Warm, low-contrast, paper-like. No pure white, no pure black, no saturated brand color.
 
-| Token | Hex | Use |
-|---|---|---|
-| `--paper` | `#FBF9F6` | Page background |
-| `--paper-raised` | `#FFFFFF` | Cards (the only pure white) |
-| `--ink` | `#1F1B18` | Body text — 15.8:1 on paper |
-| `--ink-muted` | `#6B625B` | Secondary text — 5.4:1 on paper |
-| `--ink-faint` | `#9A9089` | Timestamps, metadata — 3.1:1, never for body |
-| `--line` | `#E8E2DA` | Borders, dividers |
-| `--sage` | `#5C7A5E` | Completion, positive state — 4.9:1 on paper |
-| `--sage-wash` | `#EDF2ED` | Completed action background |
-| `--clay` | `#A65D45` | Links, the single accent — 4.6:1 on paper |
-| `--amber` | `#8A6A1F` | Form errors, warnings — 5.1:1 on paper |
-| `--red` | `#A32E2E` | Red flags only — 6.2:1 on paper |
-| `--red-wash` | `#FBEDED` | Red flag background |
+| Token            | Hex       | Use                                          |
+| ---------------- | --------- | -------------------------------------------- |
+| `--paper`        | `#FBF9F6` | Page background                              |
+| `--paper-raised` | `#FFFFFF` | Cards (the only pure white)                  |
+| `--ink`          | `#1F1B18` | Body text — 15.8:1 on paper                  |
+| `--ink-muted`    | `#6B625B` | Secondary text — 5.4:1 on paper              |
+| `--ink-faint`    | `#9A9089` | Timestamps, metadata — 3.1:1, never for body |
+| `--line`         | `#E8E2DA` | Borders, dividers                            |
+| `--sage`         | `#5C7A5E` | Completion, positive state — 4.9:1 on paper  |
+| `--sage-wash`    | `#EDF2ED` | Completed action background                  |
+| `--clay`         | `#A65D45` | Links, the single accent — 4.6:1 on paper    |
+| `--amber`        | `#8A6A1F` | Form errors, warnings — 5.1:1 on paper       |
+| `--red`          | `#A32E2E` | Red flags only — 6.2:1 on paper              |
+| `--red-wash`     | `#FBEDED` | Red flag background                          |
 
 **Rules:**
+
 - Never more than one accent color on a screen.
 - Never color as the only signal — always pair with text or an icon.
 - Never a gradient. Never a glass effect. Never a drop shadow heavier than `0 1px 2px rgba(31,27,24,0.04)`.
@@ -377,17 +381,18 @@ Warm, low-contrast, paper-like. No pure white, no pure black, no saturated brand
 
 ## 9. Type
 
-| Role | Family | Size / line-height | Weight |
-|---|---|---|---|
-| Display (week number) | Newsreader (serif) | 40 / 1.1 | 400 |
-| H1 | Newsreader | 32 / 1.2 | 400 |
-| H2 | Inter | 20 / 1.35 | 600 |
-| Body | Inter | 17 / 1.6 | 400 |
-| Body small | Inter | 15 / 1.55 | 400 |
-| Label | Inter | 13 / 1.4 | 500, +0.01em |
-| Button | Inter | 16 / 1 | 500 |
+| Role                  | Family             | Size / line-height | Weight       |
+| --------------------- | ------------------ | ------------------ | ------------ |
+| Display (week number) | Newsreader (serif) | 40 / 1.1           | 400          |
+| H1                    | Newsreader         | 32 / 1.2           | 400          |
+| H2                    | Inter              | 20 / 1.35          | 600          |
+| Body                  | Inter              | 17 / 1.6           | 400          |
+| Body small            | Inter              | 15 / 1.55          | 400          |
+| Label                 | Inter              | 13 / 1.4           | 500, +0.01em |
+| Button                | Inter              | 16 / 1             | 500          |
 
 **Rules:**
+
 - Body measure: 62–68 characters. Never full-width text on desktop.
 - Minimum body size 17px. This is read one-handed at 6am.
 - Serif for the emotional layer (week number, headings), sans for the functional layer (actions, buttons, labels). The contrast is what makes it feel edited rather than generated.
@@ -469,43 +474,52 @@ WCAG 2.2 AA is the floor, not the goal.
 The strings that do the emotional work. These are canonical — use them, don't rewrite them per screen.
 
 **Skipping**
+
 - "Not this week"
 - "Skip for now"
 - "Later"
 - "Nothing expires. It'll be here."
 
 **Completing**
+
 - "Done."
 - "Done. We'll remind you the day before."
 - "That's this week."
 - "Nothing else to do until Monday."
 
 **Being behind**
+
 - "You're on week 26. The last few weeks are still here if you want them."
 - "Nothing to catch up on. Start with this week."
 
 **Uncertainty**
+
 - "We're not sure either. Here's what the evidence says."
 - "This one's genuinely a judgment call. Here are both sides."
 
 **Red flags**
+
 - "Call your OB triage now."
 - "This is one of the things they want to hear about today, not tomorrow."
 - "If you're worried and it's not on this list, call anyway."
 
 **Empty**
+
 - "Nothing pinned yet."
 - "Nothing here yet. This fills in as you go."
 
 **Errors**
+
 - "That didn't save. Your connection dropped."
 - "We couldn't load this. Try again in a moment."
 
 **Money**
+
 - "This is free. The rest of the week is too."
 - "Nine to Three Plus is $7.99 a month. Here's exactly what it adds."
 
 **Never**
+
 - "Oops"
 - "Uh oh"
 - "Something went wrong"
@@ -553,6 +567,7 @@ Design opinions are cheap. These are the tests.
 **The screenshot test.** Screenshot the Week Card and send it to someone with no context. Can they tell what to do next? If not, the hierarchy is wrong.
 
 **The metrics that tell us we got it right:**
+
 - Week-12 completion rate ≥ 35%
 - 7-day return ≥ 45%
 - "Would you recommend it?" ≥ 50 NPS

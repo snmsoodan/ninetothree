@@ -1,0 +1,214 @@
+{
+  "locale": "en-US",
+  "country": "US",
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-20",
+  "updatedAt": "2026-10-20",
+  "id": "postpartum-week-1",
+  "kind": "postpartum",
+  "stageIndex": 1,
+  "stageUnit": "week",
+  "title": "The first week",
+  "subtitle": "You are not supposed to feel like yourself yet. Nobody does in the first week.",
+  "baby": {
+    "development": "Your baby is learning to eat, sleep, and regulate their temperature, and is not good at any of it yet. They will lose up to 10% of their birth weight and regain it by about two weeks. That is expected."
+  },
+  "you": {
+    "body": "Bleeding like a heavy period, afterpains when you feed, and stitches or a incision that need looking after. Your milk may come in around day three, often with engorgement and a lot of leaking.",
+    "mind": "The 'baby blues' affect up to 80% of people in the first two weeks — tearfulness, irritability, feeling overwhelmed. It usually lifts by day ten. If it does not, or if it gets worse, that is postpartum depression and it is treatable."
+  },
+  "coreActions": [
+    {
+      "id": "pp1-feed",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "feeding",
+      "title": "Feed the baby eight to twelve times a day",
+      "why": "Frequent feeding in the first week is what builds your supply and what clears the bilirubin that causes jaundice.",
+      "detail": "Eight to twelve feeds in 24 hours, including at night. Wake the baby if they sleep longer than three hours in the first two weeks. If breastfeeding hurts beyond the first few seconds of latch, that is a sign to get help, not to push through. A lactation consultant is covered by most insurance under the ACA, often with no copay.",
+      "options": [
+        {
+          "id": "pp1-lc-insurance",
+          "label": "A lactation consultant through insurance",
+          "detail": "The ACA requires most plans to cover breastfeeding support with no cost sharing. Call the number on your card.",
+          "cost": "free"
+        },
+        {
+          "id": "pp1-lc-llli",
+          "label": "La Leche League",
+          "detail": "Free peer support, phone and in person.",
+          "cost": "free",
+          "url": "https://llli.org"
+        },
+        {
+          "id": "pp1-formula",
+          "label": "Formula",
+          "detail": "A legitimate and safe choice. If you use it, the ready-to-feed kind is easiest in the first weeks. Never dilute it.",
+          "cost": "$$",
+          "url": "https://www.fedisbest.org"
+        }
+      ],
+      "skipIf": "Your pediatrician has given you a different feeding plan for a medical reason."
+    },
+    {
+      "id": "pp1-pediatrician",
+      "type": "book",
+      "priority": "essential",
+      "domain": "health-baby",
+      "title": "Go to the 3-to-5-day visit",
+      "why": "This visit checks the weight loss, the jaundice, and the feeding. It is the most important appointment of the first month.",
+      "detail": "Bring your discharge papers and any questions. They will weigh the baby, check the cord or circumcision, and watch a feed if you ask. Ask them to show you how to tell if the baby is getting enough — wet diapers and swallowing sounds, not just time at the breast.",
+      "minutes": 60,
+      "options": [
+        {
+          "id": "pp1-ped-office",
+          "label": "Your pediatrician's office",
+          "detail": "Standard.",
+          "cost": "varies"
+        }
+      ],
+      "skipIf": "Your pediatrician has already seen the baby and set a different schedule."
+    },
+    {
+      "id": "pp1-you",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "mind",
+      "title": "Take the postpartum screening seriously",
+      "why": "You will be asked about your mood at your postpartum visit. Answer honestly, because postpartum depression and anxiety are common and treatable, and nobody is judging you.",
+      "detail": "About 1 in 8 people get postpartum depression. Symptoms include not sleeping even when the baby sleeps, feeling numb rather than sad, intrusive frightening thoughts, and feeling like your family would be better off without you. Any of those is a reason to call, not to wait. The National Maternal Mental Health Hotline is free, 24/7, and you do not need a diagnosis to call.",
+      "minutes": 10,
+      "options": [
+        {
+          "id": "pp1-psi",
+          "label": "PSI HelpLine",
+          "detail": "Free, confidential, and they will find you local support.",
+          "cost": "free",
+          "url": "https://www.postpartum.net"
+        },
+        {
+          "id": "pp1-hotline",
+          "label": "National Maternal Mental Health Hotline",
+          "detail": "1-833-852-6262, 24/7, free.",
+          "cost": "free"
+        },
+        {
+          "id": "pp1-988",
+          "label": "988",
+          "detail": "If you are having thoughts of harming yourself, call or text 988.",
+          "cost": "free",
+          "url": "https://988lifeline.org"
+        }
+      ],
+      "skipIf": "You are feeling well, and you know the numbers if that changes."
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "pp1-jaundice",
+      "title": "Jaundice",
+      "body": "Most newborns get some yellowing around day three to five. It is usually harmless and clears. Call your pediatrician if the yellow spreads to the belly or legs, if the baby is very sleepy, or if feeding drops off.",
+      "domain": "health-baby"
+    },
+    {
+      "id": "pp1-visitors",
+      "title": "Visitors",
+      "body": "You are allowed to say no. A useful rule: visitors bring food or do a chore, and they do not stay longer than an hour.",
+      "domain": "mind"
+    },
+    {
+      "id": "pp1-sleep",
+      "title": "Sleep when the baby sleeps is bad advice",
+      "body": "It is well meant and often impossible. What actually helps is one protected four-hour stretch where someone else handles the baby. Ask for that instead.",
+      "domain": "sleep"
+    },
+    {
+      "id": "pp1-pain",
+      "title": "Pain relief",
+      "body": "Ibuprofen and acetaminophen are compatible with breastfeeding. Take them on schedule rather than waiting for the pain to peak.",
+      "domain": "health-parent"
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "pp1-rf-bleeding",
+      "text": "Soaking a pad in an hour, or passing clots bigger than a golf ball",
+      "escalation": "call-911",
+      "phone": "911"
+    },
+    {
+      "id": "pp1-rf-fever",
+      "text": "A fever over 100.4°F",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "pp1-rf-bp",
+      "text": "A severe headache, vision changes, or swelling — preeclampsia can start after birth",
+      "escalation": "call-911",
+      "phone": "911"
+    },
+    {
+      "id": "pp1-rf-mood",
+      "text": "Thoughts of harming yourself or the baby",
+      "escalation": "call-988",
+      "phone": "988"
+    },
+    {
+      "id": "pp1-rf-baby",
+      "text": "The baby is hard to wake, is not feeding, or has a temperature under 97.5°F or over 100.4°F",
+      "escalation": "call-pediatrician"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "pp1-ped",
+      "label": "Pediatric visit",
+      "from": 3,
+      "to": 5,
+      "who": "Pediatrician",
+      "note": "Weight, jaundice, and feeding check."
+    },
+    {
+      "id": "pp1-ob",
+      "label": "Postpartum check",
+      "from": 14,
+      "to": 21,
+      "who": "OB or midwife",
+      "note": "ACOG recommends a visit at 2 to 3 weeks, and another by 12 weeks."
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-acog-postpartum",
+      "title": "Optimizing Postpartum Care",
+      "publisher": "ACOG",
+      "url": "https://www.acog.org/clinical/clinical-guidance/committee-opinion/articles/2018/05/optimizing-postpartum-care",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-cdc-breastfeeding",
+      "title": "Breastfeeding",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/breastfeeding",
+      "kind": "government",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-psi",
+      "title": "Postpartum Support International",
+      "publisher": "PSI",
+      "url": "https://www.postpartum.net",
+      "kind": "charity",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-aap-jaundice",
+      "title": "Jaundice in Newborns",
+      "publisher": "AAP",
+      "url": "https://www.healthychildren.org/English/ages-stages/baby/Pages/Jaundice-in-Newborns.aspx",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    }
+  ]
+}

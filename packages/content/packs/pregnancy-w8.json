@@ -1,0 +1,193 @@
+{
+  "id": "pregnancy-w8",
+  "kind": "pregnancy",
+  "stageIndex": 8,
+  "stageUnit": "week",
+  "locale": "en-US",
+  "country": "US",
+  "title": "Week 8",
+  "subtitle": "The first appointment is usually around now. Bring your questions — this is the visit where you get to ask them.",
+  "baby": {
+    "size": "About the size of a raspberry",
+    "development": "The heart is beating and can sometimes be seen on an early ultrasound. Arms and legs are forming, and the neural tube — which becomes the brain and spinal cord — has already closed."
+  },
+  "you": {
+    "body": "Nausea is often at its worst between weeks 6 and 10. Fatigue is real, not laziness. Your blood volume is rising, which can make you feel breathless on stairs.",
+    "mind": "Many people feel a strange mix of excitement and dread in the first trimester, and then feel guilty about the dread. Both are allowed."
+  },
+  "coreActions": [
+    {
+      "id": "w8-first-visit",
+      "type": "book",
+      "priority": "essential",
+      "domain": "health-parent",
+      "title": "Book your first prenatal visit",
+      "why": "Most OBs want to see you between 6 and 8 weeks. This visit confirms the pregnancy, dates it, and starts the paperwork that everything else depends on.",
+      "detail": "Expect a urine test, blood pressure, blood work (blood type, Rh factor, anemia, immunity to rubella, and STI screening), and often a dating ultrasound. Bring the date of your last period if you know it, a list of any medications, and your insurance card.",
+      "minutes": 60,
+      "options": [
+        {
+          "id": "w8-ob",
+          "label": "An OB-GYN",
+          "detail": "A doctor, for a pregnancy you expect to manage in a hospital.",
+          "cost": "varies"
+        },
+        {
+          "id": "w8-midwife",
+          "label": "A certified nurse-midwife",
+          "detail": "Often lower-intervention, longer appointments, and available in most states for hospital births.",
+          "cost": "varies"
+        },
+        {
+          "id": "w8-fqhc",
+          "label": "A community health center",
+          "detail": "Sliding-scale fees if you are uninsured or underinsured. Search 'FQHC near me'.",
+          "cost": "varies",
+          "note": "You can often get prenatal care here even with no insurance."
+        }
+      ],
+      "skipIf": "You already have a confirmed pregnancy and an appointment on the calendar."
+    },
+    {
+      "id": "w8-folic-acid",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "nutrition",
+      "title": "Take a prenatal vitamin with folic acid",
+      "why": "400 to 800 micrograms of folic acid a day, started before conception and continued through the first trimester, lowers the risk of neural tube defects.",
+      "detail": "Any prenatal vitamin with 400–800 mcg of folic acid works. You do not need the expensive one. If the pills make you sick, a gummy without iron is fine for now — but tell your OB, because you may need iron separately later.",
+      "minutes": 5,
+      "options": [
+        {
+          "id": "w8-prenatal-otc",
+          "label": "Any drugstore prenatal",
+          "detail": "Look for 400–800 mcg folic acid on the label. Store brand is fine.",
+          "cost": "$"
+        },
+        {
+          "id": "w8-prenatal-gummy",
+          "label": "A gummy prenatal",
+          "detail": "Easier on the stomach, but usually no iron. Good for the nausea weeks.",
+          "cost": "$$"
+        },
+        {
+          "id": "w8-prenatal-rx",
+          "label": "A prescription prenatal",
+          "detail": "If your OB prescribes one, it is often covered. Ask before buying.",
+          "cost": "varies"
+        }
+      ],
+      "skipIf": "Your OB has told you to take a specific prescription instead."
+    },
+    {
+      "id": "w8-insurance",
+      "type": "know",
+      "priority": "recommended",
+      "domain": "money",
+      "title": "Find out what your insurance actually covers",
+      "why": "Prenatal care, delivery, and the baby's first year are three separate billing events. Knowing the deductible now avoids a surprise in the delivery room.",
+      "detail": "Call the number on your card and ask three things: what is my deductible, what is my out-of-pocket maximum, and is my hospital in network. Write the answers down. If you are uninsured, you may qualify for Medicaid — in most states pregnancy raises the income limit substantially, and coverage can be backdated.",
+      "minutes": 20,
+      "options": [
+        {
+          "id": "w8-ins-card",
+          "label": "Call the number on your card",
+          "detail": "Ask for the prenatal and delivery benefits summary.",
+          "cost": "free"
+        },
+        {
+          "id": "w8-ins-marketplace",
+          "label": "Healthcare.gov",
+          "detail": "Pregnancy is a qualifying life event, so you can enroll outside open enrollment.",
+          "url": "https://www.healthcare.gov",
+          "cost": "varies"
+        },
+        {
+          "id": "w8-ins-medicaid",
+          "label": "Your state Medicaid office",
+          "detail": "Income limits for pregnant people are much higher than for everyone else.",
+          "url": "https://www.medicaid.gov",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You already know your plan's prenatal and delivery coverage in detail."
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "w8-nausea",
+      "title": "If the nausea is unmanageable",
+      "body": "There are safe prescription treatments for morning sickness, and you do not have to white-knuckle it. If you cannot keep fluids down for a day, call your OB — that is dehydration, not weakness.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w8-caffeine",
+      "title": "Caffeine",
+      "body": "Under 200 mg a day is considered fine — roughly one 12 oz coffee. The limit is about total daily amount, not a single cup.",
+      "domain": "nutrition"
+    },
+    {
+      "id": "w8-telling-people",
+      "title": "You do not have to tell anyone yet",
+      "body": "There is no rule that says you announce at 12 weeks. Tell the people who would support you if something went wrong, and wait on the rest.",
+      "domain": "mind"
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "w8-rf-bleeding",
+      "text": "Heavy bleeding, or bleeding with cramps or pain",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w8-rf-pain",
+      "text": "Sharp one-sided pain, or pain in the tip of your shoulder",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w8-rf-emergency",
+      "text": "Fainting, chest pain, or trouble breathing",
+      "escalation": "call-911",
+      "phone": "911"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "w8-visit",
+      "label": "First prenatal visit",
+      "from": 6,
+      "to": 8,
+      "who": "OB or midwife",
+      "note": "Blood work, blood pressure, and often a dating ultrasound."
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-acog-prenatal",
+      "title": "Prenatal Care",
+      "publisher": "ACOG",
+      "url": "https://www.acog.org/womens-health/faqs/prenatal-care",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-cdc-folic",
+      "title": "Folic Acid",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/folic-acid/about/index.html",
+      "kind": "government",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-mod-first",
+      "title": "Your First Prenatal Visit",
+      "publisher": "March of Dimes",
+      "url": "https://www.marchofdimes.org/pregnancy/your-first-prenatal-care-visit.aspx",
+      "kind": "charity",
+      "accessed": "2026-10-20"
+    }
+  ],
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-20",
+  "updatedAt": "2026-10-20"
+}

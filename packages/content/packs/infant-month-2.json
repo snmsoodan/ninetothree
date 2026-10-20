@@ -1,0 +1,185 @@
+{
+  "locale": "en-US",
+  "country": "US",
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-20",
+  "updatedAt": "2026-10-20",
+  "id": "infant-month-2",
+  "kind": "infant",
+  "stageIndex": 2,
+  "stageUnit": "month",
+  "title": "Month 2",
+  "subtitle": "The first smiles are real now. So is the peak of the crying.",
+  "baby": {
+    "development": "Social smiling appears, and the baby will look at your face and try to copy it. Head control is improving but is not there yet. Crying often peaks around six to eight weeks and then starts to fall."
+  },
+  "you": {
+    "body": "If you are recovering from birth, bleeding should have stopped and any stitches should be healed. If you are still in pain, that is worth a call rather than a wait.",
+    "mind": "This is the month when the sleep deprivation compounds. Feeling like you cannot do this is not evidence that you cannot."
+  },
+  "coreActions": [
+    {
+      "id": "m2-visit",
+      "type": "book",
+      "priority": "essential",
+      "domain": "health-baby",
+      "title": "Go to the 2-month visit",
+      "why": "It is the first big vaccine visit, and it is also where growth and development get checked against a real curve.",
+      "detail": "Expect several shots and an oral vaccine. It is normal for the baby to be fussy and to run a low fever for a day or two. Ask about infant acetaminophen dosing by weight before you leave, so you are not guessing at 9pm. Ask them to write the dose down.",
+      "minutes": 60,
+      "options": [
+        {
+          "id": "m2-ped",
+          "label": "Your pediatrician",
+          "detail": "Standard.",
+          "cost": "varies"
+        }
+      ],
+      "skipIf": "Your pediatrician has set a different schedule for a medical reason."
+    },
+    {
+      "id": "m2-safe-sleep",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "sleep",
+      "title": "Check the sleep setup against the safe sleep rules",
+      "why": "Every one of these rules exists because it measurably reduces the risk of SIDS, and they are easy to get subtly wrong.",
+      "detail": "Baby on their back, on a firm flat surface, in their own sleep space in your room, with nothing else in it — no bumpers, no blankets, no pillows, no stuffed animals. No inclined sleepers and no sitting devices for sleep. Room-sharing is recommended for at least six months; bed-sharing is not. Keep the room between 68 and 72°F and do not let the baby get overheated.",
+      "minutes": 15,
+      "options": [
+        {
+          "id": "m2-crib",
+          "label": "A crib meeting 16 CFR 1219",
+          "detail": "The standard. A new one is cheap; a used one needs a manufacture date after 2011 and all its hardware.",
+          "cost": "$$"
+        },
+        {
+          "id": "m2-bassinet",
+          "label": "A bassinet meeting 16 CFR 1218",
+          "detail": "For the first months, next to your bed.",
+          "cost": "$$"
+        },
+        {
+          "id": "m2-playard",
+          "label": "A play yard meeting 16 CFR 1220",
+          "detail": "Doubles as a travel bed.",
+          "cost": "$$"
+        }
+      ],
+      "skipIf": "You have already checked the sleep space and it meets all of these."
+    },
+    {
+      "id": "m2-crying",
+      "type": "know",
+      "priority": "recommended",
+      "domain": "mind",
+      "title": "Learn what to do when the crying will not stop",
+      "why": "Shaken baby syndrome peaks between two and four months, and it happens to ordinary parents at the end of their rope. Having a plan before that moment is the whole point.",
+      "detail": "The rule: put the baby down safely in the crib, walk out of the room, and take ten minutes. The baby is safe crying alone for ten minutes. It is never safe to shake. If you feel yourself getting close to losing control, that is the moment to call someone — a partner, a friend, your pediatrician. It is not a failure to need a break.",
+      "minutes": 10,
+      "options": [
+        {
+          "id": "m2-cry-plan",
+          "label": "Write the plan down",
+          "detail": "Who you call, and where you put the baby. On the fridge, not in your head.",
+          "cost": "free"
+        },
+        {
+          "id": "m2-cry-helpline",
+          "label": "Your pediatrician's nurse line",
+          "detail": "Most have one. Ask for the number at the 2-month visit.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You already have a plan and someone to call."
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "m2-tummy",
+      "title": "Tummy time",
+      "body": "A few minutes at a time, several times a day, while awake and supervised. It builds the neck and shoulder strength that comes before rolling and sitting.",
+      "domain": "play"
+    },
+    {
+      "id": "m2-vaccines",
+      "title": "About the vaccine schedule",
+      "body": "The CDC schedule is the default in the US and it is what pediatricians follow. If you have questions, ask them at the visit rather than reading forums at midnight. Delaying has real costs.",
+      "domain": "health-baby"
+    },
+    {
+      "id": "m2-tracking",
+      "title": "You do not have to track everything",
+      "body": "Feeds, naps, diapers — tracking can be reassuring or it can become a second job. Track what your pediatrician asks about, and let the rest go.",
+      "domain": "mind"
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "m2-rf-fever",
+      "text": "A fever of 100.4°F or higher in a baby under 3 months",
+      "escalation": "call-pediatrician"
+    },
+    {
+      "id": "m2-rf-breathing",
+      "text": "Fast or labored breathing, or a blue tint around the lips",
+      "escalation": "call-911",
+      "phone": "911"
+    },
+    {
+      "id": "m2-rf-feeding",
+      "text": "Refusing feeds, or far fewer wet diapers than usual",
+      "escalation": "call-pediatrician"
+    },
+    {
+      "id": "m2-rf-mood",
+      "text": "You are having thoughts of harming yourself or the baby",
+      "escalation": "call-988",
+      "phone": "988"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "m2-visit-appt",
+      "label": "2-month well visit and vaccines",
+      "from": 2,
+      "to": 2,
+      "who": "Pediatrician",
+      "note": "DTaP, IPV, Hib, PCV, rotavirus."
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-cdc-schedule",
+      "title": "Immunization Schedule",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/vaccines/hcp/imz-schedules",
+      "kind": "government",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-nichd-safe",
+      "title": "Safe to Sleep",
+      "publisher": "NICHD",
+      "url": "https://safetosleep.nichd.nih.gov",
+      "kind": "government",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-cpsc-cribs",
+      "title": "Crib Safety Standards",
+      "publisher": "CPSC",
+      "url": "https://www.cpsc.gov/Safety-Education/Safety-Education-Centers/crib-safety-information-center",
+      "kind": "government",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-aap-crying",
+      "title": "Crying and Your Baby",
+      "publisher": "AAP",
+      "url": "https://www.healthychildren.org/English/ages-stages/baby/crying-colic/Pages/default.aspx",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    }
+  ]
+}

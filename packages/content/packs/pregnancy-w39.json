@@ -1,0 +1,151 @@
+{
+  "locale": "en-US",
+  "country": "US",
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-20",
+  "updatedAt": "2026-10-20",
+  "id": "pregnancy-w39",
+  "kind": "pregnancy",
+  "stageIndex": 39,
+  "stageUnit": "week",
+  "title": "Week 39",
+  "subtitle": "Full term. The baby can come any day now, and most first babies do not.",
+  "baby": {
+    "size": "About the size of a small watermelon",
+    "development": "The baby is full term. The lungs, brain, and immune system are ready. Most of the vernix — the white coating on the skin — has gone."
+  },
+  "you": {
+    "body": "You may have a burst of energy or a sudden need to clean the house. That is nesting, and it is not a sign of labor. Your cervix may be dilating without you feeling anything.",
+    "mind": "Waiting is the hardest part of the third trimester. Every twinge gets interpreted. This is normal and it is exhausting."
+  },
+  "coreActions": [
+    {
+      "id": "w39-know-labor",
+      "type": "know",
+      "priority": "essential",
+      "domain": "health-parent",
+      "title": "Know the difference between early labor and the real thing",
+      "why": "Most people go to the hospital too early the first time, get sent home, and then feel foolish. Knowing the signs saves that trip.",
+      "detail": "Early labor: contractions that are irregular, mild, and get further apart when you rest. Real labor: contractions that get longer, stronger, and closer together, and do not stop when you lie down. For a first baby, the usual guidance is to come in when contractions are about five minutes apart for an hour. If your water breaks, call first — you may be told to come in, or to wait if labor has not started.",
+      "minutes": 15,
+      "options": [
+        {
+          "id": "w39-labor-911",
+          "label": "Call your OB triage line",
+          "detail": "They would rather answer a question than have you guess.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You have already been through labor before and know your own pattern."
+    },
+    {
+      "id": "w39-induction",
+      "type": "ask",
+      "priority": "recommended",
+      "domain": "health-parent",
+      "title": "Ask about induction at 39 weeks",
+      "why": "The ARRIVE trial showed that offering induction at 39 weeks to first-time parents did not raise the cesarean rate. It is a real option, not a failure.",
+      "detail": "Induction is not one thing — it is a set of methods, and how it goes depends on your cervix. Ask your OB: what would you recommend for me, and why? What happens if I wait? There is no wrong answer, but there is a difference between choosing and drifting.",
+      "minutes": 20,
+      "options": [
+        {
+          "id": "w39-induction-ask",
+          "label": "Ask at your next visit",
+          "detail": "Bring the question written down. It is easy to forget in the room.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You have already discussed induction and made a decision."
+    },
+    {
+      "id": "w39-rest",
+      "type": "do",
+      "priority": "optional",
+      "domain": "mind",
+      "title": "Rest, and stop optimizing",
+      "why": "The last week is not the time to finish a project. Sleep when you can, eat, and let people bring you things.",
+      "detail": "You will not get this rest back for a while. Say yes to help now, while it is easy to accept. If you are working up to your due date, consider whether the last week is worth it.",
+      "options": [],
+      "skipIf": "You have things you genuinely need to finish, and that is fine too."
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "w39-membrane",
+      "title": "Membrane sweeps",
+      "body": "A membrane sweep can sometimes start labor and is offered around 39 to 41 weeks. It is uncomfortable and it works maybe one time in eight. You can decline.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w39-41",
+      "title": "If you go past 40 weeks",
+      "body": "Most OBs will offer induction by 41 weeks, because the risk of stillbirth rises slowly after that. You will not be left to wait indefinitely.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w39-partner",
+      "title": "For your partner",
+      "body": "Your job in labor is not to coach. It is to be calm, keep track of what she asked for, and speak up when she cannot. Learn the bag's location and the car seat.",
+      "domain": "mind"
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "w39-rf-movement",
+      "text": "Movements that have slowed or stopped",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w39-rf-bleeding",
+      "text": "Bleeding heavier than spotting",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w39-rf-water",
+      "text": "Fluid that is green, brown, or smells bad",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w39-rf-emergency",
+      "text": "Chest pain, trouble breathing, or a seizure",
+      "escalation": "call-911",
+      "phone": "911"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "w39-visit",
+      "label": "Weekly OB visit",
+      "from": 39,
+      "to": 39,
+      "who": "OB or midwife",
+      "note": "Weekly until birth."
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-acog-labor",
+      "title": "How to Tell When Labor Begins",
+      "publisher": "ACOG",
+      "url": "https://www.acog.org/womens-health/faqs/how-to-tell-when-labor-begins",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-arrive",
+      "title": "ARRIVE Trial",
+      "publisher": "NEJM",
+      "url": "https://www.nejm.org/doi/full/10.1056/NEJMoa1801181",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-acog-induction",
+      "title": "Induction of Labor",
+      "publisher": "ACOG",
+      "url": "https://www.acog.org/womens-health/faqs/induction-of-labor",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    }
+  ]
+}

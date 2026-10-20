@@ -1,0 +1,170 @@
+{
+  "locale": "en-US",
+  "country": "US",
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-20",
+  "updatedAt": "2026-10-20",
+  "id": "pregnancy-w20",
+  "kind": "pregnancy",
+  "stageIndex": 20,
+  "stageUnit": "week",
+  "title": "Week 20",
+  "subtitle": "Halfway. The anatomy scan is this month, and it is the longest look you get at this baby until they arrive.",
+  "baby": {
+    "size": "About the length of a banana",
+    "development": "The baby can hear you now — muffled, but real. Swallowing and thumb-sucking are happening, and the movements you feel are getting more coordinated."
+  },
+  "you": {
+    "body": "The top of your uterus is at your belly button. You may feel the first movements around now, especially if this is not your first pregnancy.",
+    "mind": "Halfway is often when the pregnancy starts to feel like a person rather than a condition. It is also when the birth starts to feel close."
+  },
+  "coreActions": [
+    {
+      "id": "w20-anatomy",
+      "type": "book",
+      "priority": "essential",
+      "domain": "health-baby",
+      "title": "Book your anatomy scan",
+      "why": "It is done between 18 and 22 weeks and it is the most detailed look at the baby's organs, growth, and placenta in the whole pregnancy.",
+      "detail": "It takes 30 to 60 minutes. You will usually be told the sex if you want to know, and you can ask not to be. The sonographer measures the brain, heart, spine, kidneys, and limbs. About 3 in 100 scans find something that needs a closer look, and most of those turn out to be nothing. If they ask you to come back for a repeat, that is common and it usually means the baby was in a bad position.",
+      "minutes": 60,
+      "options": [
+        {
+          "id": "w20-anatomy-ob",
+          "label": "At your OB's imaging suite",
+          "detail": "The default. Usually scheduled for you.",
+          "cost": "varies"
+        },
+        {
+          "id": "w20-anatomy-mfm",
+          "label": "At a maternal-fetal medicine practice",
+          "detail": "More detailed equipment and a specialist reading it. Often used if there is any concern.",
+          "cost": "varies"
+        }
+      ],
+      "skipIf": "You have already had a detailed anatomy scan this pregnancy."
+    },
+    {
+      "id": "w20-movement",
+      "type": "know",
+      "priority": "recommended",
+      "domain": "health-parent",
+      "title": "Start noticing movement patterns",
+      "why": "You are learning what is normal for this baby, which is more useful than counting to a number.",
+      "detail": "There is no official kick count in the US, and the 'ten movements in two hours' rule is a rough guide, not a test you can fail. What matters is a clear change from your baby's usual pattern. If movements slow down or stop, call your OB triage line the same day.",
+      "minutes": 10,
+      "options": [],
+      "skipIf": "You have an anterior placenta and have been told to expect softer movement."
+    },
+    {
+      "id": "w20-childbirth-class",
+      "type": "book",
+      "priority": "recommended",
+      "domain": "health-parent",
+      "title": "Book a childbirth class",
+      "why": "Classes fill up, and the good ones fill up months ahead. Most people take one in the third trimester.",
+      "detail": "A good class covers labor, pain options, cesarean birth, and the first weeks. It is also where you meet other people due around the same time, which turns out to matter more than the curriculum. Many hospitals run them free or cheap for patients delivering there.",
+      "minutes": 15,
+      "options": [
+        {
+          "id": "w20-class-hospital",
+          "label": "Your hospital's class",
+          "detail": "Usually the cheapest, and you meet people delivering at the same place.",
+          "cost": "$"
+        },
+        {
+          "id": "w20-class-independent",
+          "label": "An independent class",
+          "detail": "Often smaller and more flexible on approach. Search for Bradley, Lamaze, or Hypnobirthing if you want a specific method.",
+          "cost": "$$"
+        },
+        {
+          "id": "w20-class-online",
+          "label": "An online class",
+          "detail": "Fine if your schedule is unpredictable. Less of the meeting-people benefit.",
+          "cost": "$"
+        }
+      ],
+      "skipIf": "You have already taken a childbirth class."
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "w20-sex",
+      "title": "Finding out the sex, or not",
+      "body": "Both are fine. If you want to be surprised, say so before the scan starts — it is much easier than asking them to stop talking mid-scan.",
+      "domain": "health-baby"
+    },
+    {
+      "id": "w20-back",
+      "title": "Back pain starts here",
+      "body": "As the belly grows, the curve of your lower back changes. A support belt, better shoes, and swimming all help. Physical therapy is covered by most insurance and is not an overreaction.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w20-anemia",
+      "title": "Iron",
+      "body": "Your blood volume is up about 50% by now, which dilutes your iron. If you feel unusually exhausted, ask for a ferritin check rather than assuming it is just pregnancy.",
+      "domain": "nutrition"
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "w20-rf-bleeding",
+      "text": "Any bleeding, or fluid that keeps leaking",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w20-rf-movement",
+      "text": "Movements that have clearly slowed or stopped",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w20-rf-bp",
+      "text": "A severe headache with vision changes or swelling in your face and hands",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w20-rf-emergency",
+      "text": "Chest pain, trouble breathing, or a seizure",
+      "escalation": "call-911",
+      "phone": "911"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "w20-visit",
+      "label": "Prenatal visit and anatomy scan",
+      "from": 20,
+      "to": 22,
+      "who": "OB or midwife",
+      "note": "Visits are every four weeks until 28 weeks."
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-acog-anatomy",
+      "title": "Ultrasound Exams",
+      "publisher": "ACOG",
+      "url": "https://www.acog.org/womens-health/faqs/ultrasound-exams",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-acog-movement",
+      "title": "Changes in Fetal Movement",
+      "publisher": "ACOG",
+      "url": "https://www.acog.org/womens-health/faqs/change-in-fetal-movement",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-lamaze",
+      "title": "Childbirth Education",
+      "publisher": "Lamaze International",
+      "url": "https://www.lamaze.org",
+      "kind": "charity",
+      "accessed": "2026-10-20"
+    }
+  ]
+}
