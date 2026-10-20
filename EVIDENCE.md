@@ -716,6 +716,36 @@ Computed in UTC, so a parent in a state that observes DST does not see a visit s
 
 **What this could not test:** the six inert fields are inert because the content does not exist, not because the rules are missing; making them real needs content (issues #47 and #48), not more rules. `preterm` should probably shift the stage to corrected age rather than the birth date, which is a `computeStage` change and belongs to a follow-up. `delivery: "cesarean"` should probably hide perineal-care steps, but no shipped pack has one. Settings is not in `lighthouserc.json` because it redirects to `/onboarding` without localStorage.
 
-## 17. How this file is maintained
+## 17. Action states (issue #19)
+
+**The acceptance criterion is "state survives reload and device; skip reason is stored; no double-submit."** Two of the three were already true. The third was not, and chasing it found a real defect.
+
+**The double-submit defect was real, and it was a layout bug.** The Done button was replaced in place by Undo. On a phone, a fast double tap marked the step done and then immediately undid it — the second tap landed on a different control that had appeared under the same finger. The fix is structural, not a debounce timer: the status word now sits where the button was, so the second tap lands on non-interactive text, and Undo moves to the end of the row. Skip and Later disappear once a step is done or skipped, so there is nothing left to mis-tap. A test clicks Done twice and asserts the step is still done.
+
+**`markDone` and `markSkipped` are idempotent.** A second identical submit returns early, preserving the first timestamp and the first skip reason. A retry can never move a timestamp, which is what makes the history trustworthy.
+
+**Snooze did not exist, and it is not a skip.** Skipping says "this is not for me" and the step is gone for good. Snoozing says "not today" and the step comes back on its own, without the parent having to remember it. The two were indistinguishable in the copy, so the "Not this week" skip reason now reads "It will not come back on its own." The Later dialog offers Tomorrow, In a few days, or Next week (the default).
+
+**A snoozed step still counts against completion.** It is coming back, so the week is not finished. Rather than leave the progress bar mysteriously short, the page says "N steps set aside for now" with a "Show it now" button that clears every snooze in the week. `isSnoozed(state, actionId, today)` takes `today` as a parameter, like `computeStage` and `appointmentsFor`, so the answer is the same on server and client and a test can move time without faking timers.
+
+**"Survives device" and "server reconciliation" are not buildable yet.** The product is local-first: state lives in `localStorage` and there is no server. Cross-device sync needs the backend epic — the schema (#11), the repository (#12) and auth (#14) — none of which exists. This is stated rather than faked; the reload half of the criterion is tested, and the device half is blocked on work that has not been scheduled.
+
+**Snoozes are not in the history export.** A snooze is a current intention, not a record of something done. The restorable form of a snooze belongs with the export and delete work (#41).
+
+**What this could not test:** the snooze durations (one day, three days, one week) are guesses, not tested with a parent. Cross-device survival is untested because there is no second device and no server.
+
+## 18. Self-hosted fonts
+
+**The build reached the network, and the network failed it.** `next/font/google` downloads the font file during the build. When that request is slow or blocked, the build dies with `TypeError: Cannot read properties of null (reading '1')` from `@next/font/dist/google/loader.js` — an error that names neither the font nor the network, and that no code change caused. It happened twice on CI: once on PR #56 and once on PR #67, both times on a green branch.
+
+The mitigation until now was caching `apps/web/.next/cache` in the workflow, which made the failure rarer without removing it. That is not a fix; it is a smaller window.
+
+**The fix is to stop reaching the network.** The two variable fonts — Inter (100–900) and Newsreader (400–500) — are now committed as latin-subset woff2 files in `apps/web/src/app/fonts/`, and `layout.tsx` uses `next/font/local`. Both are under the SIL Open Font License, which permits redistribution and self-hosting. The build is now deterministic and works offline.
+
+The files are the same fonts, so nothing about the design changed. The built CSS still emits `font-family: inter` and `font-family: newsreader` with generated fallback metrics, and the woff2 files are served from `/_next/static/media/` like any other asset.
+
+**What this costs:** the latin subset only. A parent reading in a script outside latin gets the system fallback, which is the same behaviour `subsets: ["latin"]` already had. Adding a subset means downloading another woff2 and adding it to the `src` array; `apps/web/src/app/fonts/README.md` records how.
+
+## 19. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.

@@ -1,20 +1,29 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Newsreader } from "next/font/google";
+import localFont from "next/font/local";
 import { ToastProvider } from "@ninetothree/ui";
 import { RouteFocus } from "@/components/RouteFocus";
 import "./globals.css";
 
-const inter = Inter({
-  subsets: ["latin"],
+/*
+ * Self-hosted, not fetched from Google at build time. `next/font/google`
+ * downloads the font during the build, so a slow or blocked request to
+ * fonts.gstatic.com failed the build with "Cannot read properties of null
+ * (reading '1')" — twice, on a runner, with no code change to blame. The
+ * files are the latin subsets of the same variable fonts, under the SIL Open
+ * Font License, and they are committed.
+ */
+const inter = localFont({
+  src: "./fonts/inter-latin.woff2",
   variable: "--font-inter",
   display: "swap",
+  weight: "100 900",
 });
 
-const newsreader = Newsreader({
-  subsets: ["latin"],
+const newsreader = localFont({
+  src: "./fonts/newsreader-latin.woff2",
   variable: "--font-newsreader",
   display: "swap",
-  weight: ["400", "500"],
+  weight: "400 500",
 });
 
 export const metadata: Metadata = {

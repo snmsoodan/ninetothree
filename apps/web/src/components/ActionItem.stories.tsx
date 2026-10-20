@@ -45,7 +45,7 @@ const buy: Action = {
 const meta: Meta<typeof ActionItem> = {
   title: "App/ActionItem",
   component: ActionItem,
-  args: { action: book, packTitle: "Week 28" },
+  args: { action: book, packId: "pregnancy-w28", packTitle: "Week 28", today: "2027-01-07" },
   decorators: [
     (Story) => (
       <div className="max-w-xl p-4">

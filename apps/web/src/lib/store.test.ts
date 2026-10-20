@@ -17,12 +17,15 @@ import {
   removeAppointment,
   removePin,
   isSkipped,
+  isSnoozed,
   markDone,
   markSkipped,
   resetAll,
+  snooze,
   stageInput,
   subscribe,
   togglePin,
+  unsnooze,
   updateAppointment,
   updateDates,
   updateProfile,
@@ -134,6 +137,106 @@ describe("progress", () => {
   it("reports an unknown action as neither done nor skipped", () => {
     expect(isDone(getSnapshot(), "nope")).toBe(false);
     expect(isSkipped(getSnapshot(), "nope")).toBe(false);
+  });
+
+  it("is idempotent, so a double tap is one intention", () => {
+    markDone(step("a1"), "2026-06-15T10:00:00.000Z");
+    markDone(step("a1"), "2026-06-15T10:00:09.000Z");
+    expect(getSnapshot().progress.a1?.at).toBe("2026-06-15T10:00:00.000Z");
+  });
+
+  it("is idempotent for a skip too, and keeps the first reason", () => {
+    markSkipped(step("a1"), "not-now", "2026-06-15T10:00:00.000Z");
+    markSkipped(step("a1"), "not-for-me", "2026-06-15T10:00:09.000Z");
+    expect(getSnapshot().progress.a1?.reason).toBe("not-now");
+    expect(getSnapshot().progress.a1?.at).toBe("2026-06-15T10:00:00.000Z");
+  });
+});
+
+describe("snooze", () => {
+  it("sets a step aside until a date, with a snapshot", () => {
+    snooze(step("a1"), "2026-06-22", "2026-06-15T10:00:00.000Z");
+    expect(getSnapshot().snoozed.a1).toEqual({
+      id: "a1",
+      title: "Step a1",
+      packId: "test-week",
+      packTitle: "Week 28",
+      until: "2026-06-22",
+      at: "2026-06-15T10:00:00.000Z",
+    });
+  });
+
+  it("is snoozed only while the date is still ahead", () => {
+    snooze(step("a1"), "2026-06-22");
+    expect(isSnoozed(getSnapshot(), "a1", "2026-06-15")).toBe(true);
+    expect(isSnoozed(getSnapshot(), "a1", "2026-06-21")).toBe(true);
+    // The day it comes back, it is back.
+    expect(isSnoozed(getSnapshot(), "a1", "2026-06-22")).toBe(false);
+    expect(isSnoozed(getSnapshot(), "a1", "2026-06-30")).toBe(false);
+  });
+
+  it("reports an unknown action as not snoozed", () => {
+    expect(isSnoozed(getSnapshot(), "nope", "2026-06-15")).toBe(false);
+  });
+
+  it("brings a step back early", () => {
+    snooze(step("a1"), "2026-06-22");
+    unsnooze("a1");
+    expect(getSnapshot().snoozed.a1).toBeUndefined();
+    expect(isSnoozed(getSnapshot(), "a1", "2026-06-15")).toBe(false);
+  });
+
+  it("brings back an action that was never snoozed without complaining", () => {
+    expect(() => unsnooze("never")).not.toThrow();
+    expect(getSnapshot().snoozed).toEqual({});
+  });
+
+  it("leaves other snoozes alone", () => {
+    snooze(step("a1"), "2026-06-22");
+    snooze(step("a2"), "2026-06-22");
+    unsnooze("a1");
+    expect(Object.keys(getSnapshot().snoozed)).toEqual(["a2"]);
+  });
+
+  it("is not a skip and not a done", () => {
+    snooze(step("a1"), "2026-06-22");
+    expect(isDone(getSnapshot(), "a1")).toBe(false);
+    expect(isSkipped(getSnapshot(), "a1")).toBe(false);
+  });
+
+  it("survives a reload", () => {
+    snooze(step("a1"), "2026-06-22", "2026-06-15T10:00:00.000Z");
+    const stored = JSON.parse(window.localStorage.getItem(STORAGE_KEY) as string);
+    expect(stored.snoozed.a1.until).toBe("2026-06-22");
+  });
+
+  it("drops a stored snooze with no date, and fills in a missing snapshot", () => {
+    window.localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        version: 1,
+        snoozed: { bad: { title: "No date" }, null: null, good: { until: "2026-06-22" } },
+      }),
+    );
+    __resetForTests();
+    subscribe(() => {});
+    expect(getSnapshot().snoozed.bad).toBeUndefined();
+    expect(getSnapshot().snoozed.null).toBeUndefined();
+    expect(getSnapshot().snoozed.good).toEqual({
+      id: "good",
+      title: "",
+      packId: "",
+      packTitle: "",
+      until: "2026-06-22",
+      at: "",
+    });
+  });
+
+  it("treats a non-object snoozed field as empty", () => {
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ version: 1, snoozed: ["a1"] }));
+    __resetForTests();
+    subscribe(() => {});
+    expect(getSnapshot().snoozed).toEqual({});
   });
 });
 
