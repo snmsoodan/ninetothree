@@ -159,6 +159,39 @@ These were not hypothetical. Each one was caught by a test that failed, and each
 
 ---
 
-## 6. How this file is maintained
+## 6. Catch-up, not backlog (issue #21)
+
+A parent who joins at week 30 has not failed twenty-six weeks. The product must never show them a backlog. This PR adds the engine and the one surface that decides what "behind" means.
+
+### What it does
+
+`catchUp(packs, current, doneIds, options)` in `packages/rules` returns at most five items from the three stages before the current one. Essentials come first, then most recent first. Done and optional steps are excluded. The window is positional and **never crosses a stage kind** — a pregnancy step is not a catch-up for a parent holding a two-month-old, it is a mistake.
+
+The surface is `CatchUp`, a closed-by-default disclosure below the week's own three things. It says where the parent is and that nothing expires, then offers the list. Each item can be marked done in place, and disappears when it is.
+
+### What it proves
+
+| Check                       | Result                                                          |
+| --------------------------- | --------------------------------------------------------------- |
+| `catchUp` unit tests        | 16 passing, 100% coverage                                       |
+| `CatchUp` component tests   | 7 passing, 100% coverage                                        |
+| e2e: late joiner at week 28 | catch-up + week 28, never week 4                                |
+| e2e: axe on the open list   | zero violations                                                 |
+| Full gate                   | 327 unit tests, 16 e2e, lint, typecheck, format, content, build |
+
+### Two decisions worth recording
+
+1. **The list reads newest-first.** A catch-up list is not a syllabus; the most recent missed step is the one most likely to still matter. The test that expected chronological order was wrong, not the comparator.
+2. **The window stops at the kind boundary.** The first implementation looked back three stages in the global sequence, so a parent at month 2 was offered pregnancy week 36. That is not a catch-up, it is a bug that reads as carelessness. The window is now filtered to the current kind, and a parent with nothing behind them sees nothing at all rather than a section saying so.
+
+### What this PR does not prove
+
+- **The five-item cap is a guess.** It is not tested against a real parent's attention.
+- **No email or push reminder** uses `catchUp` yet; only the week page does.
+- **The copy is unvalidated.** "Nothing expires" is a claim about the product's behaviour, and it is true today only because nothing is ever deleted.
+
+---
+
+## 7. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.

@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { useMemo } from "react";
-import type { StagePack } from "@ninetothree/content";
+import { PACKS, type StagePack } from "@ninetothree/content";
 import { Badge, ButtonLink, Card, CardBody, Progress } from "@ninetothree/ui";
-import { completion, personalizePack } from "@ninetothree/rules";
+import { catchUp, completion, personalizePack } from "@ninetothree/rules";
 import { ActionItem } from "./ActionItem";
+import { CatchUp } from "./CatchUp";
 import { RedFlagList } from "./RedFlagList";
 import { SourceList } from "./SourceList";
 import { AppShell } from "./AppShell";
@@ -31,6 +32,16 @@ export function WeekView({ pack, nextId, previousId }: WeekViewProps) {
 
   const done = completion(personalized, doneIds);
   const allDone = done === 1;
+
+  const doneEverywhere = useMemo(
+    () =>
+      Object.entries(state.progress)
+        .filter(([, entry]) => entry.status === "done")
+        .map(([id]) => id),
+    [state.progress],
+  );
+
+  const catchUpResult = useMemo(() => catchUp(PACKS, pack, doneEverywhere), [pack, doneEverywhere]);
 
   return (
     <AppShell stage={pack.title}>
@@ -99,6 +110,8 @@ export function WeekView({ pack, nextId, previousId }: WeekViewProps) {
             </p>
           ) : null}
         </section>
+
+        <CatchUp items={catchUpResult.items} stageLabel={pack.title} />
 
         {pack.alsoKnow.length > 0 ? (
           <section aria-labelledby="also-heading" className="mt-8">

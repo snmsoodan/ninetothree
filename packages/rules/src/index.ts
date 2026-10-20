@@ -22,3 +22,11 @@ export {
   type Work,
   type Support,
 } from "./personalize";
+export {
+  catchUp,
+  CATCH_UP_WINDOW,
+  CATCH_UP_LIMIT,
+  type CatchUpItem,
+  type CatchUpResult,
+  type CatchUpOptions,
+} from "./catchup";
