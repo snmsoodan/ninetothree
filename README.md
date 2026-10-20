@@ -244,6 +244,8 @@ Five CI jobs run on every pull request. Each one fails for exactly one class of 
 
 **A double tap is one intention.** The Done button used to be replaced in place by Undo, so a fast double tap on a phone marked a step done and then immediately undid it. The status word now sits where the button was, so the second tap lands on text, and Undo moves to the end of the row. `markDone` and `markSkipped` are also idempotent: a retry preserves the first timestamp and the first reason.
 
+**The fonts are committed, not downloaded.** `next/font/google` fetches the font during the build, so a slow or blocked request to `fonts.gstatic.com` fails the build with an error that names neither the font nor the network. It happened twice on CI with no code change to blame. The two variable fonts are now latin-subset woff2 files in `apps/web/src/app/fonts/` under the SIL Open Font License, loaded with `next/font/local`, so the build is deterministic and works offline.
+
 **The content schema is a gate, not a suggestion.** A pack with two essentials, no red flag, no source, or a `buy` action with no options fails the build. It has already caught four real content bugs.
 
 **The link check treats 403 as "verify by hand", not "broken".** CDC, CPSC, NHTSA, DOL, medicaid.gov, naeyc.org, adaa.org and ssa.gov block non-browser clients. A 404 or 410 fails the build; a 403 from those hosts is printed for manual review. It found seven dead citations in the first nine packs and eight dead URLs in the first 89 catalogue entries.
