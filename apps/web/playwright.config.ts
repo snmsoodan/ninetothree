@@ -14,8 +14,16 @@ export default defineConfig({
   projects: [
     {
       name: "chromium",
-      testIgnore: /storybook\.spec\.ts/,
+      testIgnore: /storybook\.spec\.ts|nojs\.spec\.ts/,
       use: { ...devices["Desktop Chrome"] },
+    },
+    {
+      // The week has to be readable before any script runs. This project
+      // turns JavaScript off entirely, so a page that only renders after
+      // hydration fails here rather than in a parent's browser.
+      name: "no-js",
+      testMatch: /nojs\.spec\.ts/,
+      use: { ...devices["Desktop Chrome"], javaScriptEnabled: false },
     },
     {
       name: "storybook",
