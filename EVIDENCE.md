@@ -429,6 +429,14 @@ That rule found nine links in the shipped catalogue. All nine are fixed, and the
 
 The lesson generalises: **a link checker that only reads status codes is checking that a server is up, not that a citation is true.**
 
+### Two things CI can see that a laptop cannot
+
+**`fda.gov` returns 404 to a GitHub runner and 200 to a laptop.** The same URL, the same user agent, the same redirect chain. The FDA's CDN answers datacenter IPs differently. The entry was replaced with CDC's _Tips for Infant Formula Feeding_, which covers the actionable half — how to mix, store and warm formula — and which CI can actually verify. The FDA still regulates formula; the catalogue just cannot prove an FDA link is alive from a runner, and a link the gate cannot check is a link that will rot silently.
+
+**`ecfr.gov` answers a bot with a redirect to `unblock.federalregister.gov`.** That is a "prove you are human" wall, not a move, and the new redirect rule would have failed the build on a link that is fine. Challenge hosts are now recognised and reported as bot-protected instead.
+
+Both are recorded here rather than worked around quietly, because the next person to add a link will hit the same two walls.
+
 ### A type the blueprint was missing
 
 Wirecutter, Consumer Reports, ParentData and Happiest Baby are neither `authoritative` (they are not a regulator or a clinical body) nor `commercial` (they do not sell the thing they are reviewing). Filing them under either would have been a lie in the data. `editorial` was added to `LINK_TYPES`, to `CONTENT_LIBRARY.md` §2, and to the SQL constraint in `ARCHITECTURE.md` in the same commit.
@@ -459,6 +467,7 @@ Three of the content tests are the ones that matter, because they assert a produ
 - **The browse page is not the "help me choose" experience.** `/library` is a searchable list. The guided comparison that issue #29 describes, and the in-context links that issue #28 describes, are not built.
 - **No link has been clicked by a parent.** Whether "why it is here" is the sentence that helps is a guess.
 - **Four links cannot be checked at all.** `nejm.org`, `naeyc.org`, `simonandschuster.com` and `nytimes.com` return 403 to every non-browser client. They are printed for manual review on every run, and the redirect check cannot see them either — so `book-how-to-talk` is the one book link whose destination is unverified.
+- **`fda.gov` cannot be verified from CI at all**, which is why the formula entry now points at CDC. Any future FDA citation will need the same treatment or a manual check.
 
 ---
 

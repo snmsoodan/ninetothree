@@ -157,6 +157,25 @@ async function probe(url) {
   return result;
 }
 
+/**
+ * Some hosts answer a bot with a redirect to a challenge page instead of a
+ * status code. ecfr.gov sends non-browser clients to
+ * unblock.federalregister.gov, which is a "prove you are human" wall, not a
+ * move. Treating it as a move would fail the build on a link that is fine.
+ */
+const CHALLENGE_HOSTS = [
+  "unblock.federalregister.gov",
+  "challenges.cloudflare.com",
+  "geo.captcha-delivery.com",
+  "validate.perfdrive.com",
+];
+
+function isChallenge(finalUrl) {
+  if (!finalUrl) return false;
+  const host = new URL(finalUrl).host;
+  return CHALLENGE_HOSTS.some((h) => host === h || host.endsWith(`.${h}`));
+}
+
 function registrable(host) {
   return host.split(".").slice(-2).join(".");
 }
@@ -188,6 +207,7 @@ function movedTo(url, finalUrl) {
 
 function classify(url, result) {
   if (result.status === 0) return "unreachable";
+  if (isChallenge(result.finalUrl)) return "bot-protected";
   if (result.status >= 200 && result.status < 400) return "ok";
   if (result.status === 403 || result.status === 429) return "bot-protected";
   return "broken";
@@ -208,7 +228,7 @@ for (let i = 0; i < entries.length; i += CONCURRENCY) {
           packs,
           result,
           verdict: classify(url, result),
-          moved: movedTo(url, result.finalUrl),
+          moved: isChallenge(result.finalUrl) ? null : movedTo(url, result.finalUrl),
         };
       }),
     )),

@@ -325,10 +325,10 @@
     "reviewedBy": "Clinical review pending"
   },
   {
-    "id": "fda-infant-formula",
-    "title": "FDA — Infant formula",
-    "url": "https://www.fda.gov/food/resources-you-food/infant-formula-homepage",
-    "publisher": "Food and Drug Administration",
+    "id": "cdc-formula-feeding",
+    "title": "Tips for Infant Formula Feeding",
+    "url": "https://www.cdc.gov/infant-toddler-nutrition/formula-feeding/index.html",
+    "publisher": "Centers for Disease Control and Prevention",
     "type": "authoritative",
     "domains": ["feeding"],
     "stages": {
@@ -342,7 +342,7 @@
       }
     },
     "cost": "free",
-    "why": "Which formulas are legal in the US, what the labels mean, and how to prepare them safely.",
+    "why": "How to mix, store and warm formula safely, and when to throw it out.",
     "country": ["US"],
     "language": "en-US",
     "lastChecked": "2026-10-20",
