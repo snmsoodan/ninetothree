@@ -89,7 +89,7 @@ describe("OnboardingFlow", () => {
     ).toBeInTheDocument();
   });
 
-  it("records the answers and sends the parent to their week", async () => {
+  it("records the answers and sends the parent to the dashboard", async () => {
     const user = userEvent.setup();
     render(<OnboardingFlow />);
     await user.click(screen.getByRole("button", { name: /I am pregnant/ }));
@@ -105,7 +105,7 @@ describe("OnboardingFlow", () => {
     expect(state.status).toBe("pregnant");
     expect(state.dueDate).toBe("2026-12-01");
     expect(state.profile).toEqual({ feeding: "formula", firstBaby: false });
-    expect(push).toHaveBeenCalledWith("/week");
+    expect(push).toHaveBeenCalledWith("/");
   });
 
   it("records a birth date for a parent", async () => {

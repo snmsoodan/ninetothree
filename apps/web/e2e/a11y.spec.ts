@@ -24,7 +24,13 @@ async function onboard(page: Page) {
   await page.getByRole("button", { name: "Continue" }).click();
   await page.getByRole("button", { name: "Continue" }).click();
   await page.getByRole("button", { name: "Show me" }).click();
-  await expect(page).toHaveURL(/\/week$/);
+  await expect(page).toHaveURL(/\/$/);
+}
+
+/** Onboarding lands on the dashboard; the week is one tap further in. */
+async function onboardToWeek(page: Page) {
+  await onboard(page);
+  await page.goto("/week");
 }
 
 test("onboarding has no violations", async ({ page }) => {
@@ -32,8 +38,13 @@ test("onboarding has no violations", async ({ page }) => {
   expect(await audit(page)).toEqual([]);
 });
 
-test("the week page has no violations", async ({ page }) => {
+test("the dashboard has no violations", async ({ page }) => {
   await onboard(page);
+  expect(await audit(page)).toEqual([]);
+});
+
+test("the week page has no violations", async ({ page }) => {
+  await onboardToWeek(page);
   expect(await audit(page)).toEqual([]);
 });
 
@@ -68,7 +79,7 @@ test("settings has no violations", async ({ page }) => {
 });
 
 test("the skip dialog has no violations", async ({ page }) => {
-  await onboard(page);
+  await onboardToWeek(page);
   await page.getByRole("button", { name: "Skip" }).first().click();
   await expect(page.getByRole("dialog")).toBeVisible();
   expect(await audit(page)).toEqual([]);
@@ -85,7 +96,7 @@ test("the whole journey is keyboard reachable", async ({ page }) => {
 });
 
 test("the catch-up list has no violations", async ({ page }) => {
-  await onboard(page);
+  await onboardToWeek(page);
   await page.getByRole("button", { name: /^Show the \d+ things?$/ }).click();
   await expect(page.locator("#catchup-list")).toBeVisible();
   expect(await audit(page)).toEqual([]);

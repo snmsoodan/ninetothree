@@ -1,4 +1,5 @@
 import { StagePack } from "./schema";
+import type { Action } from "./schema";
 
 export interface PackIssue {
   packId: string;
@@ -93,4 +94,20 @@ export function previousPack(packs: StagePack[], current: StagePack): StagePack 
   const index = sameKind.findIndex((p) => p.id === current.id);
   if (index <= 0) return undefined;
   return sameKind[index - 1];
+}
+
+/**
+ * Resolve an action id back to the pack that owns it. Pins are stored as bare
+ * ids, so the dashboard needs this to render a pin without knowing which week
+ * it came from.
+ */
+export function findAction(
+  packs: StagePack[],
+  actionId: string,
+): { pack: StagePack; action: Action } | undefined {
+  for (const pack of packs) {
+    const action = pack.coreActions.find((a) => a.id === actionId);
+    if (action) return { pack, action };
+  }
+  return undefined;
 }

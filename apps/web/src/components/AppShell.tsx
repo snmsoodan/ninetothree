@@ -6,11 +6,12 @@ import { useEffect, useState, type ReactNode } from "react";
 import { cn } from "@ninetothree/ui";
 
 const NAV = [
-  { href: "/week", label: "This week" },
-  { href: "/shelf", label: "Shelf" },
-  { href: "/library", label: "Library" },
-  { href: "/safety", label: "Safety" },
-  { href: "/settings", label: "Settings" },
+  // The week view is a detail page of "This week", so it keeps the tab lit.
+  { href: "/", label: "This week", also: ["/week"] },
+  { href: "/shelf", label: "Shelf", also: [] },
+  { href: "/library", label: "Library", also: [] },
+  { href: "/safety", label: "Safety", also: [] },
+  { href: "/settings", label: "Settings", also: [] },
 ] as const;
 
 export interface AppShellProps {
@@ -38,7 +39,7 @@ export function AppShell({ children, stage }: AppShellProps) {
       <header className="no-print sticky top-0 z-30 border-b border-line bg-paper/95 backdrop-blur-sm">
         <div className="mx-auto flex h-14 max-w-2xl items-center justify-between px-5">
           <Link
-            href="/week"
+            href="/"
             className="font-display text-lg text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-clay"
           >
             Nine to Three
@@ -65,7 +66,10 @@ export function AppShell({ children, stage }: AppShellProps) {
       >
         <ul className="mx-auto flex max-w-2xl">
           {NAV.map((item) => {
-            const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
+            // "/" would prefix-match every route, so it is compared exactly.
+            const active =
+              pathname === item.href ||
+              item.also.some((base) => pathname === base || pathname.startsWith(`${base}/`));
             return (
               <li key={item.href} className="flex-1">
                 <Link

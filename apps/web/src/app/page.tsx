@@ -1,26 +1,91 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-import { useAppState, useHydrated } from "@/lib/store";
+import { useEffect, useMemo } from "react";
+import { PACKS, findAction, findPackForStage, nextPack } from "@ninetothree/content";
+import { computeStage, stageLabel } from "@ninetothree/rules";
+import { AppShell } from "@/components/AppShell";
+import { AppointmentList } from "@/components/AppointmentList";
+import { PinList, type PinItem } from "@/components/PinList";
+import { ProgressLine } from "@/components/ProgressLine";
+import { ShareCard } from "@/components/ShareCard";
+import { WeekSummaryCard } from "@/components/WeekSummaryCard";
+import { stageInput, togglePin, useAppState, useHydrated } from "@/lib/store";
 
-export default function Home() {
+export default function DashboardPage() {
   const state = useAppState();
   const ready = useHydrated();
   const router = useRouter();
+  const input = stageInput(state);
 
   useEffect(() => {
-    if (!ready) return;
-    router.replace(state.onboarded ? "/week" : "/onboarding");
+    if (ready && !state.onboarded) router.replace("/onboarding");
   }, [ready, state.onboarded, router]);
 
+  const pins = useMemo<PinItem[]>(() => {
+    const found: PinItem[] = [];
+    for (const id of state.pins) {
+      const hit = findAction(PACKS, id);
+      if (hit) {
+        found.push({ id, title: hit.action.title, packTitle: hit.pack.title, packId: hit.pack.id });
+      }
+    }
+    return found;
+  }, [state.pins]);
+
+  const { weeksDone, actionsDone } = useMemo(() => {
+    const done = new Set(
+      Object.entries(state.progress)
+        .filter(([, entry]) => entry.status === "done")
+        .map(([id]) => id),
+    );
+    const weeks = PACKS.filter(
+      (pack) => pack.coreActions.length > 0 && pack.coreActions.every((a) => done.has(a.id)),
+    ).length;
+    return { weeksDone: weeks, actionsDone: done.size };
+  }, [state.progress]);
+
+  if (!ready || !input) {
+    return (
+      <AppShell>
+        <p className="text-base text-ink-muted">One moment.</p>
+      </AppShell>
+    );
+  }
+
+  const stage = computeStage(input, new Date().toISOString().slice(0, 10));
+  const pack = findPackForStage(PACKS, stage.kind, stage.index);
+  const label = stageLabel(stage);
+
+  if (!pack) {
+    return (
+      <AppShell stage={label}>
+        <h1 className="font-display text-3xl text-ink">Nothing for this week yet</h1>
+        <p className="mt-2 text-base text-ink-muted">
+          We are still writing this one. Your last guide is still on your shelf.
+        </p>
+      </AppShell>
+    );
+  }
+
+  const done = pack.coreActions.filter((a) => state.progress[a.id]?.status === "done").length;
+  const ahead = nextPack(PACKS, pack);
+
   return (
-    <main
-      id="main"
-      tabIndex={-1}
-      className="mx-auto flex min-h-dvh max-w-lg items-center justify-center px-5"
-    >
-      <p className="text-base text-ink-muted">One moment.</p>
-    </main>
+    <AppShell stage={label}>
+      <div className="space-y-10">
+        <WeekSummaryCard
+          pack={pack}
+          done={done}
+          stage={label}
+          href={`/week/${pack.id}`}
+          nextHref={ahead ? `/week/${ahead.id}` : undefined}
+        />
+        <PinList pins={pins} onUnpin={togglePin} />
+        <AppointmentList appointments={pack.appointments} unit={pack.stageUnit} />
+        <ShareCard stage={label} />
+        <ProgressLine weeksDone={weeksDone} actionsDone={actionsDone} />
+      </div>
+    </AppShell>
   );
 }

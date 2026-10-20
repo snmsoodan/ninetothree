@@ -6,6 +6,7 @@ export {
   findPackForStage,
   nextPack,
   previousPack,
+  findAction,
   type LoadResult,
   type PackIssue,
 } from "./loader";

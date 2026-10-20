@@ -55,7 +55,7 @@ export function OnboardingFlow() {
       ...(status === "pregnant" ? { dueDate: date } : { birthDate: date }),
       profile,
     });
-    router.push("/week");
+    router.push("/");
   }
 
   return (

@@ -47,7 +47,13 @@ export function WeekView({ pack, nextId, previousId }: WeekViewProps) {
     <AppShell stage={pack.title}>
       <div className="measure">
         <header>
-          <p className="text-sm text-ink-muted">{pack.title}</p>
+          <Link
+            href="/"
+            className="text-sm text-ink-muted underline underline-offset-2 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-clay"
+          >
+            Back to this week
+          </Link>
+          <p className="mt-3 text-sm text-ink-muted">{pack.title}</p>
           <h1 className="mt-1 font-display text-3xl text-ink">{pack.subtitle ?? pack.title}</h1>
         </header>
 

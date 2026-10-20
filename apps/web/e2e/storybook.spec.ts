@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
 /**
@@ -35,7 +35,32 @@ const STORIES = [
   "app-linkcard--app",
   "app-linkcard--paid",
   "app-linkcard--local-help",
+  "app-weeksummarycard--open",
+  "app-weeksummarycard--finished",
+  "app-pinlist--with-pins",
+  "app-pinlist--empty",
+  "app-appointmentlist--scheduled",
+  "app-sharecard--default",
+  "app-progressline--some-progress",
 ];
+
+/**
+ * The a11y addon is set to manual, but it still starts one run when a story
+ * mounts. Playwright's axe can arrive mid-run and axe refuses to run twice
+ * ("Axe is already running"). One retry after the addon's run settles is
+ * enough, and it is a real race rather than a flaky assertion.
+ */
+async function auditStory(page: Page) {
+  const builder = () =>
+    new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"]);
+  try {
+    return await builder().analyze();
+  } catch (error) {
+    if (!String(error).includes("Axe is already running")) throw error;
+    await page.waitForTimeout(500);
+    return await builder().analyze();
+  }
+}
 
 for (const id of STORIES) {
   test(`story ${id} renders, is styled, and has no axe violations`, async ({ page }) => {
@@ -63,9 +88,7 @@ for (const id of STORIES) {
     expect(tokens.ink, "design tokens are not loaded").not.toBe("");
     expect(tokens.paper, "the paper background is not painted").not.toBe("rgba(0, 0, 0, 0)");
 
-    const results = await new AxeBuilder({ page })
-      .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"])
-      .analyze();
+    const results = await auditStory(page);
     expect(results.violations, JSON.stringify(results.violations, null, 2)).toEqual([]);
   });
 }
