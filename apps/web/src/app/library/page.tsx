@@ -8,6 +8,7 @@ import {
   linksForDomain,
   searchLinks,
   type Domain,
+  type LinkEntry,
   type LinkType,
 } from "@ninetothree/content";
 import { AppShell } from "@/components/AppShell";
@@ -29,6 +30,16 @@ const DOMAIN_LABEL: Record<Domain, string> = {
   milestones: "Milestones",
 };
 
+const COST_LABEL: Record<LinkEntry["cost"], string> = {
+  free: "Free",
+  $: "Cheap",
+  $$: "Moderate",
+  $$$: "Expensive",
+  varies: "Cost varies",
+};
+
+const COSTS = ["free", "$", "$$", "$$$", "varies"] as const;
+
 const TYPE_HEADING: Record<LinkType, string> = {
   authoritative: "Official guidance",
   charity: "Charities and support",
@@ -47,14 +58,16 @@ const TYPE_HEADING: Record<LinkType, string> = {
  */
 export default function LibraryPage() {
   const [domain, setDomain] = useState<Domain | "all">("all");
+  const [cost, setCost] = useState<LinkEntry["cost"] | "any">("any");
   const [query, setQuery] = useState("");
 
   const results = useMemo(() => {
     const byDomain = domain === "all" ? LINKS : linksForDomain(LINKS, domain);
-    if (query.trim() === "") return byDomain;
+    const byCost = cost === "any" ? byDomain : byDomain.filter((link) => link.cost === cost);
+    if (query.trim() === "") return byCost;
     const matched = new Set(searchLinks(LINKS, query).map((link) => link.id));
-    return byDomain.filter((link) => matched.has(link.id));
-  }, [domain, query]);
+    return byCost.filter((link) => matched.has(link.id));
+  }, [domain, cost, query]);
 
   const groups = useMemo(() => groupByType(results), [results]);
 
@@ -63,8 +76,8 @@ export default function LibraryPage() {
       <div className="measure">
         <h1 className="font-display text-3xl text-ink">The library</h1>
         <p className="mt-2 text-base text-ink-muted">
-          Every place we send you, in one list. Nothing here is sponsored, and nothing is here
-          because someone paid for it.
+          Every place we send you, in one list. Nothing is here because someone paid for it. Where a
+          link earns us a commission, the card says so.
         </p>
 
         <div className="mt-6 space-y-4">
@@ -96,6 +109,25 @@ export default function LibraryPage() {
               {DOMAINS.map((value) => (
                 <option key={value} value={value}>
                   {DOMAIN_LABEL[value]}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label htmlFor="library-cost" className="block text-sm font-medium text-ink">
+              What can you spend?
+            </label>
+            <select
+              id="library-cost"
+              value={cost}
+              onChange={(event) => setCost(event.target.value as LinkEntry["cost"] | "any")}
+              className="mt-1 w-full rounded-md border border-line bg-paper-raised px-3 py-2 text-base text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-clay"
+            >
+              <option value="any">Any price</option>
+              {COSTS.map((value) => (
+                <option key={value} value={value}>
+                  {COST_LABEL[value]}
                 </option>
               ))}
             </select>

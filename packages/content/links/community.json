@@ -73,5 +73,308 @@
     "lastChecked": "2026-10-20",
     "affiliate": false,
     "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "babycenter-community",
+    "title": "BabyCenter community",
+    "url": "https://community.babycenter.com/",
+    "publisher": "BabyCenter",
+    "type": "community",
+    "domains": ["mind"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "Birth clubs by due month, which is the closest thing to a room full of people at your stage.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending",
+    "note": "Large, and not moderated to a clinical standard."
+  },
+  {
+    "id": "peps",
+    "title": "PEPS",
+    "url": "https://peps.org/",
+    "publisher": "PEPS",
+    "type": "community",
+    "domains": ["mind"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 1
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "varies",
+    "why": "New-parent groups that meet weekly in person. Strong in the Pacific Northwest, growing elsewhere.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending",
+    "note": "Sliding-scale fees in most chapters."
+  },
+  {
+    "id": "themomco",
+    "title": "The MomCo",
+    "url": "https://www.themom.co/home",
+    "publisher": "The MomCo",
+    "type": "community",
+    "domains": ["mind"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 1
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "varies",
+    "why": "Local groups that meet with childcare on site, which is the part that makes them usable.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "mothers-and-more",
+    "title": "Mothers and More",
+    "url": "https://www.mothersandmore.org/",
+    "publisher": "Mothers and More",
+    "type": "community",
+    "domains": ["mind"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 1
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "varies",
+    "why": "Chapter-based groups for parents who left a career, with a focus on the identity shift.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "cafemom",
+    "title": "CafeMom",
+    "url": "https://cafemom.com/",
+    "publisher": "CafeMom",
+    "type": "community",
+    "domains": ["mind"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "A long-running forum with active toddler and pregnancy boards.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending",
+    "note": "Ad-heavy and uneven moderation."
+  },
+  {
+    "id": "motherly",
+    "title": "Motherly",
+    "url": "https://mother.ly/",
+    "publisher": "Motherly",
+    "type": "editorial",
+    "domains": ["mind", "mind"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "Essays and reporting on the parts of early parenthood that are not about the baby.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "fatherly",
+    "title": "Fatherly",
+    "url": "https://www.fatherly.com/",
+    "publisher": "Fatherly",
+    "type": "editorial",
+    "domains": ["mind", "mind"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "Written for fathers and partners, which most of this category is not.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "romper",
+    "title": "Romper",
+    "url": "https://www.romper.com/",
+    "publisher": "Romper",
+    "type": "editorial",
+    "domains": ["mind"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "Short, fast, and aimed at the questions you would otherwise search at midnight.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "scary-mommy",
+    "title": "Scary Mommy",
+    "url": "https://www.scarymommy.com/",
+    "publisher": "Scary Mommy",
+    "type": "editorial",
+    "domains": ["mind", "mind"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "The unpolished version of early parenthood. Useful when the calm version feels false.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "mother-and-baby",
+    "title": "Mother & Baby",
+    "url": "https://www.motherandbaby.com/",
+    "publisher": "Mother & Baby",
+    "type": "editorial",
+    "domains": ["mind"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "A UK title with US coverage. Good on gear, and clear about which country it is writing for.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "the-nest",
+    "title": "The Nest",
+    "url": "https://www.thenest.com/",
+    "publisher": "The Nest",
+    "type": "editorial",
+    "domains": ["home", "money"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "Money, home, and the practical side of a household that just got bigger.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "shades-of-blue",
+    "title": "Shades of Blue",
+    "url": "https://www.shadesofblue.org/",
+    "publisher": "Shades of Blue",
+    "type": "charity",
+    "domains": ["mind"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 1
+      },
+      "to": {
+        "kind": "postpartum",
+        "index": 12
+      }
+    },
+    "cost": "free",
+    "why": "Stories from parents who had postpartum depression, which is often the thing that makes it click.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
   }
 ]

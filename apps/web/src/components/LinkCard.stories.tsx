@@ -72,6 +72,23 @@ export const Paid: Story = {
   },
 };
 
+export const Affiliate: Story = {
+  args: {
+    link: {
+      ...base,
+      id: "chicco-car-seat",
+      title: "Chicco car seats",
+      url: "https://www.chiccousa.com/",
+      publisher: "Chicco",
+      type: "commercial",
+      domains: ["gear", "safety"],
+      cost: "$$",
+      why: "The KeyFit is the seat most US hospitals send you home with, and it fits most cars.",
+      affiliate: true,
+    },
+  },
+};
+
 export const LocalHelp: Story = {
   args: {
     link: {

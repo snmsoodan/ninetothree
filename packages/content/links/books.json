@@ -151,5 +151,156 @@
     "lastChecked": "2026-10-20",
     "affiliate": false,
     "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "book-emily-oster",
+    "title": "Emily Oster",
+    "url": "https://www.emilyoster.com/",
+    "publisher": "Emily Oster",
+    "type": "book",
+    "domains": ["health-parent"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "$$",
+    "why": "The author's own site, which is the stable place to find Expecting Better and Cribsheet.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending",
+    "note": "Publisher pages for these books change and sometimes serve the wrong title."
+  },
+  {
+    "id": "book-fourth-trimester",
+    "title": "The Fourth Trimester",
+    "url": "https://kimberlyannjohnson.com/",
+    "publisher": "Kimberly Ann Johnson",
+    "type": "book",
+    "domains": ["health-parent", "mind"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 1
+      },
+      "to": {
+        "kind": "postpartum",
+        "index": 12
+      }
+    },
+    "cost": "$$",
+    "why": "On the first twelve weeks after birth as a transition rather than a recovery checklist.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "book-janet-lansbury",
+    "title": "Janet Lansbury",
+    "url": "https://www.janetlansbury.com/",
+    "publisher": "Janet Lansbury",
+    "type": "book",
+    "domains": ["mind", "milestones"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 1
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "Respectful parenting, with a free podcast and articles that stand alone without the books.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "book-peaceful-parent",
+    "title": "Peaceful Parent, Happy Kids",
+    "url": "https://www.peacefulparenthappykids.com/",
+    "publisher": "Dr. Laura Markham",
+    "type": "book",
+    "domains": ["mind"],
+    "stages": {
+      "from": {
+        "kind": "infant",
+        "index": 3
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "Free articles on staying calm, which is the actual skill. The books go further.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "book-yes-brain",
+    "title": "The Yes Brain",
+    "url": "https://www.theyesbrain.com/",
+    "publisher": "Dan Siegel and Tina Payne Bryson",
+    "type": "book",
+    "domains": ["mind", "milestones"],
+    "stages": {
+      "from": {
+        "kind": "toddler",
+        "index": 13
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "$$",
+    "why": "On resilience and the difference between a child who complies and one who can cope.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "book-how-to-talk-site",
+    "title": "How to Talk So Little Kids Will Listen",
+    "url": "https://howtotalkworkshops.com/",
+    "publisher": "How To Talk Workshops",
+    "type": "book",
+    "domains": ["mind", "milestones"],
+    "stages": {
+      "from": {
+        "kind": "toddler",
+        "index": 13
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "$$",
+    "why": "The authors' site, with the tools from the book written out as short examples.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
   }
 ]

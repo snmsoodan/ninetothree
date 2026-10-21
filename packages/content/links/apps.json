@@ -316,5 +316,434 @@
     "reviewedBy": "Clinical review pending",
     "note": "No monitor prevents SIDS. Follow the safe-sleep rules instead.",
     "platforms": ["ios", "android"]
+  },
+  {
+    "id": "app-babycenter",
+    "title": "BabyCenter",
+    "url": "https://www.babycenter.com/",
+    "publisher": "BabyCenter",
+    "type": "app",
+    "domains": ["health-parent", "milestones"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "Week-by-week pregnancy and a large birth club of parents due the same month.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending",
+    "note": "Ad-heavy, and the community is not moderated to a clinical standard.",
+    "platforms": ["ios", "android"]
+  },
+  {
+    "id": "app-headspace",
+    "title": "Headspace",
+    "url": "https://www.headspace.com/",
+    "publisher": "Headspace",
+    "type": "app",
+    "domains": ["mind", "sleep"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "varies",
+    "why": "Short guided meditations, including a set written for pregnancy and for a 3am wake-up.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending",
+    "note": "Subscription after the free trial.",
+    "platforms": ["ios", "android"]
+  },
+  {
+    "id": "app-calm",
+    "title": "Calm",
+    "url": "https://www.calm.com/",
+    "publisher": "Calm",
+    "type": "app",
+    "domains": ["mind", "sleep"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "varies",
+    "why": "Sleep stories and breathing exercises. The sleep content is the reason most parents keep it.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending",
+    "note": "Subscription after the free trial.",
+    "platforms": ["ios", "android"]
+  },
+  {
+    "id": "app-insight-timer",
+    "title": "Insight Timer",
+    "url": "https://insighttimer.com/",
+    "publisher": "Insight Timer",
+    "type": "app",
+    "domains": ["mind", "sleep"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "Thousands of free guided meditations with no paywall on the basic library.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending",
+    "platforms": ["ios", "android"]
+  },
+  {
+    "id": "app-7cups",
+    "title": "7 Cups",
+    "url": "https://www.7cups.com/",
+    "publisher": "7 Cups",
+    "type": "app",
+    "domains": ["mind"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 1
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "Free text support from trained listeners, available at 3am when a friend is asleep.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending",
+    "note": "Listeners are volunteers, not clinicians.",
+    "platforms": ["ios", "android"]
+  },
+  {
+    "id": "app-talkspace",
+    "title": "Talkspace",
+    "url": "https://www.talkspace.com/",
+    "publisher": "Talkspace",
+    "type": "app",
+    "domains": ["mind"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "$$$",
+    "why": "Therapy by text or video with a licensed clinician. Check whether your insurance covers it.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending",
+    "note": "Cost varies widely by plan.",
+    "platforms": ["ios", "android"]
+  },
+  {
+    "id": "app-betterhelp",
+    "title": "BetterHelp",
+    "url": "https://www.betterhelp.com/",
+    "publisher": "BetterHelp",
+    "type": "app",
+    "domains": ["mind"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "$$$",
+    "why": "Another route to a licensed therapist without a waiting list.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending",
+    "note": "Read the cancellation terms before starting.",
+    "platforms": ["ios", "android"]
+  },
+  {
+    "id": "app-babysparks",
+    "title": "BabySparks",
+    "url": "https://babysparks.com/",
+    "publisher": "BabySparks",
+    "type": "app",
+    "domains": ["play", "milestones"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 1
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "varies",
+    "why": "A daily activity for your child's exact age, with the milestone it is building.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending",
+    "note": "Subscription for the full library.",
+    "platforms": ["ios", "android"]
+  },
+  {
+    "id": "app-sprout",
+    "title": "Sprout Baby Tracker",
+    "url": "https://sprout-apps.com/",
+    "publisher": "Sprout",
+    "type": "app",
+    "domains": ["sleep", "feeding"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 1
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "varies",
+    "why": "Feeds, naps, and nappies in one log, with a shareable second caregiver login.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending",
+    "platforms": ["ios", "android"]
+  },
+  {
+    "id": "app-daddy-up",
+    "title": "Daddy Up",
+    "url": "https://daddyup.app/",
+    "publisher": "Daddy Up",
+    "type": "app",
+    "domains": ["health-parent"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "postpartum",
+        "index": 4
+      }
+    },
+    "cost": "free",
+    "why": "Pregnancy written for a partner rather than the pregnant person. Short, and not twee.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending",
+    "platforms": ["ios", "android"]
+  },
+  {
+    "id": "app-mush",
+    "title": "Mush",
+    "url": "https://mush.app/",
+    "publisher": "Mush",
+    "type": "app",
+    "domains": ["mind"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 1
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "Find other parents nearby by your child's age. The closest thing to a local baby group.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending",
+    "note": "US coverage is patchy outside cities.",
+    "platforms": ["ios", "android"]
+  },
+  {
+    "id": "app-taking-cara-babies",
+    "title": "Taking Cara Babies",
+    "url": "https://www.takingcarababies.com/",
+    "publisher": "Taking Cara Babies",
+    "type": "app",
+    "domains": ["sleep"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 1
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "$$",
+    "why": "Short courses on newborn sleep and the first four months. One purchase, no subscription.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending",
+    "note": "A course, not an app, despite the name.",
+    "platforms": ["web"]
+  },
+  {
+    "id": "app-baby-sleep-site",
+    "title": "The Baby Sleep Site",
+    "url": "https://www.babysleepsite.com/",
+    "publisher": "The Baby Sleep Site",
+    "type": "app",
+    "domains": ["sleep"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 1
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "varies",
+    "why": "Free schedules by age, plus paid one-to-one help if the free schedules do not fit.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending",
+    "note": "Consultations are the paid part.",
+    "platforms": ["web"]
+  },
+  {
+    "id": "app-big-little-feelings",
+    "title": "Big Little Feelings",
+    "url": "https://biglittlefeelings.com/",
+    "publisher": "Big Little Feelings",
+    "type": "app",
+    "domains": ["mind", "milestones"],
+    "stages": {
+      "from": {
+        "kind": "toddler",
+        "index": 13
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "$$",
+    "why": "A toddler behaviour course built on scripts you can say out loud in the moment.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending",
+    "note": "One purchase, no subscription.",
+    "platforms": ["web"]
+  },
+  {
+    "id": "app-good-inside",
+    "title": "Good Inside",
+    "url": "https://www.goodinside.com/",
+    "publisher": "Good Inside",
+    "type": "app",
+    "domains": ["mind", "milestones"],
+    "stages": {
+      "from": {
+        "kind": "infant",
+        "index": 3
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "varies",
+    "why": "Dr. Becky Kennedy's scripts and workshops for the moments you regret afterwards.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending",
+    "note": "Subscription for the full library.",
+    "platforms": ["ios", "android"]
+  },
+  {
+    "id": "app-tinyhood",
+    "title": "Tinyhood",
+    "url": "https://www.tinyhood.com/",
+    "publisher": "Tinyhood",
+    "type": "app",
+    "domains": ["health-baby", "feeding"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 28
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "varies",
+    "why": "Short video classes on newborn care, feeding, and sleep, taught by clinicians.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending",
+    "note": "Per-class pricing.",
+    "platforms": ["web"]
   }
 ]

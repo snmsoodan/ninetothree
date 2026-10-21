@@ -31,6 +31,17 @@ const PLATFORM_LABEL: Record<NonNullable<LinkEntry["platforms"]>[number], string
   web: "Web",
 };
 
+const CHECKED = new Intl.DateTimeFormat("en-US", {
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+});
+
+/** Noon, so a timezone west of UTC cannot show yesterday's date. */
+function checkedOn(iso: string): string {
+  return CHECKED.format(new Date(`${iso}T12:00:00`));
+}
+
 /**
  * One place a parent can go. The card leads with when to use it, not with
  * what it is, because "is this for me right now" is the only question a
@@ -63,6 +74,14 @@ export function LinkCard({ link }: LinkCardProps) {
         ) : null}
 
         {link.note ? <p className="mt-2 text-sm text-ink-faint">{link.note}</p> : null}
+
+        {link.affiliate ? (
+          <p className="mt-3 text-sm text-ink-faint">
+            We earn a commission if you buy through this link. It does not change what we recommend.
+          </p>
+        ) : null}
+
+        <p className="mt-3 text-sm text-ink-faint">Checked {checkedOn(link.lastChecked)}</p>
       </CardBody>
     </Card>
   );

@@ -100,5 +100,1232 @@
     "affiliate": false,
     "reviewedBy": "Clinical review pending",
     "note": "Subscription required."
+  },
+  {
+    "id": "chicco-car-seats",
+    "title": "Chicco car seats",
+    "url": "https://www.chiccousa.com/",
+    "publisher": "Chicco",
+    "type": "commercial",
+    "domains": ["gear", "safety"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 20
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "$$",
+    "why": "The KeyFit infant seat is the one most hospitals and car-seat technicians know by heart.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending",
+    "note": "Sold direct and in most big-box stores."
+  },
+  {
+    "id": "evenflo-car-seats",
+    "title": "Evenflo car seats",
+    "url": "https://www.evenflo.com/",
+    "publisher": "Evenflo",
+    "type": "commercial",
+    "domains": ["gear", "safety"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 20
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "$",
+    "why": "The budget end of the market, and the seats most often recommended when money is tight.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "nuna-car-seats",
+    "title": "Nuna car seats and strollers",
+    "url": "https://nunababy.com/usa/",
+    "publisher": "Nuna",
+    "type": "commercial",
+    "domains": ["gear", "safety"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 20
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "$$$",
+    "why": "The premium end. Heavier, easier to install correctly, and priced accordingly.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "clek-car-seats",
+    "title": "Clek car seats",
+    "url": "https://clekinc.com/",
+    "publisher": "Clek",
+    "type": "commercial",
+    "domains": ["gear", "safety"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 20
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "$$$",
+    "why": "Narrow seats for three across a back seat, which is a real problem in a sedan.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "safety1st",
+    "title": "Safety 1st",
+    "url": "https://safety1st.com/",
+    "publisher": "Safety 1st",
+    "type": "commercial",
+    "domains": ["gear", "safety", "home"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 20
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "$",
+    "why": "Car seats, gates, and cabinet locks at the low end, widely available secondhand.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "uppababy",
+    "title": "UPPAbaby strollers",
+    "url": "https://uppababy.com/",
+    "publisher": "UPPAbaby",
+    "type": "commercial",
+    "domains": ["gear"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 20
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "$$$",
+    "why": "The Vista and Cruz are the strollers most often bought once and kept for a second child.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "bugaboo",
+    "title": "Bugaboo strollers",
+    "url": "https://www.bugaboo.com/us-en",
+    "publisher": "Bugaboo",
+    "type": "commercial",
+    "domains": ["gear"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 20
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "$$$",
+    "why": "Premium strollers with a strong resale market, which changes the real cost.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "bob-gear",
+    "title": "BOB jogging strollers",
+    "url": "https://www.bobgear.com/",
+    "publisher": "BOB Gear",
+    "type": "commercial",
+    "domains": ["gear", "play"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 20
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "$$",
+    "why": "The one to look at if you actually run. Heavy for everyday use in a city.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "joovy",
+    "title": "Joovy",
+    "url": "https://www.joovy.com/",
+    "publisher": "Joovy",
+    "type": "commercial",
+    "domains": ["gear"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 20
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "$$",
+    "why": "Double strollers and wagon-style seats, for two children close together.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "babybjorn",
+    "title": "BabyBjörn carriers",
+    "url": "https://www.babybjorn.com/",
+    "publisher": "BabyBjörn",
+    "type": "commercial",
+    "domains": ["gear"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 1
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "$$",
+    "why": "Structured carriers with a wide age range. Easy to put on alone, which matters more than it sounds.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "lillebaby",
+    "title": "LÍLLÉbaby carriers",
+    "url": "https://www.lillebaby.com/",
+    "publisher": "LÍLLÉbaby",
+    "type": "commercial",
+    "domains": ["gear"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 1
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "$$",
+    "why": "Six carrying positions and a lumbar support, for a parent with a bad back.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "tula",
+    "title": "Tula carriers",
+    "url": "https://tula.com/",
+    "publisher": "Tula",
+    "type": "commercial",
+    "domains": ["gear"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 1
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "$$",
+    "why": "Soft structured carriers with a large secondhand market and a strong resale value.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "owlet",
+    "title": "Owlet",
+    "url": "https://owletcare.com/",
+    "publisher": "Owlet",
+    "type": "commercial",
+    "domains": ["gear", "sleep", "safety"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 1
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "$$$",
+    "why": "A sock that reports oxygen and heart rate. Read the FDA clearance note before buying.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending",
+    "note": "Not a medical device for diagnosis. It does not prevent anything."
+  },
+  {
+    "id": "infant-optics",
+    "title": "Infant Optics video monitor",
+    "url": "https://www.infantoptics.com/",
+    "publisher": "Infant Optics",
+    "type": "commercial",
+    "domains": ["gear", "sleep"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 1
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "$$",
+    "why": "A closed-system video monitor with no internet connection, which is the point.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "medela",
+    "title": "Medela breast pumps",
+    "url": "https://www.medela.com/en-us/breastfeeding-pumping",
+    "publisher": "Medela",
+    "type": "commercial",
+    "domains": ["feeding", "gear"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 28
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "$$",
+    "why": "The pump most US insurance plans cover, and the one most hospital lactation staff know.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "spectra",
+    "title": "Spectra breast pumps",
+    "url": "https://www.spectra-baby.com/",
+    "publisher": "Spectra",
+    "type": "commercial",
+    "domains": ["feeding", "gear"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 28
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "$$",
+    "why": "Quieter than most, and the usual alternative to a Medela through insurance.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "elvie",
+    "title": "Elvie pumps",
+    "url": "https://elvie.com/",
+    "publisher": "Elvie",
+    "type": "commercial",
+    "domains": ["feeding", "gear"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 1
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "$$$",
+    "why": "Wearable pumps for a parent who has to work while pumping. Expensive and worth it for some.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "lansinoh",
+    "title": "Lansinoh",
+    "url": "https://lansinoh.com/",
+    "publisher": "Lansinoh",
+    "type": "commercial",
+    "domains": ["feeding", "gear"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 30
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "$",
+    "why": "Nipple cream, storage bags, and a budget pump. The unglamorous things you will actually use.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "haakaa",
+    "title": "Haakaa",
+    "url": "https://www.haakaa.co.nz/",
+    "publisher": "Haakaa",
+    "type": "commercial",
+    "domains": ["feeding", "gear"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 1
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "$",
+    "why": "A silicone pump that catches let-down on the other side. Cheap, and it adds up.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "dr-browns",
+    "title": "Dr. Brown's bottles",
+    "url": "https://drbrownsbaby.com/",
+    "publisher": "Dr. Brown's",
+    "type": "commercial",
+    "domains": ["feeding", "gear"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 1
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "$$",
+    "why": "The vented bottles people reach for with a colicky baby. More parts to wash.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "mam-baby",
+    "title": "MAM bottles and pacifiers",
+    "url": "https://www.mambaby.com/",
+    "publisher": "MAM",
+    "type": "commercial",
+    "domains": ["feeding", "gear"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 1
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "$",
+    "why": "Widely available, cheap, and the pacifier shape many hospitals use.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "philips-avent",
+    "title": "Philips Avent",
+    "url": "https://www.usa.philips.com/",
+    "publisher": "Philips",
+    "type": "commercial",
+    "domains": ["feeding", "gear"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 1
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "$$",
+    "why": "Bottles, sterilizers, and a bottle warmer that does not overheat. A safe default.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "halo-sleep",
+    "title": "HALO sleep sacks",
+    "url": "https://www.halosleep.com/",
+    "publisher": "HALO",
+    "type": "commercial",
+    "domains": ["sleep", "gear"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 1
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "$$",
+    "why": "The swaddle and sleep sack most US hospitals send a baby home in.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "kyte-baby",
+    "title": "Kyte Baby sleep bags",
+    "url": "https://kytebaby.com/",
+    "publisher": "Kyte Baby",
+    "type": "commercial",
+    "domains": ["sleep", "gear"],
+    "stages": {
+      "from": {
+        "kind": "infant",
+        "index": 3
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "$$",
+    "why": "Bamboo sleep bags in a wide range of sizes, for a child who runs hot.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "woolino",
+    "title": "Woolino sleep sacks",
+    "url": "https://www.woolino.com/",
+    "publisher": "Woolino",
+    "type": "commercial",
+    "domains": ["sleep", "gear"],
+    "stages": {
+      "from": {
+        "kind": "infant",
+        "index": 3
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "$$$",
+    "why": "Merino wool, one size for two years. Expensive once instead of cheap four times.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "love-to-dream",
+    "title": "Love to Dream swaddles",
+    "url": "https://lovetodream.com/",
+    "publisher": "Love to Dream",
+    "type": "commercial",
+    "domains": ["sleep", "gear"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 1
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "$$",
+    "why": "Arms-up swaddles for a baby who fights a traditional wrap.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "ezpz",
+    "title": "ezpz plates and cups",
+    "url": "https://ezpzfun.com/",
+    "publisher": "ezpz",
+    "type": "commercial",
+    "domains": ["nutrition", "gear"],
+    "stages": {
+      "from": {
+        "kind": "infant",
+        "index": 3
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "$$",
+    "why": "Silicone plates that stick to the tray, which is the whole problem being solved.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "munchkin",
+    "title": "Munchkin",
+    "url": "https://www.munchkin.com/",
+    "publisher": "Munchkin",
+    "type": "commercial",
+    "domains": ["nutrition", "gear"],
+    "stages": {
+      "from": {
+        "kind": "infant",
+        "index": 3
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "$",
+    "why": "Cups, spoons, and the sippy cup your child will actually use. Cheap and everywhere.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "regalo",
+    "title": "Regalo gates",
+    "url": "https://regalo-baby.com/",
+    "publisher": "Regalo",
+    "type": "commercial",
+    "domains": ["safety", "home", "gear"],
+    "stages": {
+      "from": {
+        "kind": "infant",
+        "index": 3
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "$",
+    "why": "Pressure-mounted and hardware-mounted gates at the low end. Measure the doorway first.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "lectrofan",
+    "title": "LectroFan",
+    "url": "https://www.lectrofan.com/",
+    "publisher": "Adaptive Sound Technologies",
+    "type": "commercial",
+    "domains": ["sleep", "gear"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 1
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "$$",
+    "why": "A fan-based white noise machine with no loop and no app. Runs all night.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "yogasleep",
+    "title": "Yogasleep",
+    "url": "https://yogasleep.com/",
+    "publisher": "Yogasleep",
+    "type": "commercial",
+    "domains": ["sleep", "gear"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 1
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "$",
+    "why": "The Dohm and the Hushh. Cheap, mechanical, and no subscription.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "ikea-cribs",
+    "title": "IKEA cribs",
+    "url": "https://www.ikea.com/us/en/",
+    "publisher": "IKEA",
+    "type": "commercial",
+    "domains": ["gear", "home", "sleep"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 24
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "$",
+    "why": "Cribs that meet the federal standard at the lowest price, plus the mattress to match.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "pottery-barn-kids",
+    "title": "Pottery Barn Kids",
+    "url": "https://www.potterybarnkids.com/",
+    "publisher": "Pottery Barn Kids",
+    "type": "commercial",
+    "domains": ["gear", "home"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 24
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "$$$",
+    "why": "Nursery furniture at the top of the range. Check the crib meets 16 CFR 1219 before buying.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "crate-and-barrel-kids",
+    "title": "Crate & Barrel kids",
+    "url": "https://www.crateandbarrel.com/",
+    "publisher": "Crate & Barrel",
+    "type": "commercial",
+    "domains": ["gear", "home"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 24
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "$$$",
+    "why": "Another premium furniture option, with a registry that combines with the adult store.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "pampers",
+    "title": "Pampers",
+    "url": "https://www.pampers.com/en-us",
+    "publisher": "Pampers",
+    "type": "commercial",
+    "domains": ["gear", "home"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 1
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "$$",
+    "why": "The default diaper in most US hospitals, and the easiest to find at 11pm.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "coterie",
+    "title": "Coterie diapers",
+    "url": "https://www.coterie.com/",
+    "publisher": "Coterie",
+    "type": "commercial",
+    "domains": ["gear", "home"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 1
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "$$$",
+    "why": "A premium subscription diaper. Soft, absorbent, and the most expensive per change.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "hello-bello",
+    "title": "Hello Bello",
+    "url": "https://www.hellobello.com/",
+    "publisher": "Hello Bello",
+    "type": "commercial",
+    "domains": ["gear", "home"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 1
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "$",
+    "why": "Subscription diapers at the low end, with designs that change monthly.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "dyper",
+    "title": "DYPER",
+    "url": "https://dyper.com/",
+    "publisher": "DYPER",
+    "type": "commercial",
+    "domains": ["gear", "home"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 1
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "$$",
+    "why": "Compostable diapers with a pickup service in some cities. Check your area first.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "honest-company",
+    "title": "The Honest Company",
+    "url": "https://honest.com/",
+    "publisher": "The Honest Company",
+    "type": "commercial",
+    "domains": ["gear", "home"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 1
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "$$",
+    "why": "Diapers, wipes, and bath products in one subscription, if you want one vendor.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "seventh-generation",
+    "title": "Seventh Generation",
+    "url": "https://www.seventhgeneration.com/",
+    "publisher": "Seventh Generation",
+    "type": "commercial",
+    "domains": ["home", "gear"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 1
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "$",
+    "why": "Free-and-clear wipes and household cleaners, in every grocery store.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "babyganics",
+    "title": "Babyganics",
+    "url": "https://babyganics.com/",
+    "publisher": "Babyganics",
+    "type": "commercial",
+    "domains": ["home", "gear"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 1
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "$",
+    "why": "Sunscreen, shampoo, and the bubble bath. Widely available and not expensive.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "burts-bees-baby",
+    "title": "Burt's Bees Baby",
+    "url": "https://burtsbeesbaby.com/",
+    "publisher": "Burt's Bees Baby",
+    "type": "commercial",
+    "domains": ["gear", "home"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 1
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "$$",
+    "why": "Organic cotton clothes and bedding, with frequent sales that halve the price.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "desitin",
+    "title": "Desitin",
+    "url": "https://www.desitin.com/",
+    "publisher": "Desitin",
+    "type": "commercial",
+    "domains": ["health-baby", "gear"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 1
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "$",
+    "why": "Zinc oxide nappy cream. The plain version is the one most pediatricians name.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "boon",
+    "title": "Boon",
+    "url": "https://booninc.com/",
+    "publisher": "Boon",
+    "type": "commercial",
+    "domains": ["gear", "home"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 1
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "$$",
+    "why": "Bath toys, drying racks, and the grass bottle dryer everyone photographs.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "thinkbaby",
+    "title": "Thinkbaby",
+    "url": "https://www.thinkbaby.com/",
+    "publisher": "Thinkbaby",
+    "type": "commercial",
+    "domains": ["nutrition", "gear"],
+    "stages": {
+      "from": {
+        "kind": "infant",
+        "index": 3
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "$$",
+    "why": "Stainless steel and BPA-free feeding sets, for a parent avoiding plastic.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "babygearlab",
+    "title": "BabyGearLab",
+    "url": "https://www.babygearlab.com/",
+    "publisher": "BabyGearLab",
+    "type": "editorial",
+    "domains": ["gear"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 20
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "Independent side-by-side testing of car seats, strollers, and monitors. No sponsored picks.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "lucies-list",
+    "title": "Lucie's List",
+    "url": "https://www.lucieslist.com/",
+    "publisher": "Lucie's List",
+    "type": "editorial",
+    "domains": ["gear"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 20
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "A registry guide written by a parent, organised by what you actually need in the first month.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "mommyhood101",
+    "title": "Mommyhood101",
+    "url": "https://mommyhood101.com/",
+    "publisher": "Mommyhood101",
+    "type": "editorial",
+    "domains": ["gear"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 20
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "Reviews with the test method published, which is rarer than it should be.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "babylist",
+    "title": "Babylist",
+    "url": "https://www.babylist.com/",
+    "publisher": "Babylist",
+    "type": "editorial",
+    "domains": ["gear"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 20
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "A registry that pulls from any store, plus a guide to what people actually use.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
   }
 ]

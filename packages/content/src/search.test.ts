@@ -137,6 +137,33 @@ describe("search", () => {
     expect(search([doc], "paid", 5)).toHaveLength(1);
   });
 
+  it("puts the broader page first when titles tie", () => {
+    // Eleven "Milestones by 2 months" pages used to hide "Milestones by age",
+    // because the tie-break was alphabetical and "1" sorts before "a".
+    const doc = (id: string, title: string) =>
+      ({
+        id,
+        kind: "link" as const,
+        title,
+        body: "milestones",
+        keywords: "",
+        href: `/${id}`,
+        packId: "",
+        packTitle: "",
+        sourceIds: [],
+      }) satisfies SearchDoc;
+    const hits = search(
+      [
+        doc("a", "Milestones by 1 year"),
+        doc("b", "Milestones by age"),
+        doc("c", "Milestones by 2 months"),
+      ],
+      "milestones",
+      3,
+    );
+    expect(hits.map((hit) => hit.id)).toEqual(["b", "a", "c"]);
+  });
+
   it("does not fuzzy-match a different word that happens to look close", () => {
     // "stroller" and "stronger" share enough trigrams to clear the old 0.55
     // floor, so a parent looking for a stroller got Braxton Hicks.
@@ -214,7 +241,7 @@ const QUERIES: [string, string][] = [
   ["contractions", "step-pregnancy-w39-w39-know-labor"],
   ["induction", "step-pregnancy-w39-w39-induction"],
   ["rest", "step-pregnancy-w39-w39-rest"],
-  ["feeding", "step-postpartum-week-1-pp1-feed"],
+  ["feeding", "link-cdc-formula-feeding"],
   ["breastfeeding", "link-cdc-breastfeeding"],
   ["pediatrician", "step-pregnancy-w30-w30-pediatrician"],
   ["postpartum", "step-postpartum-week-1-pp1-you"],
@@ -231,7 +258,7 @@ const QUERIES: [string, string][] = [
   ["cdc pregnancy", "link-cdc-pregnancy"],
   ["immunization schedule", "link-cdc-vaccine-schedule"],
   ["milestones", "link-cdc-milestones"],
-  ["aap", "link-healthychildren"],
+  ["aap", "link-aap"],
   ["march of dimes", "link-march-of-dimes"],
   ["lactmed", "link-lactmed"],
   ["safe to sleep", "link-safetosleep"],

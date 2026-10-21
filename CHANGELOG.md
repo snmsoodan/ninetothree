@@ -9,6 +9,36 @@ changelog written after the fact from memory is a changelog nobody can trust.
 
 ## Unreleased
 
+### The link library: 251 places to go, and a disclosure on every one (#49)
+
+- Grew the catalogue from 89 entries to **251** across seven files: 103
+  authoritative, 53 gear, 28 apps, 28 extra, 15 community, 12 books, 12
+  services. Every URL was probed live before it was written down; about 40
+  candidates were rejected for 403, 402, 404 or a refused connection.
+- Dropped Reddit entirely. `reddit.com/r/*` serves a "Prove your humanity"
+  page and `old.reddit.com` redirects to a login, which the redirect rule
+  correctly reads as a move.
+- Found three reassigned domains: `aquaphor.com` is now a water-filter
+  company, `diono.com` redirects to an Amazon storefront, and
+  `fabermazlish.com` redirects to `howtotalkworkshops.com`. The last entry
+  now points at the destination.
+- Added the affiliate disclosure to `LinkCard`: one sentence in
+  `text-ink-faint` when `affiliate` is true, nothing when it is false. No
+  banner, no icon, no "AD". The schema already forbids `affiliate: true` on
+  anything but a `commercial` type.
+- Added `last_checked` to every card as "Checked October 20, 2026", formatted
+  with `T12:00:00` so a timezone west of UTC cannot show yesterday.
+- Added a "What can you spend?" filter to `/library`, so the three price tiers
+  are something a parent can narrow to rather than a label to read.
+- Fixed three search regressions the new content exposed. The tie-break is now
+  `score desc || title.length asc || title.localeCompare`, because a shorter
+  title is a broader page — "Milestones by age" beats eleven "Milestones by N
+  months" pages. `aap` needed the acronym in a title, so `aap.org` is its own
+  entry. `feeding` now answers with the CDC formula-feeding page, which is a
+  better answer for the bare word than the postpartum step was.
+- 287 links checked, none broken, none moved. 1,348 unit tests, 85 chromium
+  e2e, 87 storybook stories, Lighthouse assertions pass on all seven URLs.
+
 ### Toddler months 13–36: the guide no longer ends at the first birthday (#83)
 
 - Wrote 24 packs covering toddler months 13 to 36, one per month. Every month

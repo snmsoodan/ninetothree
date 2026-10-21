@@ -425,6 +425,24 @@ test("the library offers more than one place to go, and can be narrowed", async 
   await expect(page.getByText(/Try a broader word/)).toBeVisible();
 });
 
+test("the library can be narrowed to what a parent can spend", async ({ page }) => {
+  await onboardAsPregnant(page);
+  await page.goto("/library");
+
+  // The three price tiers are a filter, not a label: a parent who can spend
+  // nothing gets only the free things.
+  await page.getByLabel("What can you spend?").selectOption("free");
+  await expect(page.getByText(/^\d+ places?\.$/)).toBeVisible();
+  const costs = await page
+    .locator("main li")
+    .evaluateAll((els) => els.map((el) => el.textContent ?? ""));
+  expect(costs.length).toBeGreaterThan(10);
+  for (const text of costs) expect(text).toContain("Free");
+
+  // Every card says when it was last opened, so a stale link is visible.
+  await expect(page.getByText(/^Checked [A-Z][a-z]+ \d{1,2}, \d{4}$/).first()).toBeVisible();
+});
+
 test("a finished step is recorded, and the record can be taken away", async ({ page }) => {
   await onboardToWeek(page);
 
