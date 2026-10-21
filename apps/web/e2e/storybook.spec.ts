@@ -90,6 +90,9 @@ const STORIES = [
   "settings-notificationsettings--both-channels-monthly",
   "settings-notificationsettings--paused",
   "settings-notificationsettings--loss-mode",
+  "app-remindercard--tomorrow",
+  "app-remindercard--today",
+  "app-remindercard--both",
 ];
 
 /**

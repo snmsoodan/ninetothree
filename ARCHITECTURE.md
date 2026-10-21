@@ -459,6 +459,8 @@ const rules: Rule[] = [
 
 **One gate, and every job calls it.** `shouldSend` in `apps/web/src/lib/notifications.ts` is the only place that decides whether a message may go out. It returns a reason rather than a boolean, and the order of its checks is the order of the promises: loss mode, then the parent's own pause, then the channel, then the hour, then the cadence. A job that skips it is a bug, not a shortcut — the toggles on `/settings` are only real if there is exactly one function that reads them. Quiet hours apply to push only; an email at 3am waits in an inbox, a push at 3am wakes someone.
 
+**A reminder is a date, and a date is local.** `apps/web/src/lib/reminders.ts` derives "tomorrow" from the parent's own calendar, never from UTC, and keys a dismissal by the day it was for. The card that shows a reminder is not gated by the gate: a parent who opened the app is asking what is coming up, and hiding it because it is 11pm would be the product being coy about a fact they came for. `wouldPush` is the gated question, and it is the first caller of `shouldSend`.
+
 ---
 
 ## 11. Security and privacy
