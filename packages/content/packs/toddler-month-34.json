@@ -1,0 +1,102 @@
+{
+  "locale": "en-US",
+  "country": "US",
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-21",
+  "updatedAt": "2026-10-21",
+  "id": "toddler-month-34",
+  "kind": "toddler",
+  "stageIndex": 34,
+  "stageUnit": "month",
+  "title": "Month 34",
+  "subtitle": "Preschool readiness is the question of the month, and it is about self-care more than letters.",
+  "baby": {
+    "development": "Your child speaks in sentences, can pedal a tricycle, and can put on some clothes. They can follow a three-step instruction and are starting to play with other children rather than beside them."
+  },
+  "you": {
+    "body": "If you are pregnant again, the last weeks are a logistics problem. Line up who takes the older child, and for how long.",
+    "mind": "Thirty-four months is when the child starts to be able to do things for themselves. The list is longer than you think, and it is the list preschool cares about."
+  },
+  "coreActions": [
+    {
+      "id": "t34-selfcare",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "childcare",
+      "title": "Teach the self-care preschool expects",
+      "why": "A preschool teacher can help a child who can do some of it themselves, and cannot help twenty who cannot.",
+      "detail": "Using the toilet alone, washing hands, opening a lunchbox, putting on shoes, and blowing a nose. Practise at home, slowly, with no audience. A child who can do these at three settles faster on the first day.",
+      "minutes": 20,
+      "keywords": ["self care", "preschool", "independence"]
+    },
+    {
+      "id": "t34-scissors",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "play",
+      "title": "Cut, draw, and build every day",
+      "why": "Fine motor skills are built by using the hands, and they are what writing is made of.",
+      "detail": "Blunt scissors and paper strips. Chunky crayons and big paper. Blocks and playdough. Ten minutes a day is enough. Do not correct the grip yet, and do not turn it into a lesson.",
+      "minutes": 10,
+      "keywords": ["fine motor", "drawing", "cutting"]
+    },
+    {
+      "id": "t34-dropoff",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "mind",
+      "title": "Practise the drop-off before the first day",
+      "why": "A short, practised goodbye is easier than a first one on a morning when everyone is already late.",
+      "detail": "Visit the preschool together before the first day. Meet the teacher. Practise the goodbye at home: the same words, a hug, and out the door. On the day, keep it short and do not come back for one more hug.",
+      "keywords": ["drop off", "preschool", "separation"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "t34-letters",
+      "title": "Letters are a four-year-old skill",
+      "body": "Recognising the first letter of their name at three is on track. Knowing the alphabet is not expected until four or five. Reading to them is the thing that matters now."
+    },
+    {
+      "id": "t34-nap",
+      "title": "Quiet time replaces the nap",
+      "body": "A child who has dropped the nap still needs an hour of quiet time in the afternoon. A book and a bed, not a screen."
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "t34-flag-choking",
+      "text": "Choking — cannot breathe, cough, or make a sound",
+      "escalation": "call-911"
+    },
+    {
+      "id": "t34-flag-fever",
+      "text": "A fever over 100.4°F with unusual sleepiness or a rash",
+      "escalation": "call-pediatrician"
+    },
+    {
+      "id": "t34-flag-mood",
+      "text": "Feeling hopeless, or thoughts of harming yourself or the child",
+      "escalation": "call-988",
+      "phone": "988"
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-t34-hc-pre",
+      "title": "Preschool health",
+      "publisher": "AAP",
+      "url": "https://www.healthychildren.org/English/ages-stages/preschool/Pages/default.aspx",
+      "kind": "clinical",
+      "accessed": "2026-10-21"
+    },
+    {
+      "id": "src-t34-naeyc",
+      "title": "Accreditation",
+      "publisher": "NAEYC",
+      "url": "https://www.naeyc.org/",
+      "kind": "charity",
+      "accessed": "2026-10-21"
+    }
+  ]
+}

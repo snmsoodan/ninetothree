@@ -1113,6 +1113,28 @@ The fix is `settledIds(pack, state)` in `apps/web/src/lib/week.ts`: a step is se
 
 **Verification.** 61 stage packs valid, zero lint findings. 136 links checked, none broken, none moved. 1,339 unit tests (content 494, rules 121, ui 53, web 671). 83 chromium e2e, 86 storybook stories, Lighthouse assertions pass on all seven URLs. `/week/[id]` prerenders 61 paths.
 
-## 34. How this file is maintained
+## 34. Toddler months 13–36 (issue #83)
+
+**The guide ended at the first birthday, and nobody had noticed.** #47 completed pregnancy and #48 completed the first year, and between them the corpus reached 61 packs. There was no toddler pack at all — not one. A parent whose child turned one stayed on `infant-month-12` forever, because `findPackForStage` returns the most recent pack at or before the stage and month 12 was the most recent pack there was. The only place this showed up was `email.test.ts`, whose `no-pack` test used a toddler stage as its example of a gap. That test was the bug report, and it had been passing for two issues.
+
+**Twenty-four packs, one per month, months 13 to 36.** `computeStage` gives `kind: "toddler"` from month 13 with `unit: "month"` and no upper clamp, so the cadence is monthly and the last pack is month 36. Each pack has three core actions, at least one red flag, and sources cited to CDC's _Act Early_ milestone pages and AAP's _HealthyChildren_ toddler indexes. The vaccine and screening anchors are the 15-month and 18-month visits, the 24-month visit with its second autism screen, and the 30-month and 36-month developmental checks.
+
+**The guard that would have caught it is now a test.** `loader.test.ts` has a new block, "the corpus covers every stage a parent can be in", which walks pregnancy weeks 4–42, postpartum weeks 1–12, infant months 3–12 and toddler months 13–36 and asserts `findPackForStage` returns something for every one. It also asserts that a parent at month 48 gets the month-36 pack rather than nothing, which is the intended fallback rather than a gap. A content issue that leaves a hole now fails a unit test instead of waiting for a parent to find it.
+
+**The `no-pack` reason is now unreachable with the real corpus, and the test says so.** Every stage a parent can be in has a pack, so `weeklyEmailReason` can no longer return `no-pack` from `PACKS`. The branch is still a real guard — `findPackForStage` returns `undefined` for an empty list — so the test now passes `packs: []` and asserts the guard fires. Deleting the branch would have been the other option; keeping it and testing it honestly is better, because a build with no content should send nothing rather than crash.
+
+**One e2e test had a stale premise, and the fix was to pick a real question.** "search says nothing is here without saying 'no results'" used `stroller` as its example of a query with no matches. The toddler packs mention a stroller in three `you.body` paragraphs, so the query now returns three real results. The test was not wrong about the empty state; it was wrong about the corpus. It now searches `piano lessons`, which is a real thing a parent of a toddler asks and which the guide genuinely does not answer.
+
+**A product-level guard was added too.** A new e2e test onboards a parent whose child is 800 days old and asserts the week page shows **Month 26** and the month-26 action, not the month-12 pack. The unit test proves the corpus is complete; this proves the product reads it.
+
+**Every source URL was already verified.** The 24 packs cite 16 distinct URLs, all probed in the #83 research pass: the five CDC _Act Early_ milestone pages (15 months, 18 months, 2 years, 30 months, 3 years), `cdc.gov/oral-health/`, and nine `healthychildren.org` sub-indexes. Every guessed `healthychildren.org/.../toddler/Pages/<Topic>.aspx` URL 404s — the real pages are the sub-indexes (`toddler/fitness/`, `toddler/nutrition/`, `toddler/toilet-training/`), which is worth knowing before writing the next content issue. `check-links.mjs` reports 149 links, none broken, none moved, 4 bot-blocked and unchanged.
+
+**The schema and the lint caught nothing, for the second batch running.** No duplicate ids, no over-length titles, no lint findings across 24 packs. The `-flag` suffix convention on red-flag ids and the `tNN-appt-*` prefix on appointment ids were applied from the start, and the voice from #47 and #48 held. The one thing that did break was Python: a quoted phrase inside a double-quoted string, the same mistake as `b5.py`. The fix is to drop the inner quotes.
+
+**What this does not do.** Clinical sign-off. Every pack says `"reviewedBy": "Clinical review pending"`. The milestone anchors are cited to CDC and the visit schedule to AAP, but a clinician has not read the copy. The guide now ends at the third birthday, which is where the product said it would end.
+
+**Verification.** 85 stage packs valid, zero lint findings. 149 links checked, none broken, none moved. 1,344 unit tests (content 499, rules 121, ui 53, web 671). 84 chromium e2e, 86 storybook stories, Lighthouse assertions pass on all seven URLs. `/week/[id]` prerenders 85 paths.
+
+## 35. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.

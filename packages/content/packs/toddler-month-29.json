@@ -1,0 +1,101 @@
+{
+  "locale": "en-US",
+  "country": "US",
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-21",
+  "updatedAt": "2026-10-21",
+  "id": "toddler-month-29",
+  "kind": "toddler",
+  "stageIndex": 29,
+  "stageUnit": "month",
+  "title": "Month 29",
+  "subtitle": "The thirty-month visit is next month. It is short, and it is the last one before three.",
+  "baby": {
+    "development": "Your child says three words together, can jump, and is starting to run around obstacles. They can name a friend and are beginning to take turns with help."
+  },
+  "you": {
+    "body": "If you are pregnant again, the birth plan needs a plan for the two-year-old. Who takes them, and where.",
+    "mind": "Twenty-nine months is when the child starts to have a friend rather than a playmate. It is a small and real thing."
+  },
+  "coreActions": [
+    {
+      "id": "t29-visit",
+      "type": "book",
+      "priority": "essential",
+      "domain": "health-baby",
+      "title": "Book the thirty-month visit",
+      "why": "This is a short developmental check, and it is the last visit before the three-year check.",
+      "detail": "The thirty-month visit usually has no vaccines. The doctor will check language, movement, and teeth, and will ask about sleep, eating, and toilet learning. Write the questions down before you go.",
+      "minutes": 15,
+      "keywords": ["thirty month", "checkup", "development"]
+    },
+    {
+      "id": "t29-turns",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "play",
+      "title": "Practise taking turns with a timer",
+      "why": "Taking turns is a skill that is taught, and a timer makes the waiting concrete in a way that a sentence does not.",
+      "detail": "Use a two-minute timer. One child has the toy until it rings, then the other. Stay close and narrate. A two-year-old cannot wait long, so keep the turns short. This is the foundation for sharing at three.",
+      "minutes": 15,
+      "keywords": ["turns", "sharing", "timer"]
+    },
+    {
+      "id": "t29-name",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "play",
+      "title": "Teach their own name",
+      "why": "Knowing their own name is a safety skill as well as a language one, and it is what a preschool teacher will ask for.",
+      "detail": "Say the name in songs and in play. Ask who is this in the mirror. Point at their photo. A child who can say their first name by three is on track. A surname comes later.",
+      "keywords": ["name", "identity", "language"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "t29-teeth",
+      "title": "A dental visit every six months",
+      "body": "From two, a check every six months is the usual schedule. A first visit may have happened already; if not, it is worth booking now."
+    },
+    {
+      "id": "t29-sleep",
+      "title": "Eleven to fourteen hours, including the nap",
+      "body": "A two-and-a-half-year-old usually sleeps eleven to fourteen hours a day, including one nap. Night waking is still common and is not a sign of a problem."
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "t29-flag-choking",
+      "text": "Choking — cannot breathe, cough, or make a sound",
+      "escalation": "call-911"
+    },
+    {
+      "id": "t29-flag-fever",
+      "text": "A fever over 100.4°F with unusual sleepiness or a rash",
+      "escalation": "call-pediatrician"
+    },
+    {
+      "id": "t29-flag-fall",
+      "text": "A fall from furniture, or a head injury with vomiting or unusual sleepiness",
+      "escalation": "call-911"
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-t29-cdc-30",
+      "title": "Milestones at 30 months",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/act-early/milestones/30-months.html",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    },
+    {
+      "id": "src-t29-cdc-oral",
+      "title": "Oral health",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/oral-health/",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    }
+  ]
+}

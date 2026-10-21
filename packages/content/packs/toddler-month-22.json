@@ -1,0 +1,101 @@
+{
+  "locale": "en-US",
+  "country": "US",
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-21",
+  "updatedAt": "2026-10-21",
+  "id": "toddler-month-22",
+  "kind": "toddler",
+  "stageIndex": 22,
+  "stageUnit": "month",
+  "title": "Month 22",
+  "subtitle": "Fifty words, two-word phrases, and an opinion about getting dressed.",
+  "baby": {
+    "development": "Your child says around fifty words, puts two together, and can follow a two-step instruction. They can take off some clothes and are starting to try to put them on."
+  },
+  "you": {
+    "body": "If you are still breastfeeding, that is fine. If you stopped a year ago, that is fine too. There is no milestone for this.",
+    "mind": "Twenty-two months is when the child starts to have a preference about clothes, food, and which cup. That is a good sign, and it is easier to work with than against."
+  },
+  "coreActions": [
+    {
+      "id": "t22-dress",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "play",
+      "title": "Let them dress themselves, badly",
+      "why": "Dressing is a self-care skill that takes a year to learn, and it only develops if the child is allowed to try.",
+      "detail": "Start with the easy things: taking off socks, pulling up trousers, pushing an arm through a sleeve. Lay the clothes out in the order they go on. Give extra time in the morning rather than doing it for them.",
+      "minutes": 15,
+      "keywords": ["dressing", "self care", "independence"]
+    },
+    {
+      "id": "t22-choices",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "mind",
+      "title": "Offer two choices, not an open question",
+      "why": "A two-year-old can decide between two things and cannot decide between everything, and the open question is what starts a tantrum.",
+      "detail": "Do you want the red cup or the blue cup. Do you want to walk or be carried. Both options are ones you can live with. An open question at this age is a request for a fight.",
+      "keywords": ["choices", "tantrum", "autonomy"]
+    },
+    {
+      "id": "t22-words",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "play",
+      "title": "Read every day, and let them choose the book",
+      "why": "Reading is the single most reliable language input at this age, and choosing the book is what keeps them in it.",
+      "detail": "Two books before bed, and the child picks. Read the same ones as often as they want. Point at pictures and ask what happens next. A child who is read to every day hears about a million more words a year than one who is not.",
+      "minutes": 15,
+      "keywords": ["reading", "books", "language"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "t22-teeth",
+      "title": "The canines are the last of the front teeth",
+      "body": "Canines usually arrive between sixteen and twenty-two months. The second molars come last, between twenty-three and thirty-three months."
+    },
+    {
+      "id": "t22-shoes",
+      "title": "Check the shoe size every two months",
+      "body": "Toddler feet grow in bursts, and a shoe that fit in spring may be tight by summer. Check the toe room with your thumb, and check for redness after a long walk."
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "t22-flag-choking",
+      "text": "Choking — cannot breathe, cough, or make a sound",
+      "escalation": "call-911"
+    },
+    {
+      "id": "t22-flag-fever",
+      "text": "A fever over 100.4°F with unusual sleepiness or a rash",
+      "escalation": "call-pediatrician"
+    },
+    {
+      "id": "t22-flag-fall",
+      "text": "A fall from furniture, or a head injury with vomiting or unusual sleepiness",
+      "escalation": "call-911"
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-t22-cdc-2y",
+      "title": "Milestones at 2 years",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/act-early/milestones/2-years.html",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    },
+    {
+      "id": "src-t22-hc-toddler",
+      "title": "Toddler health",
+      "publisher": "AAP",
+      "url": "https://www.healthychildren.org/English/ages-stages/toddler/Pages/default.aspx",
+      "kind": "clinical",
+      "accessed": "2026-10-21"
+    }
+  ]
+}

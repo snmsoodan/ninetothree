@@ -1,0 +1,100 @@
+{
+  "locale": "en-US",
+  "country": "US",
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-21",
+  "updatedAt": "2026-10-21",
+  "id": "toddler-month-14",
+  "kind": "toddler",
+  "stageIndex": 14,
+  "stageUnit": "month",
+  "title": "Month 14",
+  "subtitle": "Words are coming. The fifteen-month visit is next month, and it is the one where language gets counted.",
+  "baby": {
+    "development": "Your child is walking well, climbing onto low furniture, and can say several words. They point at what they want and look back at you to check you saw it."
+  },
+  "you": {
+    "body": "Your back and knees are doing more work than they did a year ago. Lifting a walking child is a different movement than lifting a baby.",
+    "mind": "Fourteen months is when the child starts to have a plan. It is also when the house needs a second look, because they can now reach things they could not last month."
+  },
+  "coreActions": [
+    {
+      "id": "t14-visit",
+      "type": "book",
+      "priority": "essential",
+      "domain": "health-baby",
+      "title": "Book the fifteen-month visit",
+      "why": "This is the next vaccine set and the visit where the doctor counts words and watches the child walk.",
+      "detail": "The US schedule at fifteen months is DTaP, Hib, PCV, MMR, varicella, and hepatitis A and B depending on what was given earlier. Write down the words the child says so you can answer the question accurately.",
+      "minutes": 15,
+      "keywords": ["fifteen month", "vaccines", "checkup"]
+    },
+    {
+      "id": "t14-words",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "play",
+      "title": "Count the words, and write them down",
+      "why": "A list of the words your child says is the single most useful thing you can bring to the fifteen-month visit.",
+      "detail": "At fifteen months, most children say a few words beyond mama and dada. They do not have to be clear. Write down every word you have heard, including the ones only you understand, and bring the list.",
+      "keywords": ["words", "language", "talking"]
+    },
+    {
+      "id": "t14-shoes",
+      "type": "do",
+      "priority": "optional",
+      "domain": "gear",
+      "title": "Get shoes that bend",
+      "why": "A stiff shoe changes how a new walker moves, and a new walker is still learning the movement.",
+      "detail": "The shoe should bend where the foot bends, have a thin sole, and leave room at the toe. Check the fit every two months, because toddler feet grow in bursts. Bare feet indoors is still better.",
+      "keywords": ["shoes", "walking", "fit"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "t14-pointing",
+      "title": "Pointing is a language milestone",
+      "body": "Pointing at something and looking back at you is a shared-attention skill, and it comes before words. A child who does not point by eighteen months is worth mentioning at the visit."
+    },
+    {
+      "id": "t14-climb",
+      "title": "Climbing starts before you expect it",
+      "body": "A child who can walk can usually climb onto a low chair. Anchor the furniture, and move the things you do not want reached one shelf higher than you think is necessary."
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "t14-flag-choking",
+      "text": "Choking — cannot breathe, cough, or make a sound",
+      "escalation": "call-911"
+    },
+    {
+      "id": "t14-flag-fall",
+      "text": "A fall from a height, or a head injury with vomiting or unusual sleepiness",
+      "escalation": "call-911"
+    },
+    {
+      "id": "t14-flag-fever",
+      "text": "A fever over 100.4°F with unusual sleepiness or a rash",
+      "escalation": "call-pediatrician"
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-t14-cdc-15",
+      "title": "Milestones at 15 months",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/act-early/milestones/15-months.html",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    },
+    {
+      "id": "src-t14-hc-fit",
+      "title": "Fitness for toddlers",
+      "publisher": "AAP",
+      "url": "https://www.healthychildren.org/English/ages-stages/toddler/fitness/Pages/default.aspx",
+      "kind": "clinical",
+      "accessed": "2026-10-21"
+    }
+  ]
+}

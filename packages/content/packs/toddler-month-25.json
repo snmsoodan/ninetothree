@@ -1,0 +1,100 @@
+{
+  "locale": "en-US",
+  "country": "US",
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-21",
+  "updatedAt": "2026-10-21",
+  "id": "toddler-month-25",
+  "kind": "toddler",
+  "stageIndex": 25,
+  "stageUnit": "month",
+  "title": "Month 25",
+  "subtitle": "Sentences are coming, and the second molars are on their way.",
+  "baby": {
+    "development": "Your child says two or three words together, can run and jump in place, and is starting to play next to other children rather than with them."
+  },
+  "you": {
+    "body": "If you are pregnant again, the twenty-five-month-old is heavy and wants to be carried. A stroller is not a failure.",
+    "mind": "Twenty-five months is when the child starts to play with other children rather than beside them. It is slow, and it is the beginning of friendship."
+  },
+  "coreActions": [
+    {
+      "id": "t25-play",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "play",
+      "title": "Arrange play with one other child, not a group",
+      "why": "Parallel play turns into cooperative play through repetition with the same child, and a group is too much at this age.",
+      "detail": "One other child, a short visit, and a shared activity like water or blocks. Expect them to play side by side and to fight over one toy. That is the stage. Do not force a share.",
+      "minutes": 60,
+      "keywords": ["playdate", "parallel play", "friends"]
+    },
+    {
+      "id": "t25-molars",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "health-baby",
+      "title": "Watch for the second molars",
+      "why": "The second molars are the last baby teeth and the ones that wake a child at night, and they arrive around now.",
+      "detail": "Chewing, drool, night waking, and a low fever can come with them. A fever over 100.4°F is not teething. A cold teether and pain relief at the right weight is the whole treatment.",
+      "keywords": ["molars", "teething", "pain"]
+    },
+    {
+      "id": "t25-words",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "play",
+      "title": "Ask questions that need more than yes",
+      "why": "A question with a yes or no answer gets one word. A question that starts with what or where gets a sentence.",
+      "detail": "What did you see at the park. Where is your shoe. What is the dog doing. Wait for the answer, even when the wait is long. Answering your own question teaches the child that the wait is not worth it.",
+      "keywords": ["questions", "language", "sentences"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "t25-counting",
+      "title": "Counting comes before the numbers mean anything",
+      "body": "A two-year-old can recite one, two, three without understanding quantity. Counting objects by touching them is the step that makes the numbers mean something, and it comes around three."
+    },
+    {
+      "id": "t25-colors",
+      "title": "Colors are a three-year-old skill",
+      "body": "Most children can name a color by three and sort by color earlier. Asking a two-year-old what color something is and getting it wrong is not a problem."
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "t25-flag-choking",
+      "text": "Choking — cannot breathe, cough, or make a sound",
+      "escalation": "call-911"
+    },
+    {
+      "id": "t25-flag-fever",
+      "text": "A fever over 100.4°F with unusual sleepiness or a rash",
+      "escalation": "call-pediatrician"
+    },
+    {
+      "id": "t25-flag-fall",
+      "text": "A fall from furniture, or a head injury with vomiting or unusual sleepiness",
+      "escalation": "call-911"
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-t25-cdc-2y",
+      "title": "Milestones at 2 years",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/act-early/milestones/2-years.html",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    },
+    {
+      "id": "src-t25-hc-play",
+      "title": "Safety at play",
+      "publisher": "AAP",
+      "url": "https://www.healthychildren.org/English/safety-prevention/at-play/Pages/default.aspx",
+      "kind": "clinical",
+      "accessed": "2026-10-21"
+    }
+  ]
+}

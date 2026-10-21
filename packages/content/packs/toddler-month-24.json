@@ -1,0 +1,109 @@
+{
+  "locale": "en-US",
+  "country": "US",
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-21",
+  "updatedAt": "2026-10-21",
+  "id": "toddler-month-24",
+  "kind": "toddler",
+  "stageIndex": 24,
+  "stageUnit": "month",
+  "title": "Month 24",
+  "subtitle": "Two years. The two-year visit is this month, and it is the second autism screen.",
+  "baby": {
+    "development": "Your child says fifty or more words, puts two together, and can run, kick, and climb. They can follow a two-step instruction and are starting to sort by shape and color."
+  },
+  "you": {
+    "body": "Two years of carrying a child is two years of a body doing more than it did before. If something hurts, it is worth a physio visit.",
+    "mind": "Two is a real milestone and it is worth noticing. The next year is the year of sentences, and it is easier than the year of tantrums."
+  },
+  "coreActions": [
+    {
+      "id": "t24-visit",
+      "type": "book",
+      "priority": "essential",
+      "domain": "health-baby",
+      "title": "Go to the two-year visit",
+      "why": "This is the second autism screen, the language check, and the visit where the next year's schedule gets set.",
+      "detail": "The two-year visit usually has no vaccines if the eighteen-month set is complete. The doctor will do a second autism screen and check language, movement, teeth, and growth. Ask about the next visit, which is at thirty months.",
+      "minutes": 60,
+      "keywords": ["two year", "autism screen", "checkup"]
+    },
+    {
+      "id": "t24-sentences",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "play",
+      "title": "Model three words together",
+      "why": "Three-word sentences usually arrive between twenty-four and thirty months, and they come from hearing them.",
+      "detail": "When the child says two words, give three back: more milk becomes more milk please. Ask questions that need more than yes or no. Narrate what you are doing. Do not correct, expand.",
+      "keywords": ["sentences", "language", "three words"]
+    },
+    {
+      "id": "t24-potty",
+      "type": "do",
+      "priority": "optional",
+      "domain": "health-baby",
+      "title": "Put a potty in the bathroom, and do not push it",
+      "why": "A potty that is just there, with no pressure, is what makes the later attempt quick.",
+      "detail": "Put a potty in the bathroom the child uses. Let them sit on it clothed if they want. Talk about what the toilet is for. Do not start training until the child shows the readiness signs, which for most is between two and three.",
+      "keywords": ["potty", "toilet", "readiness"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "t24-milk",
+      "title": "Milk comes down to about sixteen ounces",
+      "body": "After two, whole milk is no longer needed and 2% is fine. Keep it to about sixteen ounces a day, in a cup, with meals."
+    },
+    {
+      "id": "t24-screens",
+      "title": "Two is when the screen rules get tested",
+      "body": "The recommendation for two to five is no more than an hour a day of high-quality content, watched with an adult. A child who has had no screens until two will ask for them now, because they see them everywhere."
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "t24-flag-choking",
+      "text": "Choking — cannot breathe, cough, or make a sound",
+      "escalation": "call-911"
+    },
+    {
+      "id": "t24-flag-fever",
+      "text": "A fever over 100.4°F with unusual sleepiness or a rash",
+      "escalation": "call-pediatrician"
+    },
+    {
+      "id": "t24-flag-fall",
+      "text": "A fall from furniture, or a head injury with vomiting or unusual sleepiness",
+      "escalation": "call-911"
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-t24-cdc-2y",
+      "title": "Milestones at 2 years",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/act-early/milestones/2-years.html",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    },
+    {
+      "id": "src-t24-cdc-oral",
+      "title": "Oral health",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/oral-health/",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "t24-appt-two-year",
+      "label": "Two-year visit",
+      "from": 728,
+      "to": 742,
+      "who": "Pediatrician"
+    }
+  ]
+}

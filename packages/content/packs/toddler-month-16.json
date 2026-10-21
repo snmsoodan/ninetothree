@@ -1,0 +1,100 @@
+{
+  "locale": "en-US",
+  "country": "US",
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-21",
+  "updatedAt": "2026-10-21",
+  "id": "toddler-month-16",
+  "kind": "toddler",
+  "stageIndex": 16,
+  "stageUnit": "month",
+  "title": "Month 16",
+  "subtitle": "The vocabulary is growing faster than you can count it, and the spoon is the next skill.",
+  "baby": {
+    "development": "Your child says new words most weeks, can walk backwards, and is starting to run. They can point to a few body parts and follow a two-step instruction."
+  },
+  "you": {
+    "body": "If you are carrying a sixteen-month-old, the hip carry is the one that hurts. Switch sides, and use a stroller for the long walks.",
+    "mind": "Sixteen months is often a good month. The walking works, the words are coming, and the routine holds. Notice it."
+  },
+  "coreActions": [
+    {
+      "id": "t16-spoon",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "feeding",
+      "title": "Let them use a spoon, even badly",
+      "why": "Self-feeding with a spoon is a skill that takes months, and it only develops if the child is allowed to do it.",
+      "detail": "Give a spoon and a thick food like yogurt or mashed potato, which stays on. Expect the floor to be involved. Offer a loaded spoon to start, then let them load it. Do not take the spoon away to finish the job faster.",
+      "keywords": ["spoon", "self feeding", "utensils"]
+    },
+    {
+      "id": "t16-instructions",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "play",
+      "title": "Give two-step instructions",
+      "why": "Following two steps is a language and memory skill, and it is built by doing it in play rather than in a test.",
+      "detail": "Put the cup on the table. Bring me the ball. Keep it playful and give the child time to work it out. If they do one step, repeat the second rather than the whole thing.",
+      "keywords": ["instructions", "language", "memory"]
+    },
+    {
+      "id": "t16-teeth",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "health-baby",
+      "title": "Brush twice a day, and mean it",
+      "why": "A toddler cannot brush their own teeth well enough, and the habit is easier to build now than at three.",
+      "detail": "A pea-sized amount of fluoride toothpaste, twice a day, with you finishing the job. Lie the child down or stand behind them. A timer or a song helps. First dental visit if it has not happened yet.",
+      "minutes": 5,
+      "keywords": ["teeth", "brushing", "toothpaste"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "t16-picky",
+      "title": "Picky eating starts around now",
+      "body": "Appetite drops in the second year because growth slows. A child who ate everything at eleven months may refuse it at sixteen. Keep offering without pressure, and do not make a second meal."
+    },
+    {
+      "id": "t16-milk-limit",
+      "title": "Too much milk crowds out food",
+      "body": "More than about sixteen to twenty ounces of milk a day leaves no room for iron-rich food, and it is a common cause of low iron in toddlers."
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "t16-flag-choking",
+      "text": "Choking — cannot breathe, cough, or make a sound",
+      "escalation": "call-911"
+    },
+    {
+      "id": "t16-flag-fever",
+      "text": "A fever over 100.4°F with unusual sleepiness or a rash",
+      "escalation": "call-pediatrician"
+    },
+    {
+      "id": "t16-flag-fall",
+      "text": "A fall from a height, or a head injury with vomiting or unusual sleepiness",
+      "escalation": "call-911"
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-t16-hc-nut",
+      "title": "Nutrition for toddlers",
+      "publisher": "AAP",
+      "url": "https://www.healthychildren.org/English/ages-stages/toddler/nutrition/Pages/default.aspx",
+      "kind": "clinical",
+      "accessed": "2026-10-21"
+    },
+    {
+      "id": "src-t16-cdc-oral",
+      "title": "Oral health",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/oral-health/",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    }
+  ]
+}

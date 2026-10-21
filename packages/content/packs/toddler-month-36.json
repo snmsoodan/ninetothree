@@ -1,0 +1,110 @@
+{
+  "locale": "en-US",
+  "country": "US",
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-21",
+  "updatedAt": "2026-10-21",
+  "id": "toddler-month-36",
+  "kind": "toddler",
+  "stageIndex": 36,
+  "stageUnit": "month",
+  "title": "Month 36",
+  "subtitle": "Three years. This is the last month in this guide, and the first month of the rest of it.",
+  "baby": {
+    "development": "Your child speaks in sentences, can jump, pedal, climb, and draw a circle. They can follow a three-step instruction, name a friend, and are starting to understand that other people have feelings."
+  },
+  "you": {
+    "body": "Three years of carrying a child is three years of a body doing more than it did before. If something hurts, it is worth a physio visit.",
+    "mind": "Three years is the end of this guide and it is not the end of the work. You know more than you did, and the next stage is a different guide rather than a harder one."
+  },
+  "coreActions": [
+    {
+      "id": "t36-visit",
+      "type": "book",
+      "priority": "essential",
+      "domain": "health-baby",
+      "title": "Go to the three-year visit",
+      "why": "This is the last visit in this guide, and it is the one where preschool readiness and language get checked.",
+      "detail": "The three-year visit usually has no vaccines if the eighteen-month set is complete. The doctor will check language, movement, teeth, and growth, and will ask about preschool and toilet learning. Ask what the next visit is, which is at four.",
+      "minutes": 60,
+      "keywords": ["three year", "checkup", "preschool"]
+    },
+    {
+      "id": "t36-look-back",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "mind",
+      "title": "Look back at where you started",
+      "why": "Three years is a long time, and the distance is easier to see when you look at it on purpose.",
+      "detail": "Open the history and read the first week. The things that felt impossible then are the things you do without thinking now. That is not luck, and it is worth noticing before the next stage starts.",
+      "keywords": ["history", "progress", "reflection"]
+    },
+    {
+      "id": "t36-next",
+      "type": "know",
+      "priority": "recommended",
+      "domain": "mind",
+      "title": "Know what comes next",
+      "why": "The guide ends at three, and the things that matter after three are different rather than harder.",
+      "detail": "Preschool, friendships, letters, and the first questions about the world. The pediatrician moves to yearly visits. The dental check stays at six months. The safety rules change from gates to street and water.",
+      "keywords": ["next", "preschool", "four"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "t36-thousand-words",
+      "title": "A thousand words, and sentences of three or more",
+      "body": "Most three-year-olds have around a thousand words and speak in sentences of three or more. A child who is not understood by strangers at three is worth raising at the visit."
+    },
+    {
+      "id": "t36-you",
+      "title": "You are allowed to be tired",
+      "body": "Three years of broken sleep, carrying, and worrying is a long time. If you have not had a check-up of your own since the birth, this is a good month for one."
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "t36-flag-choking",
+      "text": "Choking — cannot breathe, cough, or make a sound",
+      "escalation": "call-911"
+    },
+    {
+      "id": "t36-flag-fever",
+      "text": "A fever over 100.4°F with unusual sleepiness or a rash",
+      "escalation": "call-pediatrician"
+    },
+    {
+      "id": "t36-flag-mood",
+      "text": "Feeling hopeless, or thoughts of harming yourself or the child",
+      "escalation": "call-988",
+      "phone": "988"
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-t36-cdc-3y",
+      "title": "Milestones at 3 years",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/act-early/milestones/3-years.html",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    },
+    {
+      "id": "src-t36-hc-pre",
+      "title": "Preschool health",
+      "publisher": "AAP",
+      "url": "https://www.healthychildren.org/English/ages-stages/preschool/Pages/default.aspx",
+      "kind": "clinical",
+      "accessed": "2026-10-21"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "t36-appt-three-year",
+      "label": "Three-year visit",
+      "from": 1092,
+      "to": 1106,
+      "who": "Pediatrician"
+    }
+  ]
+}

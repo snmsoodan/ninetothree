@@ -614,7 +614,9 @@ test("search says nothing is here without saying 'no results'", async ({ page })
   await onboardAsPregnant(page);
   await page.goto("/search");
 
-  await page.getByLabel("What are you looking for?").fill("stroller");
+  // A real question the guide does not answer. "stroller" used to be the
+  // example, until the toddler packs started mentioning one.
+  await page.getByLabel("What are you looking for?").fill("piano lessons");
   await expect(page.getByText("Nothing here for that.")).toBeVisible();
   await expect(page.getByText(/no results/i)).toHaveCount(0);
   await expect(page.getByText(/oops/i)).toHaveCount(0);
@@ -809,4 +811,24 @@ test("the drawer from the week card carries that week's warning signs", async ({
     "href",
     "/triage",
   );
+});
+
+test("a two-year-old gets a toddler month, not the last baby month", async ({ page }) => {
+  // The guide used to end at month 12, so a parent whose child turned one saw
+  // the month-12 pack forever. This is the product-level guard for that gap.
+  const birthDate = new Date(Date.now() - 800 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+  await page.goto("/onboarding");
+  await page.getByRole("button", { name: /My baby is here/ }).click();
+  await page.locator("#date").fill(birthDate);
+  for (let i = 0; i < 4; i += 1) {
+    await page.getByRole("button", { name: "Continue" }).click();
+  }
+  await page.getByRole("button", { name: "Show me" }).click();
+
+  await page.goto("/week");
+  await expect(page.getByRole("banner").getByText("Month 26", { exact: true })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { level: 1, name: /thirty-month visit is next month/ }),
+  ).toBeVisible();
+  await expect(page.getByRole("article", { name: "Book the thirty-month visit" })).toBeVisible();
 });

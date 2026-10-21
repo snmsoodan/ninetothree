@@ -1,0 +1,110 @@
+{
+  "locale": "en-US",
+  "country": "US",
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-21",
+  "updatedAt": "2026-10-21",
+  "id": "toddler-month-15",
+  "kind": "toddler",
+  "stageIndex": 15,
+  "stageUnit": "month",
+  "title": "Month 15",
+  "subtitle": "The fifteen-month visit is this month. It is the one where the doctor counts words.",
+  "baby": {
+    "development": "Your child is walking, may be running, and says several words. They can follow a simple instruction without a gesture, and they are starting to help with dressing by holding out an arm."
+  },
+  "you": {
+    "body": "If you are pregnant again, the lifting is the thing to watch. If you are not, nothing about your body changes this month.",
+    "mind": "Fifteen months is often when the gap between what the child wants and what they can say gets widest. That gap is what tantrums are made of."
+  },
+  "coreActions": [
+    {
+      "id": "t15-visit",
+      "type": "book",
+      "priority": "essential",
+      "domain": "health-baby",
+      "title": "Go to the fifteen-month visit",
+      "why": "This is the vaccine set and the developmental check where language, walking, and pointing all get looked at.",
+      "detail": "The US schedule at fifteen months is DTaP, Hib, PCV, MMR, varicella, and hepatitis A and B depending on what was given earlier. Bring the word list. Ask about the autism screen, which is done at eighteen and twenty-four months.",
+      "minutes": 60,
+      "keywords": ["fifteen month", "vaccines", "checkup"]
+    },
+    {
+      "id": "t15-tantrum",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "mind",
+      "title": "Respond to a tantrum the same way every time",
+      "why": "A predictable response is what teaches a child that the feeling is survivable, and it is easier to do when you have decided in advance.",
+      "detail": "Get low, say what you see, and wait. Do not negotiate during the tantrum, and do not leave. Talk about it afterwards, when the child is calm, in one sentence. The same response every time is the whole method.",
+      "keywords": ["tantrum", "calm", "response"]
+    },
+    {
+      "id": "t15-words",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "play",
+      "title": "Read the same book until it is boring",
+      "why": "Repetition is how a fifteen-month-old learns words, and a familiar book is where they start to fill in the gaps.",
+      "detail": "Read the same three or four books for a month. Pause before the last word of a line and let the child fill it in. Point at the pictures and name them. A new book every night is less useful than one book ten times.",
+      "minutes": 15,
+      "keywords": ["reading", "words", "books"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "t15-molars",
+      "title": "First molars arrive around now",
+      "body": "The first molars usually come between thirteen and nineteen months, and they are bigger than the front teeth. Chewing, drool, and night waking can come with them."
+    },
+    {
+      "id": "t15-screens",
+      "title": "Screens are not a language teacher",
+      "body": "A child under two learns language from a person, not from a screen. Video calls with a grandparent are the exception, because someone is responding. Background television is the thing to turn off."
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "t15-flag-choking",
+      "text": "Choking — cannot breathe, cough, or make a sound",
+      "escalation": "call-911"
+    },
+    {
+      "id": "t15-flag-fever",
+      "text": "A fever over 100.4°F with unusual sleepiness or a rash",
+      "escalation": "call-pediatrician"
+    },
+    {
+      "id": "t15-flag-breathing",
+      "text": "Fast or labored breathing, or a blue tint around the lips",
+      "escalation": "call-911"
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-t15-cdc-15",
+      "title": "Milestones at 15 months",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/act-early/milestones/15-months.html",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    },
+    {
+      "id": "src-t15-cdc-sched",
+      "title": "Immunization schedules",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/vaccines/hcp/imz-schedules/",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "t15-appt-fifteen",
+      "label": "Fifteen-month visit and vaccines",
+      "from": 420,
+      "to": 434,
+      "who": "Pediatrician"
+    }
+  ]
+}

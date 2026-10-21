@@ -1,0 +1,101 @@
+{
+  "locale": "en-US",
+  "country": "US",
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-21",
+  "updatedAt": "2026-10-21",
+  "id": "toddler-month-35",
+  "kind": "toddler",
+  "stageIndex": 35,
+  "stageUnit": "month",
+  "title": "Month 35",
+  "subtitle": "One month left in this guide. The three-year visit is next month.",
+  "baby": {
+    "development": "Your child speaks in sentences, can jump, pedal, and climb stairs alternating feet. They can follow a three-step instruction and are starting to understand that other people have feelings too."
+  },
+  "you": {
+    "body": "If you are pregnant again, the birth is close. The older child needs a plan and a person, not a surprise.",
+    "mind": "Thirty-five months is when the child starts to notice that you have feelings. It is a real change, and it is the beginning of empathy."
+  },
+  "coreActions": [
+    {
+      "id": "t35-visit",
+      "type": "book",
+      "priority": "essential",
+      "domain": "health-baby",
+      "title": "Book the three-year visit",
+      "why": "This is the last visit in this guide, and it is the one where preschool readiness and language get checked.",
+      "detail": "The three-year visit usually has no vaccines if the eighteen-month set is complete. The doctor will check language, movement, teeth, and growth, and will ask about preschool and toilet learning. Bring the questions.",
+      "minutes": 15,
+      "keywords": ["three year", "checkup", "preschool"]
+    },
+    {
+      "id": "t35-empathy",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "mind",
+      "title": "Point out how other people feel",
+      "why": "Empathy is taught by naming it, and a three-year-old can learn to notice it.",
+      "detail": "She is crying because she fell. He is happy because it is his birthday. Ask what the child thinks the other person feels, and do not correct the answer. This is the foundation for the social skills at four.",
+      "keywords": ["empathy", "feelings", "social"]
+    },
+    {
+      "id": "t35-independence",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "play",
+      "title": "Let them do the whole thing, once a day",
+      "why": "A child who can do one thing from start to finish has a reason to try the next one.",
+      "detail": "Pick one thing a day and let the child do all of it: pour the water, put on the shoes, feed the dog. It will be slow and it will be wrong. Do not fix it in front of them. Fix it later.",
+      "minutes": 15,
+      "keywords": ["independence", "confidence", "self care"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "t35-sleep",
+      "title": "Eleven to thirteen hours, and maybe a nap",
+      "body": "A three-year-old usually sleeps eleven to thirteen hours a day. Some still nap, some do not. Quiet time in the afternoon is the bridge for the ones who do not."
+    },
+    {
+      "id": "t35-teeth",
+      "title": "A dental check every six months",
+      "body": "Twenty baby teeth, and a check every six months. The first permanent tooth is years away, but the habit is not."
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "t35-flag-choking",
+      "text": "Choking — cannot breathe, cough, or make a sound",
+      "escalation": "call-911"
+    },
+    {
+      "id": "t35-flag-fever",
+      "text": "A fever over 100.4°F with unusual sleepiness or a rash",
+      "escalation": "call-pediatrician"
+    },
+    {
+      "id": "t35-flag-fall",
+      "text": "A fall from a height, or a head injury with vomiting or unusual sleepiness",
+      "escalation": "call-911"
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-t35-cdc-3y",
+      "title": "Milestones at 3 years",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/act-early/milestones/3-years.html",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    },
+    {
+      "id": "src-t35-hc-toddler",
+      "title": "Toddler health",
+      "publisher": "AAP",
+      "url": "https://www.healthychildren.org/English/ages-stages/toddler/Pages/default.aspx",
+      "kind": "clinical",
+      "accessed": "2026-10-21"
+    }
+  ]
+}

@@ -1,0 +1,101 @@
+{
+  "locale": "en-US",
+  "country": "US",
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-21",
+  "updatedAt": "2026-10-21",
+  "id": "toddler-month-13",
+  "kind": "toddler",
+  "stageIndex": 13,
+  "stageUnit": "month",
+  "title": "Month 13",
+  "subtitle": "The guide changes shape here. A month is a long time at this age, so the steps are fewer and they matter more.",
+  "baby": {
+    "development": "Your child is walking, or close to it, and can say a few words. They understand much more than they can say, and they are starting to test what happens when they do something you said not to."
+  },
+  "you": {
+    "body": "If you are breastfeeding, you can keep going for as long as you both want. If you were formula feeding, the switch to whole milk happened last month.",
+    "mind": "The first year is over and you did it. The second year is different: more opinion, more movement, and the same amount of love."
+  },
+  "coreActions": [
+    {
+      "id": "t13-tantrum",
+      "type": "know",
+      "priority": "essential",
+      "domain": "mind",
+      "title": "Know that a tantrum is not defiance",
+      "why": "A one-year-old has big feelings and almost no words for them. The behaviour is the communication.",
+      "detail": "Name the feeling, stay nearby, and do not try to reason with a screaming child. It peaks between eighteen months and three years. Hitting and biting are common and are handled by a calm no and a redirect, not by punishment.",
+      "keywords": ["tantrum", "feelings", "behaviour"]
+    },
+    {
+      "id": "t13-nap",
+      "type": "know",
+      "priority": "recommended",
+      "domain": "sleep",
+      "title": "Watch for the move to one nap",
+      "why": "Most children drop to one nap between twelve and eighteen months, and the sign is a second nap that pushes bedtime too late.",
+      "detail": "The usual pattern is a morning nap that gets shorter and a long afternoon nap. If the second nap is still happening at four in the afternoon and bedtime is a fight, drop it and move lunch earlier.",
+      "keywords": ["nap", "one nap", "bedtime"]
+    },
+    {
+      "id": "t13-walk",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "play",
+      "title": "Let them walk barefoot indoors",
+      "why": "Bare feet give better feedback than shoes, and the feedback is what builds balance.",
+      "detail": "Bare feet on a firm floor indoors. Shoes are for outside, and they should be flexible with a thin sole. A child who is not walking by eighteen months is worth mentioning at the visit.",
+      "minutes": 20,
+      "keywords": ["walking", "barefoot", "shoes"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "t13-milk",
+      "title": "Whole milk until two",
+      "body": "Whole milk, two to three cups a day, until the second birthday. After two, the fat can come down to 2% if the child is eating well. Milk is a drink, not a meal replacement."
+    },
+    {
+      "id": "t13-dental",
+      "title": "A dental visit by the first birthday",
+      "body": "A check by the first tooth or the first birthday, whichever came first. It is short, it is mostly a look, and it sets up the habit."
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "t13-flag-choking",
+      "text": "Choking — cannot breathe, cough, or make a sound",
+      "escalation": "call-911"
+    },
+    {
+      "id": "t13-flag-fever",
+      "text": "A fever over 100.4°F with unusual sleepiness or a rash",
+      "escalation": "call-pediatrician"
+    },
+    {
+      "id": "t13-flag-mood",
+      "text": "Feeling hopeless, or thoughts of harming yourself or the child",
+      "escalation": "call-988",
+      "phone": "988"
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-t13-cdc-milestones",
+      "title": "CDC milestones",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/act-early/milestones/index.html",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    },
+    {
+      "id": "src-t13-hc-toddler",
+      "title": "Toddler health",
+      "publisher": "AAP",
+      "url": "https://www.healthychildren.org/English/ages-stages/toddler/Pages/default.aspx",
+      "kind": "clinical",
+      "accessed": "2026-10-21"
+    }
+  ]
+}

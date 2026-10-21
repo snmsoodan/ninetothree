@@ -1,0 +1,101 @@
+{
+  "locale": "en-US",
+  "country": "US",
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-21",
+  "updatedAt": "2026-10-21",
+  "id": "toddler-month-17",
+  "kind": "toddler",
+  "stageIndex": 17,
+  "stageUnit": "month",
+  "title": "Month 17",
+  "subtitle": "The eighteen-month visit is next month, and it is the one with the autism screen in it.",
+  "baby": {
+    "development": "Your child is running, climbing, and can say around ten words. They can point to several body parts and are starting to show you things rather than just wanting them."
+  },
+  "you": {
+    "body": "Separation anxiety often peaks around now. Leaving the room can be a crisis, and that is a sign of attachment rather than a problem.",
+    "mind": "Seventeen months is when the child's opinion arrives in full. It is a good sign and it is tiring."
+  },
+  "coreActions": [
+    {
+      "id": "t17-visit",
+      "type": "book",
+      "priority": "essential",
+      "domain": "health-baby",
+      "title": "Book the eighteen-month visit",
+      "why": "This is the visit with the autism screen, the next vaccine set, and the language check.",
+      "detail": "The US schedule at eighteen months is DTaP and hepatitis A, with others depending on what was given earlier. The doctor will do a formal autism screen, usually the M-CHAT. Write down the words and the gestures the child uses.",
+      "minutes": 15,
+      "keywords": ["eighteen month", "vaccines", "autism screen"]
+    },
+    {
+      "id": "t17-climb",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "safety",
+      "title": "Anchor the furniture, all of it",
+      "why": "A seventeen-month-old can climb onto a chair, and a dresser that tips is the injury that follows.",
+      "detail": "Anchor every bookshelf, dresser, and television to the wall. Move the changing table away from the window. Put the stool where it cannot be used to reach the counter. This is a one-afternoon job that prevents a specific and serious injury.",
+      "minutes": 60,
+      "keywords": ["anchoring", "climbing", "furniture"]
+    },
+    {
+      "id": "t17-goodbye",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "mind",
+      "title": "Make goodbyes short and the same",
+      "why": "A predictable goodbye is easier than a disappearing parent, even when the goodbye is loud.",
+      "detail": "Say the same words every time, leave, and do not come back for one more hug. A caregiver who distracts the child after you go is helping. Sneaking out teaches the child that you can vanish.",
+      "keywords": ["separation", "goodbye", "caregiver"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "t17-words",
+      "title": "Ten to twenty words is typical at eighteen months",
+      "body": "Most children say ten to twenty words at eighteen months and understand far more. A child with fewer than six words at eighteen months is worth raising at the visit rather than waiting."
+    },
+    {
+      "id": "t17-molars",
+      "title": "The canine teeth come next",
+      "body": "After the first molars, the canines usually arrive between sixteen and twenty-two months. The second molars are the last, around two to three years."
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "t17-flag-choking",
+      "text": "Choking — cannot breathe, cough, or make a sound",
+      "escalation": "call-911"
+    },
+    {
+      "id": "t17-flag-fall",
+      "text": "A fall from furniture, or a head injury with vomiting or unusual sleepiness",
+      "escalation": "call-911"
+    },
+    {
+      "id": "t17-flag-fever",
+      "text": "A fever over 100.4°F with unusual sleepiness or a rash",
+      "escalation": "call-pediatrician"
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-t17-cdc-18",
+      "title": "Milestones at 18 months",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/act-early/milestones/18-months.html",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    },
+    {
+      "id": "src-t17-hc-home",
+      "title": "Safety at home",
+      "publisher": "AAP",
+      "url": "https://www.healthychildren.org/English/safety-prevention/at-home/Pages/default.aspx",
+      "kind": "clinical",
+      "accessed": "2026-10-21"
+    }
+  ]
+}

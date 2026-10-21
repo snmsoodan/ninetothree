@@ -204,7 +204,7 @@ A parent in the US can:
 8. Use the whole thing offline at 3am on a phone, with a screen reader, at 200% zoom.
 9. Export or delete all their data.
 
-**V1 content:** pregnancy W4–W42 + 0–12 months, **US-first, en-US**. ~120 stage packs, ~600 actions, ~250 vetted links.
+**V1 content:** pregnancy W4–W42 + months 0–36, **US-first, en-US**. 85 stage packs shipped, ~250 actions, 89 vetted links. The blueprint's ~120 packs and ~250 links are the target, not the current state.
 **V2:** 12–36 months, **UK locale**, partner app, baby log, registry.
 **V3:** personalization engine, local classes marketplace, employer/insurer B2B.
 
@@ -227,6 +227,8 @@ Five CI jobs run on every pull request. Each one fails for exactly one class of 
 **The content lint bans the promise, not the word.** `pnpm content:validate` fails a pack that says "this will cure", "you should", "normal babies", or that reads above grade 8 — and prints the file, the path inside the pack, the rule and the sentence. A blanket ban on `safe` and `normal` was the first draft; it rejected "cleanings are safe in pregnancy" and "that is normal and not a sign your supply is dropping", so the rules target the claim instead. Every shipped pack scores between 4.6 and 7.4.
 
 **The pack registry is generated, not maintained.** `packages/content/src/registry.ts` used to be a hand-written list of nine imports, which meant a new pack file did nothing until someone remembered to add one — and for a while 33 validated packs were invisible to the app. `pnpm content:registry` regenerates it from `packs/*.json`, and `pnpm content:registry:check` fails CI if the file on disk has drifted. Add a pack, run the generator, commit both.
+
+**Every stage a parent can be in has a pack, and a test says so.** The guide covers pregnancy week 4 to toddler month 36 with no gaps. That was not true for two content issues: there were no toddler packs at all, so a parent whose child turned one stayed on the month-12 pack forever, because `findPackForStage` returns the most recent pack at or before the stage. Nothing failed, because nothing was checking. `loader.test.ts` now walks every reachable stage and fails if any of them has no pack, and an e2e test onboards a parent of a two-year-old and asserts the week page shows Month 26.
 
 **A pack no stage can reach is not content.** `infant-month-2` had `stageIndex: 2`, and `computeStage` clamps infant to month 3, so `findPackForStage` returned month 3 and never month 2 — the pack was reachable only by typing its URL. It was deleted, and its content lives in postpartum weeks 8 and 9, which is where a parent at that age actually is. The stage model decides what a pack is for; a pack outside it is a file, not a week.
 
@@ -264,7 +266,7 @@ Five CI jobs run on every pull request. Each one fails for exactly one class of 
 
 **A rule that adds a step still lives in content.** Personalisation has three kinds of rule — hide, add, adjust — and all three have an id and a written reason, so "why am I not seeing this?" is answered by a rule rather than a shrug. But a rule only decides _whether_ a step appears; the pack decides _what_ it is, through `profileActions`. That keeps an added step inside the schema, the content lint, and clinical review, instead of putting clinical copy in the rules package where none of those gates reach it. No pack uses it yet, because writing the first one is a clinical decision.
 
-**Search runs in the browser, because the content is already there.** Nine packs and eighty-nine catalogue entries are a few hundred kilobytes of JSON that the app already ships. `buildIndex` turns them into one document per step, per week and per catalogue entry at module load, and `search` ranks them in memory. There is no Postgres and no round trip, and the acceptance criterion — a relevant cited result for the top 100 queries, p95 under 300 ms — is met in single-digit milliseconds. A new pack is searchable on the next build with no deploy step.
+**Search runs in the browser, because the content is already there.** Eighty-five packs and eighty-nine catalogue entries are a few hundred kilobytes of JSON that the app already ships. `buildIndex` turns them into one document per step, per week and per catalogue entry at module load, and `search` ranks them in memory. There is no Postgres and no round trip, and the acceptance criterion — a relevant cited result for the top 100 queries, p95 under 300 ms — is met in single-digit milliseconds. A new pack is searchable on the next build with no deploy step.
 
 **A parent's word for a step is content, not a synonym table.** "Ultrasound" is what a parent types; the pack says "anatomy scan". Rather than teach the search engine synonyms, `Action` has a `keywords` field where the content author declares the words a parent will use. Twenty-seven actions declare them. A clinician reviewing a pack can see and correct them, which a hardcoded synonym list would never allow.
 

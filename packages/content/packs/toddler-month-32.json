@@ -1,0 +1,102 @@
+{
+  "locale": "en-US",
+  "country": "US",
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-21",
+  "updatedAt": "2026-10-21",
+  "id": "toddler-month-32",
+  "kind": "toddler",
+  "stageIndex": 32,
+  "stageUnit": "month",
+  "title": "Month 32",
+  "subtitle": "Preschool is a decision this year, and the good places fill early.",
+  "baby": {
+    "development": "Your child speaks in sentences of three or more words, can jump, and can pedal a tricycle. They can name a friend and are starting to play with other children rather than beside them."
+  },
+  "you": {
+    "body": "If you are pregnant again, the birth plan needs a plan for the older child. Who takes them, where they go, and for how long.",
+    "mind": "Thirty-two months is when the child starts to have a life outside the house. That is the point of preschool, and it is also the thing that makes the first drop-off hard."
+  },
+  "coreActions": [
+    {
+      "id": "t32-preschool",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "childcare",
+      "title": "Visit three preschools before you choose",
+      "why": "A preschool is a place your child will spend a thousand hours in, and a brochure cannot tell you what the room feels like.",
+      "detail": "Visit at drop-off, not at tour time. Ask about ratios, staff turnover, how they handle a child who is upset, and what happens when a child bites. Ask what a typical day looks like. Trust the feeling in the room.",
+      "minutes": 180,
+      "keywords": ["preschool", "childcare", "visit"]
+    },
+    {
+      "id": "t32-name",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "play",
+      "title": "Teach them to write their name, or the first letter",
+      "why": "Writing a name is a three-to-four-year-old skill, and the first letter is where it starts.",
+      "detail": "Write the name in big letters and let the child trace it with a finger, then a crayon. Start with the first letter. Do not correct the grip yet. A child who can recognise their name at three is on track.",
+      "minutes": 10,
+      "keywords": ["name", "writing", "letters"]
+    },
+    {
+      "id": "t32-potty",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "health-baby",
+      "title": "Finish potty learning before preschool starts",
+      "why": "Most preschools expect a child to be out of nappies by three, and the summer before is the easiest time to do it.",
+      "detail": "Pick a week with no travel. Expect accidents. Do not go back to nappies during the day once you start. Night dryness comes later and is not part of it.",
+      "keywords": ["potty", "toilet training", "preschool"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "t32-sleep",
+      "title": "The nap may be ending",
+      "body": "Most children drop the nap between three and four. A child who is fighting the nap at thirty-two months is more likely overtired than ready to drop it. Quiet time in the afternoon is the bridge."
+    },
+    {
+      "id": "t32-teeth",
+      "title": "Twenty teeth, and a check every six months",
+      "body": "The full set of baby teeth is complete around three. A dental check every six months from now is the usual schedule."
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "t32-flag-choking",
+      "text": "Choking — cannot breathe, cough, or make a sound",
+      "escalation": "call-911"
+    },
+    {
+      "id": "t32-flag-fever",
+      "text": "A fever over 100.4°F with unusual sleepiness or a rash",
+      "escalation": "call-pediatrician"
+    },
+    {
+      "id": "t32-flag-mood",
+      "text": "Feeling hopeless, or thoughts of harming yourself or the child",
+      "escalation": "call-988",
+      "phone": "988"
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-t32-childcare",
+      "title": "Find childcare",
+      "publisher": "US Department of Health and Human Services",
+      "url": "https://childcare.gov/",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    },
+    {
+      "id": "src-t32-naeyc",
+      "title": "Accreditation",
+      "publisher": "NAEYC",
+      "url": "https://www.naeyc.org/",
+      "kind": "charity",
+      "accessed": "2026-10-21"
+    }
+  ]
+}

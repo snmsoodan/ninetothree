@@ -1,0 +1,100 @@
+{
+  "locale": "en-US",
+  "country": "US",
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-21",
+  "updatedAt": "2026-10-21",
+  "id": "toddler-month-27",
+  "kind": "toddler",
+  "stageIndex": 27,
+  "stageUnit": "month",
+  "title": "Month 27",
+  "subtitle": "Three words together, and a tricycle is the next thing.",
+  "baby": {
+    "development": "Your child says three words together, can jump with both feet, and can walk up stairs alternating feet with a hand held. They are starting to use a spoon and fork together."
+  },
+  "you": {
+    "body": "If you are carrying a twenty-seven-month-old, your back has been doing this for over two years. A physio visit is not an indulgence.",
+    "mind": "Twenty-seven months is when the child starts to tell you what happened. The stories are short and mostly about the dog, and they are the beginning of narrative."
+  },
+  "coreActions": [
+    {
+      "id": "t27-trike",
+      "type": "do",
+      "priority": "optional",
+      "domain": "play",
+      "title": "Get a tricycle, or a balance bike",
+      "why": "Pedalling is a coordination skill that comes before riding, and a balance bike teaches the balance that a tricycle does not.",
+      "detail": "A tricycle with pedals is the traditional first step. A balance bike skips the pedals and teaches balance first, which most children find easier. Either is fine. A helmet from the first ride, every time.",
+      "minutes": 20,
+      "keywords": ["tricycle", "balance bike", "riding"]
+    },
+    {
+      "id": "t27-fork",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "feeding",
+      "title": "Let them use a fork, and expect it to be slow",
+      "why": "Using a fork is a fine-motor skill that takes a year, and it only develops if the child is allowed to do it.",
+      "detail": "A small fork with rounded tines. Stab a piece and hand it over to start. Expect the food to be dropped and the meal to take longer. Do not take the fork away to finish faster.",
+      "keywords": ["fork", "utensils", "self feeding"]
+    },
+    {
+      "id": "t27-helmet",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "safety",
+      "title": "A helmet from the first ride",
+      "why": "A helmet that is not worn from the first ride is a helmet that is fought over at four.",
+      "detail": "Fit it so it sits level, two fingers above the eyebrow, with the strap snug under the chin. Wear one yourself. A child who sees a helmet on every ride does not question it.",
+      "keywords": ["helmet", "bike", "safety"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "t27-stories",
+      "title": "Ask what happened, not what they did",
+      "body": "A child who is asked what happened at the park will tell a story. A child who is asked if they had fun will say yes. The first builds language, the second does not."
+    },
+    {
+      "id": "t27-nap",
+      "title": "The nap is still needed",
+      "body": "Most two-year-olds still need one nap of one to two hours. Dropping it early makes the evening worse, not better."
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "t27-flag-choking",
+      "text": "Choking — cannot breathe, cough, or make a sound",
+      "escalation": "call-911"
+    },
+    {
+      "id": "t27-flag-fall",
+      "text": "A fall from a bike or a height, or a head injury with vomiting or unusual sleepiness",
+      "escalation": "call-911"
+    },
+    {
+      "id": "t27-flag-fever",
+      "text": "A fever over 100.4°F with unusual sleepiness or a rash",
+      "escalation": "call-pediatrician"
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-t27-cdc-30",
+      "title": "Milestones at 30 months",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/act-early/milestones/30-months.html",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    },
+    {
+      "id": "src-t27-hc-fit",
+      "title": "Fitness for toddlers",
+      "publisher": "AAP",
+      "url": "https://www.healthychildren.org/English/ages-stages/toddler/fitness/Pages/default.aspx",
+      "kind": "clinical",
+      "accessed": "2026-10-21"
+    }
+  ]
+}
