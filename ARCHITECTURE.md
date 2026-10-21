@@ -305,6 +305,8 @@ Weekly digest job reads published packs
 
 **The pack registry is generated, not maintained.** `packages/content/src/registry.ts` is written by `scripts/gen-registry.mjs` from `packs/*.json`, and `pnpm content:registry:check` fails CI if it has drifted. It used to be a hand-written list of imports, which meant a new pack file did nothing until someone remembered to add one — and for a while 33 validated packs were invisible to the app. A list of files that already exist on disk should never be typed by hand.
 
+**The triage tree is content too, and its first question is a coverage contract.** `packages/content/triage/triage.json` is one tree — 29 nodes, 67 results, 69 root-to-outcome paths — validated by the same `content:validate` run as the packs. `treeIssues()` refuses a node or a result that cannot be reached from the root, which is what caught a half-applied rewrite that orphaned six results. What it cannot express is the product rule: the root asks who the problem is about, and that is the only question every parent sees, so it is the only place a whole stage of childhood can go missing. It did — the tree had no answer for a child past their first birthday while the guide ran to thirty-six months — so a test now asserts the root reaches every stage. The three "what is wrong" nodes sit at the schema's six-answer ceiling, which means each new branch hangs off an existing "something else" answer rather than beside it.
+
 ### Content schema (Zod, simplified)
 
 ```ts

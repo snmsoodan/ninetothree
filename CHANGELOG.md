@@ -9,6 +9,32 @@ changelog written after the fact from memory is a changelog nobody can trust.
 
 ## Unreleased
 
+### Triage: a parent of a two-year-old can now find the path (#50)
+
+- The tree had 31 paths, so the issue's "20 paths" was already met. It also had
+  **no answer for a child past their first birthday** — a parent of a toddler
+  who had swallowed a button battery had nowhere to go. That was the real gap.
+- 13 nodes and 30 results became **29 nodes and 67 results**, and 31 paths
+  became **69**. New branches for pregnancy (preterm contractions, waters
+  breaking, severe pain, vomiting, a suspected UTI), after birth (mastitis, a
+  caesarean wound, a swollen leg, not being able to pee), the baby (feeding,
+  green vomit, dehydration, a bang to the head, jaundice, the cord) and a whole
+  new **child** branch (swallowed, breathing, head, fever, skin, burn, rash,
+  swelling).
+- The three "what is wrong" nodes were already at the schema's six-answer cap,
+  so each new branch hangs off an existing "something else" answer. A first
+  question with nine answers is a menu, not a question.
+- Three results were **not** reused for the child branch, because their bodies
+  say "refusing feeds", "older baby" and "in a baby who is feeding and alert".
+  Child-specific variants were written instead.
+- A new guard test asserts the first question reaches every stage, including a
+  child. Removing the `child` answer makes the tree fail to load entirely.
+- Two product-level e2e tests walk the child branch by clicking and by deep
+  link, and an axe test runs on a child outcome.
+- Fixed a pre-existing e2e flake: a bare `for` loop of "Next →" clicks lost hops
+  because `click()` resolves before the next page renders. Multi-hop loops now
+  await each URL.
+
 ### Offline: the guide opens on a train, and says what it is (#42)
 
 - Added a web app manifest, four committed PNG icons (192, 512, a full-bleed

@@ -21,6 +21,11 @@
           "id": "baby",
           "label": "The baby",
           "next": "baby-what"
+        },
+        {
+          "id": "child",
+          "label": "A child, and they are past their first birthday",
+          "next": "child-what"
         }
       ]
     },
@@ -56,7 +61,7 @@
         {
           "id": "other",
           "label": "Something else",
-          "next": "urgent-other-pregnancy"
+          "next": "pregnant-other"
         }
       ],
       "detail": "Pick the closest one. You can go back."
@@ -168,7 +173,7 @@
         {
           "id": "other",
           "label": "Something else",
-          "next": "urgent-other-postpartum"
+          "next": "postpartum-other"
         }
       ]
     },
@@ -233,7 +238,7 @@
         {
           "id": "feeding",
           "label": "Not feeding, or far fewer wet diapers",
-          "next": "urgent-baby-feeding"
+          "next": "baby-feeding"
         },
         {
           "id": "choking",
@@ -248,7 +253,7 @@
         {
           "id": "sleepy",
           "label": "Hard to wake, or unusually sleepy",
-          "next": "urgent-baby-sleepy"
+          "next": "baby-other"
         }
       ]
     },
@@ -297,6 +302,367 @@
           "id": "unwell",
           "label": "No, sleepy or not feeding",
           "next": "urgent-rash-unwell"
+        }
+      ]
+    },
+    {
+      "id": "child-what",
+      "question": "What is happening?",
+      "answers": [
+        {
+          "id": "swallowed",
+          "label": "They swallowed something",
+          "next": "child-swallowed"
+        },
+        {
+          "id": "breathing",
+          "label": "Trouble breathing, or a cough that will not stop",
+          "next": "child-breathing"
+        },
+        {
+          "id": "head",
+          "label": "A bang to the head",
+          "next": "child-head"
+        },
+        {
+          "id": "fever",
+          "label": "A fever",
+          "next": "child-fever"
+        },
+        {
+          "id": "skin",
+          "label": "A burn, a rash, or swelling",
+          "next": "child-skin"
+        },
+        {
+          "id": "other",
+          "label": "Something else",
+          "next": "urgent-other-child"
+        }
+      ]
+    },
+    {
+      "id": "child-swallowed",
+      "question": "What did they swallow?",
+      "answers": [
+        {
+          "id": "medicine",
+          "label": "Medicine, a cleaning product, or a plant",
+          "next": "emergency-poison"
+        },
+        {
+          "id": "battery",
+          "label": "A button battery, or a magnet",
+          "next": "emergency-battery"
+        },
+        {
+          "id": "other",
+          "label": "Something else, and they seem well",
+          "next": "urgent-poison-other"
+        }
+      ]
+    },
+    {
+      "id": "child-breathing",
+      "question": "What does the breathing look like?",
+      "answers": [
+        {
+          "id": "choking",
+          "label": "Choking — cannot breathe, cough, or make a sound",
+          "next": "emergency-choking-child"
+        },
+        {
+          "id": "struggling",
+          "label": "Working hard to breathe, or the lips look blue",
+          "next": "emergency-breathing-child"
+        },
+        {
+          "id": "noisy",
+          "label": "Noisy or fast, but they are talking and drinking",
+          "next": "urgent-breathing-noisy"
+        }
+      ]
+    },
+    {
+      "id": "child-head",
+      "question": "Were they knocked out, vomiting, or not themselves?",
+      "answers": [
+        {
+          "id": "yes",
+          "label": "Yes — knocked out, vomiting, or not themselves",
+          "next": "emergency-head"
+        },
+        {
+          "id": "no",
+          "label": "No — they cried, then went back to playing",
+          "next": "watch-head"
+        }
+      ]
+    },
+    {
+      "id": "child-fever",
+      "question": "Is any of this also true?",
+      "answers": [
+        {
+          "id": "stiff",
+          "label": "A stiff neck, or light hurts their eyes",
+          "next": "emergency-fever-stiff"
+        },
+        {
+          "id": "unwell",
+          "label": "Very unwell, or a rash that does not fade",
+          "next": "urgent-fever-child"
+        },
+        {
+          "id": "well",
+          "label": "Otherwise well — drinking, playing, alert",
+          "next": "watch-fever-child"
+        }
+      ]
+    },
+    {
+      "id": "child-skin",
+      "question": "What does it look like?",
+      "answers": [
+        {
+          "id": "burn",
+          "label": "A burn or a scald",
+          "next": "child-burn"
+        },
+        {
+          "id": "rash",
+          "label": "A rash",
+          "next": "child-rash"
+        },
+        {
+          "id": "swelling",
+          "label": "Swelling, or a bite that is spreading",
+          "next": "child-swelling"
+        }
+      ]
+    },
+    {
+      "id": "child-burn",
+      "question": "How big is the burn?",
+      "answers": [
+        {
+          "id": "large",
+          "label": "Bigger than their palm, or on the face, hands, or genitals",
+          "next": "emergency-burn"
+        },
+        {
+          "id": "small",
+          "label": "Small, and the skin is not broken",
+          "next": "urgent-burn-small"
+        }
+      ]
+    },
+    {
+      "id": "child-rash",
+      "question": "Does it fade when you press a clear glass on it?",
+      "answers": [
+        {
+          "id": "fade",
+          "label": "Fades when I press on it",
+          "next": "watch-rash-child"
+        },
+        {
+          "id": "nofade",
+          "label": "Does not fade when I press on it",
+          "next": "emergency-rash-nofade"
+        }
+      ]
+    },
+    {
+      "id": "child-swelling",
+      "question": "Where is the swelling?",
+      "answers": [
+        {
+          "id": "face",
+          "label": "Lips, tongue, or face, or trouble swallowing",
+          "next": "emergency-anaphylaxis"
+        },
+        {
+          "id": "spreading",
+          "label": "Spreading redness, or a bite that is hot and growing",
+          "next": "urgent-spreading"
+        }
+      ]
+    },
+    {
+      "id": "pregnant-other",
+      "question": "What is happening?",
+      "answers": [
+        {
+          "id": "contractions",
+          "label": "Contractions, or heavy pressure low down",
+          "next": "urgent-preterm"
+        },
+        {
+          "id": "pain",
+          "label": "Pain in my belly, or on one side",
+          "next": "urgent-abdominal"
+        },
+        {
+          "id": "swelling",
+          "label": "Sudden swelling in my face or hands",
+          "next": "urgent-preeclampsia"
+        },
+        {
+          "id": "sick",
+          "label": "I cannot keep food or water down",
+          "next": "urgent-hyperemesis"
+        },
+        {
+          "id": "burning",
+          "label": "Burning when I pee",
+          "next": "urgent-uti"
+        },
+        {
+          "id": "other",
+          "label": "Something else",
+          "next": "urgent-other-pregnancy"
+        }
+      ]
+    },
+    {
+      "id": "postpartum-other",
+      "question": "What is happening?",
+      "answers": [
+        {
+          "id": "breast",
+          "label": "A red, painful patch on my breast",
+          "next": "urgent-mastitis"
+        },
+        {
+          "id": "wound",
+          "label": "My c-section scar or stitches look wrong",
+          "next": "urgent-wound"
+        },
+        {
+          "id": "leg",
+          "label": "One leg is swollen, hot, or painful",
+          "next": "urgent-dvt"
+        },
+        {
+          "id": "pee",
+          "label": "I cannot pee, or it burns",
+          "next": "urgent-cant-pee"
+        },
+        {
+          "id": "other",
+          "label": "Something else",
+          "next": "urgent-other-postpartum"
+        }
+      ]
+    },
+    {
+      "id": "baby-feeding",
+      "question": "What is the feeding doing?",
+      "answers": [
+        {
+          "id": "refusing",
+          "label": "Refusing feeds, or far fewer wet diapers",
+          "next": "urgent-baby-feeding"
+        },
+        {
+          "id": "vomiting",
+          "label": "Vomiting, not just spitting up",
+          "next": "baby-vomit"
+        },
+        {
+          "id": "spit",
+          "label": "Spitting up after feeds, and gaining weight",
+          "next": "watch-spit"
+        }
+      ]
+    },
+    {
+      "id": "baby-vomit",
+      "question": "What does the vomit look like?",
+      "answers": [
+        {
+          "id": "green",
+          "label": "Green or yellow-green",
+          "next": "emergency-vomit-green"
+        },
+        {
+          "id": "forceful",
+          "label": "Shoots across the room",
+          "next": "urgent-vomit-forceful"
+        },
+        {
+          "id": "ordinary",
+          "label": "Ordinary vomiting, and some feeds stay down",
+          "next": "urgent-vomit-ordinary"
+        }
+      ]
+    },
+    {
+      "id": "baby-other",
+      "question": "What is happening?",
+      "answers": [
+        {
+          "id": "sleepy",
+          "label": "Hard to wake, or unusually sleepy",
+          "next": "urgent-baby-sleepy"
+        },
+        {
+          "id": "head",
+          "label": "A bang to the head",
+          "next": "baby-head"
+        },
+        {
+          "id": "jaundice",
+          "label": "Yellow skin or eyes",
+          "next": "baby-jaundice"
+        },
+        {
+          "id": "cord",
+          "label": "The cord stump looks red, smells, or is bleeding",
+          "next": "urgent-cord"
+        },
+        {
+          "id": "crying",
+          "label": "Crying that will not stop, and nothing helps",
+          "next": "urgent-inconsolable"
+        },
+        {
+          "id": "other",
+          "label": "Something else",
+          "next": "urgent-other-baby"
+        }
+      ]
+    },
+    {
+      "id": "baby-head",
+      "question": "Were they knocked out, vomiting, or not themselves?",
+      "answers": [
+        {
+          "id": "yes",
+          "label": "Yes — knocked out, vomiting, or not themselves",
+          "next": "emergency-baby-head"
+        },
+        {
+          "id": "no",
+          "label": "No — they cried, then fed and settled",
+          "next": "watch-baby-head"
+        }
+      ]
+    },
+    {
+      "id": "baby-jaundice",
+      "question": "How old is the baby, and where is the yellow?",
+      "answers": [
+        {
+          "id": "early",
+          "label": "Under 24 hours old, or the yellow is spreading",
+          "next": "urgent-jaundice-early"
+        },
+        {
+          "id": "late",
+          "label": "A few days old, and only the face",
+          "next": "watch-jaundice"
         }
       ]
     }
@@ -1164,6 +1530,1033 @@
         "A fever",
         "Not feeding, or hard to wake"
       ]
+    },
+    {
+      "id": "urgent-other-child",
+      "kind": "urgent",
+      "headline": "Call your pediatrician today.",
+      "body": "Describe what you are seeing, how long it has been going on, and whether your child is drinking and playing. If the office is closed, use the after-hours line. If your child gets worse while you wait, call 911.",
+      "escalation": "call-pediatrician",
+      "watchFor": [
+        "Breathing that gets faster or harder",
+        "A child who stops drinking or stops waking"
+      ],
+      "sources": [
+        {
+          "id": "t-cdc-child",
+          "title": "Child development",
+          "publisher": "CDC",
+          "url": "https://www.cdc.gov/child-development/",
+          "kind": "government",
+          "accessed": "2026-10-21"
+        },
+        {
+          "id": "t-aap-injuries",
+          "title": "Injuries and emergencies",
+          "publisher": "AAP",
+          "url": "https://www.healthychildren.org/English/health-issues/injuries-emergencies/Pages/default.aspx",
+          "kind": "clinical",
+          "accessed": "2026-10-21"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-21"
+    },
+    {
+      "id": "emergency-poison",
+      "kind": "emergency",
+      "headline": "Call Poison Control now: 1-800-222-1222.",
+      "body": "Do not wait for a symptom. Have the container in your hand when you call, and say what it was, how much, and when. Do not make your child vomit. If your child is not breathing or is unconscious, call 911 instead.",
+      "escalation": "call-poison-control",
+      "watchFor": ["Keep the container, even if it is empty", "Say how much your child weighs"],
+      "sources": [
+        {
+          "id": "t-poison",
+          "title": "Poison Control",
+          "publisher": "Poison Control",
+          "url": "https://www.poison.org/",
+          "kind": "charity",
+          "accessed": "2026-10-21"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-21"
+    },
+    {
+      "id": "emergency-battery",
+      "kind": "emergency",
+      "headline": "Go to the emergency department now.",
+      "body": "A button battery in the throat or nose burns tissue within two hours, and two magnets can pull loops of bowel together. Do not wait for a symptom and do not try to make your child vomit. Call 911 if they are struggling to breathe.",
+      "escalation": "call-911",
+      "watchFor": [
+        "Bring the device the battery came from",
+        "Do not give food or drink on the way"
+      ],
+      "sources": [
+        {
+          "id": "t-poison",
+          "title": "Poison Control",
+          "publisher": "Poison Control",
+          "url": "https://www.poison.org/",
+          "kind": "charity",
+          "accessed": "2026-10-21"
+        },
+        {
+          "id": "t-aap-injuries",
+          "title": "Injuries and emergencies",
+          "publisher": "AAP",
+          "url": "https://www.healthychildren.org/English/health-issues/injuries-emergencies/Pages/default.aspx",
+          "kind": "clinical",
+          "accessed": "2026-10-21"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-21"
+    },
+    {
+      "id": "urgent-poison-other",
+      "kind": "urgent",
+      "headline": "Call Poison Control today: 1-800-222-1222.",
+      "body": "A child who seems well after swallowing something can still need a check. Poison Control will say whether to watch at home or go in, and they answer around the clock. Have the container and your child's weight ready.",
+      "escalation": "call-poison-control",
+      "watchFor": [
+        "Vomiting, drooling, or a sudden change in behaviour",
+        "A child who gets sleepy or floppy"
+      ],
+      "sources": [
+        {
+          "id": "t-poison",
+          "title": "Poison Control",
+          "publisher": "Poison Control",
+          "url": "https://www.poison.org/",
+          "kind": "charity",
+          "accessed": "2026-10-21"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-21"
+    },
+    {
+      "id": "emergency-choking-child",
+      "kind": "emergency",
+      "headline": "Call 911 now.",
+      "body": "If your child cannot breathe, cough, or make a sound, start back blows and abdominal thrusts for their age and have someone call 911. If they can cough, stay with them and let the cough work. Do not put your fingers in their mouth.",
+      "escalation": "call-911",
+      "watchFor": [
+        "Say your child's age and whether they are conscious",
+        "Unlock the door so they can get in"
+      ],
+      "sources": [
+        {
+          "id": "t-aap-choking",
+          "title": "Choking prevention",
+          "publisher": "AAP",
+          "url": "https://www.healthychildren.org/English/health-issues/injuries-emergencies/Pages/Choking-Prevention.aspx",
+          "kind": "clinical",
+          "accessed": "2026-10-20"
+        },
+        {
+          "id": "t-aap-injuries",
+          "title": "Injuries and emergencies",
+          "publisher": "AAP",
+          "url": "https://www.healthychildren.org/English/health-issues/injuries-emergencies/Pages/default.aspx",
+          "kind": "clinical",
+          "accessed": "2026-10-21"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-21"
+    },
+    {
+      "id": "emergency-breathing-child",
+      "kind": "emergency",
+      "headline": "Call 911 now.",
+      "body": "Ribs pulling in, nostrils flaring, grunting, or lips and face turning blue are signs of real trouble. Sit your child up, stay with them, and call. Do not drive yourself if you are alone with a child working this hard to breathe.",
+      "escalation": "call-911",
+      "watchFor": ["Say how long they have been like this", "Unlock the door so they can get in"],
+      "sources": [
+        {
+          "id": "t-aap-lungs",
+          "title": "Chest and lungs",
+          "publisher": "AAP",
+          "url": "https://www.healthychildren.org/English/health-issues/conditions/chest-lungs/Pages/default.aspx",
+          "kind": "clinical",
+          "accessed": "2026-10-21"
+        },
+        {
+          "id": "t-aap-injuries",
+          "title": "Injuries and emergencies",
+          "publisher": "AAP",
+          "url": "https://www.healthychildren.org/English/health-issues/injuries-emergencies/Pages/default.aspx",
+          "kind": "clinical",
+          "accessed": "2026-10-21"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-21"
+    },
+    {
+      "id": "urgent-breathing-noisy",
+      "kind": "urgent",
+      "headline": "Call your pediatrician now.",
+      "body": "A child who is talking, drinking, and playing between coughs is in a different place from one who is not. Call and describe the sound, when it started, and whether there is a fever. If the work of breathing increases, call 911.",
+      "escalation": "call-pediatrician",
+      "watchFor": [
+        "Ribs pulling in with each breath",
+        "A child who stops drinking or stops talking"
+      ],
+      "sources": [
+        {
+          "id": "t-aap-lungs",
+          "title": "Chest and lungs",
+          "publisher": "AAP",
+          "url": "https://www.healthychildren.org/English/health-issues/conditions/chest-lungs/Pages/default.aspx",
+          "kind": "clinical",
+          "accessed": "2026-10-21"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-21"
+    },
+    {
+      "id": "emergency-head",
+      "kind": "emergency",
+      "headline": "Call 911 now.",
+      "body": "Being knocked out, vomiting more than once, a seizure, clear fluid from the nose or ear, or a child who is not themselves after a bang to the head all need to be seen now. Keep them still and do not let them eat or drink.",
+      "escalation": "call-911",
+      "watchFor": [
+        "Say whether they were knocked out and for how long",
+        "Do not let them sleep it off on the way"
+      ],
+      "sources": [
+        {
+          "id": "t-aap-head",
+          "title": "Head injury in children",
+          "publisher": "AAP",
+          "url": "https://www.healthychildren.org/English/health-issues/injuries-emergencies/Pages/Head-Injury.aspx",
+          "kind": "clinical",
+          "accessed": "2026-10-21"
+        },
+        {
+          "id": "t-aap-injuries",
+          "title": "Injuries and emergencies",
+          "publisher": "AAP",
+          "url": "https://www.healthychildren.org/English/health-issues/injuries-emergencies/Pages/default.aspx",
+          "kind": "clinical",
+          "accessed": "2026-10-21"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-21"
+    },
+    {
+      "id": "watch-head",
+      "kind": "watch",
+      "headline": "Call your pediatrician today.",
+      "body": "A child who cried, then went back to playing, is the usual story after a bump. Call the office the same day so they can decide whether to see them. Wake them once in the night and check they respond as they normally do.",
+      "escalation": "call-pediatrician",
+      "watchFor": [
+        "Vomiting more than once",
+        "Unusual sleepiness, or a headache that gets worse",
+        "A pupil that is bigger than the other"
+      ],
+      "sources": [
+        {
+          "id": "t-aap-head",
+          "title": "Head injury in children",
+          "publisher": "AAP",
+          "url": "https://www.healthychildren.org/English/health-issues/injuries-emergencies/Pages/Head-Injury.aspx",
+          "kind": "clinical",
+          "accessed": "2026-10-21"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-21"
+    },
+    {
+      "id": "emergency-fever-stiff",
+      "kind": "emergency",
+      "headline": "Call 911 now.",
+      "body": "A stiff neck, light hurting the eyes, a rash that does not fade when you press it, or a child who is very hard to wake all need to be seen immediately. Do not wait for the office to open.",
+      "escalation": "call-911",
+      "watchFor": [
+        "Say how high the fever is and how long it has lasted",
+        "Unlock the door so they can get in"
+      ],
+      "sources": [
+        {
+          "id": "t-aap-fever",
+          "title": "Fever",
+          "publisher": "AAP",
+          "url": "https://www.healthychildren.org/English/health-issues/conditions/fever/Pages/default.aspx",
+          "kind": "clinical",
+          "accessed": "2026-10-20"
+        },
+        {
+          "id": "t-cdc-warning",
+          "title": "Preventing pregnancy-related deaths",
+          "publisher": "CDC",
+          "url": "https://www.cdc.gov/maternal-mortality/preventing-pregnancy-related-deaths/index.html",
+          "kind": "government",
+          "accessed": "2026-10-20"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-21"
+    },
+    {
+      "id": "urgent-fever-child",
+      "kind": "urgent",
+      "headline": "Call your pediatrician now.",
+      "body": "A fever with unusual sleepiness, a rash, trouble breathing, or a child who will not drink is seen the same day. Say all of the symptoms when you call, not just the fever.",
+      "escalation": "call-pediatrician",
+      "watchFor": [
+        "A rash that does not fade when you press it",
+        "Trouble breathing",
+        "Not drinking, or hard to wake"
+      ],
+      "sources": [
+        {
+          "id": "t-aap-fever",
+          "title": "Fever",
+          "publisher": "AAP",
+          "url": "https://www.healthychildren.org/English/health-issues/conditions/fever/Pages/default.aspx",
+          "kind": "clinical",
+          "accessed": "2026-10-20"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-21"
+    },
+    {
+      "id": "watch-fever-child",
+      "kind": "watch",
+      "headline": "Call your pediatrician if the fever lasts more than three days.",
+      "body": "A fever on its own in a child who is drinking and playing is usually something that passes. What matters is how they are between the temperatures, and how long it lasts. Offer fluids often.",
+      "escalation": "call-pediatrician",
+      "watchFor": [
+        "More than three days",
+        "A rash, or unusual sleepiness",
+        "Not drinking, or far fewer wet diapers"
+      ],
+      "sources": [
+        {
+          "id": "t-aap-fever",
+          "title": "Fever",
+          "publisher": "AAP",
+          "url": "https://www.healthychildren.org/English/health-issues/conditions/fever/Pages/default.aspx",
+          "kind": "clinical",
+          "accessed": "2026-10-20"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-21"
+    },
+    {
+      "id": "emergency-burn",
+      "kind": "emergency",
+      "headline": "Call 911 or go to the emergency department now.",
+      "body": "A burn bigger than your child's palm, or one on the face, hands, feet, or genitals, needs to be seen. Cool it under cool running water for twenty minutes and cover it loosely. Do not put ice, butter, or a cream on it.",
+      "escalation": "call-911",
+      "watchFor": ["Keep cooling under running water on the way", "Do not break any blisters"],
+      "sources": [
+        {
+          "id": "t-aap-injuries",
+          "title": "Injuries and emergencies",
+          "publisher": "AAP",
+          "url": "https://www.healthychildren.org/English/health-issues/injuries-emergencies/Pages/default.aspx",
+          "kind": "clinical",
+          "accessed": "2026-10-21"
+        },
+        {
+          "id": "t-aap-skin",
+          "title": "Skin conditions",
+          "publisher": "AAP",
+          "url": "https://www.healthychildren.org/English/health-issues/conditions/skin/Pages/default.aspx",
+          "kind": "clinical",
+          "accessed": "2026-10-20"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-21"
+    },
+    {
+      "id": "urgent-burn-small",
+      "kind": "urgent",
+      "headline": "Call your pediatrician today.",
+      "body": "A small burn with unbroken skin can usually be cared for at home, but the office should hear about it the same day. Cool it under cool running water for twenty minutes, then cover it loosely. Do not put ice on it.",
+      "escalation": "call-pediatrician",
+      "watchFor": [
+        "A burn that looks deeper, or turns white or charred",
+        "Redness that spreads past the burn"
+      ],
+      "sources": [
+        {
+          "id": "t-aap-injuries",
+          "title": "Injuries and emergencies",
+          "publisher": "AAP",
+          "url": "https://www.healthychildren.org/English/health-issues/injuries-emergencies/Pages/default.aspx",
+          "kind": "clinical",
+          "accessed": "2026-10-21"
+        },
+        {
+          "id": "t-aap-skin",
+          "title": "Skin conditions",
+          "publisher": "AAP",
+          "url": "https://www.healthychildren.org/English/health-issues/conditions/skin/Pages/default.aspx",
+          "kind": "clinical",
+          "accessed": "2026-10-20"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-21"
+    },
+    {
+      "id": "watch-rash-child",
+      "kind": "watch",
+      "headline": "Call your pediatrician if the rash does not fade when you press it.",
+      "body": "The one test worth knowing: press a clear glass on the rash. A rash that stays visible under the glass is a call. A rash that fades is watched at home, and the office should hear about it if it lasts more than a few days.",
+      "escalation": "call-pediatrician",
+      "watchFor": [
+        "A rash that does not fade under pressure",
+        "A fever arriving with it",
+        "A child who becomes sleepy or stops drinking"
+      ],
+      "sources": [
+        {
+          "id": "t-aap-skin",
+          "title": "Skin conditions",
+          "publisher": "AAP",
+          "url": "https://www.healthychildren.org/English/health-issues/conditions/skin/Pages/default.aspx",
+          "kind": "clinical",
+          "accessed": "2026-10-20"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-21"
+    },
+    {
+      "id": "emergency-rash-nofade",
+      "kind": "emergency",
+      "headline": "Call 911 now.",
+      "body": "A rash that stays visible when you press a clear glass against it can be a sign of a serious infection. It needs to be seen immediately, especially with a fever. Do not wait to see whether it fades on its own.",
+      "escalation": "call-911",
+      "watchFor": [
+        "Say whether there is a fever and how long it has lasted",
+        "Unlock the door so they can get in"
+      ],
+      "sources": [
+        {
+          "id": "t-aap-fever",
+          "title": "Fever",
+          "publisher": "AAP",
+          "url": "https://www.healthychildren.org/English/health-issues/conditions/fever/Pages/default.aspx",
+          "kind": "clinical",
+          "accessed": "2026-10-20"
+        },
+        {
+          "id": "t-aap-skin",
+          "title": "Skin conditions",
+          "publisher": "AAP",
+          "url": "https://www.healthychildren.org/English/health-issues/conditions/skin/Pages/default.aspx",
+          "kind": "clinical",
+          "accessed": "2026-10-20"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-21"
+    },
+    {
+      "id": "emergency-anaphylaxis",
+      "kind": "emergency",
+      "headline": "Call 911 now.",
+      "body": "Swelling of the lips, tongue, or face, a tight throat, or trouble swallowing after a food, a sting, or a new medicine is an emergency. Use an epinephrine auto-injector if you have one, then call. Say that you gave it.",
+      "escalation": "call-911",
+      "watchFor": [
+        "Say what they ate or touched, and when",
+        "Say whether you used an auto-injector"
+      ],
+      "sources": [
+        {
+          "id": "t-aap-allergy",
+          "title": "Allergies and asthma",
+          "publisher": "AAP",
+          "url": "https://www.healthychildren.org/English/health-issues/conditions/allergies-asthma/Pages/default.aspx",
+          "kind": "clinical",
+          "accessed": "2026-10-21"
+        },
+        {
+          "id": "t-aap-injuries",
+          "title": "Injuries and emergencies",
+          "publisher": "AAP",
+          "url": "https://www.healthychildren.org/English/health-issues/injuries-emergencies/Pages/default.aspx",
+          "kind": "clinical",
+          "accessed": "2026-10-21"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-21"
+    },
+    {
+      "id": "urgent-spreading",
+      "kind": "urgent",
+      "headline": "Call your pediatrician today.",
+      "body": "Redness that is spreading, a bite that is hot and getting bigger, or a sore with pus needs to be looked at. Draw a line around the edge of the redness with a pen so the office can see how fast it is moving.",
+      "escalation": "call-pediatrician",
+      "watchFor": [
+        "Redness that crosses the line you drew",
+        "A fever, or a child who stops drinking"
+      ],
+      "sources": [
+        {
+          "id": "t-aap-impetigo",
+          "title": "Impetigo",
+          "publisher": "AAP",
+          "url": "https://www.healthychildren.org/English/health-issues/conditions/skin/Pages/Impetigo.aspx",
+          "kind": "clinical",
+          "accessed": "2026-10-21"
+        },
+        {
+          "id": "t-aap-skin",
+          "title": "Skin conditions",
+          "publisher": "AAP",
+          "url": "https://www.healthychildren.org/English/health-issues/conditions/skin/Pages/default.aspx",
+          "kind": "clinical",
+          "accessed": "2026-10-20"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-21"
+    },
+    {
+      "id": "urgent-preterm",
+      "kind": "urgent",
+      "headline": "Call your OB triage line now.",
+      "body": "Contractions that come regularly, a heavy pressure low down, or a low backache that comes and goes can be preterm labor. Call and describe how often they come and how long they last. Do not wait to see whether they stop.",
+      "escalation": "call-ob-triage",
+      "watchFor": ["Time the contractions before you call", "Say how many weeks pregnant you are"],
+      "sources": [
+        {
+          "id": "t-acog-preterm",
+          "title": "Preterm labor and birth",
+          "publisher": "ACOG",
+          "url": "https://www.acog.org/womens-health/faqs/preterm-labor-and-birth",
+          "kind": "clinical",
+          "accessed": "2026-10-21"
+        },
+        {
+          "id": "t-acog-labor",
+          "title": "How to tell when labor begins",
+          "publisher": "ACOG",
+          "url": "https://www.acog.org/womens-health/faqs/how-to-tell-when-labor-begins",
+          "kind": "clinical",
+          "accessed": "2026-10-20"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-21"
+    },
+    {
+      "id": "urgent-abdominal",
+      "kind": "urgent",
+      "headline": "Call your OB triage line now.",
+      "body": "Pain in the belly, and especially pain on one side, needs to be talked through with someone who can see you. Call and describe where it is, when it started, and whether there is bleeding or a fever.",
+      "escalation": "call-ob-triage",
+      "watchFor": [
+        "Pain that gets worse rather than better",
+        "Bleeding, a fever, or feeling faint"
+      ],
+      "sources": [
+        {
+          "id": "t-acog-bleeding",
+          "title": "Bleeding during pregnancy",
+          "publisher": "ACOG",
+          "url": "https://www.acog.org/womens-health/faqs/bleeding-during-pregnancy",
+          "kind": "clinical",
+          "accessed": "2026-10-20"
+        },
+        {
+          "id": "t-mod-preeclampsia",
+          "title": "Preeclampsia",
+          "publisher": "March of Dimes",
+          "url": "https://www.marchofdimes.org/find-support/topics/pregnancy/preeclampsia",
+          "kind": "charity",
+          "accessed": "2026-10-20"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-21"
+    },
+    {
+      "id": "urgent-hyperemesis",
+      "kind": "urgent",
+      "headline": "Call your OB triage line today.",
+      "body": "Not keeping food or water down for a day, losing weight, or feeling dizzy when you stand can lead to dehydration. Call and say how long it has been and how much you are keeping down. There are treatments that help.",
+      "escalation": "call-ob-triage",
+      "watchFor": ["Not peeing, or dark urine", "Feeling faint when you stand up"],
+      "sources": [
+        {
+          "id": "t-acog-nausea",
+          "title": "Morning sickness: nausea and vomiting of pregnancy",
+          "publisher": "ACOG",
+          "url": "https://www.acog.org/womens-health/faqs/morning-sickness-nausea-and-vomiting-of-pregnancy",
+          "kind": "clinical",
+          "accessed": "2026-10-21"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-21"
+    },
+    {
+      "id": "urgent-uti",
+      "kind": "urgent",
+      "headline": "Call your OB triage line today.",
+      "body": "Burning when you pee, going often, or pain low in the belly can be a urinary tract infection, and those are treated in pregnancy rather than waited out. Call and ask to leave a urine sample.",
+      "escalation": "call-ob-triage",
+      "watchFor": ["A fever, or pain in your back or side", "Blood in your urine"],
+      "sources": [
+        {
+          "id": "t-owh-uti",
+          "title": "Urinary tract infections",
+          "publisher": "US Office on Women's Health",
+          "url": "https://womenshealth.gov/a-z-topics/urinary-tract-infections",
+          "kind": "government",
+          "accessed": "2026-10-21"
+        },
+        {
+          "id": "t-acog-postpartum",
+          "title": "Optimizing postpartum care",
+          "publisher": "ACOG",
+          "url": "https://www.acog.org/clinical/clinical-guidance/committee-opinion/articles/2018/05/optimizing-postpartum-care",
+          "kind": "clinical",
+          "accessed": "2026-10-20"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-21"
+    },
+    {
+      "id": "urgent-mastitis",
+      "kind": "urgent",
+      "headline": "Call your OB or your pediatrician today.",
+      "body": "A red, painful, hot patch on one breast, with a fever or flu-like aching, needs to be looked at. Keep feeding or pumping on that side. Call and say when it started and whether you have a fever.",
+      "escalation": "call-ob-triage",
+      "watchFor": [
+        "A fever that climbs, or a lump that gets bigger",
+        "Feeling faint or very unwell"
+      ],
+      "sources": [
+        {
+          "id": "t-acog-breastfeeding",
+          "title": "Breastfeeding your baby",
+          "publisher": "ACOG",
+          "url": "https://www.acog.org/womens-health/faqs/breastfeeding-your-baby",
+          "kind": "clinical",
+          "accessed": "2026-10-21"
+        },
+        {
+          "id": "t-acog-postpartum",
+          "title": "Optimizing postpartum care",
+          "publisher": "ACOG",
+          "url": "https://www.acog.org/clinical/clinical-guidance/committee-opinion/articles/2018/05/optimizing-postpartum-care",
+          "kind": "clinical",
+          "accessed": "2026-10-20"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-21"
+    },
+    {
+      "id": "urgent-wound",
+      "kind": "urgent",
+      "headline": "Call your OB triage line today.",
+      "body": "A c-section scar or stitches that are red, hot, opening, or leaking pus need to be seen. Call and describe what it looks like. A small amount of clear or pink fluid is common in the first days; pus and spreading redness are not.",
+      "escalation": "call-ob-triage",
+      "watchFor": ["The wound opening, or pus coming from it", "A fever, or redness that spreads"],
+      "sources": [
+        {
+          "id": "t-acog-cesarean",
+          "title": "Cesarean birth",
+          "publisher": "ACOG",
+          "url": "https://www.acog.org/womens-health/faqs/cesarean-birth",
+          "kind": "clinical",
+          "accessed": "2026-10-21"
+        },
+        {
+          "id": "t-acog-postpartum",
+          "title": "Optimizing postpartum care",
+          "publisher": "ACOG",
+          "url": "https://www.acog.org/clinical/clinical-guidance/committee-opinion/articles/2018/05/optimizing-postpartum-care",
+          "kind": "clinical",
+          "accessed": "2026-10-20"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-21"
+    },
+    {
+      "id": "urgent-dvt",
+      "kind": "urgent",
+      "headline": "Call your OB triage line now.",
+      "body": "One leg that is swollen, hot, or painful, especially in the calf, needs to be checked the same day. Blood clots are more common after birth. Call and say which leg and when you noticed it.",
+      "escalation": "call-ob-triage",
+      "watchFor": [
+        "Chest pain or sudden breathlessness",
+        "Swelling that gets worse through the day"
+      ],
+      "sources": [
+        {
+          "id": "t-acog-postpartum",
+          "title": "Optimizing postpartum care",
+          "publisher": "ACOG",
+          "url": "https://www.acog.org/clinical/clinical-guidance/committee-opinion/articles/2018/05/optimizing-postpartum-care",
+          "kind": "clinical",
+          "accessed": "2026-10-20"
+        },
+        {
+          "id": "t-cdc-warning",
+          "title": "Preventing pregnancy-related deaths",
+          "publisher": "CDC",
+          "url": "https://www.cdc.gov/maternal-mortality/preventing-pregnancy-related-deaths/index.html",
+          "kind": "government",
+          "accessed": "2026-10-20"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-21"
+    },
+    {
+      "id": "urgent-cant-pee",
+      "kind": "urgent",
+      "headline": "Call your OB triage line now.",
+      "body": "Not being able to pee in the first day or two after birth, or a burning that comes with it, needs to be sorted out rather than waited on. Call and say when you last went and whether it hurts.",
+      "escalation": "call-ob-triage",
+      "watchFor": ["A full, painful bladder you cannot empty", "A fever, or blood in your urine"],
+      "sources": [
+        {
+          "id": "t-acog-postpartum",
+          "title": "Optimizing postpartum care",
+          "publisher": "ACOG",
+          "url": "https://www.acog.org/clinical/clinical-guidance/committee-opinion/articles/2018/05/optimizing-postpartum-care",
+          "kind": "clinical",
+          "accessed": "2026-10-20"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-21"
+    },
+    {
+      "id": "watch-spit",
+      "kind": "watch",
+      "headline": "Mention it at the next visit.",
+      "body": "Spitting up after feeds is common in the first months. Keep them upright for twenty minutes after a feed, and mention it at the next visit. Call sooner if the spit-up is green or forceful, or if the wet diapers drop.",
+      "escalation": "call-pediatrician",
+      "watchFor": [
+        "Spit-up that is green or yellow-green",
+        "Spit-up that shoots across the room",
+        "Fewer wet diapers, or no weight gain"
+      ],
+      "sources": [
+        {
+          "id": "t-aap-feeding-index",
+          "title": "Feeding and nutrition",
+          "publisher": "AAP",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/feeding-nutrition/Pages/default.aspx",
+          "kind": "clinical",
+          "accessed": "2026-10-21"
+        },
+        {
+          "id": "t-aap-feeding",
+          "title": "How often and how much should your baby eat",
+          "publisher": "AAP",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/feeding-nutrition/Pages/How-Often-and-How-Much-Should-Your-Baby-Eat.aspx",
+          "kind": "clinical",
+          "accessed": "2026-10-20"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-21"
+    },
+    {
+      "id": "emergency-vomit-green",
+      "kind": "emergency",
+      "headline": "Go to the emergency department now.",
+      "body": "Green or yellow-green vomit in a baby can mean a blockage in the bowel, and it needs to be seen immediately. Do not feed them on the way. Call 911 if they are hard to wake or struggling to breathe.",
+      "escalation": "call-911",
+      "watchFor": ["Bring the last diaper, or a photo of it", "Do not feed them on the way"],
+      "sources": [
+        {
+          "id": "t-aap-abdominal",
+          "title": "Abdominal pain",
+          "publisher": "AAP",
+          "url": "https://www.healthychildren.org/English/health-issues/conditions/abdominal/Pages/default.aspx",
+          "kind": "clinical",
+          "accessed": "2026-10-21"
+        },
+        {
+          "id": "t-aap-injuries",
+          "title": "Injuries and emergencies",
+          "publisher": "AAP",
+          "url": "https://www.healthychildren.org/English/health-issues/injuries-emergencies/Pages/default.aspx",
+          "kind": "clinical",
+          "accessed": "2026-10-21"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-21"
+    },
+    {
+      "id": "urgent-vomit-forceful",
+      "kind": "urgent",
+      "headline": "Call your pediatrician now.",
+      "body": "Vomiting that shoots across the room, rather than spilling out, is different from spit-up and needs to be looked at. Call and say how often it happens and whether the baby is hungry again straight after.",
+      "escalation": "call-pediatrician",
+      "watchFor": ["Fewer wet diapers", "A baby who is hungry but cannot keep anything down"],
+      "sources": [
+        {
+          "id": "t-aap-abdominal",
+          "title": "Abdominal pain",
+          "publisher": "AAP",
+          "url": "https://www.healthychildren.org/English/health-issues/conditions/abdominal/Pages/default.aspx",
+          "kind": "clinical",
+          "accessed": "2026-10-21"
+        },
+        {
+          "id": "t-aap-feeding-index",
+          "title": "Feeding and nutrition",
+          "publisher": "AAP",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/feeding-nutrition/Pages/default.aspx",
+          "kind": "clinical",
+          "accessed": "2026-10-21"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-21"
+    },
+    {
+      "id": "urgent-vomit-ordinary",
+      "kind": "urgent",
+      "headline": "Call your pediatrician today.",
+      "body": "Vomiting more than a few times, or a baby who is keeping nothing down, needs a call the same day. Offer small feeds often. Watch the wet diapers, because that is the clearest sign of whether they are getting enough fluid.",
+      "escalation": "call-pediatrician",
+      "watchFor": [
+        "No wet diaper for six hours or more",
+        "A sunken soft spot, or no tears when crying"
+      ],
+      "sources": [
+        {
+          "id": "t-aap-abdominal",
+          "title": "Abdominal pain",
+          "publisher": "AAP",
+          "url": "https://www.healthychildren.org/English/health-issues/conditions/abdominal/Pages/default.aspx",
+          "kind": "clinical",
+          "accessed": "2026-10-21"
+        },
+        {
+          "id": "t-aap-feeding",
+          "title": "How often and how much should your baby eat",
+          "publisher": "AAP",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/feeding-nutrition/Pages/How-Often-and-How-Much-Should-Your-Baby-Eat.aspx",
+          "kind": "clinical",
+          "accessed": "2026-10-20"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-21"
+    },
+    {
+      "id": "urgent-cord",
+      "kind": "urgent",
+      "headline": "Call your pediatrician today.",
+      "body": "A cord stump that is red at the base, smells bad, or is bleeding needs to be looked at. Keep it dry and let it fall off on its own. Call and describe what you are seeing.",
+      "escalation": "call-pediatrician",
+      "watchFor": [
+        "Redness spreading onto the skin around the stump",
+        "A fever, or a baby who feeds less"
+      ],
+      "sources": [
+        {
+          "id": "t-aap-baby",
+          "title": "Your baby's first year",
+          "publisher": "AAP",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/Pages/default.aspx",
+          "kind": "clinical",
+          "accessed": "2026-10-21"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-21"
+    },
+    {
+      "id": "urgent-inconsolable",
+      "kind": "urgent",
+      "headline": "Call your pediatrician today.",
+      "body": "Crying that will not stop, and a baby who cannot be settled by feeding, a change, or being held, is worth a call. It is also worth putting the baby down safely and stepping away for a few minutes if you feel close to the edge.",
+      "escalation": "call-pediatrician",
+      "watchFor": [
+        "A cry that sounds different, or is weaker",
+        "A baby who stops feeding or stops waking"
+      ],
+      "sources": [
+        {
+          "id": "t-aap-crying",
+          "title": "Crying and colic",
+          "publisher": "AAP",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/crying-colic/Pages/default.aspx",
+          "kind": "clinical",
+          "accessed": "2026-10-21"
+        },
+        {
+          "id": "t-aap-baby",
+          "title": "Your baby's first year",
+          "publisher": "AAP",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/Pages/default.aspx",
+          "kind": "clinical",
+          "accessed": "2026-10-21"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-21"
+    },
+    {
+      "id": "urgent-other-baby",
+      "kind": "urgent",
+      "headline": "Call your pediatrician today.",
+      "body": "Describe what you are seeing, how long it has been going on, and whether the baby is feeding and having wet diapers. If the office is closed, use the after-hours line. If the baby gets worse while you wait, call 911.",
+      "escalation": "call-pediatrician",
+      "watchFor": [
+        "Breathing that gets faster or harder",
+        "A baby who stops feeding or stops waking"
+      ],
+      "sources": [
+        {
+          "id": "t-aap-baby",
+          "title": "Your baby's first year",
+          "publisher": "AAP",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/Pages/default.aspx",
+          "kind": "clinical",
+          "accessed": "2026-10-21"
+        },
+        {
+          "id": "t-cdc-warning",
+          "title": "Preventing pregnancy-related deaths",
+          "publisher": "CDC",
+          "url": "https://www.cdc.gov/maternal-mortality/preventing-pregnancy-related-deaths/index.html",
+          "kind": "government",
+          "accessed": "2026-10-20"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-21"
+    },
+    {
+      "id": "emergency-baby-head",
+      "kind": "emergency",
+      "headline": "Call 911 now.",
+      "body": "Being knocked out, vomiting more than once, a seizure, or a baby who is not themselves after a bang to the head needs to be seen now. Keep them still and do not feed them on the way.",
+      "escalation": "call-911",
+      "watchFor": [
+        "Say whether they were knocked out and for how long",
+        "Do not feed them on the way"
+      ],
+      "sources": [
+        {
+          "id": "t-aap-head",
+          "title": "Head injury in children",
+          "publisher": "AAP",
+          "url": "https://www.healthychildren.org/English/health-issues/injuries-emergencies/Pages/Head-Injury.aspx",
+          "kind": "clinical",
+          "accessed": "2026-10-21"
+        },
+        {
+          "id": "t-aap-injuries",
+          "title": "Injuries and emergencies",
+          "publisher": "AAP",
+          "url": "https://www.healthychildren.org/English/health-issues/injuries-emergencies/Pages/default.aspx",
+          "kind": "clinical",
+          "accessed": "2026-10-21"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-21"
+    },
+    {
+      "id": "watch-baby-head",
+      "kind": "watch",
+      "headline": "Call your pediatrician today.",
+      "body": "A baby who cried, then fed and settled, is the usual story after a small bump. Call the office the same day so they can decide whether to see them. Wake them once in the night and check they feed as they normally do.",
+      "escalation": "call-pediatrician",
+      "watchFor": [
+        "Vomiting more than once",
+        "Unusual sleepiness, or a soft spot that bulges",
+        "A pupil that is bigger than the other"
+      ],
+      "sources": [
+        {
+          "id": "t-aap-head",
+          "title": "Head injury in children",
+          "publisher": "AAP",
+          "url": "https://www.healthychildren.org/English/health-issues/injuries-emergencies/Pages/Head-Injury.aspx",
+          "kind": "clinical",
+          "accessed": "2026-10-21"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-21"
+    },
+    {
+      "id": "urgent-jaundice-early",
+      "kind": "urgent",
+      "headline": "Call your pediatrician now.",
+      "body": "Yellow skin or eyes in the first 24 hours, or yellow that is spreading to the belly or legs, needs to be checked the same day. Call and say how old the baby is and where the yellow reaches.",
+      "escalation": "call-pediatrician",
+      "watchFor": [
+        "Yellow in the first 24 hours of life",
+        "A baby who is sleepier than usual or feeding less"
+      ],
+      "sources": [
+        {
+          "id": "t-aap-jaundice",
+          "title": "Jaundice in newborns",
+          "publisher": "AAP",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/Pages/Jaundice.aspx",
+          "kind": "clinical",
+          "accessed": "2026-10-21"
+        },
+        {
+          "id": "t-aap-baby",
+          "title": "Your baby's first year",
+          "publisher": "AAP",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/Pages/default.aspx",
+          "kind": "clinical",
+          "accessed": "2026-10-21"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-21"
+    },
+    {
+      "id": "watch-jaundice",
+      "kind": "watch",
+      "headline": "Mention it at the next visit.",
+      "body": "Yellow that shows up after the first day and stays on the face is the usual pattern. Feed often, because feeding is what clears it, and mention it at the next visit. Call sooner if the yellow spreads or the baby is sleepier.",
+      "escalation": "call-pediatrician",
+      "watchFor": [
+        "Yellow spreading to the belly, arms, or legs",
+        "A baby who is hard to wake for feeds"
+      ],
+      "sources": [
+        {
+          "id": "t-aap-jaundice",
+          "title": "Jaundice in newborns",
+          "publisher": "AAP",
+          "url": "https://www.healthychildren.org/English/ages-stages/baby/Pages/Jaundice.aspx",
+          "kind": "clinical",
+          "accessed": "2026-10-21"
+        }
+      ],
+      "reviewedBy": "Clinical review pending",
+      "reviewedAt": "2026-10-21"
     }
   ]
 }

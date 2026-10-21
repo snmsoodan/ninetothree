@@ -1203,6 +1203,35 @@ The fallback is now `public/offline.html`: no JavaScript, no build stylesheet, i
 
 **Verification.** 85 stage packs valid, 251 catalogue entries, zero findings. 1,372 unit tests (content 500, rules 121, ui 53, web 698). 94 chromium e2e, 91 storybook stories, 287 links none broken none moved, Lighthouse assertions pass on all seven URLs. `/week/[id]` prerenders 85 paths.
 
-## 37. How this file is maintained
+## 37. Triage content (issue #50)
+
+**The acceptance criterion was already met, and the tree was still wrong.** Issue #50 asked for "20 red-flag paths, clinician-reviewed, with local numbers", and the shipped tree had **31** root-to-outcome paths. Counting paths would have closed the issue. Reading the first question would not have: it offered three answers — me and I am pregnant, me and I have given birth, the baby — and **nothing for a child past their first birthday**. A parent of a two-year-old who had swallowed a button battery had no path at all. The guide covers thirty-six months; the safety tree covered twelve.
+
+**The tree went from 13 nodes and 30 results to 29 nodes and 67 results, and from 31 paths to 69.** Seventeen new sources, all probed live. The new branches:
+
+- **Pregnancy** — a new `pregnant-other` node behind the existing "something else" answer, covering preterm contractions, waters breaking, severe abdominal pain, vomiting that will not stay down, and a suspected urinary tract infection.
+- **After birth** — a new `postpartum-other` node covering mastitis, a caesarean wound, a painful swollen leg, and not being able to pee.
+- **The baby** — `baby-feeding`, `baby-vomit`, `baby-other`, `baby-head` and `baby-jaundice`, covering green vomit, dehydration, a bang to the head, jaundice after the first week, and a cord that looks infected.
+- **A child** — a whole new branch: `child-what`, then `child-swallowed`, `child-breathing`, `child-head`, `child-fever`, `child-skin`, `child-burn`, `child-rash` and `child-swelling`.
+
+**The six-answer cap forced two-level restructures rather than new answers.** `pregnant-what`, `postpartum-what` and `baby-what` were all already at the schema's maximum of six answers, so each new branch had to hang off an existing "something else" answer rather than sit beside it. That is the right shape anyway — a first question with nine answers is a menu, not a question — but it means the next expansion has the same constraint.
+
+**Three results were deliberately not reused for the child branch.** `urgent-fever-symptoms` says "refusing feeds", `watch-fever-older` says "older baby", and `watch-rash` says "in a baby who is feeding and alert". All three are true of a baby and wrong for a two-year-old. Child-specific variants were written instead. Reusing a result because the escalation matches is how a tree starts telling a parent of a toddler to watch for a symptom a toddler cannot have.
+
+**A Python dict cannot hold two keys for the same node, and that is how the first run failed.** The expansion script rewired four answers through a `REWIRE` dict, and two of the four were for `baby-what` — so the second silently overwrote the first, `baby-what.feeding` was never rewired, and six results became unreachable. `treeIssues()` caught it: `"baby-feeding" cannot be reached from the root`, six times. The fix was a list of tuples, not a dict. The validator is the reason this was a five-minute bug instead of a shipped dead branch.
+
+**A new guard test states the product rule, not the schema rule.** `treeIssues()` already fails the build if a node is unreachable, so the reachability check is the real guard. What it cannot say is _why_ the first question matters. The new test in `triage.test.ts` asserts that the root's answers reach `pregnant-what`, `postpartum-what`, `baby-what` **and** `child-what`, with a comment explaining that the first question is the only one every parent sees and therefore the only place a whole stage of childhood can go missing. Removing the `child` answer makes the tree fail to load entirely — fifteen unreachable nodes — which is the proof that the guard has teeth.
+
+**Two product-level e2e tests, and one axe test.** `"a parent of a two-year-old can find the path for something swallowed"` walks the tree from `/triage` by clicking, and asserts the outcome is "Go to the emergency department now." with a `tel:911` link. `"a swallowed medicine sends a parent to Poison Control, not to a search engine"` deep-links `/triage?p=child,swallowed,medicine` and asserts the headline names the number and the link's `href` is `tel:18002221222`. The axe test runs on the same deep link, because a safety outcome is the one page where a contrast failure is not cosmetic.
+
+**A pre-existing e2e flake was found and fixed on the way.** `"changing a setting re-personalizes the week without a reload"` failed once, then passed in isolation. The cause was a bare `for` loop clicking "Next →" ten times: `click()` resolves when the click is dispatched, not when the next page renders, so under load a second click lands on the same page and a hop is lost. Ten clicks produced seven navigations and the test landed on week 35. It is now a hop-by-hop loop that awaits each URL. This is a general Playwright lesson, not a one-off — any multi-hop click loop needs the assertion inside it.
+
+**Every new source URL was probed before it was written.** Seventeen new sources, all 200: ACOG's preterm labor, morning sickness and caesarean pages; `womenshealth.gov`'s urinary tract infection page (bare host — `www.` redirects); Poison Control; and nine `healthychildren.org` pages, of which the sub-indexes (`injuries-emergencies`, `abdominal`, `chest-lungs`, `allergies-asthma`, `ear-nose-throat`, `fever`, `skin`) all resolve and **every guessed article path 404s** — `Burns.aspx`, `Dehydration.aspx`, `Vomiting.aspx`, `Anaphylaxis.aspx`, `Button-Battery-Injuries.aspx` and nine more. The sub-index is the honest citation when the article does not exist.
+
+**What this does not do.** Clinical sign-off is still pending: all 67 results say `"reviewedBy": "Clinical review pending"`. `lintTriage` checks only the reassurance rule and a non-empty `reviewedBy` — triage bodies are not held to the reading level or the obligation rule, so the voice rules are enforced by review, not by CI. `TriageResult` has no `phone` field; every number comes from `ESCALATION_COPY`, which means a result cannot carry a number the product does not already know. And the tree is one tree, not an array, so a second tree (a separate one for, say, a partner) would need a schema change.
+
+**Verification.** 85 stage packs valid, 251 catalogue entries, 6 articles, **69 triage paths none of them reassuring**, 5 recalls, zero findings. 1,373 unit tests (content 501, rules 121, ui 53, web 698). 97 chromium e2e, 91 storybook stories, 294 links none broken none moved, Lighthouse assertions pass on all seven URLs. `/week/[id]` prerenders 85 paths.
+
+## 38. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.
