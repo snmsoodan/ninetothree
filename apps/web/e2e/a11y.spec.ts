@@ -103,6 +103,41 @@ test("the dashboard has no violations with a reminder showing", async ({ page })
   expect(await audit(page)).toEqual([]);
 });
 
+test("the email preview has no violations", async ({ page }) => {
+  await onboard(page);
+  await page.evaluate(() => {
+    const key = "ninetothree.v1";
+    const raw = window.localStorage.getItem(key);
+    const state = raw ? JSON.parse(raw) : {};
+    window.localStorage.setItem(
+      key,
+      JSON.stringify({
+        ...state,
+        notifications: {
+          email: true,
+          push: false,
+          frequency: "weekly",
+          paused: false,
+          quietFrom: 21,
+          quietTo: 8,
+        },
+      }),
+    );
+  });
+  await page.goto("/email");
+  await expect(page.getByRole("heading", { name: "The weekly email" })).toBeVisible();
+  expect(await audit(page)).toEqual([]);
+});
+
+test("the email preview has no violations when nothing would be sent", async ({ page }) => {
+  await onboard(page);
+  await page.goto("/email");
+  await expect(
+    page.getByRole("heading", { name: "Nothing would be sent this week" }),
+  ).toBeVisible();
+  expect(await audit(page)).toEqual([]);
+});
+
 test("the appointments page has no violations", async ({ page }) => {
   await onboard(page);
   await page.goto("/appointments");
@@ -259,6 +294,7 @@ test("every route has exactly one skip-link target", async ({ page }) => {
     "/triage?p=me-pregnant,bleeding,spotting",
     "/safety",
     "/settings",
+    "/email",
   ]) {
     await page.goto(path);
     await expect(page.locator("#main")).toHaveCount(1);

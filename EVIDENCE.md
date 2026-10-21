@@ -1041,6 +1041,34 @@ The fix is `settledIds(pack, state)` in `apps/web/src/lib/week.ts`: a step is se
 
 **Verification.** 28 tests for `reminders.ts` (100% lines, branches, functions, statements), 7 for `appointments.ts` (100%), 8 for `ReminderCard.tsx` (100%), 6 new for `PinList.tsx` (100%), 3 for `pins.ts`, 17 new store tests. 6 e2e tests in `e2e/reminders.spec.ts`, one axe run on the dashboard with both a reminder and a pin reminder showing, 3 stories. Full gate: 1,284 unit tests, 74 chromium e2e, 82 storybook stories, 135 links none broken none moved, Lighthouse 1.0 accessibility on all seven URLs.
 
-## 31. How this file is maintained
+## 31. The weekly email (issue #33)
+
+**The issue asked for a React Email template, a per-timezone send, idempotency, and one-click unsubscribe, with an AC of three actions plus a partner card plus a red flag, no send after a loss, and no re-engagement drips.** All three are real. What is not real is a transport: there is no mail server in this version, so the email is a model, a template and a preview, and the preview says so in its first sentence.
+
+**A reason, not a boolean.** `weeklyEmailReason` returns one of `ok`, `not-onboarded`, `no-stage`, `no-pack`, `nothing-left`, or one of the six `SendReason` values from the gate. The same shape as `shouldSend`, for the same reason: a parent who opens the preview and sees nothing deserves to know which of ten things stopped it, and a job log that says `false` explains nothing. `EMAIL_REASON_COPY` is the one place those sentences live, so the page and the log cannot drift.
+
+**`null` in five cases, and each one is a promise.** Not onboarded, no stage, no pack for this week, the gate said no, and — the one that matters most — **nothing left to do**. An email that says "you're all done" is a re-engagement drip wearing a friendly face. The test asserts it: with all three actions settled, `buildWeeklyEmail` returns `null` and the reason is `nothing-left`.
+
+**No re-engagement drips by construction.** There is no function that takes a "last seen" date, and there is no parameter that could become one. The email is always about the week the parent is in _now_: `resolve` computes the stage from `today` and nothing else. A test proves that a parent who has not opened the app in a year gets the email for the week they are actually in, not a "we miss you".
+
+**The subject and the week label use `stageLabel(stage)`, not `pack.title`.** `findPackForStage` returns the most recent pack at or before the stage, so a week-30 parent reads the week-28 pack. Heading that email "Week 28" would be a lie about where the parent is, and the lie would be in the subject line. The label is the parent's week; the pack is only the source of the words.
+
+**The key is `packId:YYYY-MM-DD`.** A retry after a success is refused — `sendWeeklyEmail` returns `already-sent` without calling the transport. A transport that throws leaves the email sendable, because the key is recorded by the caller _after_ a successful send, not before. Both paths are tested against a fake transport.
+
+**8am in the parent's zone, not 8am UTC.** `nextSendAt` converts a wall-clock hour to an instant with two offset passes, because the offset at the guessed instant can differ from the offset at the real one — that is exactly what a DST boundary is. The test pins it: 8am on 2026-10-31 in New York is 12:00Z (EDT) and 8am on 2026-11-02 is 13:00Z (EST). A half-hour zone (`Asia/Kolkata`) and the midnight-reported-as-24 quirk are covered too. At exactly the send hour the send has already happened, so it rolls to tomorrow: sending twice is worse than sending late.
+
+**The unsubscribe link is visible in the body.** "You get this because you asked for it. Turn it off — one click, no questions." A link a parent has to hunt for in a grey footer is not one click. It goes to `/settings#notify-heading`, which is the same section the toggle lives in.
+
+**No images, no tracking pixel, no logo.** A parent reading at 6am on a phone should see words. The red flag is a 2px clay left border and a word — never a banner, an icon, or "URGENT".
+
+**Two renderers, one model.** `src/emails/WeeklyEmail.tsx` is the transport artifact: hardcoded hex, no app CSS, because an email has to carry its own styles. `src/components/EmailPreview.tsx` is the product surface: app tokens, app type. Both read the same `WeeklyEmail`, so the words cannot drift; only the styling differs, and it has to.
+
+**A bug this found.** The onboarding shortcut "assume I am 28 weeks" computed its due date from `new Date().toISOString().slice(0, 10)` — the UTC date — while every other surface uses `localDate`. In Los Angeles after 5pm the UTC date is already tomorrow, so a brand-new parent landed on **week 27** and read the week-20 pack. The e2e test caught it because the preview said "WEEK 27" where the test expected "Week 28". `OnboardingFlow.tsx` now calls `localDate` too, which is the third place that bug has been fixed.
+
+**What this does not do.** There is no transport and no server-side store. `sendWeeklyEmail` is proven against a fake; the preview page is the delivery mechanism in this version, and it says so. `@react-email/components` 1.0.12 is flagged deprecated by pnpm and should be checked for a maintained successor before the email ships for real.
+
+**Verification.** 36 tests for `email.ts` (100% lines, branches, functions, statements), 8 for `WeeklyEmail.tsx` (100%), 9 for `EmailPreview.tsx` (100%). 7 e2e tests in `e2e/email.spec.ts`, 2 axe runs on `/email` (with an email and with nothing to send), 4 stories. Full gate: 1,337 unit tests, 83 chromium e2e, 86 storybook stories, 135 links none broken none moved, Lighthouse 1.0 accessibility on all seven URLs.
+
+## 32. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.

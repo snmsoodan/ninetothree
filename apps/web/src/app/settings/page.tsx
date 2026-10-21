@@ -10,7 +10,7 @@ import {
   suppressesEmail,
   writeField,
 } from "@ninetothree/rules";
-import { Button, Card, CardBody, Dialog, RadioGroup } from "@ninetothree/ui";
+import { Button, Card, CardBody, Dialog, RadioGroup, TextLink } from "@ninetothree/ui";
 import { ButtonLink } from "@/components/ButtonLink";
 import { AppShell } from "@/components/AppShell";
 import { NotificationSettings } from "@/components/NotificationSettings";
@@ -166,6 +166,9 @@ export default function SettingsPage() {
                 onChange={setNotifications}
                 loss={suppressesEmail(state.profile)}
               />
+              <p className="mt-4 text-sm text-ink-muted">
+                <TextLink href="/email">See what this week&rsquo;s email would say</TextLink>
+              </p>
             </CardBody>
           </Card>
         </section>

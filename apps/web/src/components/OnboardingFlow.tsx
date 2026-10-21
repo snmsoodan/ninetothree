@@ -12,6 +12,7 @@ import {
   type OnboardingStep,
 } from "@/lib/store";
 import { countryName, detectCountry, isCovered } from "@/lib/country";
+import { localDate } from "@/lib/reminders";
 import { HelpNow } from "./HelpNow";
 
 const FEEDING = [
@@ -33,7 +34,9 @@ const COUNTRY = [
 ];
 
 function todayIso(): string {
-  return new Date().toISOString().slice(0, 10);
+  // The parent's calendar, not UTC. In Los Angeles after 5pm the UTC date is
+  // already tomorrow, which would put a brand-new parent a week behind.
+  return localDate(new Date());
 }
 
 function addDays(iso: string, days: number): string {
