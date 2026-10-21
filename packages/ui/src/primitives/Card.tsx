@@ -13,7 +13,9 @@ const tones = {
 } as const;
 
 export function Card({ tone = "raised", className, ...props }: CardProps) {
-  return <div className={cn("rounded-lg", tones[tone], className)} {...props} />;
+  // `data-surface` is the hook Windows High Contrast Mode uses to give a
+  // sunken card a border, because it throws the background colour away.
+  return <div data-surface="" className={cn("rounded-lg", tones[tone], className)} {...props} />;
 }
 
 export function CardHeader({ className, ...props }: HTMLAttributes<HTMLDivElement>) {

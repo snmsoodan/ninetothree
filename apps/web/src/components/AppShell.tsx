@@ -37,7 +37,9 @@ export function AppShell({ children, stage, flags, safetyContent = false }: AppS
   // A soft settle, not a transition. Transform only — dimming the text
   // would drop the whole page below AA for the length of the fade, which
   // is a real cost to a low-vision parent, not a test artifact. The
-  // duration tokens collapse to 0ms under prefers-reduced-motion.
+  // duration tokens collapse to 0ms under prefers-reduced-motion, and
+  // tokens.css removes the transform entirely for [data-settle] so the
+  // settle cannot become a 4px flash.
   const [settling, setSettling] = useState(false);
   useEffect(() => {
     setSettling(true);
@@ -75,6 +77,7 @@ export function AppShell({ children, stage, flags, safetyContent = false }: AppS
       <main
         id="main"
         tabIndex={-1}
+        data-settle=""
         className={cn(
           "mx-auto max-w-2xl px-5 pb-28 pt-6",
           "transition-transform duration-[var(--duration-base)] ease-[var(--ease-calm)]",

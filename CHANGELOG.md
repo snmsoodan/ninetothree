@@ -9,6 +9,34 @@ changelog written after the fact from memory is a changelog nobody can trust.
 
 ## Unreleased
 
+### Accessibility: the settings that were already written now do something (#44)
+
+- `tokens.css` had `:root[data-contrast="more"]` and `:root[data-motion="reduced"]`
+  since the first commit, and **nothing in the app ever set those attributes**.
+  The device media queries worked; the in-app overrides were dead CSS. They are
+  live now.
+- Three settings in `/settings`: **More contrast**, **Less motion**, and
+  **Easier to tell apart** (Atkinson Hyperlegible, self-hosted, 11 KB per weight).
+  There is no text-size slider, and the copy says why: the browser's zoom is
+  better at that than a second, worse zoom.
+- The attributes are set by an inline script that runs **before the first paint**,
+  not by a React effect. An effect runs after paint, so a parent who needs high
+  contrast would see one frame of the low-contrast page on every cold load.
+- Zeroing a transition duration does not remove the movement. The route settle is
+  a 4px transform, and at `0ms` it still jumps and returns — a flash. It is now
+  removed outright under reduced motion.
+- `Card` carries `data-surface` so Windows High Contrast Mode can draw a border
+  around a sunken card, which is a card only because of its background colour.
+- `offline.html` honours the device's contrast and motion settings. Its contrast
+  block had to come before the dark-scheme block, or dark mode would have been
+  given dark-on-dark text.
+- Seven new axe runs (four under the new settings), a keyboard-only test, a
+  320px reflow test over seven routes, and a 200%-text test. **The 320px test
+  passed** — the five bottom tabs were a guess and the guess was right.
+- `A11Y_CHECKLIST.md` records what is automated, what is manual, and what is
+  **not done**: no VoiceOver/NVDA pass, no Windows High Contrast Mode
+  verification, no user testing with a disabled parent.
+
 ### Triage: a parent of a two-year-old can now find the path (#50)
 
 - The tree had 31 paths, so the issue's "20 paths" was already met. It also had

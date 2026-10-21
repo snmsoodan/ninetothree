@@ -35,6 +35,29 @@ async function onboardToWeek(page: Page) {
   await page.goto("/week");
 }
 
+/**
+ * The reading controls are stored, not applied by a click, so the honest way to
+ * test them is to seed the store and let the bootstrap script do the work on
+ * the next load. That is the path a parent's second visit actually takes.
+ */
+async function seedReading(page: Page, reading: Record<string, string>) {
+  await page.evaluate((patch) => {
+    const key = "ninetothree.v1";
+    const raw = window.localStorage.getItem(key);
+    const state = raw ? JSON.parse(raw) : {};
+    state.reading = patch;
+    window.localStorage.setItem(key, JSON.stringify(state));
+  }, reading);
+  await page.reload();
+}
+
+/** WCAG 1.4.10 Reflow: nothing may scroll sideways at 320 CSS pixels. */
+async function overflowsSideways(page: Page) {
+  return page.evaluate(
+    () => document.documentElement.scrollWidth > document.documentElement.clientWidth,
+  );
+}
+
 test("onboarding has no violations", async ({ page }) => {
   await page.goto("/onboarding");
   expect(await audit(page)).toEqual([]);
@@ -306,5 +329,75 @@ test("every route has exactly one skip-link target", async ({ page }) => {
     await expect(page.locator("#main")).toHaveCount(1);
     const href = await page.getByRole("link", { name: "Skip to content" }).getAttribute("href");
     expect(href).toBe("#main");
+  }
+});
+
+test("the week has no violations with more contrast", async ({ page }) => {
+  await onboardToWeek(page);
+  await seedReading(page, { contrast: "more" });
+  await expect(page.locator("html")).toHaveAttribute("data-contrast", "more");
+  expect(await audit(page)).toEqual([]);
+});
+
+test("settings has no violations with more contrast", async ({ page }) => {
+  await onboard(page);
+  await page.goto("/settings");
+  await seedReading(page, { contrast: "more" });
+  expect(await audit(page)).toEqual([]);
+});
+
+test("the week has no violations with less motion", async ({ page }) => {
+  await onboardToWeek(page);
+  await seedReading(page, { motion: "reduced" });
+  await expect(page.locator("html")).toHaveAttribute("data-motion", "reduced");
+  expect(await audit(page)).toEqual([]);
+});
+
+test("the week has no violations in the easier-to-read letters", async ({ page }) => {
+  await onboardToWeek(page);
+  await seedReading(page, { letters: "hyperlegible" });
+  await expect(page.locator("html")).toHaveAttribute("data-font", "hyperlegible");
+  expect(await audit(page)).toEqual([]);
+});
+
+test("a parent can change how the page reads with the keyboard alone", async ({ page }) => {
+  await onboard(page);
+  await page.goto("/settings");
+
+  const more = page.getByRole("radio", { name: "More contrast" });
+  await more.focus();
+  await page.keyboard.press("Space");
+  await expect(page.locator("html")).toHaveAttribute("data-contrast", "more");
+
+  const reduced = page.getByRole("radio", { name: "Less motion" });
+  await reduced.focus();
+  await page.keyboard.press("Space");
+  await expect(page.locator("html")).toHaveAttribute("data-motion", "reduced");
+
+  // The choice is a preference, so it has to outlive the tab.
+  await page.reload();
+  await expect(page.locator("html")).toHaveAttribute("data-contrast", "more");
+  await expect(page.locator("html")).toHaveAttribute("data-motion", "reduced");
+});
+
+test("nothing scrolls sideways at 320 pixels", async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 640 });
+  await onboard(page);
+  for (const path of ["/", "/week", "/shelf", "/library", "/settings", "/safety", "/triage"]) {
+    await page.goto(path);
+    expect(await overflowsSideways(page), `${path} scrolls sideways at 320px`).toBe(false);
+  }
+});
+
+test("nothing is clipped when the text is twice the size", async ({ page }) => {
+  // WCAG 1.4.4 is tested at a normal viewport with the text doubled, not at
+  // 320px — that is 1.4.10, and it is the test above.
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await onboard(page);
+  for (const path of ["/", "/week", "/settings", "/safety"]) {
+    await page.goto(path);
+    // 200% text is the WCAG 1.4.4 equivalent of browser zoom for a rem layout.
+    await page.addStyleTag({ content: "html { font-size: 32px !important; }" });
+    expect(await overflowsSideways(page), `${path} clips at 200% text`).toBe(false);
   }
 });

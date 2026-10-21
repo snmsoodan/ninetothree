@@ -16,12 +16,14 @@ import { AppShell } from "@/components/AppShell";
 import { InstallPrompt } from "@/components/InstallPrompt";
 import { NotificationSettings } from "@/components/NotificationSettings";
 import { ProfilePreview } from "@/components/ProfilePreview";
+import { ReadingSettings } from "@/components/ReadingSettings";
 import {
   resetAll,
   stageInput,
   updateDates,
   setNotifications,
   setProfile,
+  setReading,
   useAppState,
   useHydrated,
 } from "@/lib/store";
@@ -179,6 +181,21 @@ export default function SettingsPage() {
             On your phone
           </h2>
           <InstallPrompt />
+        </section>
+
+        <section aria-labelledby="reading-heading" className="mt-10">
+          <h2 id="reading-heading" className="font-display text-2xl text-ink">
+            Reading and motion
+          </h2>
+          <p className="mt-2 text-sm text-ink-muted">
+            Your browser&rsquo;s zoom is the right tool for size. These three are the things zoom
+            cannot do.
+          </p>
+          <Card className="mt-3">
+            <CardBody className="pt-5">
+              <ReadingSettings prefs={state.reading} onChange={setReading} />
+            </CardBody>
+          </Card>
         </section>
 
         <ProfilePreview packs={PACKS} profile={state.profile} />

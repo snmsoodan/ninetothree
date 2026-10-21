@@ -39,6 +39,7 @@ import {
   markReminded,
   setNotifications,
   setPinReminder,
+  setReading,
   setProfile,
   snooze,
   stageInput,
@@ -1147,6 +1148,55 @@ describe("notification preferences", () => {
     setNotifications({ email: true, paused: true });
     resetAll();
     expect(getSnapshot().notifications).toEqual(EMPTY_STATE.notifications);
+  });
+});
+
+describe("reading preferences", () => {
+  it("starts by following the device", () => {
+    expect(getSnapshot().reading).toEqual({
+      contrast: "default",
+      motion: "default",
+      letters: "default",
+    });
+  });
+
+  it("merges a patch rather than replacing the whole object", () => {
+    setReading({ contrast: "more" });
+    setReading({ letters: "hyperlegible" });
+    expect(getSnapshot().reading.contrast).toBe("more");
+    expect(getSnapshot().reading.letters).toBe("hyperlegible");
+    expect(getSnapshot().reading.motion).toBe("default");
+  });
+
+  it("survives a reload", () => {
+    setReading({ contrast: "more", motion: "reduced" });
+    __resetForTests();
+    subscribe(() => {});
+    expect(getSnapshot().reading.contrast).toBe("more");
+    expect(getSnapshot().reading.motion).toBe("reduced");
+  });
+
+  it("falls back to the defaults when the stored value is not an object", () => {
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...EMPTY_STATE, reading: "more" }));
+    __resetForTests();
+    subscribe(() => {});
+    expect(getSnapshot().reading).toEqual(EMPTY_STATE.reading);
+  });
+
+  it("drops a value it does not recognise", () => {
+    window.localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ ...EMPTY_STATE, reading: { contrast: "maximum" } }),
+    );
+    __resetForTests();
+    subscribe(() => {});
+    expect(getSnapshot().reading.contrast).toBe("default");
+  });
+
+  it("is erased with everything else", () => {
+    setReading({ contrast: "more", letters: "hyperlegible" });
+    resetAll();
+    expect(getSnapshot().reading).toEqual(EMPTY_STATE.reading);
   });
 });
 
