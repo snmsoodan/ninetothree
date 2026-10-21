@@ -24,6 +24,7 @@ const UA =
 const TIMEOUT_MS = 20_000;
 const CONCURRENCY = 6;
 const RETRIES = 2;
+const PARKED_MAX_BYTES = 2000;
 
 /** Hosts that block non-browser clients. A 403 from these is expected. */
 const BOT_PROTECTED = new Set([
@@ -168,7 +169,18 @@ async function probeOnce(url) {
       signal: controller.signal,
       headers: { "user-agent": UA, accept: "text/html,*/*" },
     });
-    return { status: response.status, finalUrl: response.url };
+    const result = { status: response.status, finalUrl: response.url };
+    // A parked domain answers 200 with a tiny page that redirects in script.
+    // It is not a page, and a 200 is not proof the link is right: six entries
+    // were sitting on one, and every local probe said 200.
+    const declared = Number(response.headers.get("content-length") ?? "0");
+    if (response.status === 200 && (!declared || declared < PARKED_MAX_BYTES)) {
+      const body = await response.text();
+      if (body.length < PARKED_MAX_BYTES && /location\.href\s*=\s*["']\/lander["']/.test(body)) {
+        result.parked = true;
+      }
+    }
+    return result;
   } catch (error) {
     return { status: 0, error: error instanceof Error ? error.message : String(error) };
   } finally {
@@ -241,6 +253,7 @@ function movedTo(url, finalUrl) {
 
 function classify(url, result) {
   if (result.status === 0) return "unreachable";
+  if (result.parked) return "parked";
   if (isChallenge(result.finalUrl)) return "bot-protected";
   if (result.status >= 200 && result.status < 400) return "ok";
   if (result.status === 403 || result.status === 429) return "bot-protected";
@@ -269,12 +282,15 @@ for (let i = 0; i < entries.length; i += CONCURRENCY) {
   );
 }
 
-const broken = results.filter((r) => r.verdict === "broken" || r.verdict === "unreachable");
+const broken = results.filter(
+  (r) => r.verdict === "broken" || r.verdict === "unreachable" || r.verdict === "parked",
+);
 const manual = results.filter((r) => r.verdict === "bot-protected");
 const moved = results.filter((r) => r.verdict === "ok" && r.moved);
 
 for (const r of results) {
-  const mark = r.verdict === "ok" ? "ok  " : r.verdict === "bot-protected" ? "403 " : "FAIL";
+  const mark =
+    r.verdict === "ok" ? "ok  " : r.verdict === "bot-protected" ? "403 " : r.verdict === "parked" ? "PARK" : "FAIL";
   console.log(`${mark} ${r.result.status || "---"} ${r.url}`);
 }
 
@@ -297,7 +313,8 @@ if (moved.length > 0) {
 if (broken.length > 0) {
   console.error(`\n${broken.length} broken link(s):`);
   for (const r of broken) {
-    console.error(`  ${r.url}  ${r.result.status || r.result.error}  (${r.packs.join(", ")})`);
+    const why = r.verdict === "parked" ? "parked domain" : r.result.status || r.result.error;
+    console.error(`  ${r.url}  ${why}  (${r.packs.join(", ")})`);
   }
 }
 

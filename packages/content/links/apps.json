@@ -585,33 +585,6 @@
     "platforms": ["ios", "android"]
   },
   {
-    "id": "app-mush",
-    "title": "Mush",
-    "url": "https://mush.app/",
-    "publisher": "Mush",
-    "type": "app",
-    "domains": ["mind"],
-    "stages": {
-      "from": {
-        "kind": "postpartum",
-        "index": 1
-      },
-      "to": {
-        "kind": "toddler",
-        "index": 36
-      }
-    },
-    "cost": "free",
-    "why": "Find other parents nearby by your child's age. The closest thing to a local baby group.",
-    "country": ["US"],
-    "language": "en-US",
-    "lastChecked": "2026-10-21",
-    "affiliate": false,
-    "reviewedBy": "Clinical review pending",
-    "note": "US coverage is patchy outside cities.",
-    "platforms": ["ios", "android"]
-  },
-  {
     "id": "app-taking-cara-babies",
     "title": "Taking Cara Babies",
     "url": "https://www.takingcarababies.com/",

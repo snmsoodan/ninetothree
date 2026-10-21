@@ -2573,5 +2573,30 @@
     "lastChecked": "2026-10-21",
     "affiliate": false,
     "reviewedBy": "Clinical review pending"
+  },
+  {
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending",
+    "id": "headstart",
+    "title": "Head Start and Early Head Start",
+    "url": "https://headstart.gov/",
+    "publisher": "US Office of Head Start",
+    "type": "authoritative",
+    "domains": ["childcare", "money"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 20
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "Free early learning and childcare for families who qualify on income. Early Head Start starts before birth."
   }
 ]

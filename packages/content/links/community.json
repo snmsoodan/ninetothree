@@ -127,10 +127,10 @@
     "note": "Sliding-scale fees in most chapters."
   },
   {
-    "id": "themomco",
-    "title": "The MomCo",
-    "url": "https://www.themom.co/home",
-    "publisher": "The MomCo",
+    "id": "mocha-moms",
+    "title": "Mocha Moms",
+    "url": "https://www.mochamoms.org/",
+    "publisher": "Mocha Moms, Inc.",
     "type": "community",
     "domains": ["mind"],
     "stages": {
@@ -144,7 +144,7 @@
       }
     },
     "cost": "varies",
-    "why": "Local groups that meet with childcare on site, which is the part that makes them usable.",
+    "why": "Local chapters for mothers of color, which is the part that makes the isolation easier.",
     "country": ["US"],
     "language": "en-US",
     "lastChecked": "2026-10-21",
@@ -346,31 +346,6 @@
     },
     "cost": "free",
     "why": "Money, home, and the practical side of a household that just got bigger.",
-    "country": ["US"],
-    "language": "en-US",
-    "lastChecked": "2026-10-21",
-    "affiliate": false,
-    "reviewedBy": "Clinical review pending"
-  },
-  {
-    "id": "shades-of-blue",
-    "title": "Shades of Blue",
-    "url": "https://www.shadesofblue.org/",
-    "publisher": "Shades of Blue",
-    "type": "charity",
-    "domains": ["mind"],
-    "stages": {
-      "from": {
-        "kind": "postpartum",
-        "index": 1
-      },
-      "to": {
-        "kind": "postpartum",
-        "index": 12
-      }
-    },
-    "cost": "free",
-    "why": "Stories from parents who had postpartum depression, which is often the thing that makes it click.",
     "country": ["US"],
     "language": "en-US",
     "lastChecked": "2026-10-21",

@@ -298,5 +298,55 @@
     "lastChecked": "2026-10-21",
     "affiliate": false,
     "reviewedBy": "Clinical review pending"
+  },
+  {
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending",
+    "id": "crisis-text-line",
+    "title": "Crisis Text Line",
+    "url": "https://www.crisistextline.org/",
+    "publisher": "Crisis Text Line",
+    "type": "charity",
+    "domains": ["mind"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "Text HOME to 741741. For the nights when talking out loud is too much."
+  },
+  {
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending",
+    "id": "boot-camp-for-new-dads",
+    "title": "Boot Camp for New Dads",
+    "url": "https://www.bootcampfornewdads.org/",
+    "publisher": "Boot Camp for New Dads",
+    "type": "community",
+    "domains": ["mind", "childcare"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 20
+      },
+      "to": {
+        "kind": "postpartum",
+        "index": 12
+      }
+    },
+    "cost": "free",
+    "why": "New fathers showing expectant fathers how it actually goes, in person, before the baby arrives."
   }
 ]

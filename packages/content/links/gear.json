@@ -481,7 +481,7 @@
   {
     "id": "spectra",
     "title": "Spectra breast pumps",
-    "url": "https://www.spectra-baby.com/",
+    "url": "https://www.spectrababyusa.com/",
     "publisher": "Spectra",
     "type": "commercial",
     "domains": ["feeding", "gear"],
@@ -1204,10 +1204,10 @@
     "reviewedBy": "Clinical review pending"
   },
   {
-    "id": "thinkbaby",
-    "title": "Thinkbaby",
-    "url": "https://www.thinkbaby.com/",
-    "publisher": "Thinkbaby",
+    "id": "lifefactory",
+    "title": "Lifefactory",
+    "url": "https://lifefactory.com/",
+    "publisher": "Lifefactory",
     "type": "commercial",
     "domains": ["nutrition", "gear"],
     "stages": {
@@ -1221,7 +1221,7 @@
       }
     },
     "cost": "$$",
-    "why": "Stainless steel and BPA-free feeding sets, for a parent avoiding plastic.",
+    "why": "Glass bottles with a silicone sleeve, for a parent avoiding plastic.",
     "country": ["US"],
     "language": "en-US",
     "lastChecked": "2026-10-21",

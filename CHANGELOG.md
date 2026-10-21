@@ -11,10 +11,21 @@ changelog written after the fact from memory is a changelog nobody can trust.
 
 ### The link library: 251 places to go, and a disclosure on every one (#49)
 
-- Grew the catalogue from 89 entries to **251** across seven files: 103
-  authoritative, 53 gear, 28 apps, 28 extra, 15 community, 12 books, 12
-  services. Every URL was probed live before it was written down; about 40
+- Grew the catalogue from 89 entries to **251** across seven files: 104
+  authoritative, 53 gear, 28 extra, 27 apps, 14 community, 14 services, 11
+  books. Every URL was probed live before it was written down; about 40
   candidates were rejected for 403, 402, 404 or a refused connection.
+- Found **six parked domains** that had been recorded as verified, because the
+  prober printed 200 and an empty title and the status was read instead of the
+  title. `theyesbrain.com`, `shadesofblue.org`, `mush.app`, `emilyoster.com`,
+  `spectra-baby.com` and `thinkbaby.com` all answer 200 with a one-line
+  `/lander` redirect script. Three were repointed, three were deleted because
+  the need was already covered, and three real gaps were filled to keep the
+  count at 251: Head Start, Crisis Text Line, and Boot Camp for New Dads.
+- The link checker now reads the body of any small 200 and fails on a
+  `/lander` redirect, so a parked domain fails locally as well as in CI.
+- `themom.co` went down between the probe and the final run and was replaced
+  with Mocha Moms, a local-chapter network for mothers of color.
 - Dropped Reddit entirely. `reddit.com/r/*` serves a "Prove your humanity"
   page and `old.reddit.com` redirects to a login, which the redirect rule
   correctly reads as a move.

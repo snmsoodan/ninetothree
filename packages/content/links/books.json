@@ -153,32 +153,6 @@
     "reviewedBy": "Clinical review pending"
   },
   {
-    "id": "book-emily-oster",
-    "title": "Emily Oster",
-    "url": "https://www.emilyoster.com/",
-    "publisher": "Emily Oster",
-    "type": "book",
-    "domains": ["health-parent"],
-    "stages": {
-      "from": {
-        "kind": "pregnancy",
-        "index": 4
-      },
-      "to": {
-        "kind": "toddler",
-        "index": 36
-      }
-    },
-    "cost": "$$",
-    "why": "The author's own site, which is the stable place to find Expecting Better and Cribsheet.",
-    "country": ["US"],
-    "language": "en-US",
-    "lastChecked": "2026-10-21",
-    "affiliate": false,
-    "reviewedBy": "Clinical review pending",
-    "note": "Publisher pages for these books change and sometimes serve the wrong title."
-  },
-  {
     "id": "book-fourth-trimester",
     "title": "The Fourth Trimester",
     "url": "https://kimberlyannjohnson.com/",
@@ -256,7 +230,7 @@
   {
     "id": "book-yes-brain",
     "title": "The Yes Brain",
-    "url": "https://www.theyesbrain.com/",
+    "url": "https://drdansiegel.com/books/",
     "publisher": "Dan Siegel and Tina Payne Bryson",
     "type": "book",
     "domains": ["mind", "milestones"],
@@ -276,7 +250,8 @@
     "language": "en-US",
     "lastChecked": "2026-10-21",
     "affiliate": false,
-    "reviewedBy": "Clinical review pending"
+    "reviewedBy": "Clinical review pending",
+    "note": "The book's own site is a parked domain now. This is the author's books page."
   },
   {
     "id": "book-how-to-talk-site",
