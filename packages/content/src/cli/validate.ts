@@ -1,9 +1,17 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { ARTICLES } from "../article-registry";
-import { lintArticles, lintLinks, lintPacks, lintTriages, type LintFinding } from "../lint";
+import {
+  lintArticles,
+  lintLinks,
+  lintPacks,
+  lintRecalls,
+  lintTriages,
+  type LintFinding,
+} from "../lint";
 import { LINKS } from "../link-registry";
 import { loadPacks } from "../loader";
+import { RECALLS } from "../recall-registry";
 import { paths } from "../triage";
 import { TRIAGE } from "../triage-registry";
 
@@ -69,6 +77,7 @@ report(lintPacks(packs), "content lint problem(s)");
 report(lintLinks(LINKS), "catalogue lint problem(s)");
 report(lintArticles(ARTICLES), "article lint problem(s)");
 report(lintTriages([TRIAGE]), "triage lint problem(s)");
+report(lintRecalls(RECALLS), "recall lint problem(s)");
 
 if (process.exitCode !== 1) {
   console.log(`✓ ${LINKS.length} catalogue entries pass the same lint`);
@@ -84,6 +93,18 @@ if (process.exitCode !== 1) {
   for (const result of TRIAGE.results) {
     console.log(
       `  ${result.id.padEnd(30)} ${result.kind.padEnd(9)} ${result.escalation.padEnd(20)} reviewed ${result.reviewedAt}`,
+    );
+  }
+
+  console.log(`✓ ${RECALLS.length} recalls, none of them promising anything`);
+  for (const recall of RECALLS) {
+    const matches = [
+      ...recall.matches.optionIds,
+      ...recall.matches.actionIds,
+      ...recall.matches.keywords,
+    ];
+    console.log(
+      `  ${recall.id.padEnd(14)} ${recall.severity.padEnd(9)} ${recall.publishedAt} · matches ${String(matches.length)}`,
     );
   }
 }

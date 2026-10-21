@@ -45,6 +45,28 @@ test("the dashboard has no violations", async ({ page }) => {
   expect(await audit(page)).toEqual([]);
 });
 
+test("the dashboard has no violations with a recall showing", async ({ page }) => {
+  await onboard(page);
+  await page.evaluate(() => {
+    const key = "ninetothree.v1";
+    const raw = window.localStorage.getItem(key);
+    const state = raw ? JSON.parse(raw) : {};
+    state.pins = [
+      {
+        id: "m6-highchair",
+        title: "Get a high chair that is easy to clean",
+        packId: "infant-month-6",
+        packTitle: "Month 6",
+        at: "2026-10-01T00:00:00.000Z",
+      },
+    ];
+    window.localStorage.setItem(key, JSON.stringify(state));
+  });
+  await page.reload();
+  await expect(page.getByText("Bicystar high chairs")).toBeVisible();
+  expect(await audit(page)).toEqual([]);
+});
+
 test("the appointments page has no violations", async ({ page }) => {
   await onboard(page);
   await page.goto("/appointments");

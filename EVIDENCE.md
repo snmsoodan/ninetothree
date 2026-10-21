@@ -965,6 +965,36 @@ The fix is `settledIds(pack, state)` in `apps/web/src/lib/week.ts`: a step is se
 
 **What this does not do.** The drawer is progressive enhancement, so the no-JS suite can only assert the link, not the panel. `CrisisFooter` reads `ESCALATION_COPY["call-988"]` and `["call-psi"]` at module scope and renders `href` and `phone` straight through with no guard — if a phone were ever removed from either entry the link would render empty rather than failing loudly, which is accepted for a hardcoded constant. The drawer's copy, the crisis footer's copy and the "Get help now" label are mine and unreviewed, like the rest of the product's prose.
 
-## 28. How this file is maintained
+## 28. Recall notices (issue #32)
+
+**The issue asked for a parent who pinned or chose a product to be told when it is recalled, with an AC that a recall reaches the parent who has the thing and only them.** The feed is five real CPSC recalls, the matcher ranks three signals, and the queue is local-first.
+
+**The feed is hand-curated, not ingested.** `packages/content/recalls/recalls.json` holds five entries, all `stop-use`, all citing a `cpsc.gov/Recalls/...` page that returns 200 and passes the redirect rule. There is no ingestion job, no polling, and no CPSC API client. A recall reaches a parent only after someone adds it to the file. This is a seed, and the PR body says so rather than implying a live feed.
+
+**"Email if matched" is a local notice queue, not email.** There is no transport in this product yet. The notice is the record of what an email would have said: one entry per (recall, reason) pair, a dismissal that survives a reload, and a queue that only fills when the parent opens the dashboard. Calling it email would be a lie, so it is called a notice.
+
+**Three signals, ranked, and one notice per recall.** `option` — the parent picked this exact product in a chooser — beats `step` — they pinned the step that offered it — beats `keyword` — a word in the title of a pinned step, for a recall about a category rather than a named product. A parent who pinned the high-chair step _and_ chose a chair in it sees one notice, not two: `matchRecalls` sorts the candidates by `STRENGTH` and keeps the first.
+
+**The key carries the reason, so a dismissal is not a gag.** `recallKey` is `` `${recallId}:${matchedOn}` ``. A parent who put away "you pinned this step" still hears "you chose this product" if they later choose the exact product that was recalled. That is the difference between a queue that respects a dismissal and a queue that uses it to go quiet.
+
+**A recall that matches nothing is a schema error.** `RecallMatches` refines on "at least one of the three arrays is non-empty", with the message "a recall that matches nothing can never reach a parent". A recall published in the future is a `recallIssues` finding rather than a schema error, because a date is a fact about the record and an empty match list is a mistake in it.
+
+**`.default([])`, not `.optional()`, and that was a coverage fix rather than a style choice.** With `.optional()`, the `.refine` predicate contained `?.` short-circuits that no test could reach; v8-to-istanbul reported them as single-location `branch` entries with count 0 at `recalls.ts:47`. `.default([])` makes the predicate `m.optionIds.length + m.actionIds.length + m.keywords.length > 0` — branch-free — and removes three `?? []` fallbacks from `matchRecalls`. The fix for an unreachable branch is to remove the branch, not to write a test that pretends to reach it.
+
+**A supplied `matches` in a test fixture replaces the default; it does not merge.** Merging left `actionIds: ["a-step"]` in a keyword fixture, and the step is the stronger reason, so the test silently asserted the wrong thing. Two tests failed until the helper was changed, and the helper now carries a comment saying why.
+
+**The recall lint is narrower than the pack lint, on purpose.** `lintRecall` checks `title`, `hazard` and `action` for `absolute-claim`, `obligation` and `normative`. It does not apply `reading-level` or `unreviewed`, because a recall is an agency record, not our prose. Holding a CPSC hazard statement to a grade-8 ceiling would mean rewriting the agency's words, which is the one thing a recall must not do.
+
+**The queue is a list, not a feed.** It only ever holds things that match something this parent pinned or chose, it never grows on its own, and putting one away is permanent. It is filled on the dashboard rather than on a timer, because a recall is something a parent looks at, not something that interrupts them. `recordNotices` is idempotent and returns early without writing when nothing is new, so a re-render or a second tab cannot double the queue and the sync effect cannot loop.
+
+**A completed step is not a signal.** Only a pin and a choice count. A parent who marked "buy a high chair" done six months ago has a high chair, but they also have a child who has outgrown it, and a notice about a chair they no longer use is noise. Pinning is the parent saying "this is still mine".
+
+**A withdrawn recall is dropped, not shown from the snapshot.** The notice stores the recall's title and product, but the hazard, the action and the source are read live from the feed. If a recall is removed from the feed, the notice stops rendering: a parent should not be told to stop using something because of a notice we can no longer stand behind.
+
+**Red is used here and almost nowhere else.** A stop-use recall is the one thing in this product that is actually wrong, so it gets the reserved colour — as a 2px left border and a word, not a banner. No icon, no exclamation, no "URGENT". The severity is a word ("Stop using it", "Check yours", "Worth knowing"), the hazard is a sentence, and the action is the last thing they read.
+
+**What this does not do.** The feed is five entries and all `stop-use`; there is no `check` or `info` recall in it, so those two severities are exercised only by tests and stories. There is no ingestion job. There is no email. The five recalls, like the nine packs and the 89 catalogue entries, say `"reviewedBy": "Clinical review pending"` — the recall lint deliberately does not check that field, so nothing in CI will notice when it is finally filled in.
+
+## 29. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.

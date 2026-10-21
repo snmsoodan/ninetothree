@@ -1,0 +1,107 @@
+[
+  {
+    "id": "cpsc-26290",
+    "title": "Bicystar high chairs sold without the crotch restraint",
+    "product": "Bicystar high chair, model TB-HC6900",
+    "brand": "Bicystar",
+    "hazard": "The chair was sold without the crotch restraint the safety standard requires. A child can slide down and be caught by the neck, or the chair can tip.",
+    "action": "Stop using it. Take the seat off the frame, cut the seat cover and the straps, write \"Recalled\" on the back of the seat, and email a photo to bicystarhighchair@outlook.com for a full refund.",
+    "severity": "stop-use",
+    "publishedAt": "2026-02-26",
+    "source": {
+      "id": "cpsc-26290",
+      "title": "Bicystar High Chairs Recalled Due to Risk of Serious Injury or Death from Fall and Entrapment Hazards",
+      "publisher": "US Consumer Product Safety Commission",
+      "url": "https://www.cpsc.gov/Recalls/2026/Bicystar-High-Chairs-Recalled-Due-to-Risk-of-Serious-Injury-or-Death-from-Fall-and-Entrapment-Hazards-Violates-Mandatory-Standard-for-High-Chairs",
+      "kind": "government",
+      "accessed": "2026-10-20"
+    },
+    "matches": {
+      "actionIds": ["m6-highchair"]
+    }
+  },
+  {
+    "id": "cpsc-26121",
+    "title": "Rotinyard convertible high chairs sold without the restraint system",
+    "product": "Rotinyard convertible high chair, product number HA-028, sold on Amazon",
+    "brand": "Rotinyard",
+    "hazard": "The chair was sold without the attached restraint system the safety standard requires. A child can fall out, or be caught between the seat and the tray.",
+    "action": "Stop using it. Take it apart, cut the restraints and the cushion, and email a photo to trailblazeramz@outlook.com for a full refund.",
+    "severity": "stop-use",
+    "publishedAt": "2025-11-26",
+    "source": {
+      "id": "cpsc-26121",
+      "title": "Convertible High Chairs Recalled Due to Risk of Serious Injury or Death from Fall and Entrapment Hazards",
+      "publisher": "US Consumer Product Safety Commission",
+      "url": "https://www.cpsc.gov/Recalls/2026/Convertible-High-Chairs-Recalled-Due-to-Risk-of-Serious-Injury-or-Death-from-Fall-and-Entrapment-Hazards-Violate-Mandatory-Standard-for-High-Chairs-Sold-on-Amazon-by-Rotinyard",
+      "kind": "government",
+      "accessed": "2026-10-20"
+    },
+    "matches": {
+      "actionIds": ["m6-highchair"]
+    }
+  },
+  {
+    "id": "cpsc-26669",
+    "title": "Voomf play yard and crib mattresses that may not fit",
+    "product": "Voomf play yard and crib mattress, model BYL001, sold on Amazon",
+    "brand": "Voomf",
+    "hazard": "The mattress may leave a gap against the side of some play yards, which is where a baby can become trapped. The full-size crib version also fails the flammability standard.",
+    "action": "Stop using it. Write \"Recalled\" on it, cut it in half, and email a photo to voomfrecall@outlook.com for a full refund.",
+    "severity": "stop-use",
+    "publishedAt": "2026-08-06",
+    "source": {
+      "id": "cpsc-26669",
+      "title": "Play Yard and Crib Mattresses Recalled Due to Risk of Serious Injury or Death from Entrapment and Fire Hazards",
+      "publisher": "US Consumer Product Safety Commission",
+      "url": "https://www.cpsc.gov/Recalls/2026/Play-Yard-and-Crib-Mattresses-Recalled-Due-to-Risk-of-Serious-Injury-or-Death-from-Entrapment-and-Fire-Hazards-Violate-Mandatory-Standards-for-Mattresses-Sold-on-Amazon-by-Voomf",
+      "kind": "government",
+      "accessed": "2026-10-20"
+    },
+    "matches": {
+      "actionIds": ["m2-safe-sleep"]
+    }
+  },
+  {
+    "id": "cpsc-26099",
+    "title": "Anna Queen play yards a baby can get under the mattress of",
+    "product": "Anna Queen play yard, model P700, made in March 2025, sold on Amazon",
+    "brand": "Anna Queen",
+    "hazard": "A baby can get trapped under the mattress or between the mattress and the side of the play yard, which can cause suffocation.",
+    "action": "Stop using it. Take it apart, cut up the cover and the mattress pad, and email a photo to tingerservice@outlook.com for a full refund.",
+    "severity": "stop-use",
+    "publishedAt": "2025-11-20",
+    "source": {
+      "id": "cpsc-26099",
+      "title": "Play Yards Recalled Due to Risk of Serious Injury or Death from Suffocation and Entrapment Hazards",
+      "publisher": "US Consumer Product Safety Commission",
+      "url": "https://www.cpsc.gov/Recalls/2026/Play-Yards-Recalled-Due-to-Risk-of-Serious-Injury-or-Death-from-Suffocation-and-Entrapment-Hazards-Violate-Mandatory-Standard-for-Play-Yards-Sold-on-Amazon-by-Anna-Queen",
+      "kind": "government",
+      "accessed": "2026-10-20"
+    },
+    "matches": {
+      "actionIds": ["m2-safe-sleep"]
+    }
+  },
+  {
+    "id": "cpsc-25476",
+    "title": "Hoovy cooling gel pads for car seats and strollers can burn",
+    "product": "Hoovy cooling gel insert pad for car seats and strollers",
+    "brand": "AMTRADING",
+    "hazard": "The pad can get hot enough to burn a child if it is left in the sun or in a warm car, and a young child may not be able to move away from it.",
+    "action": "Stop using it. Contact AMTRADING at 888-259-1411 or info@hoovyproducts.com for a full refund, or register the pad at hoovyproducts.com/pages/product-recall.",
+    "severity": "stop-use",
+    "publishedAt": "2025-09-25",
+    "source": {
+      "id": "cpsc-25476",
+      "title": "AMTRADING Recalls Hoovy Cooling Gel Insert Pads for Car Seats and Strollers Due to Burn Hazard",
+      "publisher": "US Consumer Product Safety Commission",
+      "url": "https://www.cpsc.gov/Recalls/2025/AMTRADING-Recalls-Hoovy-Cooling-Gel-Insert-Pads-for-Car-Seats-and-Strollers-Due-to-Burn-Hazard",
+      "kind": "government",
+      "accessed": "2026-10-20"
+    },
+    "matches": {
+      "actionIds": ["w36-car-seat"]
+    }
+  }
+]

@@ -7,6 +7,8 @@ import {
   lintLinks,
   lintPack,
   lintPacks,
+  lintRecall,
+  lintRecalls,
   lintTriage,
   lintTriages,
   MAX_GRADE,
@@ -16,6 +18,8 @@ import {
 } from "./lint";
 import { ARTICLES } from "./article-registry";
 import { TRIAGE } from "./triage-registry";
+import { RECALLS } from "./recall-registry";
+import type { Recall } from "./recalls";
 import type { TriageResult, TriageTree } from "./triage";
 import { PACKS } from "./registry";
 import type { Article } from "./articles";
@@ -451,5 +455,62 @@ describe("triage", () => {
 
   it("passes every outcome we ship", () => {
     expect(lintTriages([TRIAGE])).toEqual([]);
+  });
+});
+
+describe("recalls", () => {
+  function recall(over: Partial<Recall> & { id: string }): Recall {
+    return {
+      title: "A high chair was recalled",
+      product: "The chair",
+      hazard: "The seat can come off the frame.",
+      action: "Stop using it and ask the maker for a refund.",
+      severity: "stop-use",
+      publishedAt: "2026-01-01",
+      source: {
+        id: "s1",
+        title: "A recall notice",
+        publisher: "CPSC",
+        url: "https://example.com/a-recall",
+        kind: "government",
+        accessed: "2026-10-20",
+      },
+      matches: { optionIds: [], actionIds: ["a-step"], keywords: [] },
+      ...over,
+    };
+  }
+
+  it("passes a recall that only says what happened and what to do", () => {
+    expect(lintRecall(recall({ id: "clean" }))).toEqual([]);
+  });
+
+  it("catches a claim in the hazard", () => {
+    const findings = lintRecall(recall({ id: "claim", hazard: "The fix is completely safe." }));
+    expect(rules(findings)).toContain("absolute-claim");
+    expect(findings[0]?.path).toBe("hazard");
+  });
+
+  it("catches an obligation in what to do", () => {
+    const findings = lintRecall(recall({ id: "must", action: "You must stop using it today." }));
+    expect(rules(findings)).toContain("obligation");
+    expect(findings[0]?.path).toBe("action");
+  });
+
+  it("catches a claim in the title", () => {
+    const findings = lintRecall(recall({ id: "title", title: "A chair that is always safe" }));
+    expect(rules(findings)).toContain("absolute-claim");
+    expect(findings[0]?.path).toBe("title");
+  });
+
+  it("flattens every feed it is given", () => {
+    const findings = lintRecalls([
+      recall({ id: "one", hazard: "The fix is completely safe." }),
+      recall({ id: "two", action: "You must stop using it today." }),
+    ]);
+    expect(findings.map((finding) => finding.subject)).toEqual(["one", "two"]);
+  });
+
+  it("passes every recall we ship", () => {
+    expect(lintRecalls(RECALLS)).toEqual([]);
   });
 });
