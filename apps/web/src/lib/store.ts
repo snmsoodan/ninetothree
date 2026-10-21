@@ -14,6 +14,7 @@ import {
   type NotificationFrequency,
   type NotificationPrefs,
 } from "./notifications";
+import { DEFAULT_READING, migrateReading, type ReadingPrefs } from "./reading";
 
 /**
  * Local-first state.
@@ -223,6 +224,8 @@ export interface AppState {
   notifications: NotificationPrefs;
   /** Reminder key → the ISO timestamp it was put away. */
   reminded: Record<string, string>;
+  /** How the words are shown. Not a theme: three answers zoom cannot give. */
+  reading: ReadingPrefs;
 }
 
 export const EMPTY_STATE: AppState = {
@@ -239,6 +242,7 @@ export const EMPTY_STATE: AppState = {
   notices: {},
   notifications: DEFAULT_NOTIFICATIONS,
   reminded: {},
+  reading: DEFAULT_READING,
 };
 
 let state: AppState = EMPTY_STATE;
@@ -412,6 +416,7 @@ function hydrate(): void {
       notices: migrateNotices(parsed.notices),
       notifications: migrateNotifications(parsed.notifications),
       reminded: migrateReminded(parsed.reminded),
+      reading: migrateReading(parsed.reading),
     };
     emit();
   } catch {
@@ -707,6 +712,14 @@ export function markReminded(keys: string[], at?: string): void {
  */
 export function setNotifications(patch: Partial<NotificationPrefs>): void {
   set({ ...state, notifications: { ...state.notifications, ...patch } });
+}
+
+/**
+ * Reading preferences are merged, not replaced, so a caller can change one
+ * without knowing the other two.
+ */
+export function setReading(patch: Partial<ReadingPrefs>): void {
+  set({ ...state, reading: { ...state.reading, ...patch } });
 }
 
 /**

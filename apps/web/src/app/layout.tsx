@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import { ToastProvider } from "@ninetothree/ui";
+import { ReadingAttributes } from "@/components/ReadingAttributes";
 import { RouteFocus } from "@/components/RouteFocus";
 import { ServiceWorker } from "@/components/ServiceWorker";
 import "./globals.css";
@@ -25,6 +26,20 @@ const newsreader = localFont({
   variable: "--font-newsreader",
   display: "swap",
   weight: "400 500",
+});
+
+/*
+ * Atkinson Hyperlegible, by the Braille Institute, under the SIL Open Font
+ * License. It is the second typeface a parent can choose, not a bigger one:
+ * it separates I l 1 and O 0, which is the part a size setting cannot fix.
+ */
+const atkinson = localFont({
+  src: [
+    { path: "./fonts/atkinson.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/atkinson-bold.woff2", weight: "700", style: "normal" },
+  ],
+  variable: "--font-atkinson",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -68,8 +83,10 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en-US" className={`${inter.variable} ${newsreader.variable}`}>
+    <html lang="en-US" className={`${inter.variable} ${newsreader.variable} ${atkinson.variable}`}>
       <body>
+        {/* First in the body so it runs before anything below it paints. */}
+        <ReadingAttributes />
         {/* Dialogs portal to <body>, so marking this subtree inert leaves them usable. */}
         <div id="app-root">
           <a

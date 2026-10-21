@@ -159,12 +159,22 @@
   --color-line-strong: #8f857a;
 }
 
-/* Motion is opt-out, and the opt-out is honoured everywhere. */
+/*
+ * Motion is opt-out, and the opt-out is honoured everywhere.
+ *
+ * Zeroing the durations is not enough on its own. The route settle moves the
+ * page 4px and back; at 0ms that is not a transition, it is a flash, which is
+ * worse than the movement it replaced. So the settle is removed outright.
+ */
 @media (prefers-reduced-motion: reduce) {
   :root {
     --duration-fast: 0ms;
     --duration-base: 0ms;
     --duration-slow: 0ms;
+  }
+
+  [data-settle] {
+    transform: none !important;
   }
 }
 
@@ -172,4 +182,38 @@
   --duration-fast: 0ms;
   --duration-base: 0ms;
   --duration-slow: 0ms;
+}
+
+:root[data-motion="reduced"] [data-settle] {
+  transform: none !important;
+}
+
+/*
+ * Letters: a second typeface, not a bigger one.
+ *
+ * Atkinson Hyperlegible was drawn by the Braille Institute for low vision, and
+ * it separates the characters that are easy to confuse (I l 1, O 0, rn m). It
+ * is not a dyslexia font and we do not call it one — the evidence for
+ * dyslexia-specific typefaces is thin, and the honest claim is that these
+ * letters are easier to tell apart. Size is the browser's job.
+ */
+:root[data-font="hyperlegible"] {
+  --font-sans:
+    var(--font-atkinson), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+/*
+ * Windows High Contrast Mode throws our colours away and keeps only the
+ * structure. A card that is a card because of a background colour becomes an
+ * invisible box, so every surface gets a border it did not need before.
+ */
+@media (forced-colors: active) {
+  :root {
+    --color-line: CanvasText;
+    --color-line-strong: CanvasText;
+  }
+
+  [data-surface] {
+    border-color: CanvasText;
+  }
 }

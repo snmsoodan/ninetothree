@@ -29,6 +29,19 @@
         --line: #e8e2da;
         --clay: #9a5238;
       }
+      /*
+       * The app honours the device's contrast and motion settings, and this is
+       * the page a parent sees when nothing else loads, so it honours them too.
+       * There is no toggle here — a page with no JavaScript cannot read one —
+       * but the device setting is the one that matters most.
+       */
+      @media (prefers-contrast: more) {
+        :root {
+          --ink-muted: #4a423c;
+          --ink-faint: #5c534c;
+          --line: #b8aea3;
+        }
+      }
       @media (prefers-color-scheme: dark) {
         :root {
           --paper: #17140f;
@@ -37,6 +50,19 @@
           --ink-faint: #a89e94;
           --line: #3a332c;
           --clay: #d99a7e;
+        }
+      }
+      @media (prefers-color-scheme: dark) and (prefers-contrast: more) {
+        :root {
+          --ink-muted: #ded4ca;
+          --ink-faint: #c4bab0;
+          --line: #5a5148;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          transition: none !important;
+          animation: none !important;
         }
       }
       * {

@@ -1232,6 +1232,38 @@ The fallback is now `public/offline.html`: no JavaScript, no build stylesheet, i
 
 **Verification.** 85 stage packs valid, 251 catalogue entries, 6 articles, **69 triage paths none of them reassuring**, 5 recalls, zero findings. 1,373 unit tests (content 501, rules 121, ui 53, web 698). 97 chromium e2e, 91 storybook stories, 294 links none broken none moved, Lighthouse assertions pass on all seven URLs. `/week/[id]` prerenders 85 paths.
 
-## 38. How this file is maintained
+## 38. Accessibility hardening (issue #44)
+
+**The accessibility settings already existed as CSS and nothing could turn them on.** `tokens.css` had four blocks: `@media (prefers-contrast: more)`, `:root[data-contrast="more"]`, `@media (prefers-reduced-motion: reduce)` and `:root[data-motion="reduced"]`. The two media queries work — they follow the device. The two attribute selectors were **dead CSS**: `grep -rn 'data-contrast\|data-motion\|data-font'` across `apps/web/src` and `packages/ui/src` returned zero matches. A parent whose device does not offer a contrast setting had no way to ask for one, and the stylesheet had been ready for them since the first commit.
+
+**The settings are three, and none of them is a text size.** "More contrast", "Less motion" and "Easier to tell apart". The settings copy says why there is no fourth: "Your browser's zoom is the right tool for size. These three are the things zoom cannot do." A text-size slider would be a second, worse zoom that breaks every layout the design system was built to hold.
+
+**The attributes are set before the first paint, not in an effect.** A React effect runs after paint, so a parent who needs high contrast would see one frame of the low-contrast page on every cold load — the exact flash the setting exists to prevent. `ReadingAttributes` renders an inline `<script>` as the **first child of `<body>`**, which the browser parses and runs before anything below it paints. The script reads `localStorage`, sets the three attributes, and swallows every error, because a blocked storage API must not stop the page rendering.
+
+**The effect that follows is gated on hydration, and that gate is load-bearing.** Before `localStorage` is read, `useAppState()` returns `EMPTY_STATE`, whose reading preferences are all `"default"`. Applying those would strip the attributes the script had just set — the page would flash to high contrast and then flash back. The effect only runs once `useHydrated()` is true.
+
+**`readingAttributes()` omits the defaults rather than writing them.** The CSS keys off the _presence_ of `data-contrast`, so writing `data-contrast="default"` would switch the override on and cancel the device setting. A default is the absence of an attribute, not the word "default".
+
+**Zeroing a transition duration does not remove the movement.** The route settle is a 4px transform, and at `0ms` it still jumps 4px and back — a flash, which is worse than the movement it replaced. `tokens.css` now removes the transform outright for `[data-settle]` under both `prefers-reduced-motion: reduce` and `:root[data-motion="reduced"]`, and `AppShell`'s `<main>` carries `data-settle`.
+
+**Forced colours are a different problem from more contrast, and the card was the casualty.** `prefers-contrast: more` darkens three faint tokens. `forced-colors: active` throws backgrounds away entirely, so a `Card tone="sunken"` — which is a card only because of its background colour — becomes an invisible box. `Card` now carries `data-surface`, and `@media (forced-colors: active)` gives it a `CanvasText` border. `Card` has no class to target, because it is pure Tailwind utilities, which is why the hook is an attribute on the component.
+
+**The "dyslexia font" is Atkinson Hyperlegible, and the copy does not call it that.** It is a low-vision typeface from the Braille Institute, SIL OFL, self-hosted as two 11 KB woff2 files. The evidence for dyslexia-specific typefaces is thin, so the option is labelled "Easier to tell apart" and the CSS comment says plainly that it is not a dyslexia font. Claiming otherwise would be a marketing line in a settings panel.
+
+**`localFont` derives the CSS family name from the first src's filename stem.** The files were downloaded as `atkinson-400.woff2` and `atkinson-700.woff2`, which would have produced a family called `atkinson-400`; they were renamed to `atkinson.woff2` and `atkinson-bold.woff2` so the family is `atkinson` and `tokens.css` can reference it. Verified in the built CSS: `@font-face{font-family:atkinson;…font-weight:400}`, `…700`, and `--font-atkinson:"atkinson","atkinson Fallback"` with `size-adjust:99.03%`.
+
+**The static offline page got the device settings, not the in-app ones.** `offline.html` has no JavaScript, so it cannot read `data-contrast`. It does honour `prefers-contrast: more` and `prefers-reduced-motion: reduce`. The contrast block had to go **before** the dark-scheme block and be paired with a combined `(prefers-color-scheme: dark) and (prefers-contrast: more)` override, or dark mode would have been given dark-on-dark text by the light-mode contrast values.
+
+**The 320px reflow test passed, which settles an open question.** Five bottom tabs at `text-xs` had been a guess since the app shell shipped. `"nothing scrolls sideways at 320 pixels"` walks seven routes at 320×640 and asserts `scrollWidth <= clientWidth`. It passes. The guess was right, and now it is a test.
+
+**200% text is tested at a normal viewport, not at 320px.** WCAG 1.4.4 is resize-text at a normal viewport; WCAG 1.4.10 is reflow at 320px. Conflating them would have produced a test that fails for the wrong reason. The text test sets a 1280×800 viewport and doubles the root font size, which is the rem-layout equivalent of browser zoom.
+
+**A real screen-reader pass has not happened, and the checklist says so.** `A11Y_CHECKLIST.md` marks every item as automated, manual, or **not done**. The three "not done" items are a VoiceOver/NVDA pass, Windows High Contrast Mode, and user testing with a disabled parent. The automated rules prove the accessibility tree is well-formed; they cannot prove it is pleasant to hear, and no agent can close that gap.
+
+**A green Links run is a snapshot, not a guarantee.** The first full gate after this work failed on five CDC breastfeeding URLs that had been green for weeks. `cdc.gov/breastfeeding` and `cdc.gov/breastfeeding/` had started redirecting to `/breastfeeding/php/about/index.html`, and the redirect rule compares last segments, so `breastfeeding` against `index.html` reads as a move. The URLs were not broken — they were the same page at a deeper canonical path. The fix is to point at the canonical URL, not to teach the checker that a deeper path is fine, because the same rule is what caught the Penguin Random House book that had been reassigned to a different book. This is the fifth distinct kind of link rot found in this project: broken, moved, parked, reassigned, and now a site restructuring a path that used to be stable.
+
+**Verification.** 85 stage packs valid, 251 catalogue entries, 6 articles, 69 triage paths, 5 recalls, zero findings. 1,408 unit tests (content 501, rules 121, ui 53, web 733). **36 axe runs** in `a11y.spec.ts`, all zero violations, including four under the new settings. 104 chromium e2e. **96 storybook stories**, five of them new. 293 links none broken none moved. Lighthouse assertions pass on all seven URLs. `/week/[id]` prerenders 85 paths.
+
+## 39. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.

@@ -460,6 +460,39 @@ swallowed: the app works without a worker, it just does not work offline. The
 install prompt lives in Settings with no dismissal state, because it is not a
 modal and not a nag.
 
+### Reading preferences
+
+Three attributes on `<html>` — `data-contrast`, `data-motion`, `data-font` — and
+`tokens.css` keys off their presence. A default is the **absence** of an
+attribute, never the word `default`: writing `data-contrast="default"` would
+switch the override on and cancel the device setting.
+
+**They are set before the first paint, by an inline script, not by an effect.**
+An effect runs after paint, so a parent who needs high contrast would see one
+frame of the low-contrast page on every cold load — the exact flash the setting
+exists to prevent. `ReadingAttributes` renders the script as the first child of
+`<body>`; it reads `localStorage`, sets the attributes, and swallows every
+error, because a blocked storage API must not stop the page rendering. The
+effect that follows is gated on `useHydrated()`, because before `localStorage`
+is read the store reports the defaults and applying those would strip what the
+script had just set.
+
+**Reduced motion removes the transform, it does not zero the duration.** The
+route settle is a 4px transform; at `0ms` it still jumps and returns, which is
+a flash. `[data-settle]` gets `transform: none !important` under both
+`prefers-reduced-motion: reduce` and `:root[data-motion="reduced"]`.
+
+**Forced colours are not more contrast.** `prefers-contrast: more` darkens
+three faint tokens. `forced-colors: active` throws backgrounds away, so a
+`Card tone="sunken"` — a card only because of its background colour — becomes
+an invisible box. `Card` carries `data-surface` so the media query can give it
+a `CanvasText` border. There is no class to target, because `Card` is pure
+Tailwind utilities.
+
+**There is no text-size setting.** The browser's zoom is better at that than a
+second, worse zoom, and the settings copy says so. The three settings are the
+things zoom cannot do.
+
 ---
 
 ## 8. Auth and household model
