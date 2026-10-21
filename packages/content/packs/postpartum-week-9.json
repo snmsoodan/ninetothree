@@ -1,0 +1,101 @@
+{
+  "locale": "en-US",
+  "country": "US",
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-21",
+  "updatedAt": "2026-10-21",
+  "id": "postpartum-week-9",
+  "kind": "postpartum",
+  "stageIndex": 9,
+  "stageUnit": "week",
+  "title": "The ninth week",
+  "subtitle": "The first vaccines are done. The rest of this week is about the fever rule and the crying.",
+  "baby": {
+    "development": "Your baby is laughing, holding their head steady, and pushing up on their arms during tummy time. They are starting to reach for things on purpose."
+  },
+  "you": {
+    "body": "Your supply is established if you are breastfeeding. Your period may return now or much later. Your core is still healing, and diastasis recti is common and treatable.",
+    "mind": "The two-month mark is when a lot of people go back to work, and the week is harder than expected. Plan the first week to be as small as possible."
+  },
+  "coreActions": [
+    {
+      "id": "pp9-fever",
+      "type": "know",
+      "priority": "essential",
+      "domain": "health-baby",
+      "title": "Know the fever rule for a baby under three months",
+      "why": "Under three months, a fever is an emergency-room visit, not a wait-and-see. Knowing the number now is what makes the night calmer.",
+      "detail": "100.4°F or 38°C rectally is the line. Take it rectally in a baby this age, because other methods are not accurate enough. Do not give fever medicine and wait to see. Call the pediatrician or go in.",
+      "keywords": ["fever", "temperature", "three months"]
+    },
+    {
+      "id": "pp9-crying",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "mind",
+      "title": "Have a plan for when the crying will not stop",
+      "why": "The plan is not for the baby. It is for the moment you have been holding a screaming baby for forty minutes and you are done.",
+      "detail": "Put the baby down safely on their back in the crib and walk out of the room for five minutes. Call someone. Put in earplugs. The baby is safe in the crib and you are allowed to leave the room.",
+      "minutes": 5,
+      "keywords": ["crying", "colic", "overwhelmed"]
+    },
+    {
+      "id": "pp9-core",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "health-parent",
+      "title": "Check for a gap in your abdominal muscles",
+      "why": "Diastasis recti is common after pregnancy and it changes which exercises help and which make it worse.",
+      "detail": "Lie on your back with knees bent. Lift your head slightly and feel along the midline above and below the belly button. A gap of two fingers or more is worth a pelvic floor physical therapist rather than a YouTube program.",
+      "keywords": ["diastasis", "core", "abdominal"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "pp9-reaction",
+      "title": "A reaction after vaccines is not a reason to skip the next one",
+      "body": "A low fever, fussiness, and a sore leg are the immune system working. A serious allergic reaction is rare and looks different: swelling of the face, trouble breathing, hives. That is a 911 call."
+    },
+    {
+      "id": "pp9-sleep-shift",
+      "title": "The four-month sleep change is coming",
+      "body": "Around three to four months, sleep reorganizes into cycles closer to an adult's. It is a real developmental change, not a regression, and it passes."
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "pp9-flag-fever",
+      "text": "A fever of 100.4°F or higher in a baby under three months",
+      "escalation": "call-pediatrician"
+    },
+    {
+      "id": "pp9-flag-breathing",
+      "text": "Trouble breathing, or a blue tint around the lips",
+      "escalation": "call-911"
+    },
+    {
+      "id": "pp9-flag-mood",
+      "text": "Thoughts of harming yourself or the baby",
+      "escalation": "call-988",
+      "phone": "988"
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-pp9-aap-fever",
+      "title": "Fever",
+      "publisher": "AAP",
+      "url": "https://www.healthychildren.org/English/health-issues/conditions/fever/Pages/default.aspx",
+      "kind": "clinical",
+      "accessed": "2026-10-21"
+    },
+    {
+      "id": "src-pp9-cdc-schedule",
+      "title": "Immunization schedules",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/vaccines/hcp/imz-schedules/",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    }
+  ]
+}

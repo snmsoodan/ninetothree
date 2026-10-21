@@ -1,0 +1,100 @@
+{
+  "locale": "en-US",
+  "country": "US",
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-21",
+  "updatedAt": "2026-10-21",
+  "id": "postpartum-week-10",
+  "kind": "postpartum",
+  "stageIndex": 10,
+  "stageUnit": "week",
+  "title": "The tenth week",
+  "subtitle": "The baby is sleeping in longer stretches and you are starting to feel like a person again. Both are real.",
+  "baby": {
+    "development": "Your baby is reaching for toys, bringing them to the mouth, and holding their head steady. They may be starting to roll from front to back."
+  },
+  "you": {
+    "body": "Your hair is shedding. Your joints are still loose. If you are exercising, the pelvic floor is the thing to watch, not the scale.",
+    "mind": "The first three months are the hardest and they are almost over. If you are still feeling flat every day, that is worth a call rather than another month of waiting."
+  },
+  "coreActions": [
+    {
+      "id": "pp10-roll",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "safety",
+      "title": "Stop swaddling once the baby shows signs of rolling",
+      "why": "A swaddled baby who rolls onto their front cannot push back up, and that is the risk swaddling carries past the newborn stage.",
+      "detail": "Signs to watch for: rolling to one side, pushing up on the arms, or getting halfway over. When you see any of them, switch to a sleep sack with arms free. Some babies roll at three months, most by five.",
+      "keywords": ["swaddle", "rolling", "sleep sack"]
+    },
+    {
+      "id": "pp10-wake-windows",
+      "type": "know",
+      "priority": "recommended",
+      "domain": "sleep",
+      "title": "Learn the wake window for this age",
+      "why": "A baby who is put down at the right level of tired settles faster than one who is overtired or not tired yet.",
+      "detail": "At two to three months, most babies manage about 75 to 120 minutes awake between sleeps. Watch for the first yawn and the first eye rub, and start the wind-down then. A second wind means you waited too long.",
+      "keywords": ["wake window", "overtired", "nap"]
+    },
+    {
+      "id": "pp10-mood",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "mind",
+      "title": "Check in on your mood, on purpose",
+      "why": "Postpartum depression can start at any point in the first year, not just the first six weeks.",
+      "detail": "The screening questions are about the last seven days. If you would answer them differently than you would have a month ago, say so at the next visit. The maternal mental health line is free and answers 24 hours a day.",
+      "keywords": ["mood", "depression", "screening"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "pp10-flat-head",
+      "title": "A flat spot is easier to fix now than later",
+      "body": "If the back of the head is flattening on one side, more tummy time and alternating the head position at sleep usually help. Ask the pediatrician at the four-month visit."
+    },
+    {
+      "id": "pp10-drool",
+      "title": "Drool is not teething yet",
+      "body": "Most babies drool heavily from two months because the salivary glands are working before the swallowing is coordinated. First teeth usually arrive between four and seven months."
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "pp10-flag-fever",
+      "text": "A fever of 100.4°F or higher in a baby under three months",
+      "escalation": "call-pediatrician"
+    },
+    {
+      "id": "pp10-flag-breathing",
+      "text": "Fast or labored breathing, or a blue tint around the lips",
+      "escalation": "call-911"
+    },
+    {
+      "id": "pp10-flag-mood",
+      "text": "Feeling hopeless most of the day, or thoughts of harming yourself or the baby",
+      "escalation": "call-psi",
+      "phone": "1-833-943-5746"
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-pp10-aap-sleep",
+      "title": "A parent's guide to safe sleep",
+      "publisher": "AAP",
+      "url": "https://www.healthychildren.org/English/ages-stages/baby/sleep/Pages/A-Parents-Guide-to-Safe-Sleep.aspx",
+      "kind": "clinical",
+      "accessed": "2026-10-21"
+    },
+    {
+      "id": "src-pp10-hrsa-hotline",
+      "title": "National Maternal Mental Health Hotline",
+      "publisher": "HRSA",
+      "url": "https://mchb.hrsa.gov/programs-impact/national-maternal-mental-health-hotline",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    }
+  ]
+}

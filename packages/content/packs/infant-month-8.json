@@ -1,0 +1,101 @@
+{
+  "locale": "en-US",
+  "country": "US",
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-21",
+  "updatedAt": "2026-10-21",
+  "id": "infant-month-8",
+  "kind": "infant",
+  "stageIndex": 8,
+  "stageUnit": "month",
+  "title": "Month 8",
+  "subtitle": "Crawling changes everything. The room is a different room now.",
+  "baby": {
+    "development": "Your baby is crawling or scooting, pulling to stand, and sitting without support. They can pick up a small piece of food with a thumb and finger and are starting to understand that things still exist when they cannot see them."
+  },
+  "you": {
+    "body": "If you are breastfeeding, supply adjusts to what the baby takes. Your period may be back. Your back may be feeling the lifting more than it did.",
+    "mind": "A mobile baby is more work and more fun. The babyproofing is not optional now, and it is easier to do it in one afternoon than one emergency at a time."
+  },
+  "coreActions": [
+    {
+      "id": "m8-babyproof",
+      "type": "do",
+      "priority": "essential",
+      "domain": "safety",
+      "title": "Babyproof the room the baby is in, not the whole house",
+      "why": "A crawling baby finds the one thing you missed. Doing the room they are in first is what actually protects them this week.",
+      "detail": "Anchor every bookshelf and dresser to the wall. Cover outlets. Gate the stairs at the top and the bottom. Move medicines, cleaning products, and small objects above counter height. Get on the floor and look.",
+      "minutes": 90,
+      "keywords": ["babyproof", "crawling", "stairs"]
+    },
+    {
+      "id": "m8-separation",
+      "type": "know",
+      "priority": "recommended",
+      "domain": "mind",
+      "title": "Know that separation anxiety is a sign of attachment",
+      "why": "A baby who cries when you leave the room is showing that they know you are a specific person and that they want you. That is the goal, not a problem.",
+      "detail": "It peaks between nine and eighteen months. A short goodbye is better than a sneaky exit. A consistent caregiver and a predictable routine help more than anything else.",
+      "keywords": ["separation anxiety", "attachment", "goodbye"]
+    },
+    {
+      "id": "m8-crawl",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "play",
+      "title": "Give the baby space to move",
+      "why": "Crawling is built by crawling. A baby in a seat or a jumper is not practising it.",
+      "detail": "Clear a floor space and let them go. Put a toy just out of reach. Limit containers to short stretches. Bare feet on a firm floor give better traction than socks.",
+      "minutes": 30,
+      "keywords": ["crawling", "floor time", "movement"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "m8-pull-up",
+      "title": "Pulling to stand comes before walking",
+      "body": "Most babies pull to stand between eight and ten months and walk between eleven and fifteen months. A baby who is not pulling up by twelve months is worth mentioning at the visit."
+    },
+    {
+      "id": "m8-sippy",
+      "title": "An open cup is still better",
+      "body": "A small amount of water in an open cup with meals. A straw cup is the next best. A valve sippy cup teaches a suck that does not help speech."
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "m8-flag-choking",
+      "text": "Choking — cannot breathe, cough, or make a sound",
+      "escalation": "call-911"
+    },
+    {
+      "id": "m8-flag-fall",
+      "text": "A fall from a height, or a head injury with vomiting or unusual sleepiness",
+      "escalation": "call-911"
+    },
+    {
+      "id": "m8-flag-fever",
+      "text": "A fever over 100.4°F with unusual sleepiness or a rash",
+      "escalation": "call-pediatrician"
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-m8-cpsc-sleep",
+      "title": "Safe sleep",
+      "publisher": "CPSC",
+      "url": "https://www.cpsc.gov/SafeSleep",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    },
+    {
+      "id": "src-m8-cdc-milestones",
+      "title": "CDC milestones",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/act-early/milestones/index.html",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    }
+  ]
+}

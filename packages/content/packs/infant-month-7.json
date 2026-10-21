@@ -1,0 +1,100 @@
+{
+  "locale": "en-US",
+  "country": "US",
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-21",
+  "updatedAt": "2026-10-21",
+  "id": "infant-month-7",
+  "kind": "infant",
+  "stageIndex": 7,
+  "stageUnit": "month",
+  "title": "Month 7",
+  "subtitle": "Solids are underway, sitting is nearly there, and the pincer grasp is coming.",
+  "baby": {
+    "development": "Your baby is sitting with little support, may be starting to crawl or scoot, and is babbling in strings that sound like conversation. They can pass a toy from hand to hand."
+  },
+  "you": {
+    "body": "If you are breastfeeding, your supply adjusts to what the baby takes as solids increase. Your period may return now that night feeds are dropping.",
+    "mind": "Starting solids is more work than it looks. The mess is the point, and a baby who plays with food is learning."
+  },
+  "coreActions": [
+    {
+      "id": "m7-allergens",
+      "type": "do",
+      "priority": "essential",
+      "domain": "feeding",
+      "title": "Introduce the common allergens, one at a time",
+      "why": "Early introduction of peanut and egg lowers the chance of allergy, and the window is now rather than later.",
+      "detail": "Peanut, egg, milk, wheat, soy, fish, shellfish, sesame, and tree nuts. Give one new allergen at a time, in a small amount, at home, in the morning, and wait a few days before the next. Keep going with the ones that are fine, because stopping can undo the benefit.",
+      "keywords": ["allergens", "peanut", "egg"]
+    },
+    {
+      "id": "m7-pincer",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "feeding",
+      "title": "Offer soft finger foods for the pincer grasp",
+      "why": "Picking up a small piece of food is the same motion as picking up a Cheerio, and it is how the pincer grasp develops.",
+      "detail": "Soft cooked vegetable sticks, ripe banana, avocado, scrambled egg, and soft toast strips. Cut round things lengthwise, not into coins. Sit the baby upright and stay within arm's reach.",
+      "keywords": ["finger food", "pincer grasp", "self feeding"]
+    },
+    {
+      "id": "m7-crawl",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "safety",
+      "title": "Babyproof before the baby is mobile",
+      "why": "A baby who can crawl finds the stairs, the outlets, and the dog bowl in the time it takes to answer a text.",
+      "detail": "Anchor furniture to the wall, put covers on outlets, gate the stairs top and bottom, and move cleaning products and medicines out of reach. Get down on the floor and look at the room from the baby's height.",
+      "minutes": 60,
+      "keywords": ["babyproof", "crawling", "safety"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "m7-water-cup",
+      "title": "An open cup is better than a sippy cup",
+      "body": "From six months, a small amount of water in an open cup with meals helps with oral development. A straw cup is the next best thing. A sippy cup with a valve is the one to skip."
+    },
+    {
+      "id": "m7-iron",
+      "title": "Iron matters more now",
+      "body": "The iron a baby is born with runs low around six months. Iron-rich foods are meat, beans, lentils, and fortified cereal. Pair them with vitamin C to help absorption."
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "m7-flag-choking",
+      "text": "Choking — cannot breathe, cough, or make a sound",
+      "escalation": "call-911"
+    },
+    {
+      "id": "m7-flag-allergy",
+      "text": "Swelling of the lips or face, hives with trouble breathing",
+      "escalation": "call-911"
+    },
+    {
+      "id": "m7-flag-fever",
+      "text": "A fever over 100.4°F with unusual sleepiness or a rash",
+      "escalation": "call-pediatrician"
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-m7-cdc-solids",
+      "title": "When, what, and how to introduce solid foods",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/infant-toddler-nutrition/foods-and-drinks/when-what-and-how-to-introduce-solid-foods.html",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    },
+    {
+      "id": "src-m7-aap-choking",
+      "title": "Choking prevention",
+      "publisher": "AAP",
+      "url": "https://www.healthychildren.org/English/health-issues/injuries-emergencies/Pages/Choking-Prevention.aspx",
+      "kind": "clinical",
+      "accessed": "2026-10-21"
+    }
+  ]
+}

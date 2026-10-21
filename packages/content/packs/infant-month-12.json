@@ -1,0 +1,110 @@
+{
+  "locale": "en-US",
+  "country": "US",
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-21",
+  "updatedAt": "2026-10-21",
+  "id": "infant-month-12",
+  "kind": "infant",
+  "stageIndex": 12,
+  "stageUnit": "month",
+  "title": "Month 12",
+  "subtitle": "One year. The first birthday is a real milestone, and the next stage starts next month.",
+  "baby": {
+    "development": "Your baby may be walking or close to it, says a few words, and can follow simple instructions. They are starting to test what happens when they do something you said not to."
+  },
+  "you": {
+    "body": "If you are breastfeeding, you can keep going for as long as you both want. If you are formula feeding, the switch to whole milk happens now.",
+    "mind": "A year is a long time and you did it. The toddler stage is different: more opinion, more movement, and the same amount of love."
+  },
+  "coreActions": [
+    {
+      "id": "m12-visit",
+      "type": "book",
+      "priority": "essential",
+      "domain": "health-baby",
+      "title": "Go to the twelve-month visit",
+      "why": "This is the visit with the most decisions in it, and the one where the next year's schedule gets set.",
+      "detail": "The US schedule at twelve months is MMR, varicella, Hib, and PCV, and hepatitis A and B depending on what was given earlier. Ask about whole milk, iron, and a lead test. Ask about walking and words if either is behind.",
+      "minutes": 60,
+      "keywords": ["twelve month", "vaccines", "one year"]
+    },
+    {
+      "id": "m12-milk",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "feeding",
+      "title": "Switch to whole milk and drop the bottle",
+      "why": "Whole milk has the fat a one-year-old needs, and the bottle is the habit that causes tooth decay after a year.",
+      "detail": "Two to three cups a day, in an open cup or a straw cup. Mix with formula over a week if needed. No bottle at bedtime. Milk is a drink, not a meal replacement, so it comes with food rather than instead of it.",
+      "keywords": ["whole milk", "bottle", "cup"]
+    },
+    {
+      "id": "m12-tantrum",
+      "type": "know",
+      "priority": "recommended",
+      "domain": "mind",
+      "title": "Know that tantrums are starting, and they are not defiance",
+      "why": "A one-year-old has big feelings and no words for them. The behaviour is the communication, not a challenge to your authority.",
+      "detail": "Name the feeling, stay nearby, and do not try to reason with a screaming toddler. It peaks between eighteen months and three years. Hitting and biting are common and are handled by a calm no and a redirect, not by punishment.",
+      "keywords": ["tantrum", "feelings", "behaviour"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "m12-toddler",
+      "title": "The toddler stage starts next month",
+      "body": "The guide switches from months to the toddler timeline. The cadence slows down, because a month is a long time at this age."
+    },
+    {
+      "id": "m12-dental",
+      "title": "First dental visit by the first birthday",
+      "body": "A check by the first tooth or the first birthday, whichever comes first. It is short, it is mostly a look, and it sets up the habit."
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "m12-flag-choking",
+      "text": "Choking — cannot breathe, cough, or make a sound",
+      "escalation": "call-911"
+    },
+    {
+      "id": "m12-flag-fever",
+      "text": "A fever over 100.4°F with unusual sleepiness or a rash",
+      "escalation": "call-pediatrician"
+    },
+    {
+      "id": "m12-flag-mood",
+      "text": "Feeling hopeless, or thoughts of harming yourself or the child",
+      "escalation": "call-988",
+      "phone": "988"
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-m12-cdc-schedule",
+      "title": "Immunization schedules",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/vaccines/hcp/imz-schedules/",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    },
+    {
+      "id": "src-m12-cdc-milestones",
+      "title": "CDC milestones",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/act-early/milestones/index.html",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "m12-appt-twelve-month",
+      "label": "Twelve-month visit and vaccines",
+      "from": 364,
+      "to": 378,
+      "who": "Pediatrician"
+    }
+  ]
+}

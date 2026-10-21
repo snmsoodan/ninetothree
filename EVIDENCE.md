@@ -1093,6 +1093,26 @@ The fix is `settledIds(pack, state)` in `apps/web/src/lib/week.ts`: a step is se
 
 **Verification.** 42 stage packs valid, zero lint findings. 137 links checked, none broken, none moved (4 bot-blocked, unchanged). 1,339 unit tests (content 494, rules 121, ui 53, web 671). 83 chromium e2e, 86 storybook stories, Lighthouse 1.0 accessibility on all seven URLs. `/week/[id]` prerenders 42 paths.
 
-## 33. How this file is maintained
+## 33. The first year (issue #48)
+
+**The issue asked for 14 daily packs, 11 weekly packs and 9 monthly packs, with an AC of "all validate; clinician sign-off; vaccine schedule correct for the US (CDC)".** The vaccine schedule is correct and cited. Clinical sign-off is not met, and cannot be by an agent. And the "14 daily packs" are unreachable: `computeStage` never produces `unit: "day"`. The delivered shape is the shape the stage model actually has — **postpartum weeks 1–12 and infant months 3–12**, 21 packs, of which 8 already existed.
+
+**Twenty-one packs, and the stage model decided the shape.** `packages/rules/src/stage.ts` gives postpartum weeks 1–12 (`safeDays < 84`), then infant months 3–12, then toddler from month 13. There is no daily stage and no month 1 or 2 — a parent at 60 days is on postpartum week 9. So the work was weeks 2–12 (11 packs) and months 3–12 (10 packs), and the issue's "daily" cadence is a blueprint that the implementation did not adopt. This section says so rather than quietly shipping a different number.
+
+**One pack was deleted, because it was unreachable.** `infant-month-2` had `stageIndex: 2`, and `computeStage` clamps infant to `Math.max(3, months)`. `findPackForStage` returns the most recent pack at or before the stage, so at month 3 it returned month 3 and never month 2. The pack was reachable only by typing its URL. Its content — the two-month visit, safe sleep, the crying peak — is now covered by postpartum weeks 8 and 9, which is where a parent at that age actually is. Deleting it meant repointing one article (`articles/safe-sleep.ts`), two recall matches (`recalls/recalls.json`), five search expectations and one e2e route list at `pp4-safe-sleep`, which is the same advice in a stage a parent can reach.
+
+**The schema caught two duplicate ids and one long title, and the lint caught nothing.** Duplicate ids across `coreActions` and `redFlags` are the most common failure when writing packs in bulk — `pp3-mood` and `pp5-bleeding` each appeared twice — so every red flag now carries a `-flag` suffix. `postpartum-week-8`'s third action title was 61 characters against a 60-character ceiling. The lint found zero findings across all 21 packs, which is the first batch where that has been true; the six rewrites in #47 taught the voice well enough that the new copy did not trip it.
+
+**The packs were built from a script, not by hand.** `/tmp/mk.py` holds `src()`, `opt()`, `act()`, `flag()`, `know()`, `appt()` and `write()`, and three batch files assemble the packs as Python dicts. Twenty-one hand-written JSON files is twenty-one chances to mistype an `accessed` date or forget a `-flag` suffix; a builder that enforces the shape and a batch that can be re-run after a fix is the difference between one correction and twenty-one.
+
+**Every source URL was already verified, and none of them moved.** The 21 packs cite 30 distinct URLs, all of which were probed in earlier issues. `check-links.mjs` reports 136 links, none broken, none moved, 4 bot-blocked and unchanged. No new host was introduced, which is deliberate: a new pack is not a reason to add an unverified citation.
+
+**The registry did its job.** `pnpm content:registry` regenerated `registry.ts` to 61 packs, and `/week/[id]` now prerenders 61 paths. This is the first content issue where the registry was not the bug, which is the point of generating it.
+
+**What this does not do.** Clinical sign-off. Every pack says `"reviewedBy": "Clinical review pending"`. The vaccine schedules are cited to CDC and match the US schedule at four and twelve months, but a clinician has not read the copy. Toddler months 13–36 are still a single pack, and that is the next content gap.
+
+**Verification.** 61 stage packs valid, zero lint findings. 136 links checked, none broken, none moved. 1,339 unit tests (content 494, rules 121, ui 53, web 671). 83 chromium e2e, 86 storybook stories, Lighthouse assertions pass on all seven URLs. `/week/[id]` prerenders 61 paths.
+
+## 34. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.

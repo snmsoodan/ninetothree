@@ -1,0 +1,101 @@
+{
+  "locale": "en-US",
+  "country": "US",
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-21",
+  "updatedAt": "2026-10-21",
+  "id": "postpartum-week-7",
+  "kind": "postpartum",
+  "stageIndex": 7,
+  "stageUnit": "week",
+  "title": "The seventh week",
+  "subtitle": "The visit is behind you and the baby is starting to have a rhythm. Not a schedule. A rhythm.",
+  "baby": {
+    "development": "Your baby is batting at toys, bringing hands to the mouth on purpose, and holding their head steadier. They may laugh out loud for the first time this month."
+  },
+  "you": {
+    "body": "If you are cleared for exercise, start with walking and core breathing. If you are breastfeeding, supply is usually established and engorgement is rare now.",
+    "mind": "The help has gone home and the baby is more awake. This is the week a lot of people realize they have not eaten a proper meal in days."
+  },
+  "coreActions": [
+    {
+      "id": "pp7-routine",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "sleep",
+      "title": "Start a bedtime routine, not a bedtime",
+      "why": "A short, repeated sequence is what teaches a baby that sleep is coming. The time on the clock matters less than the order.",
+      "detail": "Three or four steps, the same every night: feed, bath or wipe, sleep sack, dark room, a song. Ten minutes is enough. Do it at the same time each night and the baby starts to anticipate it.",
+      "minutes": 10,
+      "keywords": ["bedtime", "routine", "sleep"]
+    },
+    {
+      "id": "pp7-eat",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "nutrition",
+      "title": "Eat something with protein at every meal",
+      "why": "Feeding a baby burns calories, and skipping meals is what turns tired into shaky.",
+      "detail": "Eggs, beans, yogurt, cheese, leftover meat, peanut butter. A handful of nuts counts. If someone offers to bring food, say yes and ask for something you can eat one-handed.",
+      "keywords": ["eating", "protein", "meals"]
+    },
+    {
+      "id": "pp7-bottle",
+      "type": "do",
+      "priority": "optional",
+      "domain": "feeding",
+      "title": "Offer a bottle once a week if you may return to work",
+      "why": "A baby who has never taken a bottle can refuse one outright at eight weeks, and that is a hard week to discover it.",
+      "detail": "Offer a small amount of expressed milk in a bottle at a time when the baby is calm, not starving. Someone else gives it, ideally not in the room where you feed. Once a week keeps the skill.",
+      "keywords": ["bottle", "pumped milk", "return to work"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "pp7-sleep-regression",
+      "title": "There is no regression at seven weeks",
+      "body": "The word gets used for every change in sleep. At this age sleep is still developing, and a bad week is usually a growth spurt or a developmental leap, not a step backwards."
+    },
+    {
+      "id": "pp7-vitamin-d",
+      "title": "Breastfed babies need vitamin D",
+      "body": "400 IU a day from birth. Formula-fed babies get it from the formula. It comes as a drop, and it is the one supplement a breastfed baby needs."
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "pp7-flag-fever",
+      "text": "A fever of 100.4°F or higher in a baby under three months",
+      "escalation": "call-pediatrician"
+    },
+    {
+      "id": "pp7-flag-feeding",
+      "text": "Refusing feeds, or far fewer wet diapers than usual",
+      "escalation": "call-pediatrician"
+    },
+    {
+      "id": "pp7-flag-mood",
+      "text": "Feeling hopeless, or thoughts of harming yourself or the baby",
+      "escalation": "call-988",
+      "phone": "988"
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-pp7-aap-sleep",
+      "title": "A parent's guide to safe sleep",
+      "publisher": "AAP",
+      "url": "https://www.healthychildren.org/English/ages-stages/baby/sleep/Pages/A-Parents-Guide-to-Safe-Sleep.aspx",
+      "kind": "clinical",
+      "accessed": "2026-10-21"
+    },
+    {
+      "id": "src-pp7-cdc-breastfeeding",
+      "title": "Breastfeeding",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/breastfeeding/",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    }
+  ]
+}

@@ -59,7 +59,7 @@
       "accessed": "2026-10-20"
     },
     "matches": {
-      "actionIds": ["m2-safe-sleep"]
+      "actionIds": ["pp4-safe-sleep"]
     }
   },
   {
@@ -80,7 +80,7 @@
       "accessed": "2026-10-20"
     },
     "matches": {
-      "actionIds": ["m2-safe-sleep"]
+      "actionIds": ["pp4-safe-sleep"]
     }
   },
   {

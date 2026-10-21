@@ -1,0 +1,110 @@
+{
+  "locale": "en-US",
+  "country": "US",
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-21",
+  "updatedAt": "2026-10-21",
+  "id": "postpartum-week-6",
+  "kind": "postpartum",
+  "stageIndex": 6,
+  "stageUnit": "week",
+  "title": "The sixth week",
+  "subtitle": "The six-week visit is this week. It is the one appointment that is about you.",
+  "baby": {
+    "development": "Your baby is smiling in response to you, tracking faces, and starting to make vowel sounds. They can hold their head up briefly and are stronger every day."
+  },
+  "you": {
+    "body": "Bleeding is usually finished. The wound is healed on the outside. Your core and pelvic floor are still recovering, and they will be for months.",
+    "mind": "Six weeks is often when the gap between what you expected and what you feel is widest. Say so at the visit. It is a screening question, not a confession."
+  },
+  "coreActions": [
+    {
+      "id": "pp6-visit",
+      "type": "book",
+      "priority": "essential",
+      "domain": "health-parent",
+      "title": "Go to the six-week postpartum visit",
+      "why": "This is where the pelvic floor, the wound, the mood, and contraception all get looked at in one appointment.",
+      "detail": "Ask for an internal pelvic floor check. Ask what exercise is safe now and what to wait on. Ask about contraception that fits your feeding plan. Ask for a referral if the mood questions are hard.",
+      "minutes": 60,
+      "keywords": ["six week", "postpartum", "pelvic floor"]
+    },
+    {
+      "id": "pp6-pelvic-floor",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "health-parent",
+      "title": "Start pelvic floor work, gently",
+      "why": "The pelvic floor does a lot of work in pregnancy and birth, and it responds to training the same way any other muscle does.",
+      "detail": "A pelvic floor physical therapist is the right person for this, and most insurance covers it. At home, the first step is learning to relax the muscles, not just squeeze them. Stop if anything hurts.",
+      "keywords": ["pelvic floor", "kegel", "physical therapy"]
+    },
+    {
+      "id": "pp6-contraception",
+      "type": "ask",
+      "priority": "recommended",
+      "domain": "health-parent",
+      "title": "Decide what contraception you want, and ask for it",
+      "why": "Fertility can return before your period does, so the decision is easier made at the visit than after.",
+      "detail": "Progestin-only pills, the implant, the shot, and the hormonal IUD do not affect milk supply for most people. Condoms and the copper IUD have no hormones at all. Ask what fits your plan rather than what is offered first.",
+      "keywords": ["contraception", "birth control", "iud"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "pp6-exercise",
+      "title": "Exercise after birth is a ramp, not a switch",
+      "body": "Walking first, then gentle core work, then strength. Running and high-impact work usually wait until the pelvic floor has been checked. Bleeding that restarts after exercise is a sign to back off."
+    },
+    {
+      "id": "pp6-sleep-now",
+      "title": "The longest stretch is coming",
+      "body": "Between six and twelve weeks many babies start sleeping one longer stretch at night. It is not a schedule and it will change, but it is coming."
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "pp6-flag-bleeding",
+      "text": "Bleeding that soaks a pad in an hour, or returns heavy after stopping",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "pp6-flag-fever",
+      "text": "A fever of 100.4°F or higher",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "pp6-flag-mood",
+      "text": "Feeling hopeless most of the day, or thoughts of harming yourself or the baby",
+      "escalation": "call-988",
+      "phone": "988"
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-pp6-acog-postpartum",
+      "title": "Optimizing postpartum care",
+      "publisher": "ACOG",
+      "url": "https://www.acog.org/clinical/clinical-guidance/committee-opinion/articles/2018/05/optimizing-postpartum-care",
+      "kind": "clinical",
+      "accessed": "2026-10-21"
+    },
+    {
+      "id": "src-pp6-cdc-depression",
+      "title": "Depression during and after pregnancy",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/reproductive-health/depression/index.html",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "pp6-appt-six-week",
+      "label": "Six-week postpartum visit",
+      "from": 42,
+      "to": 48,
+      "who": "OB or midwife"
+    }
+  ]
+}

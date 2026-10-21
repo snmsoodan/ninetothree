@@ -1,0 +1,101 @@
+{
+  "locale": "en-US",
+  "country": "US",
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-21",
+  "updatedAt": "2026-10-21",
+  "id": "infant-month-3",
+  "kind": "infant",
+  "stageIndex": 3,
+  "stageUnit": "month",
+  "title": "Month 3",
+  "subtitle": "The fourth trimester is over. The baby is a person now, and they have a schedule of their own.",
+  "baby": {
+    "development": "Your baby is laughing, babbling with consonants, and holding their head steady. They can push up on their arms during tummy time and may be starting to roll."
+  },
+  "you": {
+    "body": "Your hair is shedding and will stop in a few months. Your core is still healing. If you are exercising, the pelvic floor is the thing to watch.",
+    "mind": "Three months is often when the adrenaline finally runs out. If you have been holding it together, this is the week it may stop working, and that is worth saying out loud."
+  },
+  "coreActions": [
+    {
+      "id": "m3-roll",
+      "type": "do",
+      "priority": "essential",
+      "domain": "safety",
+      "title": "Stop swaddling if the baby is rolling",
+      "why": "A swaddled baby who rolls onto their front cannot push back up. That is the whole risk, and it starts the day they roll.",
+      "detail": "Watch for rolling to one side, pushing up on straight arms, or getting halfway over. Switch to a sleep sack with the arms free. If the baby has already rolled in a swaddle, stop that night.",
+      "keywords": ["swaddle", "rolling", "sleep sack"]
+    },
+    {
+      "id": "m3-tummy",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "play",
+      "title": "Tummy time, twenty minutes a day",
+      "why": "Tummy time is what builds the strength for rolling, sitting, and crawling, and it is easier to do now that the baby likes it more.",
+      "detail": "Short bursts add up. Get down at eye level with a mirror or a toy. A rolled towel under the chest helps. Stop when they are upset and try again later.",
+      "minutes": 20,
+      "keywords": ["tummy time", "rolling", "strength"]
+    },
+    {
+      "id": "m3-wake",
+      "type": "know",
+      "priority": "recommended",
+      "domain": "sleep",
+      "title": "Know the wake window for three months",
+      "why": "A baby put down at the right level of tired settles faster than one who is overtired.",
+      "detail": "Most three-month-olds manage about 90 to 120 minutes awake between sleeps. Watch for the first yawn and the first eye rub. A second wind means you waited too long.",
+      "keywords": ["wake window", "nap", "overtired"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "m3-sleep-change",
+      "title": "The four-month sleep change is coming",
+      "body": "Around three to four months, sleep reorganizes into cycles closer to an adult's. Night waking often increases. It is developmental, it is temporary, and it is not caused by anything you did."
+    },
+    {
+      "id": "m3-drool",
+      "title": "Drool is not teething yet",
+      "body": "Heavy drool from two months is the salivary glands working before the swallowing is coordinated. First teeth usually arrive between four and seven months."
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "m3-flag-fever",
+      "text": "A fever of 100.4°F or higher in a baby under three months",
+      "escalation": "call-pediatrician"
+    },
+    {
+      "id": "m3-flag-breathing",
+      "text": "Fast or labored breathing, or a blue tint around the lips",
+      "escalation": "call-911"
+    },
+    {
+      "id": "m3-flag-mood",
+      "text": "Feeling hopeless most of the day, or thoughts of harming yourself or the baby",
+      "escalation": "call-psi",
+      "phone": "1-833-943-5746"
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-m3-aap-sleep",
+      "title": "A parent's guide to safe sleep",
+      "publisher": "AAP",
+      "url": "https://www.healthychildren.org/English/ages-stages/baby/sleep/Pages/A-Parents-Guide-to-Safe-Sleep.aspx",
+      "kind": "clinical",
+      "accessed": "2026-10-21"
+    },
+    {
+      "id": "src-m3-cdc-milestones",
+      "title": "CDC milestones",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/act-early/milestones/index.html",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    }
+  ]
+}

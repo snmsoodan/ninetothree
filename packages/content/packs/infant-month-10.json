@@ -1,0 +1,99 @@
+{
+  "locale": "en-US",
+  "country": "US",
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-21",
+  "updatedAt": "2026-10-21",
+  "id": "infant-month-10",
+  "kind": "infant",
+  "stageIndex": 10,
+  "stageUnit": "month",
+  "title": "Month 10",
+  "subtitle": "Standing, cruising, and the first real word. The first birthday is two months away.",
+  "baby": {
+    "development": "Your baby is pulling to stand, cruising, and may be standing alone for a few seconds. They understand simple words and can follow a point."
+  },
+  "you": {
+    "body": "If you are breastfeeding, the baby is likely down to a few feeds a day. Your body adjusts. If you are not, the transition to whole milk is a conversation for the twelve-month visit.",
+    "mind": "Ten months is when the baby starts to have opinions about food, sleep, and being put down. That is a good sign, and it is also tiring."
+  },
+  "coreActions": [
+    {
+      "id": "m10-words",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "play",
+      "title": "Talk to the baby constantly, and name what you do",
+      "why": "Language is built by hearing it, and the words that stick are the ones attached to something happening.",
+      "detail": "Narrate the day: now we are washing your hands, cold water. Read the same few books until they are boring. Pause and let the baby babble back. Screen time does not do this, and background television does the opposite.",
+      "keywords": ["language", "talking", "words"]
+    },
+    {
+      "id": "m10-milk",
+      "type": "know",
+      "priority": "recommended",
+      "domain": "feeding",
+      "title": "Know the plan for milk at twelve months",
+      "why": "The twelve-month visit is where the switch from formula or breast milk to whole milk gets decided, and it is easier if you know the options.",
+      "detail": "Whole milk from twelve months, in an open cup, two to three cups a day. Not before twelve months. If the baby is still breastfeeding, that can continue. Plant milks are not a straight swap unless they are fortified and the doctor agrees.",
+      "keywords": ["whole milk", "twelve months", "cow milk"]
+    },
+    {
+      "id": "m10-walk",
+      "type": "do",
+      "priority": "optional",
+      "domain": "play",
+      "title": "Let the baby walk barefoot indoors",
+      "why": "Bare feet give better feedback than shoes, and the feedback is what builds balance.",
+      "detail": "Bare feet on a firm floor indoors. Shoes are for outside, and they should be flexible with a thin sole. A baby who is not walking by fifteen months is worth mentioning at the visit.",
+      "keywords": ["walking", "barefoot", "shoes"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "m10-first-birthday",
+      "title": "The first birthday is a party for you",
+      "body": "The baby will not remember it. Keep it small, keep it short, and do not schedule it over a nap. One candle and a mess of cake is the whole tradition."
+    },
+    {
+      "id": "m10-teeth",
+      "title": "Teeth need cleaning twice a day",
+      "body": "A smear of fluoride toothpaste no bigger than a grain of rice, twice a day, from the first tooth. First dental visit by the first tooth or the first birthday."
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "m10-flag-choking",
+      "text": "Choking — cannot breathe, cough, or make a sound",
+      "escalation": "call-911"
+    },
+    {
+      "id": "m10-flag-fall",
+      "text": "A fall from a height, or a head injury with vomiting or unusual sleepiness",
+      "escalation": "call-911"
+    },
+    {
+      "id": "m10-flag-fever",
+      "text": "A fever over 100.4°F with unusual sleepiness or a rash",
+      "escalation": "call-pediatrician"
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-m10-cdc-milestones",
+      "title": "CDC milestones",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/act-early/milestones/index.html",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    },
+    {
+      "id": "src-m10-cdc-formula",
+      "title": "Infant formula feeding",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/infant-toddler-nutrition/formula-feeding/index.html",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    }
+  ]
+}
