@@ -332,18 +332,21 @@ test("a late joiner gets a short catch-up, not a backlog", async ({ page }) => {
   // Closed by default, and never a wall of twenty-six weeks.
   const toggle = page.getByRole("button", { name: /^Show the \d+ things?$/ });
   await expect(toggle).toHaveAttribute("aria-expanded", "false");
-  await expect(page.getByRole("heading", { name: "Book your anatomy scan" })).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "Get the Tdap vaccine" })).toHaveCount(0);
 
   await toggle.click();
-  await expect(page.getByRole("heading", { name: "Book your anatomy scan" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Book your first prenatal visit" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Get the Tdap vaccine" })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Know how often visits happen now" }),
+  ).toBeVisible();
 
-  // Nothing older than the window leaks in.
+  // Nothing older than the window leaks in. The window is weeks 25 to 27.
+  await expect(page.getByRole("heading", { name: "Book your anatomy scan" })).toHaveCount(0);
   await expect(page.getByRole("heading", { name: /Week 4\b/ })).toHaveCount(0);
 
   // Clearing one removes it from the list.
   await page.locator("#catchup-list").getByRole("button", { name: "Done" }).first().click();
-  await expect(page.getByRole("heading", { name: "Book your anatomy scan" })).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: "Get the Tdap vaccine" })).toHaveCount(0);
 });
 
 test("a keyboard user can skip the nav and never loses focus", async ({ page }) => {
@@ -481,7 +484,10 @@ test("changing a setting re-personalizes the week without a reload", async ({ pa
   await expect(page).toHaveURL(/\/$/);
   await page.getByRole("link", { name: "Open this week" }).click();
   await expect(page).toHaveURL(/\/week\/pregnancy-w28$/);
-  await page.getByRole("link", { name: "Next →" }).click();
+  // Every week is written now, so 28 to 36 is eight hops, all client-side.
+  for (let i = 0; i < 10 && !page.url().endsWith("/week/pregnancy-w36"); i += 1) {
+    await page.getByRole("link", { name: "Next →" }).click();
+  }
   await expect(page).toHaveURL(/\/week\/pregnancy-w36$/);
 
   await expect(page.getByText("Install the car seat and get it checked")).toHaveCount(0);
@@ -592,14 +598,16 @@ test("search finds a step by the word a parent would use, and cites it", async (
 
   // "ultrasound" is not in the anatomy scan's title. The pack declares it.
   await page.getByLabel("What are you looking for?").fill("ultrasound");
-  const result = page.getByRole("link", { name: "Book your anatomy scan" });
+  const result = page.getByRole("link", { name: "Go over your anatomy scan results" });
   await expect(result).toBeVisible();
   await expect(page.getByText("Week 20 · 3 sources")).toBeVisible();
 
   // The result lands on the step itself, not the top of the week.
   await result.click();
   await expect(page).toHaveURL(/\/week\/pregnancy-w20#w20-anatomy-title$/);
-  await expect(page.getByRole("heading", { name: "Book your anatomy scan" })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Go over your anatomy scan results" }),
+  ).toBeVisible();
 });
 
 test("search says nothing is here without saying 'no results'", async ({ page }) => {

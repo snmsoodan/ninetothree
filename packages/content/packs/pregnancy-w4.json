@@ -1,0 +1,234 @@
+{
+  "id": "pregnancy-w4",
+  "kind": "pregnancy",
+  "stageIndex": 4,
+  "stageUnit": "week",
+  "locale": "en-US",
+  "country": "US",
+  "title": "Week 4",
+  "subtitle": "A missed period, and a test with two lines on it. Almost nothing has changed yet, and everything has.",
+  "baby": {
+    "size": "About the size of a poppy seed",
+    "development": "A ball of cells has settled into the lining of your uterus and started making the hormone a test looks for. The neural tube, which becomes the brain and spinal cord, is forming this week."
+  },
+  "you": {
+    "body": "You may feel nothing at all, or you may feel like a period is coming. Cramping and light spotting are common in early pregnancy. Your breasts may be tender and your sense of smell may sharpen.",
+    "mind": "Finding out can bring joy, fear, or both in the same minute. All of it is allowed. You do not have to feel a particular way to be doing this right."
+  },
+  "coreActions": [
+    {
+      "id": "w4-folic-acid",
+      "type": "buy",
+      "priority": "essential",
+      "domain": "nutrition",
+      "title": "Start a prenatal vitamin with folic acid",
+      "why": "Folic acid lowers the chance of a neural tube defect, and the tube closes in the next few weeks. Starting now is the whole point.",
+      "detail": "Look for 400 micrograms of folic acid on the label. Many prenatal vitamins have more, which is fine. If you have a family history of neural tube defects or take certain seizure medicines, your OB may suggest a higher dose — ask rather than guess. A plain folic acid tablet is enough if a full prenatal upsets your stomach.",
+      "minutes": 10,
+      "options": [
+        {
+          "id": "w4-vitamin-otc",
+          "label": "Any prenatal vitamin with 400 mcg folic acid",
+          "detail": "The store brand is the same vitamin. Check the label, not the price.",
+          "cost": "$"
+        },
+        {
+          "id": "w4-vitamin-gummy",
+          "label": "A gummy prenatal",
+          "detail": "Easier on the stomach, but most gummies have no iron. Ask about a separate iron source.",
+          "cost": "$",
+          "note": "Gummies usually skip iron, which matters more from the second trimester."
+        },
+        {
+          "id": "w4-vitamin-prescription",
+          "label": "A prescription prenatal",
+          "detail": "Often covered by insurance and usually higher in iron. Ask at your first visit.",
+          "cost": "varies"
+        }
+      ],
+      "chooser": {
+        "questions": [
+          {
+            "id": "w4-q-stomach",
+            "question": "Does a pill with iron upset your stomach?",
+            "why": "Iron is the part most likely to cause nausea or constipation.",
+            "answers": [
+              { "id": "w4-a-fine", "label": "No, pills are fine" },
+              { "id": "w4-a-upset", "label": "Yes, iron bothers me" }
+            ]
+          },
+          {
+            "id": "w4-q-budget",
+            "question": "What would you like to spend a month?",
+            "answers": [
+              { "id": "w4-a-cheap", "label": "Under $15" },
+              { "id": "w4-a-more", "label": "$15 or more is fine" }
+            ]
+          },
+          {
+            "id": "w4-q-insurance",
+            "question": "Do you have insurance that covers prescriptions?",
+            "answers": [
+              { "id": "w4-a-yes", "label": "Yes" },
+              { "id": "w4-a-no", "label": "No, or I am not sure" }
+            ]
+          }
+        ],
+        "recommendations": [
+          {
+            "optionId": "w4-vitamin-gummy",
+            "when": { "w4-q-stomach": ["w4-a-upset"] },
+            "reason": "A gummy skips the iron that is bothering you. Add a separate iron source once your OB says to."
+          },
+          {
+            "optionId": "w4-vitamin-prescription",
+            "when": { "w4-q-insurance": ["w4-a-yes"], "w4-q-budget": ["w4-a-more"] },
+            "reason": "Covered and higher in iron, which you will need more of later."
+          },
+          {
+            "optionId": "w4-vitamin-otc",
+            "when": { "w4-q-budget": ["w4-a-cheap"] },
+            "reason": "The store brand has the same folic acid. The label is what matters."
+          }
+        ]
+      },
+      "skipIf": "You already take a prenatal vitamin, or your OB has prescribed one.",
+      "keywords": ["folic acid", "prenatal", "vitamin"]
+    },
+    {
+      "id": "w4-test-confirm",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "health-parent",
+      "title": "Take a second test in a few days",
+      "why": "A home test measures a hormone that doubles every couple of days early on. A second line that gets darker is a good sign.",
+      "detail": "Use first-morning urine, when the hormone is most concentrated. You do not need to test every day — two tests a few days apart is enough. If the line gets lighter, or you have bleeding with pain, call your OB rather than testing again.",
+      "minutes": 5,
+      "options": [
+        {
+          "id": "w4-test-strip",
+          "label": "Cheap test strips",
+          "detail": "Sold in packs of 20 to 50. Fine for watching a line get darker.",
+          "cost": "$"
+        },
+        {
+          "id": "w4-test-digital",
+          "label": "A digital test",
+          "detail": "Says 'pregnant' in words. No line to read, which some people find calmer.",
+          "cost": "$$"
+        }
+      ],
+      "skipIf": "Your OB has already confirmed the pregnancy with a blood test.",
+      "keywords": ["pregnancy test", "two lines", "hcg"]
+    },
+    {
+      "id": "w4-book-first-visit",
+      "type": "book",
+      "priority": "recommended",
+      "domain": "health-parent",
+      "title": "Book your first prenatal visit",
+      "why": "Most practices see you between 8 and 10 weeks. Calling now gets you a slot in that window instead of after it.",
+      "detail": "When you call, they will ask the first day of your last period. That date sets your due date until an ultrasound refines it. Ask what to bring: insurance card, a list of medicines, and any family history you know.",
+      "minutes": 20,
+      "options": [
+        {
+          "id": "w4-visit-ob",
+          "label": "An OB practice",
+          "detail": "A doctor who handles pregnancy and delivery. The most common choice in the US.",
+          "cost": "varies"
+        },
+        {
+          "id": "w4-visit-midwife",
+          "label": "A certified nurse-midwife",
+          "detail": "Often longer visits and a lower rate of intervention. Ask where they deliver.",
+          "cost": "varies"
+        },
+        {
+          "id": "w4-visit-community",
+          "label": "A community health center",
+          "detail": "Sliding-scale fees and often a midwife on staff. Good if insurance is uncertain.",
+          "cost": "$"
+        }
+      ],
+      "skipIf": "You already have a prenatal appointment booked.",
+      "keywords": ["first visit", "prenatal", "ob", "midwife"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "w4-alcohol",
+      "title": "There is no known safe amount of alcohol",
+      "body": "The advice is to stop entirely, and the earlier the better. If you drank before you knew, tell your OB. That is a common thing and it is not a reason to panic.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w4-caffeine",
+      "title": "Caffeine has a ceiling, not a ban",
+      "body": "Up to about 200 milligrams a day is considered fine — roughly one 12-ounce coffee. Check tea, soda, and chocolate too, because they add up.",
+      "domain": "nutrition"
+    },
+    {
+      "id": "w4-due-date",
+      "title": "Your due date is an estimate, and a rough one",
+      "body": "It is 40 weeks from the first day of your last period. Only about 4 in 100 babies arrive on it. An early ultrasound will refine it, and that refined date is the one that sticks.",
+      "domain": "health-parent"
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "w4-rf-ectopic",
+      "text": "Sharp pain on one side, especially with dizziness or shoulder pain",
+      "escalation": "call-911",
+      "phone": "911"
+    },
+    {
+      "id": "w4-rf-bleeding",
+      "text": "Bleeding that fills a pad, or bleeding with pain",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w4-rf-fever",
+      "text": "A fever over 100.4°F",
+      "escalation": "call-ob-triage"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "w4-first-call",
+      "label": "Call to book your first prenatal visit",
+      "from": 4,
+      "to": 6,
+      "who": "You",
+      "note": "Most practices book 8 to 10 weeks, so calling now keeps you in the window."
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-cdc-folic-acid",
+      "title": "Folic Acid",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/folic-acid/about/index.html",
+      "kind": "government",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-acog-prenatal",
+      "title": "Prenatal Care",
+      "publisher": "ACOG",
+      "url": "https://www.acog.org/womens-health/faqs/prenatal-care",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-mod-first-visit",
+      "title": "Your First Prenatal Visit",
+      "publisher": "March of Dimes",
+      "url": "https://www.marchofdimes.org/find-support/topics/planning-baby/prenatal-care-checkups",
+      "kind": "charity",
+      "accessed": "2026-10-20"
+    }
+  ],
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-20",
+  "updatedAt": "2026-10-21"
+}

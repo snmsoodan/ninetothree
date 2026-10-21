@@ -9,6 +9,30 @@ changelog written after the fact from memory is a changelog nobody can trust.
 
 ## Unreleased
 
+### Pregnancy, week by week: all 39 weeks, and the registry that hid them (#47)
+
+- Wrote the 33 missing pregnancy packs, weeks 4 to 42. Every week now has one
+  essential action, at most three core actions, at least one red flag and at
+  least one source, in the voice the first six established.
+- Added `scripts/gen-registry.mjs` and `pnpm content:registry`. The pack
+  registry was a hand-maintained list of nine imports, so 33 validated packs
+  were invisible to the app and `/week/[id]` prerendered 9 paths instead of 42.
+  It is generated now, and `pnpm content:registry:check` fails in CI if it
+  drifts.
+- Fixed a search bug: `scoreTerm` used raw substring matching, so "aid" matched
+  "paid" and a search for legal aid returned paid-leave actions. Matching is
+  now word-prefix.
+- Raised `FUZZY_FLOOR` from 0.55 to 0.62. At 0.55, "stroller" fuzzy-matched
+  "stronger", so a parent looking for a stroller got Braxton Hicks.
+- Retitled the week-20 anatomy action from "Book your anatomy scan" to "Go over
+  your anatomy scan results". Week 15 already books it, and at week 20 the scan
+  is due.
+- Replaced two dead URLs found by `check-links.mjs`: the DOL state paid-leave
+  page in `pregnancy-w19`, and the CDC quitline in `pregnancy-w5` (which was in
+  an option, not in `sources`).
+- Rewrote four e2e tests whose premises the new content invalidated. All four
+  were stale, not product bugs.
+
 ### The weekly email: three things, and nothing if there is nothing (#33)
 
 - Added `apps/web/src/lib/email.ts`: the `WeeklyEmail` model, `resolve`,

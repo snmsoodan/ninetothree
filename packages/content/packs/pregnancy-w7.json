@@ -1,0 +1,178 @@
+{
+  "id": "pregnancy-w7",
+  "kind": "pregnancy",
+  "stageIndex": 7,
+  "stageUnit": "week",
+  "locale": "en-US",
+  "country": "US",
+  "title": "Week 7",
+  "subtitle": "Tired in a way that sleep does not fix. This is the peak of it for most people.",
+  "baby": {
+    "size": "About the size of a blueberry",
+    "development": "The brain is growing fast and the arm and leg buds have lengthened into paddles. Nostrils and the lenses of the eyes are forming. The umbilical cord is now doing the work of feeding."
+  },
+  "you": {
+    "body": "First-trimester tiredness is not ordinary tiredness. It is your body building a placenta and half again your blood volume. It eases in the second trimester for most people.",
+    "mind": "Brain fog is real and it is hormonal. If you are forgetting things, that is not you becoming unreliable. Write things down and let some things go."
+  },
+  "coreActions": [
+    {
+      "id": "w7-rest",
+      "type": "do",
+      "priority": "essential",
+      "domain": "mind",
+      "title": "Take the rest, and stop apologising for it",
+      "why": "Fatigue in the first trimester is a physiological cost, not a lack of discipline. Fighting it makes it worse.",
+      "detail": "Aim for a consistent bedtime and take the nap if you can. If you cannot nap, ten minutes lying down with your eyes closed does something. Say no to one thing this week that you would normally say yes to. This is a temporary season, not a new personality.",
+      "minutes": 20,
+      "options": [
+        {
+          "id": "w7-rest-nap",
+          "label": "A short nap",
+          "detail": "20 to 30 minutes, before 3pm, so it does not steal the night.",
+          "cost": "free"
+        },
+        {
+          "id": "w7-rest-earlier",
+          "label": "An earlier bedtime",
+          "detail": "Thirty minutes earlier for a week is often enough to feel the difference.",
+          "cost": "free"
+        },
+        {
+          "id": "w7-rest-say-no",
+          "label": "Cancel one thing",
+          "detail": "Pick the one you would dread most. Cancel it now, not the night before.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "Your energy is fine. Some people do not get this at all.",
+      "keywords": ["tired", "fatigue", "sleep", "exhausted"]
+    },
+    {
+      "id": "w7-dental",
+      "type": "book",
+      "priority": "recommended",
+      "domain": "health-parent",
+      "title": "Book a dental cleaning",
+      "why": "Pregnancy raises the risk of gum disease, and gum disease is linked to preterm birth. A cleaning is safe and usually covered.",
+      "detail": "Tell them you are pregnant when you book. X-rays can be delayed or shielded. If your gums bleed when you brush, that is pregnancy gingivitis and it is worth mentioning — it is common and treatable.",
+      "minutes": 15,
+      "options": [
+        {
+          "id": "w7-dental-insurance",
+          "label": "Your regular dentist",
+          "detail": "Most dental plans cover two cleanings a year, and pregnancy does not change that.",
+          "cost": "varies"
+        },
+        {
+          "id": "w7-dental-clinic",
+          "label": "A dental school clinic",
+          "detail": "Lower cost, supervised students, longer appointments.",
+          "cost": "$"
+        }
+      ],
+      "skipIf": "You had a cleaning in the last six months.",
+      "keywords": ["dentist", "teeth", "gums", "cleaning"]
+    },
+    {
+      "id": "w7-constipation",
+      "type": "do",
+      "priority": "optional",
+      "domain": "nutrition",
+      "title": "Get ahead of constipation",
+      "why": "Progesterone slows the gut and iron supplements slow it further. It is easier to prevent than to fix.",
+      "detail": "Fiber from fruit, vegetables, beans, and whole grains, plus water, does most of the work. Prunes genuinely help. Ask before starting a stool softener — several are considered fine in pregnancy, but check with your OB or pharmacist.",
+      "minutes": 10,
+      "options": [
+        {
+          "id": "w7-const-fiber",
+          "label": "More fiber and water",
+          "detail": "Add one serving of fruit and one of beans or whole grains a day.",
+          "cost": "$"
+        },
+        {
+          "id": "w7-const-prunes",
+          "label": "Prunes or prune juice",
+          "detail": "Unglamorous and effective. A small glass before bed.",
+          "cost": "$"
+        },
+        {
+          "id": "w7-const-softener",
+          "label": "A stool softener",
+          "detail": "Ask your pharmacist which one. Do not use a stimulant laxative without asking.",
+          "cost": "$"
+        }
+      ],
+      "skipIf": "Nothing has changed. Not everyone gets this.",
+      "keywords": ["constipation", "fiber", "bowel"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "w7-hands",
+      "title": "Tingling hands are common and usually harmless",
+      "body": "Fluid retention can press on a nerve at the wrist. Shake your hands out, and try a wrist splint at night. Mention it at your next visit.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w7-sleep-position",
+      "title": "Sleep in whatever position you like for now",
+      "body": "The left-side advice matters from the third trimester. In the first trimester, comfort is the only rule.",
+      "domain": "sleep"
+    },
+    {
+      "id": "w7-exercise-w7",
+      "title": "Movement helps the tiredness, which sounds like a trick",
+      "body": "A 20-minute walk often gives more energy back than it costs. It is not a cure, but it is the cheapest thing that works.",
+      "domain": "health-parent"
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "w7-rf-bleeding",
+      "text": "Bleeding that fills a pad, or bleeding with pain",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w7-rf-fever",
+      "text": "A fever over 100.4°F",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w7-rf-burning",
+      "text": "Burning when you pee, or peeing very often with pain",
+      "escalation": "call-ob-triage"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "w7-first-visit",
+      "label": "First prenatal visit",
+      "from": 8,
+      "to": 10,
+      "who": "OB or midwife",
+      "note": "Bring your medicine bottles and your insurance card."
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-ada-pregnancy",
+      "title": "Pregnancy and Oral Health",
+      "publisher": "American Dental Association",
+      "url": "https://www.ada.org/resources/ada-library/oral-health-topics/pregnancy",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-acog-prenatal-w7",
+      "title": "Prenatal Care",
+      "publisher": "ACOG",
+      "url": "https://www.acog.org/womens-health/faqs/prenatal-care",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    }
+  ],
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-20",
+  "updatedAt": "2026-10-21"
+}

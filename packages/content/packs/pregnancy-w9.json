@@ -1,0 +1,201 @@
+{
+  "id": "pregnancy-w9",
+  "kind": "pregnancy",
+  "stageIndex": 9,
+  "stageUnit": "week",
+  "locale": "en-US",
+  "country": "US",
+  "title": "Week 9",
+  "subtitle": "The first visit is usually around now. It is mostly paperwork and blood work, and it is a relief.",
+  "baby": {
+    "size": "About the size of a cherry",
+    "development": "The tail has gone and the body is recognisably human. Fingers and toes are forming. The heart has divided into four chambers. The baby is moving, though you cannot feel it yet."
+  },
+  "you": {
+    "body": "Your uterus is about the size of a grapefruit. Waistbands may start to feel tight, though most people are not showing yet. Bloating is doing more of the work than the baby is.",
+    "mind": "The first visit often brings a big drop in anxiety, because someone has looked. It can also bring new worries. Both are normal responses to finally having information."
+  },
+  "coreActions": [
+    {
+      "id": "w9-first-visit",
+      "type": "book",
+      "priority": "essential",
+      "domain": "health-parent",
+      "title": "Go to your first prenatal visit",
+      "why": "This is where the due date is confirmed, blood work is drawn, and any risk factors get identified early enough to act on.",
+      "detail": "Expect a long appointment. They will ask about your history, your family history, and your partner's. Blood work usually covers blood type, Rh factor, anemia, immunity to rubella, and screening for hepatitis B, syphilis, HIV, and chlamydia. Ask what happens next and when.",
+      "minutes": 90,
+      "options": [
+        {
+          "id": "w9-visit-ob",
+          "label": "An OB practice",
+          "detail": "The most common choice in the US. Ask who covers when your doctor is off.",
+          "cost": "varies"
+        },
+        {
+          "id": "w9-visit-midwife",
+          "label": "A certified nurse-midwife",
+          "detail": "Longer visits and a lower intervention rate. Confirm the delivery hospital.",
+          "cost": "varies"
+        },
+        {
+          "id": "w9-visit-birth-center",
+          "label": "A birth center",
+          "detail": "Home-like, midwife-led. Ask what happens if you need a hospital transfer.",
+          "cost": "varies"
+        }
+      ],
+      "skipIf": "You have already had your first visit.",
+      "keywords": ["first visit", "prenatal", "blood work", "due date"]
+    },
+    {
+      "id": "w9-nipt-window",
+      "type": "ask",
+      "priority": "recommended",
+      "domain": "health-parent",
+      "title": "Ask whether genetic screening is right for you",
+      "why": "Cell-free DNA screening can be done from 10 weeks. It is optional, and the decision is yours, not a default.",
+      "detail": "This is a blood test that looks for chromosomal conditions like Down syndrome, and it can also tell you the sex. It is a screening test, not a diagnosis — a positive result means a follow-up test. Insurance covers it automatically for some people and not others, so ask about cost before you agree.",
+      "minutes": 20,
+      "options": [
+        {
+          "id": "w9-nipt-yes",
+          "label": "Have the screening",
+          "detail": "A blood draw from 10 weeks. Results in about a week to ten days.",
+          "cost": "varies"
+        },
+        {
+          "id": "w9-nipt-no",
+          "label": "Skip it",
+          "detail": "A completely reasonable choice. The anatomy scan at 20 weeks still checks anatomy.",
+          "cost": "free"
+        },
+        {
+          "id": "w9-nipt-wait",
+          "label": "Decide after talking it through",
+          "detail": "Ask for a genetic counselor. Most practices have one or can refer.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You have already decided, or your OB has already ordered it.",
+      "keywords": ["nipt", "genetic", "screening", "down syndrome"]
+    },
+    {
+      "id": "w9-maternity-clothes",
+      "type": "buy",
+      "priority": "optional",
+      "domain": "gear",
+      "title": "Get one pair of pants that fits",
+      "why": "You do not need a maternity wardrobe yet. You need one thing that does not dig in, so you stop dreading getting dressed.",
+      "detail": "Buy your pre-pregnancy size in maternity, not a size up — maternity sizing is built for the bump. A belly band lets you keep wearing your own jeans unbuttoned for a few more weeks. Thrift and resale are excellent here, because you will wear these for about six months.",
+      "minutes": 30,
+      "options": [
+        {
+          "id": "w9-clothes-band",
+          "label": "A belly band",
+          "detail": "Cheapest option. Holds your own pants up unbuttoned.",
+          "cost": "$"
+        },
+        {
+          "id": "w9-clothes-jeans",
+          "label": "One pair of maternity jeans",
+          "detail": "Over-the-bump or side-panel. Try both if you can.",
+          "cost": "$$"
+        },
+        {
+          "id": "w9-clothes-resale",
+          "label": "Secondhand maternity",
+          "detail": "Worn for a few months by someone else, then passed on. Very good value.",
+          "cost": "$"
+        }
+      ],
+      "noChooser": "There is no right answer here — it depends on what you already own and what you wear to work. Start with one item and add as you need.",
+      "skipIf": "Your clothes still fit comfortably.",
+      "keywords": ["maternity", "clothes", "pants", "band"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "w9-rh",
+      "title": "If you are Rh negative, you will get a shot",
+      "body": "Around 28 weeks, and again after birth if the baby is Rh positive. It prevents your body from making antibodies that could affect a future pregnancy. It is routine and it works.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w9-weight",
+      "title": "Nobody is going to weigh you at every visit",
+      "body": "Weight gain guidance depends on your starting BMI, and the range is wide. If a number at a visit upsets you, say so. You can ask not to be told it.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w9-work-rights",
+      "title": "You have rights at work, and they start before the baby",
+      "body": "The Pregnant Workers Fairness Act requires reasonable accommodations — extra breaks, a stool, lighter lifting, time off for appointments. You do not have to disclose a pregnancy to ask.",
+      "domain": "money"
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "w9-rf-bleeding",
+      "text": "Bleeding that fills a pad, or bleeding with pain",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w9-rf-fever",
+      "text": "A fever over 100.4°F",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w9-rf-uti",
+      "text": "Burning when you pee, or pain in your side with a fever",
+      "escalation": "call-ob-triage"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "w9-appt-first",
+      "label": "First prenatal visit",
+      "from": 8,
+      "to": 10,
+      "who": "OB or midwife",
+      "note": "Long visit. Bring medicine bottles, insurance card, and your questions."
+    },
+    {
+      "id": "w9-nipt",
+      "label": "Cell-free DNA screening, if you choose it",
+      "from": 10,
+      "to": 13,
+      "who": "Lab",
+      "note": "A blood draw. Ask about cost before you agree."
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-acog-genetic",
+      "title": "Prenatal Genetic Screening Tests",
+      "publisher": "ACOG",
+      "url": "https://www.acog.org/womens-health/faqs/prenatal-genetic-screening-tests",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-acog-prenatal-w9",
+      "title": "Prenatal Care",
+      "publisher": "ACOG",
+      "url": "https://www.acog.org/womens-health/faqs/prenatal-care",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-mod-checkups",
+      "title": "Prenatal Care Checkups",
+      "publisher": "March of Dimes",
+      "url": "https://www.marchofdimes.org/find-support/topics/planning-baby/prenatal-care-checkups",
+      "kind": "charity",
+      "accessed": "2026-10-20"
+    }
+  ],
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-20",
+  "updatedAt": "2026-10-21"
+}

@@ -1,0 +1,173 @@
+{
+  "id": "pregnancy-w6",
+  "kind": "pregnancy",
+  "stageIndex": 6,
+  "stageUnit": "week",
+  "locale": "en-US",
+  "country": "US",
+  "title": "Week 6",
+  "subtitle": "Nausea usually arrives around now. It is a good sign and a miserable one.",
+  "baby": {
+    "size": "About the size of a lentil",
+    "development": "The heart is beating at around 110 beats a minute and can sometimes be seen on an early ultrasound. Small buds that become arms and legs are appearing. The face is starting to form."
+  },
+  "you": {
+    "body": "Nausea, food aversions, and a metallic taste are common from this week. It is not caused by the baby pressing on anything — it is the hormone shift. It usually eases by 14 weeks, though for some people it lasts longer.",
+    "mind": "Feeling awful and feeling ungrateful at the same time is very common. You can be glad about the pregnancy and still hate this part."
+  },
+  "coreActions": [
+    {
+      "id": "w6-nausea",
+      "type": "do",
+      "priority": "essential",
+      "domain": "health-parent",
+      "title": "Eat small amounts, often",
+      "why": "An empty stomach makes nausea worse. Five or six small meals beat three big ones for most people.",
+      "detail": "Keep something plain by the bed and eat a few crackers before you sit up. Cold food smells less than hot food. Ginger, vitamin B6, and a protein snack before bed all help some people. If you are losing weight or cannot keep water down, that is hyperemesis and it is treatable — call your OB rather than pushing through.",
+      "minutes": 10,
+      "options": [
+        {
+          "id": "w6-nausea-food",
+          "label": "Small, frequent, plain food",
+          "detail": "Crackers, toast, rice, bananas. Eat before you feel hungry.",
+          "cost": "$"
+        },
+        {
+          "id": "w6-nausea-b6",
+          "label": "Vitamin B6",
+          "detail": "The first thing most OBs suggest. Ask about the dose before starting.",
+          "cost": "$"
+        },
+        {
+          "id": "w6-nausea-rx",
+          "label": "A prescription anti-nausea medicine",
+          "detail": "There are several considered safe in pregnancy. Ask if the simple things are not enough.",
+          "cost": "varies"
+        }
+      ],
+      "skipIf": "You have no nausea at all. That is also common and means nothing.",
+      "keywords": ["nausea", "morning sickness", "vomiting", "sick"]
+    },
+    {
+      "id": "w6-first-visit-book",
+      "type": "book",
+      "priority": "recommended",
+      "domain": "health-parent",
+      "title": "Confirm your first visit is booked",
+      "why": "The 8 to 10 week visit is when the due date gets confirmed and the first blood work happens. If you have not called, this is the week.",
+      "detail": "Ask whether they will do an ultrasound at that visit. Some practices do, some wait. If you have had a previous loss or are having pain or bleeding, say so when you book — it can move the appointment earlier.",
+      "minutes": 15,
+      "options": [
+        {
+          "id": "w6-visit-call",
+          "label": "Call the practice",
+          "detail": "Fastest, and you can ask questions while you have them on the line.",
+          "cost": "free"
+        },
+        {
+          "id": "w6-visit-portal",
+          "label": "Book through the patient portal",
+          "detail": "Fine if you already have an account. Slower if you have questions.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "Your first visit is already on the calendar.",
+      "keywords": ["appointment", "first visit", "book"]
+    },
+    {
+      "id": "w6-hydration",
+      "type": "do",
+      "priority": "optional",
+      "domain": "nutrition",
+      "title": "Find a way to drink more water",
+      "why": "Blood volume rises by about half over the pregnancy. Water is the cheapest thing that helps with headaches, constipation, and dizziness.",
+      "detail": "Cold water, a straw, or a bottle you actually like all work better than willpower. If plain water makes you queasy, try ice chips, diluted juice, or sparkling water. Urine that is pale yellow is the simple check.",
+      "minutes": 5,
+      "options": [
+        {
+          "id": "w6-water-bottle",
+          "label": "A bottle you will carry",
+          "detail": "The one that works is the one that fits your bag.",
+          "cost": "$"
+        },
+        {
+          "id": "w6-water-flavor",
+          "label": "Flavor it",
+          "detail": "Lemon, cucumber, or a splash of juice. Skip the sugary sports drinks.",
+          "cost": "$"
+        }
+      ],
+      "skipIf": "You already drink plenty and your urine is pale.",
+      "keywords": ["water", "hydration", "drink"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "w6-no-nausea",
+      "title": "No symptoms is not a bad sign",
+      "body": "Plenty of people sail through the first trimester with nothing but tiredness. Symptoms vary enormously between people and between pregnancies. They are not a readout.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w6-teeth",
+      "title": "Vomiting is hard on your teeth",
+      "body": "Rinse with water after, and wait about 30 minutes before brushing. Brushing straight away works the acid into the enamel.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w6-work",
+      "title": "You can tell work later",
+      "body": "Nothing requires you to disclose before you are ready. If nausea is affecting your work, you can ask for accommodations without saying why in most states.",
+      "domain": "money"
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "w6-rf-hyperemesis",
+      "text": "Vomiting so much you cannot keep fluids down, or you are losing weight",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w6-rf-bleeding",
+      "text": "Bleeding that fills a pad, or bleeding with pain",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w6-rf-ectopic",
+      "text": "Sharp pain on one side, especially with dizziness or shoulder pain",
+      "escalation": "call-911",
+      "phone": "911"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "w6-first-visit",
+      "label": "First prenatal visit",
+      "from": 8,
+      "to": 10,
+      "who": "OB or midwife",
+      "note": "History, blood work, and a confirmed due date."
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-acog-nausea",
+      "title": "Morning Sickness",
+      "publisher": "ACOG",
+      "url": "https://www.acog.org/womens-health/faqs/morning-sickness-nausea-and-vomiting-of-pregnancy",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-cdc-pregnancy-w6",
+      "title": "Pregnancy",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/pregnancy/",
+      "kind": "government",
+      "accessed": "2026-10-20"
+    }
+  ],
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-20",
+  "updatedAt": "2026-10-21"
+}

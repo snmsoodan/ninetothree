@@ -1,0 +1,182 @@
+{
+  "id": "pregnancy-w30",
+  "kind": "pregnancy",
+  "stageIndex": 30,
+  "stageUnit": "week",
+  "locale": "en-US",
+  "country": "US",
+  "title": "Week 30",
+  "subtitle": "Ten weeks to go, give or take. The baby is putting on about half a pound a week.",
+  "baby": {
+    "size": "About the size of a large cabbage",
+    "development": "The brain is developing the folds that let it hold more. The bone marrow is making red blood cells. The baby can see light through the belly and may turn toward it."
+  },
+  "you": {
+    "body": "Your uterus is about four inches above your belly button. You may have more heartburn, more breathlessness, and more trouble sleeping. Your belly may feel heavy by the end of the day.",
+    "mind": "The countdown can bring a burst of nesting energy or a wall of tiredness. Both are ordinary. Neither means you are doing it wrong."
+  },
+  "coreActions": [
+    {
+      "id": "w30-pediatrician",
+      "type": "do",
+      "priority": "essential",
+      "domain": "health-baby",
+      "title": "Choose a pediatrician",
+      "why": "The hospital will ask for a name, and the baby needs a visit within a few days of going home. Choosing now means you are not doing it from a hospital bed.",
+      "detail": "Ask your OB or friends for names. Call and ask whether they are taking new patients, whether they accept your insurance, and who covers nights and weekends. Many practices offer a free meet-and-greet. Ask about their vaccine policy — you want one whose approach you agree with.",
+      "minutes": 60,
+      "options": [
+        {
+          "id": "w30-ped-ask",
+          "label": "Ask your OB for a recommendation",
+          "detail": "Fastest route. They know who communicates well.",
+          "cost": "free"
+        },
+        {
+          "id": "w30-ped-aap",
+          "label": "Find one through the AAP",
+          "detail": "Search by zip code and insurance.",
+          "url": "https://www.healthychildren.org/",
+          "cost": "free"
+        },
+        {
+          "id": "w30-ped-meet",
+          "label": "Book a meet-and-greet",
+          "detail": "Free at most practices. Worth the half hour.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You already have a pediatrician.",
+      "keywords": ["pediatrician", "doctor", "baby doctor", "insurance"]
+    },
+    {
+      "id": "w30-nursery",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "home",
+      "title": "Set up the changing and feeding stations",
+      "why": "You will do these two things a dozen times a day. Having them work one-handed at 3am is the difference between a calm night and a hard one.",
+      "detail": "Changing: a flat surface you can reach without bending, diapers and wipes within arm's reach, a spare outfit, and a trash can with a lid. Feeding: a chair with back support, water for you, a burp cloth, and a place to set the baby down safely. Set both up now and use them once to see what is missing.",
+      "minutes": 60,
+      "options": [
+        {
+          "id": "w30-station-diy",
+          "label": "Use what you have",
+          "detail": "A dresser top and a basket. Works fine.",
+          "cost": "free"
+        },
+        {
+          "id": "w30-station-buy",
+          "label": "Buy a changing table",
+          "detail": "Get one with a lip and a strap. Anchor it to the wall.",
+          "cost": "$$"
+        }
+      ],
+      "skipIf": "Your stations are already set up and tested.",
+      "keywords": ["nursery", "changing", "feeding", "setup"]
+    },
+    {
+      "id": "w30-car-seat-check",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "safety",
+      "title": "Check the car seat is still right",
+      "why": "Seats get moved, borrowed, and reinstalled. A five-minute check now saves a bad surprise in a hospital parking lot.",
+      "detail": "The seat should not move more than an inch at the belt path. The harness should be snug enough that you cannot pinch it at the shoulder. The chest clip goes at armpit level. If the seat has been in a crash, replace it. Check the expiry date on the label.",
+      "minutes": 15,
+      "options": [
+        {
+          "id": "w30-seat-recheck",
+          "label": "Re-check it yourself",
+          "detail": "The inch test and the pinch test. Two minutes.",
+          "cost": "free"
+        },
+        {
+          "id": "w30-seat-tech",
+          "label": "Book a technician",
+          "detail": "Free, and they catch what you cannot see.",
+          "url": "https://www.nhtsa.gov/vehicle-safety/car-seats-and-booster-seats#installation-help-inspection",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You have no car, or a technician checked it in the last month.",
+      "keywords": ["car seat", "check", "install", "safety"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "w30-nesting",
+      "title": "Nesting is real, and it can be a trap",
+      "body": "The urge to clean and organize is common. Do not lift heavy things or stand on ladders. If the urge comes with a frantic feeling that will not settle, mention it to your OB.",
+      "domain": "mind"
+    },
+    {
+      "id": "w30-braxton",
+      "title": "Tightenings that come and go are not labor",
+      "body": "Braxton Hicks are irregular and ease with rest or water. Contractions that get closer, longer, and stronger do not. If you are timing them, call.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w30-secondhand",
+      "title": "Secondhand gear needs a recall check",
+      "body": "Check every crib, car seat, and sleep product against the CPSC recall list before you use it. Do not use a car seat that has been in a crash, and do not use a crib made before 2011.",
+      "domain": "safety"
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "w30-rf-movement",
+      "text": "A clear change in your baby's usual movement",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w30-rf-headache",
+      "text": "A severe headache that will not go, or blurred vision or spots",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w30-rf-fluid",
+      "text": "Fluid that keeps leaking, or any vaginal bleeding",
+      "escalation": "call-ob-triage"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "w30-appt-visit",
+      "label": "Prenatal visit",
+      "from": 30,
+      "to": 33,
+      "who": "OB or midwife",
+      "note": "Every two weeks. Bring your questions."
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-healthychildren",
+      "title": "HealthyChildren.org",
+      "publisher": "American Academy of Pediatrics",
+      "url": "https://www.healthychildren.org/",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-cpsc-recalls-w30",
+      "title": "Recalls",
+      "publisher": "US Consumer Product Safety Commission",
+      "url": "https://www.cpsc.gov/Recalls",
+      "kind": "government",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-nhtsa-seats-w30",
+      "title": "Car Seats and Booster Seats",
+      "publisher": "NHTSA",
+      "url": "https://www.nhtsa.gov/vehicle-safety/car-seats-and-booster-seats",
+      "kind": "government",
+      "accessed": "2026-10-20"
+    }
+  ],
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-20",
+  "updatedAt": "2026-10-21"
+}

@@ -1,0 +1,192 @@
+{
+  "id": "pregnancy-w5",
+  "kind": "pregnancy",
+  "stageIndex": 5,
+  "stageUnit": "week",
+  "locale": "en-US",
+  "country": "US",
+  "title": "Week 5",
+  "subtitle": "The test is positive and the waiting starts. There is more to do than it feels like.",
+  "baby": {
+    "size": "About the size of a sesame seed",
+    "development": "The heart is a tube that has started to beat. The neural tube is closing. This is the week the organs begin to take shape, which is why the next few weeks matter so much."
+  },
+  "you": {
+    "body": "Sore breasts, tiredness, and a need to pee more often are the usual early signs. Some people have none of them. Symptoms are not a measure of how the pregnancy is going.",
+    "mind": "Early pregnancy can feel like holding your breath. If you have had a loss before, this part may be especially hard. Tell your OB — they can offer earlier scans and more support."
+  },
+  "coreActions": [
+    {
+      "id": "w5-stop-substances",
+      "type": "do",
+      "priority": "essential",
+      "domain": "health-parent",
+      "title": "Stop alcohol, smoking, and recreational drugs",
+      "why": "The first trimester is when the organs form, and these are the things with the clearest evidence of harm.",
+      "detail": "If you smoke, quitting now helps more than quitting later, and it is still worth quitting at any point. Ask your OB about nicotine replacement — it is considered safer in pregnancy than continuing to smoke. If you use other substances, say so. Your OB is not there to judge you, and there is help that works.",
+      "minutes": 15,
+      "options": [
+        {
+          "id": "w5-quitline",
+          "label": "SmokeFree.gov",
+          "detail": "Free coaching from the National Cancer Institute, by phone, text, or chat. Ask for a pregnancy-specific counselor. The quitline is 1-800-QUIT-NOW.",
+          "url": "https://smokefree.gov/",
+          "cost": "free"
+        },
+        {
+          "id": "w5-samhsa",
+          "label": "SAMHSA National Helpline",
+          "detail": "1-800-662-4357. Free, confidential, 24 hours, and they will find you a local service.",
+          "url": "https://www.samhsa.gov/find-help/helplines/national-helpline",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You do not drink, smoke, or use any drugs.",
+      "keywords": ["alcohol", "smoking", "quit", "vaping"]
+    },
+    {
+      "id": "w5-medicine-check",
+      "type": "ask",
+      "priority": "recommended",
+      "domain": "health-parent",
+      "title": "Ask before you take anything",
+      "why": "Some common medicines are fine in pregnancy and some are not. A pharmacist can answer this in five minutes.",
+      "detail": "That includes things you would not think of as medicine: herbal supplements, fish oil, melatonin, and skin creams with retinol. Bring the actual bottles to your first visit, or take a photo of the labels. Do not stop a prescribed medicine on your own — for some conditions, untreated is the bigger risk.",
+      "minutes": 15,
+      "options": [
+        {
+          "id": "w5-ask-pharmacist",
+          "label": "Ask a pharmacist",
+          "detail": "No appointment, and they are the fastest reliable answer for a drug question.",
+          "cost": "free"
+        },
+        {
+          "id": "w5-ask-ob",
+          "label": "Send your OB a message",
+          "detail": "Most portals have a nurse line. Good for a list of several medicines at once.",
+          "cost": "free"
+        },
+        {
+          "id": "w5-ask-mothertobaby",
+          "label": "MotherToBaby",
+          "detail": "A free service that answers questions about exposures in pregnancy, by phone or text.",
+          "url": "https://mothertobaby.org/",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You take no medicines, vitamins, or supplements other than your prenatal.",
+      "keywords": ["medicine", "safe", "supplement", "pharmacist"]
+    },
+    {
+      "id": "w5-insurance",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "money",
+      "title": "Check what your insurance covers",
+      "why": "Prenatal care, delivery, and the baby's first year are three separate sets of bills. Knowing the deductible now avoids a surprise in month eight.",
+      "detail": "Call the number on your card and ask four things: your deductible, your out-of-pocket maximum, whether your hospital and OB are in network, and whether the baby needs to be added within 30 days of birth. That last one is the one people miss, and it can be expensive.",
+      "minutes": 30,
+      "options": [
+        {
+          "id": "w5-insurance-card",
+          "label": "Call the number on your card",
+          "detail": "Ask for the prenatal and delivery benefits in writing.",
+          "cost": "free"
+        },
+        {
+          "id": "w5-insurance-marketplace",
+          "label": "Healthcare.gov",
+          "detail": "If you are uninsured, a pregnancy qualifies you for a special enrollment period.",
+          "url": "https://www.healthcare.gov/",
+          "cost": "free"
+        },
+        {
+          "id": "w5-insurance-medicaid",
+          "label": "Medicaid or CHIP",
+          "detail": "Income limits for pregnancy are much higher than for adults generally. Worth checking.",
+          "url": "https://www.healthcare.gov/medicaid-chip/",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You already know your coverage in detail, or you are on Medicaid.",
+      "keywords": ["insurance", "deductible", "coverage", "medicaid"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "w5-exercise",
+      "title": "You do not have to stop moving",
+      "body": "Moderate exercise is recommended in an uncomplicated pregnancy. Walking, swimming, and prenatal yoga are all fine. Avoid contact sports, scuba diving, and anything with a real fall risk.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w5-food",
+      "title": "The food rules are shorter than the lists suggest",
+      "body": "Avoid raw fish and raw sprouts, unpasteurized milk and soft cheese, deli meat unless heated, and high-mercury fish like swordfish and king mackerel. Everything else is mostly fine.",
+      "domain": "nutrition"
+    },
+    {
+      "id": "w5-telling",
+      "title": "You do not have to tell anyone yet",
+      "body": "There is no rule about when. A useful question: if this pregnancy ended, who would you want to have told? Tell those people, and wait on the rest.",
+      "domain": "mind"
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "w5-rf-ectopic",
+      "text": "Sharp pain on one side, especially with dizziness or shoulder pain",
+      "escalation": "call-911",
+      "phone": "911"
+    },
+    {
+      "id": "w5-rf-bleeding",
+      "text": "Bleeding that fills a pad, or bleeding with pain",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w5-rf-vomiting",
+      "text": "Vomiting so much you cannot keep fluids down for a day",
+      "escalation": "call-ob-triage"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "w5-first-visit",
+      "label": "First prenatal visit",
+      "from": 8,
+      "to": 10,
+      "who": "OB or midwife",
+      "note": "Usually a long visit: history, blood work, and a due date."
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-cdc-pregnancy",
+      "title": "Pregnancy",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/pregnancy/",
+      "kind": "government",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-acog-prenatal-w5",
+      "title": "Prenatal Care",
+      "publisher": "ACOG",
+      "url": "https://www.acog.org/womens-health/faqs/prenatal-care",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-mothertobaby",
+      "title": "MotherToBaby",
+      "publisher": "Organization of Teratology Information Specialists",
+      "url": "https://mothertobaby.org/",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    }
+  ],
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-20",
+  "updatedAt": "2026-10-21"
+}

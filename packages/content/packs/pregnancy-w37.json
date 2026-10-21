@@ -1,0 +1,168 @@
+{
+  "id": "pregnancy-w37",
+  "kind": "pregnancy",
+  "stageIndex": 37,
+  "stageUnit": "week",
+  "locale": "en-US",
+  "country": "US",
+  "title": "Week 37",
+  "subtitle": "Early term. If labor starts now, the baby is unlikely to need the NICU.",
+  "baby": {
+    "size": "About the size of a bunch of Swiss chard",
+    "development": "The baby is considered early term. The lungs are close to mature. The grasp is firm and the baby is practicing breathing, sucking, and swallowing in preparation for feeding."
+  },
+  "you": {
+    "body": "Your uterus is about six and a half inches above your belly button. You may feel the baby drop, which eases breathing and increases pressure on the bladder. You may have more Braxton Hicks.",
+    "mind": "Early term is a strange place — technically full term, but most babies come later. Try not to read the date as a deadline."
+  },
+  "coreActions": [
+    {
+      "id": "w37-membrane-sweep",
+      "type": "ask",
+      "priority": "optional",
+      "domain": "health-parent",
+      "title": "Ask about a membrane sweep",
+      "why": "It is an option from 39 weeks that can start labor without medication. It is not for everyone, and it is worth knowing it exists before it is offered.",
+      "detail": "A membrane sweep is a physical separation of the membranes from the cervix during a vaginal exam. It can start labor and it can also cause cramping and spotting. It is offered from 39 weeks at most practices. You can decline it. Ask your OB what they recommend and why.",
+      "minutes": 10,
+      "options": [
+        {
+          "id": "w37-sweep-ask",
+          "label": "Ask at your next visit",
+          "detail": "One question. They will bring it up anyway.",
+          "cost": "free"
+        },
+        {
+          "id": "w37-sweep-read",
+          "label": "Read about induction options",
+          "detail": "So the conversation is not the first time.",
+          "url": "https://www.acog.org/womens-health/faqs/labor-induction",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You are having a planned cesarean, or you have already discussed it.",
+      "keywords": ["membrane sweep", "induction", "39 weeks", "labor"]
+    },
+    {
+      "id": "w37-when-to-call",
+      "type": "know",
+      "priority": "recommended",
+      "domain": "health-parent",
+      "title": "Know the difference between early labor and the real thing",
+      "why": "Most people go to the hospital too early the first time. Knowing what early labor feels like saves a trip home.",
+      "detail": "Early labor is contractions that are irregular, mild, and far apart, and they often stop when you rest or change position. Active labor is regular, stronger, and closer together, and it does not stop. If your water breaks, call regardless of contractions.",
+      "minutes": 10,
+      "options": [
+        {
+          "id": "w37-labor-read",
+          "label": "Read the ACOG guide",
+          "detail": "Short and plain.",
+          "url": "https://www.acog.org/womens-health/faqs/how-to-tell-when-labor-begins",
+          "cost": "free"
+        },
+        {
+          "id": "w37-labor-ask",
+          "label": "Ask your OB for their rule",
+          "detail": "Theirs is the one that counts.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You already know the difference.",
+      "keywords": ["early labor", "active labor", "contractions", "when to go"]
+    },
+    {
+      "id": "w37-rest",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "sleep",
+      "title": "Rest more than feels necessary",
+      "why": "Labor takes energy, and the first week at home takes more. Rest now is not wasted time — it is the reserve you will draw on.",
+      "detail": "Lie down in the afternoon even if you do not sleep. Say no to one thing this week. Let the house be imperfect. If you are working, take the leave when you can rather than pushing to 39 weeks out of guilt.",
+      "minutes": 30,
+      "options": [
+        {
+          "id": "w37-rest-nap",
+          "label": "An afternoon lie-down",
+          "detail": "Twenty minutes. Set an alarm.",
+          "cost": "free"
+        },
+        {
+          "id": "w37-rest-no",
+          "label": "Say no to one thing",
+          "detail": "One social plan, one favor. It counts.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You are already resting when you can.",
+      "keywords": ["rest", "tired", "sleep", "energy"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "w37-early-term",
+      "title": "Early term is not the same as full term",
+      "body": "37 to 38 weeks is early term. Babies born then do well, but the last weeks still add brain and lung development. That is why induction is usually not offered before 39 unless there is a reason.",
+      "domain": "health-baby"
+    },
+    {
+      "id": "w37-water",
+      "title": "If your water breaks, call",
+      "body": "It may be a gush or a slow leak. Note the time and the color. Call your OB even if contractions have not started.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w37-nesting-w37",
+      "title": "Nesting energy is not a sign of labor",
+      "body": "It is common and it is not predictive. Do not lift heavy things or stand on chairs. Let someone else do the high shelves.",
+      "domain": "home"
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "w37-rf-water",
+      "text": "Fluid that keeps leaking, or any vaginal bleeding",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w37-rf-movement",
+      "text": "A clear change in your baby's usual movement",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w37-rf-headache",
+      "text": "A severe headache that will not go, or blurred vision or spots",
+      "escalation": "call-ob-triage"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "w37-appt-weekly",
+      "label": "Weekly prenatal visit",
+      "from": 37,
+      "to": 40,
+      "who": "OB or midwife",
+      "note": "Every week. Ask about position and the plan for 39."
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-acog-induction",
+      "title": "Labor Induction",
+      "publisher": "ACOG",
+      "url": "https://www.acog.org/womens-health/faqs/labor-induction",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-acog-labor-w37",
+      "title": "How to Tell When Labor Begins",
+      "publisher": "ACOG",
+      "url": "https://www.acog.org/womens-health/faqs/how-to-tell-when-labor-begins",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    }
+  ],
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-20",
+  "updatedAt": "2026-10-21"
+}

@@ -1,0 +1,173 @@
+{
+  "id": "pregnancy-w13",
+  "kind": "pregnancy",
+  "stageIndex": 13,
+  "stageUnit": "week",
+  "locale": "en-US",
+  "country": "US",
+  "title": "Week 13",
+  "subtitle": "The second trimester starts now. For most people, this is the good part.",
+  "baby": {
+    "size": "About the size of a lemon",
+    "development": "The baby has fingerprints. Vocal cords are forming. The intestines, which grew outside the body early on, have moved into the abdomen. The body is starting to catch up with the head."
+  },
+  "you": {
+    "body": "Energy often returns and nausea often fades over the next few weeks. Your uterus is rising out of the pelvis, so a small bump may start to show. Some people feel a sharp pain on one side when they stand up quickly — that is a ligament stretching.",
+    "mind": "Feeling better can bring its own worry, because symptoms were the only evidence you had. That is a very common thing to feel. The anatomy scan at 20 weeks is the next real information."
+  },
+  "coreActions": [
+    {
+      "id": "w13-second-trimester",
+      "type": "know",
+      "priority": "recommended",
+      "domain": "health-parent",
+      "title": "Know what changes in the second trimester",
+      "why": "Visits get further apart, new tests come up, and the things that matter shift from forming organs to growing. Knowing the shape of it makes the next three months feel less like waiting.",
+      "detail": "Visits are usually every four weeks until 28, then every two weeks until 36, then weekly. The anatomy scan is at 18 to 22 weeks. The glucose test is at 24 to 28. The Tdap vaccine is recommended in every pregnancy, usually at 27 to 36 weeks. Group B strep screening is at 36 to 37.",
+      "minutes": 10,
+      "options": [
+        {
+          "id": "w13-know-schedule",
+          "label": "Read the visit schedule",
+          "detail": "Ask your practice for their schedule in writing. It varies a little.",
+          "cost": "free"
+        },
+        {
+          "id": "w13-know-app",
+          "label": "Put the dates in your calendar now",
+          "detail": "The anatomy scan and glucose test are the two that are easy to miss.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You already know your practice's schedule.",
+      "keywords": ["second trimester", "visits", "schedule", "tests"]
+    },
+    {
+      "id": "w13-sleep-side",
+      "type": "buy",
+      "priority": "recommended",
+      "domain": "sleep",
+      "title": "Get set up to sleep on your side",
+      "why": "From about 20 weeks, lying flat on your back can press on a large vein and make you dizzy. Side sleeping is the position to build the habit around.",
+      "detail": "Either side is fine. A pillow between the knees and one under the bump makes it comfortable. If you wake on your back, roll over and go back to sleep — the fact that you woke up means your body noticed. A pregnancy pillow helps some people and takes up most of the bed for others.",
+      "minutes": 15,
+      "options": [
+        {
+          "id": "w13-sleep-pillow",
+          "label": "A pregnancy pillow",
+          "detail": "C-shaped or U-shaped. Big, but it does the work of three pillows.",
+          "cost": "$$"
+        },
+        {
+          "id": "w13-sleep-regular",
+          "label": "Two ordinary pillows",
+          "detail": "One between the knees, one under the bump. Free if you already have them.",
+          "cost": "free"
+        },
+        {
+          "id": "w13-sleep-wedge",
+          "label": "A small wedge",
+          "detail": "Tucks under the bump without taking over the bed.",
+          "cost": "$"
+        }
+      ],
+      "noChooser": "Comfort is the only criterion. Try the free version first — two pillows do most of what a pregnancy pillow does.",
+      "skipIf": "You already sleep on your side.",
+      "keywords": ["sleep", "side", "pillow", "position"]
+    },
+    {
+      "id": "w13-iron",
+      "type": "ask",
+      "priority": "optional",
+      "domain": "nutrition",
+      "title": "Ask about your iron level",
+      "why": "Blood volume rises by about half, and iron is what carries oxygen through it. Low iron causes fatigue that looks like pregnancy tiredness and gets missed.",
+      "detail": "Your first-visit blood work included a hemoglobin check. Ask what it was. Iron-rich food — red meat, beans, lentils, spinach, fortified cereal — helps, and vitamin C with the meal helps you absorb it. Coffee and tea with a meal block it. Do not start an iron supplement without asking, because too much is also a problem.",
+      "minutes": 10,
+      "options": [
+        {
+          "id": "w13-iron-food",
+          "label": "Eat more iron-rich food",
+          "detail": "Beans and lentils are cheap and easy. Pair with citrus, not coffee.",
+          "cost": "$"
+        },
+        {
+          "id": "w13-iron-supplement",
+          "label": "An iron supplement",
+          "detail": "Ask your OB for a dose. It can be constipating, so start small.",
+          "cost": "$"
+        }
+      ],
+      "skipIf": "Your hemoglobin was normal and you feel well.",
+      "keywords": ["iron", "anemia", "hemoglobin", "tired"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "w13-round-ligament",
+      "title": "A sharp pull when you stand is usually a ligament",
+      "body": "The round ligament stretches as the uterus rises. It is brief and one-sided. If the pain is severe, constant, or comes with a fever, call instead of waiting.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w13-nosebleeds",
+      "title": "Nosebleeds and stuffy noses are common now",
+      "body": "More blood flow means more fragile vessels in the nose. Lean forward, pinch the soft part for ten minutes, and do not tilt your head back.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w13-bump-size",
+      "title": "Bump size is not a report card",
+      "body": "Body shape, height, and whether this is a first pregnancy all change when you show. If your OB is measuring and it is on track, the mirror is not a better source.",
+      "domain": "mind"
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "w13-rf-bleeding",
+      "text": "Bleeding that fills a pad, or bleeding with pain",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w13-rf-fever",
+      "text": "A fever over 100.4°F",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w13-rf-fluid",
+      "text": "A gush or steady trickle of fluid from the vagina",
+      "escalation": "call-ob-triage"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "w13-appt-visit",
+      "label": "Second-trimester prenatal visit",
+      "from": 13,
+      "to": 16,
+      "who": "OB or midwife",
+      "note": "Short visit: blood pressure, weight, and the baby's heartbeat on a Doppler."
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-acog-prenatal-w13",
+      "title": "Prenatal Care",
+      "publisher": "ACOG",
+      "url": "https://www.acog.org/womens-health/faqs/prenatal-care",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-cdc-vaccines",
+      "title": "Immunization Schedules",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/vaccines/hcp/imz-schedules/",
+      "kind": "government",
+      "accessed": "2026-10-20"
+    }
+  ],
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-20",
+  "updatedAt": "2026-10-21"
+}

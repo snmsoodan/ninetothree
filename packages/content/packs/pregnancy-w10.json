@@ -1,0 +1,196 @@
+{
+  "id": "pregnancy-w10",
+  "kind": "pregnancy",
+  "stageIndex": 10,
+  "stageUnit": "week",
+  "locale": "en-US",
+  "country": "US",
+  "title": "Week 10",
+  "subtitle": "The embryo becomes a fetus this week. The riskiest part of development is nearly over.",
+  "baby": {
+    "size": "About the size of a strawberry",
+    "development": "All the major organs have formed and are starting to work. Fingers and toes are separated. The baby can bend its limbs and swallow. From here it is mostly growth and refinement."
+  },
+  "you": {
+    "body": "Your uterus is about the size of a large orange. You may still be in regular clothes, or not. Nausea often peaks around now and then starts to ease.",
+    "mind": "If you have been waiting for a milestone to feel safe, this is a reasonable one. It is also fine if it does not feel that way yet."
+  },
+  "coreActions": [
+    {
+      "id": "w10-nipt",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "health-parent",
+      "title": "Decide about cell-free DNA screening",
+      "why": "The window opens at 10 weeks. If you want it, this is when to ask, because the test needs a certain amount of the baby's DNA in your blood.",
+      "detail": "It is a blood draw from your arm, not from the baby. It screens for trisomy 21, 18, and 13, and can tell you the sex as early as 10 weeks. It does not replace the anatomy scan. If the result comes back as higher risk, the next step is a diagnostic test — ask what that would involve before you start.",
+      "minutes": 20,
+      "options": [
+        {
+          "id": "w10-nipt-lab",
+          "label": "Through your OB's lab",
+          "detail": "Simplest. Ask which company they use and what it will cost you.",
+          "cost": "varies"
+        },
+        {
+          "id": "w10-nipt-counselor",
+          "label": "Talk to a genetic counselor first",
+          "detail": "Free in most practices, and they will explain what a result would and would not tell you.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You have already had the screening or decided against it.",
+      "keywords": ["nipt", "cfdna", "screening", "sex"]
+    },
+    {
+      "id": "w10-budget",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "money",
+      "title": "Write down what the first year will cost",
+      "why": "The big costs are not the crib. They are childcare, health insurance, and time off work. Knowing the shape of it now changes what you buy later.",
+      "detail": "Three numbers matter most: your monthly childcare cost, your out-of-pocket maximum, and how much unpaid leave you can afford. Childcare in most US cities runs $800 to $2,000 a month for an infant, and waitlists are often six to twelve months. Start looking earlier than feels reasonable.",
+      "minutes": 45,
+      "options": [
+        {
+          "id": "w10-budget-sheet",
+          "label": "A simple spreadsheet",
+          "detail": "Three columns: one-time, monthly, and the first year total.",
+          "cost": "free"
+        },
+        {
+          "id": "w10-budget-childcare",
+          "label": "Price childcare first",
+          "detail": "Call three centers near you and ask for the infant rate and the waitlist length.",
+          "url": "https://childcare.gov/",
+          "cost": "free"
+        },
+        {
+          "id": "w10-budget-benefits",
+          "label": "Check your leave benefits",
+          "detail": "FMLA gives 12 weeks unpaid if you qualify. Some states add paid leave.",
+          "url": "https://www.dol.gov/agencies/whd/fmla",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You have already worked this out.",
+      "keywords": ["budget", "money", "childcare", "cost"]
+    },
+    {
+      "id": "w10-announce",
+      "type": "do",
+      "priority": "optional",
+      "domain": "mind",
+      "title": "Decide who to tell, and when",
+      "why": "There is no correct week. The useful question is who you would want supporting you if something went wrong.",
+      "detail": "Many people tell a small circle now and everyone else after the anatomy scan at 20 weeks. If you tell work, you are protected from retaliation for pregnancy discrimination from the moment you disclose. You can also ask for accommodations without disclosing.",
+      "minutes": 20,
+      "options": [
+        {
+          "id": "w10-tell-now",
+          "label": "Tell people now",
+          "detail": "More support, and more conversations if something goes wrong.",
+          "cost": "free"
+        },
+        {
+          "id": "w10-tell-20",
+          "label": "Wait until after the anatomy scan",
+          "detail": "The most common choice. Nothing is lost by waiting.",
+          "cost": "free"
+        },
+        {
+          "id": "w10-tell-small",
+          "label": "Tell a few people and no one else",
+          "detail": "A good middle path. Name the people, and tell them it is not public.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You have already told the people you want to tell.",
+      "keywords": ["announce", "tell", "family", "work"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "w10-sleep-w10",
+      "title": "You may start waking at 3am",
+      "body": "Progesterone and a full bladder both do this. Keep the room dark, do not check your phone, and get up if you have been awake more than 20 minutes.",
+      "domain": "sleep"
+    },
+    {
+      "id": "w10-travel",
+      "title": "Travel is fine in the second trimester",
+      "body": "Most airlines allow travel to 36 weeks. Ask your OB before a long flight, get up and walk every couple of hours, and drink more water than you think.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w10-seatbelt",
+      "title": "Keep wearing the seatbelt, low and tight",
+      "body": "The lap belt goes under the bump, across the hip bones. The shoulder belt goes between your breasts and to the side of the bump. Never put the belt behind you.",
+      "domain": "safety"
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "w10-rf-bleeding",
+      "text": "Bleeding that fills a pad, or bleeding with pain",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w10-rf-fever",
+      "text": "A fever over 100.4°F",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w10-rf-fluid",
+      "text": "A gush or steady trickle of fluid from the vagina",
+      "escalation": "call-ob-triage"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "w10-appt-nipt",
+      "label": "Cell-free DNA screening, if you choose it",
+      "from": 10,
+      "to": 13,
+      "who": "Lab",
+      "note": "A blood draw. Ask about cost before you agree."
+    },
+    {
+      "id": "w10-appt-nt",
+      "label": "Nuchal translucency ultrasound, if offered",
+      "from": 11,
+      "to": 14,
+      "who": "Ultrasound tech",
+      "note": "A first-trimester scan that measures fluid at the back of the neck."
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-acog-genetic-w10",
+      "title": "Prenatal Genetic Screening Tests",
+      "publisher": "ACOG",
+      "url": "https://www.acog.org/womens-health/faqs/prenatal-genetic-screening-tests",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-dol-fmla",
+      "title": "Family and Medical Leave Act",
+      "publisher": "US Department of Labor",
+      "url": "https://www.dol.gov/agencies/whd/fmla",
+      "kind": "government",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-childcare-gov",
+      "title": "Find Child Care",
+      "publisher": "ChildCare.gov",
+      "url": "https://childcare.gov/",
+      "kind": "government",
+      "accessed": "2026-10-20"
+    }
+  ],
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-20",
+  "updatedAt": "2026-10-21"
+}

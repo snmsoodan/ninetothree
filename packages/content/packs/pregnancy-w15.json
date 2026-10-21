@@ -1,0 +1,186 @@
+{
+  "id": "pregnancy-w15",
+  "kind": "pregnancy",
+  "stageIndex": 15,
+  "stageUnit": "week",
+  "locale": "en-US",
+  "country": "US",
+  "title": "Week 15",
+  "subtitle": "You may start to feel the first movements. Most people do not yet, and that is fine.",
+  "baby": {
+    "size": "About the size of an apple",
+    "development": "The baby can hear sounds now, though muffled. The bones are hardening. Eyebrows and hair are starting to grow. The legs are longer than the arms for the first time."
+  },
+  "you": {
+    "body": "The top of your uterus is about halfway between your pubic bone and your belly button. You may have more energy, a stuffy nose, and a growing appetite. Some people feel a flutter this week; most feel it between 18 and 22.",
+    "mind": "If you have not felt movement yet, that is not a sign of anything. First pregnancies usually feel it later, and an anterior placenta cushions the kicks."
+  },
+  "coreActions": [
+    {
+      "id": "w15-anatomy-book",
+      "type": "book",
+      "priority": "essential",
+      "domain": "health-parent",
+      "title": "Book your anatomy scan",
+      "why": "The anatomy scan happens between 18 and 22 weeks and is the most detailed look at the baby you will get. Slots fill, and the window is not flexible.",
+      "detail": "It is a long ultrasound, usually 30 to 60 minutes, that checks the brain, heart, spine, kidneys, limbs, and placenta. It can usually tell you the sex. You can ask them not to. Bring someone if you want company, and expect to wait — babies do not cooperate on schedule.",
+      "minutes": 20,
+      "options": [
+        {
+          "id": "w15-anatomy-ob",
+          "label": "At your OB's office",
+          "detail": "Simplest, and the results go straight to your chart.",
+          "cost": "varies"
+        },
+        {
+          "id": "w15-anatomy-center",
+          "label": "At a maternal-fetal medicine center",
+          "detail": "More detailed equipment and a specialist reading it. Often used for higher-risk pregnancies.",
+          "cost": "varies"
+        }
+      ],
+      "skipIf": "Your anatomy scan is already booked.",
+      "keywords": ["anatomy scan", "ultrasound", "20 weeks"]
+    },
+    {
+      "id": "w15-childcare",
+      "type": "buy",
+      "priority": "recommended",
+      "domain": "childcare",
+      "title": "Get on childcare waitlists",
+      "why": "Infant spots are the scarcest thing in childcare. In most US cities the waitlist is six to twelve months, which means the list you join now is the one you get off in month nine.",
+      "detail": "Call five places near your home or work and ask three things: the infant rate, the waitlist length, and whether they are licensed. Ask about the ratio — for infants, one adult to four babies is the common standard. A deposit is often required to hold a spot, and it is often non-refundable.",
+      "minutes": 60,
+      "options": [
+        {
+          "id": "w15-care-center",
+          "label": "A licensed child care center",
+          "detail": "Regulated, inspected, and usually the most expensive.",
+          "url": "https://childcare.gov/",
+          "cost": "$$$"
+        },
+        {
+          "id": "w15-care-home",
+          "label": "A licensed home-based provider",
+          "detail": "Smaller groups, often cheaper, less regulated in some states.",
+          "cost": "$$"
+        },
+        {
+          "id": "w15-care-nanny",
+          "label": "A nanny or nanny share",
+          "detail": "Most expensive per family, most flexible. A share splits the cost.",
+          "cost": "$$$"
+        },
+        {
+          "id": "w15-care-family",
+          "label": "Family or a friend",
+          "detail": "Free or cheap, and worth writing down what you are each expecting.",
+          "cost": "free"
+        }
+      ],
+      "noChooser": "The right answer depends on your budget, your hours, and what is available near you. Call first, decide second — availability will narrow it faster than any comparison.",
+      "skipIf": "You already have childcare arranged, or someone is staying home.",
+      "keywords": ["childcare", "daycare", "waitlist", "nanny"]
+    },
+    {
+      "id": "w15-travel",
+      "type": "do",
+      "priority": "optional",
+      "domain": "health-parent",
+      "title": "Take the trip now if you want one",
+      "why": "The second trimester is the most comfortable time to travel. Later, airlines and your own body both get less accommodating.",
+      "detail": "Most airlines allow travel to 36 weeks, and some ask for a note after 28. Walk every couple of hours on a long flight, drink more water than usual, and wear compression socks. Avoid destinations with Zika risk. Ask your OB before anything long-haul.",
+      "minutes": 30,
+      "options": [
+        {
+          "id": "w15-travel-road",
+          "label": "A road trip",
+          "detail": "Stop every two hours to walk. The seatbelt goes under the bump.",
+          "cost": "$$"
+        },
+        {
+          "id": "w15-travel-fly",
+          "label": "A short flight",
+          "detail": "Aisle seat, so you can get up without climbing over anyone.",
+          "cost": "$$"
+        },
+        {
+          "id": "w15-travel-local",
+          "label": "A weekend nearby",
+          "detail": "The lowest-effort version, and often the one you actually remember.",
+          "cost": "$"
+        }
+      ],
+      "skipIf": "You have no plans to travel, or your OB has advised against it.",
+      "keywords": ["travel", "flight", "trip", "vacation"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "w15-quickening",
+      "title": "First movements feel like gas, not kicks",
+      "body": "The medical word is quickening. It is a flutter, a bubble, or a fish turning over. It gets stronger and more regular over the next month.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w15-anterior-placenta",
+      "title": "An anterior placenta hides the kicks",
+      "body": "If the placenta is on the front wall of the uterus, it cushions movement. You will feel less, and later. It is a position, not a problem.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w15-sleep-w15",
+      "title": "The vivid dreams are real",
+      "body": "Hormones and more fragmented sleep both do this. They are not prophetic and they are not a sign of anything wrong. They settle down.",
+      "domain": "sleep"
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "w15-rf-bleeding",
+      "text": "Bleeding that fills a pad, or bleeding with pain",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w15-rf-fever",
+      "text": "A fever over 100.4°F",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w15-rf-fluid",
+      "text": "A gush or steady trickle of fluid from the vagina",
+      "escalation": "call-ob-triage"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "w15-appt-anatomy",
+      "label": "Anatomy scan",
+      "from": 18,
+      "to": 22,
+      "who": "Ultrasound tech",
+      "note": "Book it now. It is the longest and most detailed scan."
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-acog-ultrasound-w15",
+      "title": "Ultrasound Exams",
+      "publisher": "ACOG",
+      "url": "https://www.acog.org/womens-health/faqs/ultrasound-exams",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-childcare-w15",
+      "title": "Find Child Care",
+      "publisher": "ChildCare.gov",
+      "url": "https://childcare.gov/",
+      "kind": "government",
+      "accessed": "2026-10-20"
+    }
+  ],
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-20",
+  "updatedAt": "2026-10-21"
+}

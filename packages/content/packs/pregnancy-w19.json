@@ -1,0 +1,182 @@
+{
+  "id": "pregnancy-w19",
+  "kind": "pregnancy",
+  "stageIndex": 19,
+  "stageUnit": "week",
+  "locale": "en-US",
+  "country": "US",
+  "title": "Week 19",
+  "subtitle": "Halfway. The scan is done or nearly done, and the second half has a different shape.",
+  "baby": {
+    "size": "About the size of a mango",
+    "development": "The baby is covered in vernix, a white coating that protects the skin. The brain is developing the areas that handle the senses. Movements are stronger and more coordinated."
+  },
+  "you": {
+    "body": "You are at or near the halfway point. Your uterus is at your belly button. Leg cramps at night are common, and so is a sudden sharp pain when you turn over in bed.",
+    "mind": "Halfway can feel like a milestone or like a long wait. If the scan brought news, ask for a follow-up conversation rather than sitting with it alone."
+  },
+  "coreActions": [
+    {
+      "id": "w19-scan-results",
+      "type": "ask",
+      "priority": "recommended",
+      "domain": "health-parent",
+      "title": "Ask for the scan report in plain language",
+      "why": "The report is written for clinicians. A five-minute conversation turns it into something you can actually hold.",
+      "detail": "Ask three things: was everything seen, is there anything to follow up, and does the placenta position matter for delivery. If the placenta is low, that usually resolves as the uterus grows — but it is worth knowing, because it changes the advice about bleeding.",
+      "minutes": 15,
+      "options": [
+        {
+          "id": "w19-results-call",
+          "label": "Ask at your next visit",
+          "detail": "Bring the report and ask them to walk through it.",
+          "cost": "free"
+        },
+        {
+          "id": "w19-results-portal",
+          "label": "Send a portal message",
+          "detail": "Good for a specific question. Slower for a conversation.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You have not had the scan yet, or the results were already explained.",
+      "keywords": ["results", "report", "scan", "placenta"]
+    },
+    {
+      "id": "w19-leg-cramps",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "health-parent",
+      "title": "Deal with the night leg cramps",
+      "why": "They wake people up and they are common in the second half. Stretching before bed helps more than anything you can buy.",
+      "detail": "Stand up and put weight on the leg, or pull your toes toward your shin. Do a calf stretch against a wall before bed. Ask about magnesium if they are frequent — do not start it on your own.",
+      "minutes": 10,
+      "options": [
+        {
+          "id": "w19-cramp-stretch",
+          "label": "A calf stretch before bed",
+          "detail": "Free, and it works for most people within a week.",
+          "cost": "free"
+        },
+        {
+          "id": "w19-cramp-magnesium",
+          "label": "Ask about magnesium",
+          "detail": "Some people find it helps. Ask your OB for a dose first.",
+          "cost": "$"
+        }
+      ],
+      "skipIf": "You do not get them.",
+      "keywords": ["cramps", "legs", "night", "stretch"]
+    },
+    {
+      "id": "w19-leave-plan",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "money",
+      "title": "Work out your leave, in numbers",
+      "why": "Leave is the largest financial decision of the first year, and the paperwork takes longer than people expect.",
+      "detail": "Write down four numbers: how many weeks you can take, how many are paid, what your share of health insurance costs while you are out, and the filing deadline. FMLA needs 30 days' notice when it is foreseeable. Some states have paid family leave with their own application — check yours.",
+      "minutes": 45,
+      "options": [
+        {
+          "id": "w19-leave-fmla",
+          "label": "Check FMLA eligibility",
+          "detail": "12 weeks unpaid, if you have worked a year and your employer has 50 or more staff.",
+          "url": "https://www.dol.gov/agencies/whd/fmla",
+          "cost": "free"
+        },
+        {
+          "id": "w19-leave-state",
+          "label": "Check your state's paid leave",
+          "detail": "A growing number of states pay a portion of your wage. Worth ten minutes.",
+          "url": "https://www.dol.gov/agencies/wb/featured-paid-leave",
+          "cost": "free"
+        },
+        {
+          "id": "w19-leave-hr",
+          "label": "Ask HR for the policy in writing",
+          "detail": "You are entitled to the policy, not just a verbal summary.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You are not employed, or you have already filed.",
+      "keywords": ["leave", "fmla", "paid leave", "work"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "w19-sleep-w19",
+      "title": "Turning over in bed starts to take planning",
+      "body": "Bend your knees and turn as a unit rather than twisting. A pillow between the knees makes it easier. This is temporary.",
+      "domain": "sleep"
+    },
+    {
+      "id": "w19-dizziness",
+      "title": "Standing up too fast can make you dizzy",
+      "body": "Blood pressure drops in pregnancy. Stand up slowly, and sit down if the room tilts. Tell your OB if it happens often.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w19-braxton",
+      "title": "Braxton Hicks start around now",
+      "body": "A tightening across the belly that is irregular and does not get stronger. If contractions become regular, time them and call.",
+      "domain": "health-parent"
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "w19-rf-bleeding",
+      "text": "Bleeding that fills a pad, or bleeding with pain",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w19-rf-headache",
+      "text": "A severe headache that will not go, or blurred vision",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w19-rf-contractions",
+      "text": "Regular contractions before 37 weeks",
+      "escalation": "call-ob-triage"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "w19-appt-visit",
+      "label": "Prenatal visit",
+      "from": 19,
+      "to": 22,
+      "who": "OB or midwife",
+      "note": "Ask them to walk through the scan report."
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-acog-prenatal-w19",
+      "title": "Prenatal Care",
+      "publisher": "ACOG",
+      "url": "https://www.acog.org/womens-health/faqs/prenatal-care",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-dol-fmla-w19",
+      "title": "Family and Medical Leave Act",
+      "publisher": "US Department of Labor",
+      "url": "https://www.dol.gov/agencies/whd/fmla",
+      "kind": "government",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-dol-state-leave",
+      "title": "Paid Leave",
+      "publisher": "US Department of Labor, Women's Bureau",
+      "url": "https://www.dol.gov/agencies/wb/featured-paid-leave",
+      "kind": "government",
+      "accessed": "2026-10-20"
+    }
+  ],
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-20",
+  "updatedAt": "2026-10-21"
+}

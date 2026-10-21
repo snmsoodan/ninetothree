@@ -1,0 +1,180 @@
+{
+  "id": "pregnancy-w33",
+  "kind": "pregnancy",
+  "stageIndex": 33,
+  "stageUnit": "week",
+  "locale": "en-US",
+  "country": "US",
+  "title": "Week 33",
+  "subtitle": "Seven weeks left. The group B strep swab is coming up at 36.",
+  "baby": {
+    "size": "About the size of a pineapple",
+    "development": "The bones are hardening, except the skull, which stays in pieces so it can pass through the birth canal. The immune system is getting antibodies from you. The baby is gaining about half a pound a week."
+  },
+  "you": {
+    "body": "Your uterus is about five and a half inches above your belly button. You may have more pelvic pressure, more swelling, and more trouble sleeping. Your hands and feet may ache.",
+    "mind": "The last month can feel like a waiting room. If the waiting is making you anxious, a plan for the first week at home helps more than a plan for the birth."
+  },
+  "coreActions": [
+    {
+      "id": "w33-gbs-book",
+      "type": "book",
+      "priority": "recommended",
+      "domain": "health-parent",
+      "title": "Put the group B strep swab on the calendar",
+      "why": "It happens at 36 to 37 weeks and it is easy to miss if you are juggling visits. Booking it now means the result is back before labor.",
+      "detail": "It is a quick swab of the vagina and rectum, done at a visit. Results take a few days. If it is positive, you get antibiotics in labor, which is the whole point. It is not a sign of anything you did and it does not change your birth plan.",
+      "minutes": 10,
+      "options": [
+        {
+          "id": "w33-gbs-visit",
+          "label": "Add it to a scheduled visit",
+          "detail": "Simplest. Ask the front desk to note it.",
+          "cost": "free"
+        },
+        {
+          "id": "w33-gbs-ask",
+          "label": "Ask your OB when they do it",
+          "detail": "Practices differ by a week. Get the date.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "It is already scheduled.",
+      "keywords": ["group b strep", "gbs", "swab", "36 weeks"]
+    },
+    {
+      "id": "w33-freezer-top-up",
+      "type": "do",
+      "priority": "optional",
+      "domain": "home",
+      "title": "Top up the freezer and the pantry",
+      "why": "The first two weeks are not a good time to shop. A full freezer and a stocked pantry remove a decision you will not have the energy for.",
+      "detail": "Ten meals, plus breakfasts you can eat one-handed, plus snacks by the feeding chair. Paper plates are allowed. So is ordering in. The point is not to cook well — it is to not have to decide.",
+      "minutes": 60,
+      "options": [
+        {
+          "id": "w33-freezer-cook",
+          "label": "Cook and freeze",
+          "detail": "Cheapest. Doubling dinners is the least effort.",
+          "cost": "$"
+        },
+        {
+          "id": "w33-freezer-order",
+          "label": "Order frozen meals",
+          "detail": "More expensive, no cooking.",
+          "cost": "$$"
+        },
+        {
+          "id": "w33-freezer-gift",
+          "label": "Let people bring food",
+          "detail": "Say yes when they offer. Give them a date.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "The freezer is already full.",
+      "keywords": ["freezer", "meals", "pantry", "prep"]
+    },
+    {
+      "id": "w33-first-week-plan",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "home",
+      "title": "Write the first week at home",
+      "why": "The birth gets all the planning. The week after is when most people feel least prepared, and it is the week you can actually plan.",
+      "detail": "Who is with you, who brings food, who does the laundry, and who you will call if feeding is hard. Write the pediatrician's number and the lactation consultant's number on paper. Decide now who you will tell to wait.",
+      "minutes": 30,
+      "options": [
+        {
+          "id": "w33-week-list",
+          "label": "A one-page list on the fridge",
+          "detail": "Names, numbers, and who does what.",
+          "cost": "free"
+        },
+        {
+          "id": "w33-week-talk",
+          "label": "Talk it through with your partner",
+          "detail": "Half an hour now saves a hard conversation later.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You already have a plan for the first week.",
+      "keywords": ["first week", "postpartum", "plan", "help"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "w33-skull",
+      "title": "The skull stays soft on purpose",
+      "body": "The bones do not fuse until later, which lets the head mold during birth. A slightly cone-shaped head after delivery is temporary.",
+      "domain": "health-baby"
+    },
+    {
+      "id": "w33-carpal",
+      "title": "Numb fingers are common in the last weeks",
+      "body": "Fluid presses on the nerve at the wrist. It usually eases after birth. A wrist splint at night helps. Tell your OB if it is severe.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w33-mental-load",
+      "title": "The mental load is a real load",
+      "body": "Remembering the appointments, the forms, and the shopping is work. Write it down and share it. Doing it all in your head is what makes it feel endless.",
+      "domain": "mind"
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "w33-rf-movement",
+      "text": "A clear change in your baby's usual movement",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w33-rf-fluid",
+      "text": "Fluid that keeps leaking, or any vaginal bleeding",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w33-rf-contractions",
+      "text": "Regular contractions before 37 weeks",
+      "escalation": "call-ob-triage"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "w33-appt-visit",
+      "label": "Prenatal visit",
+      "from": 33,
+      "to": 36,
+      "who": "OB or midwife",
+      "note": "Every two weeks until 36, then weekly."
+    },
+    {
+      "id": "w33-appt-gbs",
+      "label": "Group B strep swab",
+      "from": 36,
+      "to": 37,
+      "who": "OB or midwife",
+      "note": "Quick swab. Results in a few days."
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-cdc-gbs-w33",
+      "title": "Group B Strep",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/group-b-strep/about/index.html",
+      "kind": "government",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-acog-postpartum",
+      "title": "Optimizing Postpartum Care",
+      "publisher": "ACOG",
+      "url": "https://www.acog.org/clinical/clinical-guidance/committee-opinion/articles/2018/05/optimizing-postpartum-care",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    }
+  ],
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-20",
+  "updatedAt": "2026-10-21"
+}

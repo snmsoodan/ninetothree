@@ -10,7 +10,9 @@
     "lint": "eslint src --max-warnings 0",
     "typecheck": "tsc --noEmit",
     "test": "vitest run --coverage",
-    "validate": "tsx src/cli/validate.ts"
+    "validate": "tsx src/cli/validate.ts",
+    "registry": "node ../../scripts/gen-registry.mjs",
+    "registry:check": "node ../../scripts/gen-registry.mjs --check"
   },
   "dependencies": {
     "zod": "^3.24.1"

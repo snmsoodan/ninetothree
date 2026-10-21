@@ -2,7 +2,15 @@ import { describe, expect, it } from "vitest";
 import type { StagePack } from "./schema";
 import { LINKS } from "./link-registry";
 import { PACKS } from "./registry";
-import { FUZZY_FLOOR, buildIndex, parseQuery, search, similarity, trigrams } from "./search";
+import {
+  FUZZY_FLOOR,
+  buildIndex,
+  parseQuery,
+  search,
+  similarity,
+  trigrams,
+  type SearchDoc,
+} from "./search";
 
 const INDEX = buildIndex(PACKS, LINKS);
 
@@ -90,8 +98,62 @@ describe("search", () => {
   });
 
   it("ranks a title match above a body match", () => {
-    const hits = search(INDEX, "glucose", 5);
-    expect(hits[0]?.id).toBe("step-pregnancy-w28-w28-glucose");
+    // A synthetic index, because the real one now has five actions about the
+    // glucose test and the point here is the ranking rule, not the corpus.
+    const doc = (id: string, title: string, body: string) =>
+      ({
+        id,
+        kind: "step" as const,
+        title,
+        body,
+        keywords: "",
+        href: `/${id}`,
+        packId: "p",
+        packTitle: "P",
+        sourceIds: ["s"],
+      }) satisfies SearchDoc;
+    const index = [
+      doc("body", "Something else entirely", "the glucose test happens this week"),
+      doc("title", "Book the glucose test", "nothing relevant here"),
+    ];
+    expect(search(index, "glucose", 5).map((hit) => hit.id)).toEqual(["title", "body"]);
+  });
+
+  it("matches a word prefix, not a substring", () => {
+    // "aid" must not find "paid". This is how a search for legal aid used to
+    // return paid leave.
+    const doc = {
+      id: "paid",
+      kind: "step" as const,
+      title: "Check your paid leave",
+      body: "paid leave",
+      keywords: "paid leave",
+      href: "/paid",
+      packId: "p",
+      packTitle: "P",
+      sourceIds: ["s"],
+    } satisfies SearchDoc;
+    expect(search([doc], "aid", 5)).toEqual([]);
+    expect(search([doc], "paid", 5)).toHaveLength(1);
+  });
+
+  it("does not fuzzy-match a different word that happens to look close", () => {
+    // "stroller" and "stronger" share enough trigrams to clear the old 0.55
+    // floor, so a parent looking for a stroller got Braxton Hicks.
+    const doc = {
+      id: "hicks",
+      kind: "week" as const,
+      title: "Braxton Hicks get stronger near the end",
+      body: "stronger",
+      keywords: "",
+      href: "/hicks",
+      packId: "p",
+      packTitle: "P",
+      sourceIds: ["s"],
+    } satisfies SearchDoc;
+    expect(search([doc], "stroller", 5)).toEqual([]);
+    // A real typo still lands.
+    expect(search([doc], "strongr", 5)).toHaveLength(1);
   });
 
   it("says which terms matched, so the result can explain itself", () => {
@@ -137,7 +199,7 @@ const QUERIES: [string, string][] = [
   ["maternity leave", "step-pregnancy-w12-w12-tell-work"],
   ["anatomy scan", "step-pregnancy-w20-w20-anatomy"],
   ["ultrasound", "step-pregnancy-w20-w20-anatomy"],
-  ["movement", "step-pregnancy-w20-w20-movement"],
+  ["movement", "step-pregnancy-w21-w21-kick-counts"],
   ["childbirth class", "step-pregnancy-w20-w20-childbirth-class"],
   ["glucose", "step-pregnancy-w28-w28-glucose"],
   ["gestational diabetes", "step-pregnancy-w28-w28-glucose"],
@@ -153,8 +215,8 @@ const QUERIES: [string, string][] = [
   ["induction", "step-pregnancy-w39-w39-induction"],
   ["rest", "step-pregnancy-w39-w39-rest"],
   ["feeding", "step-postpartum-week-1-pp1-feed"],
-  ["breastfeeding", "step-postpartum-week-1-pp1-feed"],
-  ["pediatrician", "step-postpartum-week-1-pp1-pediatrician"],
+  ["breastfeeding", "link-cdc-breastfeeding"],
+  ["pediatrician", "step-pregnancy-w30-w30-pediatrician"],
   ["postpartum", "step-postpartum-week-1-pp1-you"],
   ["2 month visit", "step-infant-month-2-m2-visit"],
   ["vaccines", "step-infant-month-2-m2-visit"],

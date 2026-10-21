@@ -1,0 +1,167 @@
+{
+  "id": "pregnancy-w40",
+  "kind": "pregnancy",
+  "stageIndex": 40,
+  "stageUnit": "week",
+  "locale": "en-US",
+  "country": "US",
+  "title": "Week 40",
+  "subtitle": "The due date. It is a guess, and today is not a deadline.",
+  "baby": {
+    "size": "About the size of a small pumpkin",
+    "development": "The baby is full term and ready. The lungs, brain, and reflexes are mature. The skull bones stay separate so the head can mold during birth."
+  },
+  "you": {
+    "body": "Your uterus is about seven to eight inches above your belly button. You may have strong Braxton Hicks, more pelvic pressure, and trouble sleeping. Your cervix may be softening and opening.",
+    "mind": "The due date can be a hard day if nothing happens. It is not a measure of anything. Most first babies come after it, and that is ordinary."
+  },
+  "coreActions": [
+    {
+      "id": "w40-monitoring",
+      "type": "know",
+      "priority": "essential",
+      "domain": "health-parent",
+      "title": "Know what monitoring past 40 weeks looks like",
+      "why": "Past the due date, the visits add checks on how the baby is doing. Knowing what they are means the extra appointments feel routine rather than alarming.",
+      "detail": "Your OB may do a non-stress test, which watches the baby's heart rate for about twenty minutes, or a biophysical profile, which is an ultrasound. These are checks, not problems. If something looks off, they will talk about induction.",
+      "minutes": 10,
+      "options": [
+        {
+          "id": "w40-mon-read",
+          "label": "Read about the tests",
+          "detail": "Plain explanation of both.",
+          "url": "https://www.acog.org/womens-health/faqs/special-tests-for-monitoring-fetal-well-being",
+          "cost": "free"
+        },
+        {
+          "id": "w40-mon-ask",
+          "label": "Ask what they will do and when",
+          "detail": "Get the schedule before it starts.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You already know the monitoring plan.",
+      "keywords": ["monitoring", "non-stress test", "biophysical", "40 weeks"]
+    },
+    {
+      "id": "w40-induction-plan",
+      "type": "ask",
+      "priority": "recommended",
+      "domain": "health-parent",
+      "title": "Agree on the induction date",
+      "why": "Most practices recommend induction by 41 to 42 weeks. Agreeing on the date now means the decision is made calmly, not in a hallway.",
+      "detail": "Ask what date they would recommend and why. Ask what happens if you want to wait longer — monitoring is usually the alternative. Ask how long an induction typically takes at their hospital, because it is often a day or more.",
+      "minutes": 15,
+      "options": [
+        {
+          "id": "w40-ind-date",
+          "label": "Agree on a date",
+          "detail": "Put it in the calendar. It is a backstop, not a plan.",
+          "cost": "free"
+        },
+        {
+          "id": "w40-ind-wait",
+          "label": "Ask about waiting with monitoring",
+          "detail": "An option at many practices. Ask what it involves.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You already have a date or a plan.",
+      "keywords": ["induction", "41 weeks", "42 weeks", "date"]
+    },
+    {
+      "id": "w40-rest",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "sleep",
+      "title": "Rest, and stop counting",
+      "why": "The days past the due date are long. Rest and a small routine make them shorter than checking the calendar every hour.",
+      "detail": "Plan one small thing a day that is not about the baby. Sleep when you can. Keep the bag in the car. If you are anxious, call your OB — they would rather hear from you than have you sit with it.",
+      "minutes": 30,
+      "options": [
+        {
+          "id": "w40-rest-routine",
+          "label": "One small thing a day",
+          "detail": "A walk, a film, a friend. Not a countdown.",
+          "cost": "free"
+        },
+        {
+          "id": "w40-rest-call",
+          "label": "Call if the waiting is hard",
+          "detail": "They will not think it is silly.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You are already resting and occupied.",
+      "keywords": ["rest", "waiting", "overdue", "anxiety"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "w40-41-weeks",
+      "title": "41 weeks is late term, not a problem",
+      "body": "Most practices monitor and then recommend induction by 42. Being past the due date is common, especially with a first baby.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w40-movement-w40",
+      "title": "Movement still matters most",
+      "body": "The pattern is the signal. If it changes, call — do not wait for the next appointment and do not use a doppler to decide.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w40-bag-w40",
+      "title": "Check the bag one more time",
+      "body": "Charger, ID, insurance card, snacks, and a going-home outfit. It is a two-minute check that removes a real 2am problem.",
+      "domain": "home"
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "w40-rf-movement",
+      "text": "A clear change in your baby's usual movement",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w40-rf-water",
+      "text": "Fluid that keeps leaking, or any vaginal bleeding",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w40-rf-headache",
+      "text": "A severe headache that will not go, or blurred vision or spots",
+      "escalation": "call-ob-triage"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "w40-appt-weekly",
+      "label": "Weekly prenatal visit",
+      "from": 40,
+      "to": 42,
+      "who": "OB or midwife",
+      "note": "Every week, with monitoring. Ask about the induction date."
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-acog-monitoring",
+      "title": "Special Tests for Monitoring Fetal Well-Being",
+      "publisher": "ACOG",
+      "url": "https://www.acog.org/womens-health/faqs/special-tests-for-monitoring-fetal-well-being",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-acog-induction-w40",
+      "title": "Labor Induction",
+      "publisher": "ACOG",
+      "url": "https://www.acog.org/womens-health/faqs/labor-induction",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    }
+  ],
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-20",
+  "updatedAt": "2026-10-21"
+}

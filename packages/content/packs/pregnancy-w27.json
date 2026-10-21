@@ -1,0 +1,175 @@
+{
+  "id": "pregnancy-w27",
+  "kind": "pregnancy",
+  "stageIndex": 27,
+  "stageUnit": "week",
+  "locale": "en-US",
+  "country": "US",
+  "title": "Week 27",
+  "subtitle": "The third trimester starts now. Visits get closer together from here.",
+  "baby": {
+    "size": "About the size of a head of cauliflower",
+    "development": "The brain is growing fast and the grooves are deepening. The baby has regular sleep and wake cycles. The lungs would still need help if born now, but the odds improve every week."
+  },
+  "you": {
+    "body": "Your uterus is about three inches above your belly button. You may have more swelling, more heartburn, and more trouble sleeping. Shortness of breath is common as the uterus presses up.",
+    "mind": "The third trimester is when the birth stops being abstract. If that brings anxiety rather than excitement, that is worth saying out loud to someone."
+  },
+  "coreActions": [
+    {
+      "id": "w27-visits",
+      "type": "know",
+      "priority": "recommended",
+      "domain": "health-parent",
+      "title": "Know how often visits happen now",
+      "why": "Visits go to every two weeks until 36, then weekly. Knowing the rhythm means you can plan work and childcare around it.",
+      "detail": "At each visit they check blood pressure, weight, and the baby's heartbeat, and they may measure your belly. From 36 weeks they may check your cervix. Ask what they are looking for so the numbers mean something to you.",
+      "minutes": 10,
+      "options": [
+        {
+          "id": "w27-visits-calendar",
+          "label": "Put the dates in your calendar",
+          "detail": "Every two weeks from now. Book them at the front desk before you leave.",
+          "cost": "free"
+        },
+        {
+          "id": "w27-visits-ask",
+          "label": "Ask what each visit checks",
+          "detail": "It makes the appointments feel less like waiting.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You already know your practice's schedule.",
+      "keywords": ["visits", "appointments", "schedule", "third trimester"]
+    },
+    {
+      "id": "w27-group-b-strep",
+      "type": "know",
+      "priority": "recommended",
+      "domain": "health-parent",
+      "title": "Know about the group B strep test",
+      "why": "It happens at 36 to 37 weeks and it is a swab, not a blood test. Knowing what it is for stops it being a surprise.",
+      "detail": "Group B strep is a common bacterium that many people carry without any symptoms. If you carry it, you get antibiotics in labor, which prevents passing it to the baby. It is not a sexually transmitted infection and it is not a sign of anything you did.",
+      "minutes": 10,
+      "options": [
+        {
+          "id": "w27-gbs-read",
+          "label": "Read the CDC page",
+          "detail": "Short and plain. Explains why the swab matters.",
+          "url": "https://www.cdc.gov/group-b-strep/about/index.html",
+          "cost": "free"
+        },
+        {
+          "id": "w27-gbs-ask",
+          "label": "Ask at your next visit",
+          "detail": "Ask when they do it and what happens if it is positive.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You have already had the swab.",
+      "keywords": ["group b strep", "gbs", "swab", "antibiotics"]
+    },
+    {
+      "id": "w27-bag-finish",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "home",
+      "title": "Finish the hospital bag",
+      "why": "You could need it any week now. A bag that is done is one less thing to think about.",
+      "detail": "ID, insurance card, phone charger with a long cable, comfortable clothes, toiletries, snacks, a going-home outfit for you and one for the baby, and the car seat in the car. Pack a bag for your support person too. Leave it by the door.",
+      "minutes": 30,
+      "options": [
+        {
+          "id": "w27-bag-hospital",
+          "label": "Use the hospital's list",
+          "detail": "Shorter than the internet's version, and it is what they expect.",
+          "cost": "free"
+        },
+        {
+          "id": "w27-bag-own",
+          "label": "Pack your own ten items",
+          "detail": "Enough. The hospital provides most of the rest.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "Your bag is already packed and by the door.",
+      "keywords": ["hospital bag", "packing", "labor"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "w27-breath",
+      "title": "Shortness of breath is mechanical",
+      "body": "The uterus presses on the diaphragm. It eases around 36 weeks when the baby drops. If you are breathless at rest or have chest pain, call instead.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w27-sleep-w27",
+      "title": "Sleeping gets harder, and that is not practice for the baby",
+      "body": "It is the bump, the bladder, and the hormones. A pillow between the knees and a dark room help. Naps are fine.",
+      "domain": "sleep"
+    },
+    {
+      "id": "w27-work-plan",
+      "title": "Decide when you stop working",
+      "body": "There is no rule. Some people work to 39 weeks, some stop at 36. Talk to your OB about your job — a job with long shifts or heavy lifting changes the answer.",
+      "domain": "money"
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "w27-rf-movement",
+      "text": "A clear change in your baby's usual movement",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w27-rf-headache",
+      "text": "A severe headache that will not go, or blurred vision or spots",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w27-rf-contractions",
+      "text": "Regular contractions before 37 weeks",
+      "escalation": "call-ob-triage"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "w27-appt-visit",
+      "label": "Prenatal visit",
+      "from": 27,
+      "to": 30,
+      "who": "OB or midwife",
+      "note": "Visits are every two weeks from now."
+    },
+    {
+      "id": "w27-appt-gbs",
+      "label": "Group B strep swab",
+      "from": 36,
+      "to": 37,
+      "who": "OB or midwife",
+      "note": "A quick swab. Results in a few days."
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-cdc-gbs",
+      "title": "Group B Strep",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/group-b-strep/about/index.html",
+      "kind": "government",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-acog-prenatal-w27",
+      "title": "Prenatal Care",
+      "publisher": "ACOG",
+      "url": "https://www.acog.org/womens-health/faqs/prenatal-care",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    }
+  ],
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-20",
+  "updatedAt": "2026-10-21"
+}

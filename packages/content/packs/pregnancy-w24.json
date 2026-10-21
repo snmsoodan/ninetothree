@@ -1,0 +1,174 @@
+{
+  "id": "pregnancy-w24",
+  "kind": "pregnancy",
+  "stageIndex": 24,
+  "stageUnit": "week",
+  "locale": "en-US",
+  "country": "US",
+  "title": "Week 24",
+  "subtitle": "Viability week. It is a medical milestone, and it is not a deadline for anything you are doing.",
+  "baby": {
+    "size": "About the size of an ear of corn",
+    "development": "The lungs are producing surfactant, which keeps the air sacs open. The inner ear is developed, which is why the baby may respond to sound and to your movement. The face is fully formed."
+  },
+  "you": {
+    "body": "Your uterus is about two inches above your belly button. You may have more heartburn, more backache, and more swelling in the feet by the end of the day.",
+    "mind": "Viability week brings up a lot for people, especially anyone who has had a loss. It is fine to feel relieved and frightened at the same time."
+  },
+  "coreActions": [
+    {
+      "id": "w24-glucose",
+      "type": "do",
+      "priority": "essential",
+      "domain": "health-parent",
+      "title": "Get the glucose test done this month",
+      "why": "The window is 24 to 28 weeks. If it is positive, there is time to manage it before delivery, which is the whole point of screening now.",
+      "detail": "You drink a sweet drink, wait an hour, and have a blood draw. Do not fast unless they tell you to. If the result is high, the next step is a three-hour test. A high screening result is not a diagnosis, and gestational diabetes is manageable.",
+      "minutes": 90,
+      "options": [
+        {
+          "id": "w24-glucose-one",
+          "label": "The one-hour test",
+          "detail": "The usual first step. No fasting at most practices.",
+          "cost": "varies"
+        },
+        {
+          "id": "w24-glucose-two",
+          "label": "The two-hour test",
+          "detail": "Some practices start here. You fast beforehand.",
+          "cost": "varies"
+        }
+      ],
+      "skipIf": "You have already had it.",
+      "keywords": ["glucose", "gestational diabetes", "test"]
+    },
+    {
+      "id": "w24-tdap",
+      "type": "ask",
+      "priority": "recommended",
+      "domain": "health-parent",
+      "title": "Ask about the Tdap vaccine",
+      "why": "It is recommended in every pregnancy, usually between 27 and 36 weeks, so the antibodies pass to the baby before birth. Whooping cough is dangerous for newborns.",
+      "detail": "The timing matters — the antibodies need a couple of weeks to build and cross the placenta. Ask your OB when they want you to have it. Your partner and anyone who will be around the baby should also be up to date, and that is a separate conversation with their own doctor.",
+      "minutes": 15,
+      "options": [
+        {
+          "id": "w24-tdap-ob",
+          "label": "Get it at your OB's office",
+          "detail": "Simplest. Ask them to schedule it at a visit.",
+          "cost": "varies"
+        },
+        {
+          "id": "w24-tdap-pharmacy",
+          "label": "Get it at a pharmacy",
+          "detail": "Often free with insurance and no appointment. Bring your vaccine record.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You have already had Tdap in this pregnancy.",
+      "keywords": ["tdap", "vaccine", "whooping cough", "pertussis"]
+    },
+    {
+      "id": "w24-pre-register",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "health-parent",
+      "title": "Pre-register at the hospital",
+      "why": "It turns the first ten minutes of labor into a walk-in instead of a form. Most hospitals let you do it online.",
+      "detail": "You will need your insurance card, your ID, and your OB's name. Ask whether they want a copy of your birth preferences in advance. If you have not chosen a pediatrician, this form will ask — that is a good reason to have one.",
+      "minutes": 30,
+      "options": [
+        {
+          "id": "w24-reg-online",
+          "label": "Online pre-registration",
+          "detail": "Most hospitals have it. Ten minutes and you are done.",
+          "cost": "free"
+        },
+        {
+          "id": "w24-reg-call",
+          "label": "Call the admissions office",
+          "detail": "Slower, but you can ask questions.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You are having a home birth, or you have already registered.",
+      "keywords": ["pre-register", "hospital", "admissions", "paperwork"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "w24-surfactant",
+      "title": "The lungs are the last thing to finish",
+      "body": "Surfactant keeps the air sacs open. It is why breathing is the main challenge for babies born early, and why the steroid shot given in preterm labor matters.",
+      "domain": "health-baby"
+    },
+    {
+      "id": "w24-swelling",
+      "title": "Swelling that gets better overnight is ordinary",
+      "body": "Swelling that does not go down after a night's sleep, or comes with a headache or blurred vision, is a reason to call. That is the difference worth knowing.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w24-sleep-w24",
+      "title": "Sleep gets harder from here",
+      "body": "You will wake more often. A pillow between the knees, a dark room, and getting up rather than lying awake all help. Naps are not a failure.",
+      "domain": "sleep"
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "w24-rf-headache",
+      "text": "A severe headache that will not go, or blurred vision or spots",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w24-rf-swelling",
+      "text": "Sudden swelling in your face or hands, or in one leg only",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w24-rf-contractions",
+      "text": "Regular contractions before 37 weeks",
+      "escalation": "call-ob-triage"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "w24-appt-glucose",
+      "label": "Glucose screening test",
+      "from": 24,
+      "to": 28,
+      "who": "Lab",
+      "note": "About an hour. Ask whether to fast."
+    },
+    {
+      "id": "w24-appt-tdap",
+      "label": "Tdap vaccine",
+      "from": 27,
+      "to": 36,
+      "who": "OB or pharmacy",
+      "note": "Every pregnancy, so the antibodies reach the baby."
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-acog-gd-w24",
+      "title": "Gestational Diabetes",
+      "publisher": "ACOG",
+      "url": "https://www.acog.org/womens-health/faqs/gestational-diabetes",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-cdc-tdap",
+      "title": "Tdap Vaccine in Pregnancy",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/vaccines/vpd/dtap-tdap-td/hcp/index.html",
+      "kind": "government",
+      "accessed": "2026-10-20"
+    }
+  ],
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-20",
+  "updatedAt": "2026-10-21"
+}

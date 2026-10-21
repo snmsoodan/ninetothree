@@ -149,8 +149,14 @@ export function similarity(a: string, b: string): number {
   return (2 * shared) / (left.size + right.size);
 }
 
-/** Below this, a fuzzy match is noise rather than a typo. */
-export const FUZZY_FLOOR = 0.55;
+/**
+ * Below this, a fuzzy match is noise rather than a typo.
+ *
+ * 0.55 let "stroller" find "stronger" (0.556), so a parent looking for a
+ * stroller got Braxton Hicks. Real typos score 0.62 and up: "vacinne" for
+ * "vaccine" is 0.625, "gloucose" for "glucose" is 0.706.
+ */
+export const FUZZY_FLOOR = 0.62;
 
 function words(text: string): string[] {
   return text
@@ -164,15 +170,17 @@ function scoreTerm(
   doc: SearchDoc,
   titleWords: string[],
   bodyWords: string[],
+  keywordWords: string[],
 ): number {
   if (titleWords.includes(term)) return 10;
   // A declared keyword is the content author saying "a parent calls this
   // ultrasound". It outranks a body match but not the title itself.
-  if (doc.keywords.includes(term)) return 8;
+  if (keywordWords.includes(term)) return 8;
+  // A prefix, not a substring: "screen" finds "screening", but "aid" must not
+  // find "paid". Substring matching is how a search for legal aid returns
+  // paid leave.
   if (titleWords.some((word) => word.startsWith(term))) return 6;
-  if (doc.title.toLowerCase().includes(term)) return 4;
-  if (bodyWords.includes(term)) return 3;
-  if (doc.body.includes(term)) return 2;
+  if (bodyWords.some((word) => word.startsWith(term))) return 3;
 
   // Nothing matched exactly. Try the typo path, on the title only — a fuzzy
   // hit in the body is how search starts returning nonsense.
@@ -196,10 +204,11 @@ export function search(index: readonly SearchDoc[], query: string, limit = 20): 
   for (const doc of index) {
     const titleWords = words(doc.title);
     const bodyWords = words(doc.body);
+    const keywordWords = words(doc.keywords);
     let score = 0;
     const matched: string[] = [];
     for (const term of terms) {
-      const termScore = scoreTerm(term, doc, titleWords, bodyWords);
+      const termScore = scoreTerm(term, doc, titleWords, bodyWords, keywordWords);
       if (termScore > 0) {
         score += termScore;
         matched.push(term);

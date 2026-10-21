@@ -182,14 +182,32 @@ describe("norms", () => {
 });
 
 describe("reading level", () => {
+  const dense =
+    "Maternal physiological adaptations during the antepartum period necessitate comprehensive " +
+    "evaluation of hematologic parameters prior to administration of neuraxial analgesia in the " +
+    "peripartum interval, and subsequent postpartum surveillance requires meticulous attention to " +
+    "hemodynamic stability, thromboprophylaxis, and the early identification of preeclamptic " +
+    "deterioration.";
+
+  /** Every prose field dense, so the grade cannot be diluted by a short pack. */
+  function densePack(): StagePack {
+    const action = base.coreActions[0]!;
+    return {
+      ...base,
+      subtitle: dense,
+      baby: { development: dense },
+      you: { body: dense, mind: dense },
+      coreActions: [
+        { ...action, title: dense, why: dense, detail: dense, skipIf: dense, options: [] },
+      ],
+      alsoKnow: [{ id: "dense-know", title: dense, body: dense }],
+      redFlags: [{ id: "dense-flag", text: dense, escalation: "call-911" }],
+      appointments: [],
+    };
+  }
+
   it("fails a pack written above the ceiling", () => {
-    const dense =
-      "Maternal physiological adaptations during the antepartum period necessitate comprehensive " +
-      "evaluation of hematologic parameters prior to administration of neuraxial analgesia in the " +
-      "peripartum interval, and subsequent postpartum surveillance requires meticulous attention to " +
-      "hemodynamic stability, thromboprophylaxis, and the early identification of preeclamptic " +
-      "deterioration.";
-    const findings = lintPack(withDetail(dense));
+    const findings = lintPack(densePack());
     const level = findings.find((f) => f.rule === "reading-level");
     expect(level).toBeDefined();
     expect(level?.message).toContain(`ceiling is ${MAX_GRADE}`);

@@ -175,11 +175,11 @@ describe("buildWeeklyEmail — the gate", () => {
     expect(weeklyEmailReason({ state: lossy, packs: PACKS, now: NOW, baseUrl: BASE })).toBe("loss");
   });
 
-  it("sends nothing for a week with no pack written yet", () => {
-    // Week 5 is before the first pack. Only 8, 12, 20, 28, 36 and 39 are written.
-    const early = state({ dueDate: "2027-06-22" });
-    expect(buildWeeklyEmail({ state: early, packs: PACKS, now: NOW, baseUrl: BASE })).toBeNull();
-    expect(weeklyEmailReason({ state: early, packs: PACKS, now: NOW, baseUrl: BASE })).toBe(
+  it("sends nothing for a stage with no pack written yet", () => {
+    // Every pregnancy week is written now, so the gap is the toddler months.
+    const toddler = state({ status: "parent", dueDate: undefined, birthDate: "2025-04-20" });
+    expect(buildWeeklyEmail({ state: toddler, packs: PACKS, now: NOW, baseUrl: BASE })).toBeNull();
+    expect(weeklyEmailReason({ state: toddler, packs: PACKS, now: NOW, baseUrl: BASE })).toBe(
       "no-pack",
     );
   });
