@@ -127,10 +127,10 @@
     "note": "Sliding-scale fees in most chapters."
   },
   {
-    "id": "mocha-moms",
-    "title": "Mocha Moms",
-    "url": "https://www.mochamoms.org/",
-    "publisher": "Mocha Moms, Inc.",
+    "id": "moms-club",
+    "title": "MOMS Club",
+    "url": "https://momsclub.org/",
+    "publisher": "MOMS Offering Moms Support",
     "type": "community",
     "domains": ["mind"],
     "stages": {
@@ -144,7 +144,7 @@
       }
     },
     "cost": "varies",
-    "why": "Local chapters for mothers of color, which is the part that makes the isolation easier.",
+    "why": "Local chapters that meet in the daytime with the children in the room, which is the part that makes them usable.",
     "country": ["US"],
     "language": "en-US",
     "lastChecked": "2026-10-21",

@@ -25,7 +25,7 @@ changelog written after the fact from memory is a changelog nobody can trust.
 - The link checker now reads the body of any small 200 and fails on a
   `/lander` redirect, so a parked domain fails locally as well as in CI.
 - `themom.co` went down between the probe and the final run and was replaced
-  with Mocha Moms, a local-chapter network for mothers of color.
+  with MOMS Club, which makes the same promise.
 - Dropped Reddit entirely. `reddit.com/r/*` serves a "Prove your humanity"
   page and `old.reddit.com` redirects to a login, which the redirect rule
   correctly reads as a move.
