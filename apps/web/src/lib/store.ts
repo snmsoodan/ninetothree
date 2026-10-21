@@ -8,6 +8,12 @@ import {
   type RecallBecause,
   type RecallMatch,
 } from "@ninetothree/content";
+import {
+  DEFAULT_NOTIFICATIONS,
+  NOTIFICATION_FREQUENCIES,
+  type NotificationFrequency,
+  type NotificationPrefs,
+} from "./notifications";
 
 /**
  * Local-first state.
@@ -212,6 +218,7 @@ export interface AppState {
   completed: Record<string, WeekCompletion>;
   choices: Record<string, Choice>;
   notices: Record<string, Notice>;
+  notifications: NotificationPrefs;
 }
 
 export const EMPTY_STATE: AppState = {
@@ -226,6 +233,7 @@ export const EMPTY_STATE: AppState = {
   completed: {},
   choices: {},
   notices: {},
+  notifications: DEFAULT_NOTIFICATIONS,
 };
 
 let state: AppState = EMPTY_STATE;
@@ -349,6 +357,26 @@ function migrateNotices(raw: unknown): Record<string, Notice> {
   return notices;
 }
 
+function migrateNotifications(raw: unknown): NotificationPrefs {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return DEFAULT_NOTIFICATIONS;
+  const value = raw as Partial<NotificationPrefs>;
+  const frequency = NOTIFICATION_FREQUENCIES.includes(value.frequency as NotificationFrequency)
+    ? (value.frequency as NotificationFrequency)
+    : DEFAULT_NOTIFICATIONS.frequency;
+  const hour = (input: unknown, fallback: number): number =>
+    typeof input === "number" && Number.isInteger(input) && input >= 0 && input <= 23
+      ? input
+      : fallback;
+  return {
+    email: value.email === true,
+    push: value.push === true,
+    frequency,
+    paused: value.paused === true,
+    quietFrom: hour(value.quietFrom, DEFAULT_NOTIFICATIONS.quietFrom),
+    quietTo: hour(value.quietTo, DEFAULT_NOTIFICATIONS.quietTo),
+  };
+}
+
 function hydrate(): void {
   if (hydrated || typeof window === "undefined") return;
   hydrated = true;
@@ -367,6 +395,7 @@ function hydrate(): void {
       completed: migrateCompleted(parsed.completed),
       choices: migrateChoices(parsed.choices),
       notices: migrateNotices(parsed.notices),
+      notifications: migrateNotifications(parsed.notifications),
     };
     emit();
   } catch {
@@ -620,6 +649,16 @@ export function updateProfile(profile: Profile): void {
  */
 export function setProfile(profile: Profile): void {
   set({ ...state, profile });
+}
+
+/**
+ * Merges a patch into the notification preferences.
+ *
+ * A patch, not a replacement: the settings screen changes one toggle at a
+ * time, and a replacement would silently reset the others to their defaults.
+ */
+export function setNotifications(patch: Partial<NotificationPrefs>): void {
+  set({ ...state, notifications: { ...state.notifications, ...patch } });
 }
 
 /**

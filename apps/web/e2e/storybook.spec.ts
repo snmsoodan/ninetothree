@@ -85,6 +85,11 @@ const STORIES = [
   "app-recalllist--empty",
   "app-recalllist--one",
   "app-recalllist--several",
+  "settings-notificationsettings--nothing-on",
+  "settings-notificationsettings--email-weekly",
+  "settings-notificationsettings--both-channels-monthly",
+  "settings-notificationsettings--paused",
+  "settings-notificationsettings--loss-mode",
 ];
 
 /**

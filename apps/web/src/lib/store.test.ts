@@ -36,6 +36,7 @@ import {
   readDraft,
   saveDraft,
   resetAll,
+  setNotifications,
   setProfile,
   snooze,
   stageInput,
@@ -1060,5 +1061,89 @@ describe("notices", () => {
     const unsubscribe = subscribe(() => {});
     expect(getSnapshot().notices.a?.at).toBe("");
     unsubscribe();
+  });
+});
+
+describe("notification preferences", () => {
+  it("starts with nothing switched on", () => {
+    expect(getSnapshot().notifications.email).toBe(false);
+    expect(getSnapshot().notifications.push).toBe(false);
+    expect(getSnapshot().notifications.paused).toBe(false);
+  });
+
+  it("merges a patch rather than replacing the whole object", () => {
+    setNotifications({ email: true });
+    setNotifications({ frequency: "monthly" });
+    expect(getSnapshot().notifications.email).toBe(true);
+    expect(getSnapshot().notifications.frequency).toBe("monthly");
+    expect(getSnapshot().notifications.quietFrom).toBe(21);
+  });
+
+  it("survives a reload", () => {
+    setNotifications({ push: true, paused: true, frequency: "fortnightly" });
+    __resetForTests();
+    subscribe(() => {});
+    expect(getSnapshot().notifications.push).toBe(true);
+    expect(getSnapshot().notifications.paused).toBe(true);
+    expect(getSnapshot().notifications.frequency).toBe("fortnightly");
+  });
+
+  it("falls back to the defaults when the stored value is not an object", () => {
+    window.localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ ...EMPTY_STATE, notifications: "on" }),
+    );
+    __resetForTests();
+    subscribe(() => {});
+    expect(getSnapshot().notifications).toEqual(EMPTY_STATE.notifications);
+  });
+
+  it("drops a frequency it does not recognise", () => {
+    window.localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ ...EMPTY_STATE, notifications: { frequency: "hourly" } }),
+    );
+    __resetForTests();
+    subscribe(() => {});
+    expect(getSnapshot().notifications.frequency).toBe("weekly");
+  });
+
+  it("drops an hour that is not a real hour", () => {
+    window.localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ ...EMPTY_STATE, notifications: { quietFrom: 25, quietTo: -1 } }),
+    );
+    __resetForTests();
+    subscribe(() => {});
+    expect(getSnapshot().notifications.quietFrom).toBe(21);
+    expect(getSnapshot().notifications.quietTo).toBe(8);
+  });
+
+  it("keeps a real hour", () => {
+    window.localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ ...EMPTY_STATE, notifications: { quietFrom: 22, quietTo: 6 } }),
+    );
+    __resetForTests();
+    subscribe(() => {});
+    expect(getSnapshot().notifications.quietFrom).toBe(22);
+    expect(getSnapshot().notifications.quietTo).toBe(6);
+  });
+
+  it("treats a non-boolean toggle as off", () => {
+    window.localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ ...EMPTY_STATE, notifications: { email: "yes", push: 1 } }),
+    );
+    __resetForTests();
+    subscribe(() => {});
+    expect(getSnapshot().notifications.email).toBe(false);
+    expect(getSnapshot().notifications.push).toBe(false);
+  });
+
+  it("is erased with everything else", () => {
+    setNotifications({ email: true, paused: true });
+    resetAll();
+    expect(getSnapshot().notifications).toEqual(EMPTY_STATE.notifications);
   });
 });

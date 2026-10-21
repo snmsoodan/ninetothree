@@ -457,6 +457,8 @@ const rules: Rule[] = [
 
 **Idempotency:** every job writes a `job_runs` row keyed by `(job, run_key)`; re-runs are safe.
 
+**One gate, and every job calls it.** `shouldSend` in `apps/web/src/lib/notifications.ts` is the only place that decides whether a message may go out. It returns a reason rather than a boolean, and the order of its checks is the order of the promises: loss mode, then the parent's own pause, then the channel, then the hour, then the cadence. A job that skips it is a bug, not a shortcut — the toggles on `/settings` are only real if there is exactly one function that reads them. Quiet hours apply to push only; an email at 3am waits in an inbox, a push at 3am wakes someone.
+
 ---
 
 ## 11. Security and privacy

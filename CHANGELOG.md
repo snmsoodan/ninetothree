@@ -9,6 +9,46 @@ changelog written after the fact from memory is a changelog nobody can trust.
 
 ## Unreleased
 
+### Notification preferences: one gate every job must call (#35)
+
+- Added `apps/web/src/lib/notifications.ts`: `NotificationPrefs`,
+  `DEFAULT_NOTIFICATIONS`, `isQuietHour`, and `shouldSend` — the single
+  function a future email or push job must consult. It returns a reason
+  (`ok`, `loss`, `paused`, `off`, `quiet-hours`, `not-due`) rather than a
+  boolean, so a job that does not send can say why.
+- The order of the checks is the order of the promises: loss mode first, then
+  the parent's own pause, then the channel, then the hour, then the cadence.
+  Quiet hours apply to push only — an email at 3am waits in an inbox, a push
+  at 3am wakes someone.
+- Added `notifications` to `AppState` with `migrateNotifications` and
+  `setNotifications`. A patch merges; a replacement would reset the other
+  toggles to their defaults. An unrecognised frequency, an hour outside 0–23
+  and a non-boolean toggle all fall back rather than throwing.
+- Added `apps/web/src/components/NotificationSettings.tsx` and a "What we send
+  you" section on `/settings`. It says plainly that nothing is sent yet: a
+  toggle that quietly does nothing is worse than no toggle.
+- Added 20 gate tests, 9 store tests, 13 component tests, 5 stories, 5 e2e
+  tests and a keyboard test. `notifications.ts` and `NotificationSettings.tsx`
+  are both at 100% coverage.
+
+### Recall notices: tell the parent who has the thing (#32)
+
+- Added `packages/content/src/recalls.ts`: the recall schema, `matchRecalls`,
+  `recallKey`, and `STRENGTH` — `option` beats `step` beats `keyword`, and one
+  notice per recall. A recall that matches nothing is a schema error.
+- Added `packages/content/recalls/recalls.json`: five real CPSC recalls, all
+  `stop-use`, all citing a page that returns 200 and passes the redirect rule.
+  Hand-curated; there is no ingestion job.
+- Added `lintRecall`/`lintRecalls` — narrower than the pack lint, because a
+  recall is an agency record and holding a CPSC hazard statement to a grade-8
+  ceiling would mean rewriting the agency's words.
+- Added `apps/web/src/lib/recalls.ts`, `RecallNotice.tsx` and `RecallList.tsx`,
+  and a queue on the dashboard between the week card and the pins. The queue
+  fills on the dashboard, not on a timer, and a withdrawn recall is dropped
+  rather than shown from the snapshot.
+- Added 34 content tests, 12 glue tests, 13 store tests, 18 component tests,
+  8 stories, 3 e2e tests and an axe test.
+
 ### Red-flag surfaces: help is a link before it is a drawer (#31)
 
 - Added `apps/web/src/lib/help.ts`: `HELP_NUMBERS`, the five escalations that
