@@ -1,0 +1,101 @@
+{
+  "locale": "en-US",
+  "country": "US",
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-21",
+  "updatedAt": "2026-10-21",
+  "id": "toddler-month-21",
+  "kind": "toddler",
+  "stageIndex": 21,
+  "stageUnit": "month",
+  "title": "Month 21",
+  "subtitle": "Running, kicking, and climbing. The body is ahead of the words, and that is the right order.",
+  "baby": {
+    "development": "Your child runs well, can kick a ball forward, and walks up stairs with a hand held. They say around fifty words and are starting to put two together."
+  },
+  "you": {
+    "body": "If you are pregnant again, twenty-one months is the age gap where the lifting gets hard. Ask for help rather than pushing through.",
+    "mind": "Twenty-one months is often when the child starts to help. Let them, even when it is slower."
+  },
+  "coreActions": [
+    {
+      "id": "t21-help",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "play",
+      "title": "Let them help, even when it is slower",
+      "why": "Helping is how a child learns to be part of a household, and the willingness to help peaks before the ability.",
+      "detail": "Put the laundry in the basket together. Hand them a cloth to wipe the table. Let them stir. It takes three times as long and it is the whole point. A child who helps at two is a child who helps at four.",
+      "minutes": 15,
+      "keywords": ["helping", "chores", "independence"]
+    },
+    {
+      "id": "t21-ball",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "play",
+      "title": "Kick and roll a ball every day",
+      "why": "Kicking a ball is a balance and coordination skill, and it is the foundation for running, jumping, and sport.",
+      "detail": "Roll a ball back and forth sitting down first, then standing. Kick a soft ball indoors. A child who can kick forward at two is on track. Do not correct the foot, just play.",
+      "minutes": 15,
+      "keywords": ["ball", "kicking", "coordination"]
+    },
+    {
+      "id": "t21-water",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "safety",
+      "title": "Know the water rules before summer",
+      "why": "Drowning is the leading cause of injury death in children one to four, and it is silent.",
+      "detail": "A child this age needs an adult within arm's reach in any water, including a bathtub and a paddling pool. Empty the paddling pool after every use. A fence with a self-closing gate around a pool is the thing that works.",
+      "keywords": ["water", "drowning", "pool"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "t21-sentences",
+      "title": "Two words is enough for now",
+      "body": "Two-word phrases between eighteen and twenty-four months are on track. Three words usually come between twenty-four and thirty months. A child with no two-word phrases at twenty-four months is worth raising at the visit."
+    },
+    {
+      "id": "t21-nap",
+      "title": "One nap is the norm now",
+      "body": "Most children are on one nap by twenty-one months, usually after lunch, for one to two hours. A child who still needs two is not behind."
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "t21-flag-drowning",
+      "text": "A child missing near water, or found face down in water",
+      "escalation": "call-911"
+    },
+    {
+      "id": "t21-flag-choking",
+      "text": "Choking — cannot breathe, cough, or make a sound",
+      "escalation": "call-911"
+    },
+    {
+      "id": "t21-flag-fever",
+      "text": "A fever over 100.4°F with unusual sleepiness or a rash",
+      "escalation": "call-pediatrician"
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-t21-cdc-drowning",
+      "title": "Drowning prevention",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/drowning/",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    },
+    {
+      "id": "src-t21-hc-fit",
+      "title": "Fitness for toddlers",
+      "publisher": "AAP",
+      "url": "https://www.healthychildren.org/English/ages-stages/toddler/fitness/Pages/default.aspx",
+      "kind": "clinical",
+      "accessed": "2026-10-21"
+    }
+  ]
+}

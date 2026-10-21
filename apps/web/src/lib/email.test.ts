@@ -175,11 +175,14 @@ describe("buildWeeklyEmail — the gate", () => {
     expect(weeklyEmailReason({ state: lossy, packs: PACKS, now: NOW, baseUrl: BASE })).toBe("loss");
   });
 
-  it("sends nothing for a stage with no pack written yet", () => {
-    // Every pregnancy week is written now, so the gap is the toddler months.
-    const toddler = state({ status: "parent", dueDate: undefined, birthDate: "2025-04-20" });
-    expect(buildWeeklyEmail({ state: toddler, packs: PACKS, now: NOW, baseUrl: BASE })).toBeNull();
-    expect(weeklyEmailReason({ state: toddler, packs: PACKS, now: NOW, baseUrl: BASE })).toBe(
+  it("sends nothing when there is no pack for the stage at all", () => {
+    // Every stage from pregnancy week 4 to toddler month 36 has a pack now, so
+    // the only way to reach this guard is an empty corpus. It is a real guard:
+    // `findPackForStage` returns undefined for an empty list, and a build with
+    // no content should send nothing rather than crash.
+    const parent = state({ status: "parent", dueDate: undefined, birthDate: "2025-04-20" });
+    expect(buildWeeklyEmail({ state: parent, packs: [], now: NOW, baseUrl: BASE })).toBeNull();
+    expect(weeklyEmailReason({ state: parent, packs: [], now: NOW, baseUrl: BASE })).toBe(
       "no-pack",
     );
   });

@@ -1,0 +1,101 @@
+{
+  "locale": "en-US",
+  "country": "US",
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-21",
+  "updatedAt": "2026-10-21",
+  "id": "toddler-month-31",
+  "kind": "toddler",
+  "stageIndex": 31,
+  "stageUnit": "month",
+  "title": "Month 31",
+  "subtitle": "The three-year visit is two months away, and it is the last one in this guide.",
+  "baby": {
+    "development": "Your child says three or four words together, can jump, and can walk up stairs alternating feet. They are starting to use words like because and and, and they can follow a three-step instruction."
+  },
+  "you": {
+    "body": "If you are pregnant again, the last weeks with a two-and-a-half-year-old are a logistics problem. Line up who takes them.",
+    "mind": "Thirty-one months is when the child starts to argue. It is a language milestone wearing a difficult hat."
+  },
+  "coreActions": [
+    {
+      "id": "t31-visit",
+      "type": "book",
+      "priority": "essential",
+      "domain": "health-baby",
+      "title": "Book the three-year visit",
+      "why": "This is the last visit in this guide, and it is the one where preschool readiness and language get checked.",
+      "detail": "The three-year visit usually has no vaccines if the eighteen-month set is complete. The doctor will check language, movement, teeth, and growth, and will ask about preschool. Write the questions down now.",
+      "minutes": 15,
+      "keywords": ["three year", "checkup", "preschool"]
+    },
+    {
+      "id": "t31-argue",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "mind",
+      "title": "Let them argue, and hold the limit",
+      "why": "An argument is a child practising reasoning, and the limit is what makes the practice safe.",
+      "detail": "Hear the argument out, then say the limit once. You can be persuaded by a good reason and still hold a limit that is not negotiable. Do not argue back, and do not change the limit because the argument was loud.",
+      "keywords": ["arguing", "limits", "reasoning"]
+    },
+    {
+      "id": "t31-scissors",
+      "type": "do",
+      "priority": "optional",
+      "domain": "play",
+      "title": "Introduce scissors, with supervision",
+      "why": "Cutting is a fine-motor skill that comes before writing, and it is taught rather than discovered.",
+      "detail": "Blunt-tip child scissors and strips of paper. Show how to hold them, then let the child snip. Stay close. A child who can cut a strip at three is on track. Do not use scissors as a reward or a punishment.",
+      "minutes": 15,
+      "keywords": ["scissors", "fine motor", "cutting"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "t31-words",
+      "title": "A thousand words by three",
+      "body": "Most children have around a thousand words by three and speak in sentences of three or more. A child who is not understood by strangers at three is worth raising at the visit."
+    },
+    {
+      "id": "t31-preschool",
+      "title": "Visit before you choose",
+      "body": "Ask about ratios, staff turnover, how they handle a child who is upset, and what a typical day looks like. A visit tells you more than a brochure, and a second visit tells you more than the first."
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "t31-flag-choking",
+      "text": "Choking — cannot breathe, cough, or make a sound",
+      "escalation": "call-911"
+    },
+    {
+      "id": "t31-flag-fever",
+      "text": "A fever over 100.4°F with unusual sleepiness or a rash",
+      "escalation": "call-pediatrician"
+    },
+    {
+      "id": "t31-flag-fall",
+      "text": "A fall from a height, or a head injury with vomiting or unusual sleepiness",
+      "escalation": "call-911"
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-t31-cdc-3y",
+      "title": "Milestones at 3 years",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/act-early/milestones/3-years.html",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    },
+    {
+      "id": "src-t31-hc-pre",
+      "title": "Preschool health",
+      "publisher": "AAP",
+      "url": "https://www.healthychildren.org/English/ages-stages/preschool/Pages/default.aspx",
+      "kind": "clinical",
+      "accessed": "2026-10-21"
+    }
+  ]
+}

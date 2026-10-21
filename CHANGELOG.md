@@ -9,6 +9,30 @@ changelog written after the fact from memory is a changelog nobody can trust.
 
 ## Unreleased
 
+### Toddler months 13–36: the guide no longer ends at the first birthday (#83)
+
+- Wrote 24 packs covering toddler months 13 to 36, one per month. Every month
+  from the first birthday to the third now has one, with an essential action,
+  red flags, and sources cited to CDC's _Act Early_ milestones and AAP's
+  _HealthyChildren_ toddler indexes.
+- Found that there were **no toddler packs at all** — not one. A parent whose
+  child turned one stayed on `infant-month-12` forever, because
+  `findPackForStage` returns the most recent pack at or before the stage and
+  month 12 was the most recent pack there was.
+- Added a unit test that walks every reachable stage — pregnancy weeks 4–42,
+  postpartum weeks 1–12, infant months 3–12, toddler months 13–36 — and fails
+  if any of them has no pack. This is the guard that would have caught the gap.
+- Added an e2e test that onboards a parent of a two-year-old and asserts the
+  week page shows Month 26, not the month-12 pack.
+- Rewrote `email.test.ts`'s `no-pack` test. It used a toddler stage as its
+  example of a gap, and now that every stage has a pack the reason is
+  unreachable from the real corpus. The test passes `packs: []` and asserts the
+  guard fires, which is what the branch is actually for.
+- Changed the empty-search e2e test's example query from `stroller` to
+  `piano lessons`. The toddler packs mention a stroller, so the old query now
+  returns three real results. The empty state was never wrong; the corpus
+  changed under the test.
+
 ### The first year: 21 packs, and one that could never be reached (#48)
 
 - Wrote 21 packs covering postpartum weeks 2–12 and infant months 3–12. Every

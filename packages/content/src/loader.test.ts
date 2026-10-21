@@ -273,3 +273,31 @@ describe("the shipped registry", () => {
     expect(new Set(ids).size).toBe(ids.length);
   });
 });
+
+describe("the corpus covers every stage a parent can be in", () => {
+  // This is the guard that would have caught the toddler gap. `computeStage`
+  // clamps pregnancy to weeks 4–42, postpartum to weeks 1–12, and infant to
+  // months 3–12, then gives toddler months 13 and up with no upper clamp. A
+  // parent at month 40 gets the month-36 pack, which is the intended fallback.
+  // A parent at month 13 with no toddler pack got the month-12 pack forever.
+  const REACHABLE: { kind: StagePack["kind"]; from: number; to: number }[] = [
+    { kind: "pregnancy", from: 4, to: 42 },
+    { kind: "postpartum", from: 1, to: 12 },
+    { kind: "infant", from: 3, to: 12 },
+    { kind: "toddler", from: 13, to: 36 },
+  ];
+
+  for (const { kind, from, to } of REACHABLE) {
+    it(`has a pack for every ${kind} stage from ${from} to ${to}`, () => {
+      const missing: number[] = [];
+      for (let index = from; index <= to; index += 1) {
+        if (!findPackForStage(PACKS, kind, index)) missing.push(index);
+      }
+      expect(missing).toEqual([]);
+    });
+  }
+
+  it("gives a parent past the last pack the last pack, not nothing", () => {
+    expect(findPackForStage(PACKS, "toddler", 48)?.id).toBe("toddler-month-36");
+  });
+});

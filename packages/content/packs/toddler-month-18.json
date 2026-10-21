@@ -1,0 +1,110 @@
+{
+  "locale": "en-US",
+  "country": "US",
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-21",
+  "updatedAt": "2026-10-21",
+  "id": "toddler-month-18",
+  "kind": "toddler",
+  "stageIndex": 18,
+  "stageUnit": "month",
+  "title": "Month 18",
+  "subtitle": "The eighteen-month visit is this month. It is the one with the autism screen, and it is a conversation, not a verdict.",
+  "baby": {
+    "development": "Your child is running, may be climbing stairs with a hand held, and says around ten to twenty words. They can point to three or more body parts and are starting to pretend, like feeding a doll."
+  },
+  "you": {
+    "body": "If you are pregnant again, eighteen months is the age gap that is hardest on the body. Ask for help with the lifting.",
+    "mind": "The autism screen is a questionnaire, not a diagnosis. A positive screen means a closer look, and a closer look early is the thing that helps."
+  },
+  "coreActions": [
+    {
+      "id": "t18-visit",
+      "type": "book",
+      "priority": "essential",
+      "domain": "health-baby",
+      "title": "Go to the eighteen-month visit",
+      "why": "This is the autism screen, the next vaccine set, and the language check, and it is the visit where a concern is easiest to raise.",
+      "detail": "The US schedule at eighteen months is DTaP and hepatitis A, with others depending on what was given earlier. The screen is usually the M-CHAT, eighteen questions. Answer them about what the child does, not what you hope they do. A referral for an evaluation is not a diagnosis.",
+      "minutes": 60,
+      "keywords": ["eighteen month", "autism screen", "vaccines"]
+    },
+    {
+      "id": "t18-words",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "play",
+      "title": "Name everything, all day",
+      "why": "Vocabulary at this age grows from hearing words attached to things that are happening.",
+      "detail": "Narrate what you are doing and what the child is doing. Expand what they say: if they say dog, say yes, a big brown dog. Read the same books. Sing the same songs. Screen time does not do this.",
+      "keywords": ["language", "words", "talking"]
+    },
+    {
+      "id": "t18-tantrum",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "mind",
+      "title": "Decide your limits before the tantrum",
+      "why": "A limit that changes depending on how loud the child is teaches that loud works.",
+      "detail": "Pick the few things that are non-negotiable and hold them every time. Everything else can be a choice between two options, which is what a toddler actually wants. Say the limit once, calmly, and then stop talking.",
+      "keywords": ["limits", "tantrum", "choices"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "t18-pretend",
+      "title": "Pretend play starts now",
+      "body": "Feeding a doll, stirring a pot, and putting a toy to bed are the beginnings of pretend play, and they are a language and social milestone."
+    },
+    {
+      "id": "t18-stairs",
+      "title": "Stairs need a gate until three",
+      "body": "A child can climb stairs with a hand held at eighteen months but cannot be trusted on them alone until around three. Gate the top and the bottom."
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "t18-flag-choking",
+      "text": "Choking — cannot breathe, cough, or make a sound",
+      "escalation": "call-911"
+    },
+    {
+      "id": "t18-flag-fever",
+      "text": "A fever over 100.4°F with unusual sleepiness or a rash",
+      "escalation": "call-pediatrician"
+    },
+    {
+      "id": "t18-flag-mood",
+      "text": "Feeling hopeless, or thoughts of harming yourself or the child",
+      "escalation": "call-988",
+      "phone": "988"
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-t18-cdc-18",
+      "title": "Milestones at 18 months",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/act-early/milestones/18-months.html",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    },
+    {
+      "id": "src-t18-cdc-autism",
+      "title": "Autism",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/autism/",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "t18-appt-eighteen",
+      "label": "Eighteen-month visit and vaccines",
+      "from": 546,
+      "to": 560,
+      "who": "Pediatrician"
+    }
+  ]
+}

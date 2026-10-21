@@ -1,0 +1,100 @@
+{
+  "locale": "en-US",
+  "country": "US",
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-21",
+  "updatedAt": "2026-10-21",
+  "id": "toddler-month-19",
+  "kind": "toddler",
+  "stageIndex": 19,
+  "stageUnit": "month",
+  "title": "Month 19",
+  "subtitle": "Two words together is the next milestone, and it is closer than it looks.",
+  "baby": {
+    "development": "Your child says around twenty words and is starting to put two together, like more milk or daddy gone. They can run, kick a ball, and climb onto a chair."
+  },
+  "you": {
+    "body": "If you are carrying a nineteen-month-old, your shoulder is doing the work your back used to. Switch sides and use the stroller for the long walks.",
+    "mind": "Nineteen months is when the child starts to negotiate. It is a good sign, and it is the reason a choice between two things works better than an instruction."
+  },
+  "coreActions": [
+    {
+      "id": "t19-two-words",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "play",
+      "title": "Model two words together",
+      "why": "Two-word phrases are the next language step, and they come from hearing them rather than from being asked to repeat them.",
+      "detail": "When the child says one word, give it back with two: milk becomes more milk, up becomes up please. Do not correct, just expand. Most children put two words together between eighteen and twenty-four months.",
+      "keywords": ["two words", "phrases", "language"]
+    },
+    {
+      "id": "t19-screens",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "mind",
+      "title": "Decide the screen rule now, before it is a fight",
+      "why": "A rule set at nineteen months is easier to hold than a rule set at three, when the child can argue.",
+      "detail": "For a child under two, the recommendation is no solo screen time other than video calls. If you use a screen, watch it together and talk about it. Background television is the thing to turn off, because it costs language even when nobody is watching.",
+      "keywords": ["screens", "television", "media"]
+    },
+    {
+      "id": "t19-brush",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "health-baby",
+      "title": "Brush twice a day, and finish the job yourself",
+      "why": "A toddler can hold a brush but cannot clean the back teeth, and the habit is what carries into the years when they can.",
+      "detail": "A pea-sized amount of fluoride toothpaste, twice a day. Let them have a turn, then take it and finish. Lying down or standing behind works better than facing them. A two-minute song is a better timer than a threat.",
+      "minutes": 5,
+      "keywords": ["teeth", "brushing", "toothpaste"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "t19-picky",
+      "title": "Picky eating is a stage, not a verdict",
+      "body": "Appetite drops in the second year because growth slows. Keep offering the food without pressure, eat together, and do not make a second meal. A child may need to see a food fifteen times before eating it."
+    },
+    {
+      "id": "t19-iron",
+      "title": "Iron is the nutrient to watch",
+      "body": "Milk displaces iron-rich food. Keep milk to about sixteen ounces a day, and offer meat, beans, lentils, and fortified cereal. Low iron shows up as tiredness and irritability, not as a symptom you would notice."
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "t19-flag-choking",
+      "text": "Choking — cannot breathe, cough, or make a sound",
+      "escalation": "call-911"
+    },
+    {
+      "id": "t19-flag-fever",
+      "text": "A fever over 100.4°F with unusual sleepiness or a rash",
+      "escalation": "call-pediatrician"
+    },
+    {
+      "id": "t19-flag-fall",
+      "text": "A fall from furniture, or a head injury with vomiting or unusual sleepiness",
+      "escalation": "call-911"
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-t19-cdc-18",
+      "title": "Milestones at 18 months",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/act-early/milestones/18-months.html",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    },
+    {
+      "id": "src-t19-hc-media",
+      "title": "Media and children",
+      "publisher": "AAP",
+      "url": "https://www.healthychildren.org/English/family-life/Media/Pages/default.aspx",
+      "kind": "clinical",
+      "accessed": "2026-10-21"
+    }
+  ]
+}

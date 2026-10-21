@@ -1,0 +1,102 @@
+{
+  "locale": "en-US",
+  "country": "US",
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-21",
+  "updatedAt": "2026-10-21",
+  "id": "toddler-month-20",
+  "kind": "toddler",
+  "stageIndex": 20,
+  "stageUnit": "month",
+  "title": "Month 20",
+  "subtitle": "Pretend play is starting, and it is the best language tool you have.",
+  "baby": {
+    "development": "Your child is running, can walk up stairs with a hand held, and says around twenty to fifty words. They are starting to pretend, like stirring a pot or putting a toy to bed."
+  },
+  "you": {
+    "body": "Your body has been carrying a growing child for twenty months. If something hurts, it is worth a physio visit rather than a wait.",
+    "mind": "Twenty months is when the child's play becomes a window into what they understand. Watching it is more useful than any checklist."
+  },
+  "coreActions": [
+    {
+      "id": "t20-pretend",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "play",
+      "title": "Play pretend with them, and follow their lead",
+      "why": "Pretend play is where language, memory, and social understanding come together, and it works best when the child is the one deciding.",
+      "detail": "Sit on the floor and copy what they do. If they stir a pot, stir a pot. Add one idea, not five. A box is a car, a spoon is a phone. Do not correct the game, join it.",
+      "minutes": 20,
+      "keywords": ["pretend play", "imagination", "play"]
+    },
+    {
+      "id": "t20-visit",
+      "type": "book",
+      "priority": "recommended",
+      "domain": "health-baby",
+      "title": "Book the two-year visit",
+      "why": "The two-year visit is the second autism screen and the next developmental check, and the good slots go early.",
+      "detail": "The two-year visit usually has no vaccines if the eighteen-month set is complete. The doctor will do a second autism screen and check language, movement, and teeth. Write down the words and the two-word phrases.",
+      "minutes": 15,
+      "keywords": ["two year", "checkup", "autism screen"]
+    },
+    {
+      "id": "t20-stairs",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "safety",
+      "title": "Teach the stairs, and keep the gate",
+      "why": "A child can learn to go down stairs backwards on their tummy long before they can do it on their feet.",
+      "detail": "Practise going down on the tummy, feet first, with you below. Keep the gates at the top and the bottom. A child is not safe on stairs alone until around three.",
+      "minutes": 10,
+      "keywords": ["stairs", "gate", "safety"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "t20-molars",
+      "title": "The second molars are the last teeth",
+      "body": "Second molars usually arrive between twenty-three and thirty-three months, and they are the ones that wake a child at night. The full set of baby teeth is complete around three."
+    },
+    {
+      "id": "t20-sharing",
+      "title": "Sharing is not a two-year-old skill",
+      "body": "A two-year-old is not developmentally able to share. Parallel play, side by side with the same toys, is the goal. Taking turns with a timer works better than asking for a share."
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "t20-flag-choking",
+      "text": "Choking — cannot breathe, cough, or make a sound",
+      "escalation": "call-911"
+    },
+    {
+      "id": "t20-flag-fever",
+      "text": "A fever over 100.4°F with unusual sleepiness or a rash",
+      "escalation": "call-pediatrician"
+    },
+    {
+      "id": "t20-flag-breathing",
+      "text": "Fast or labored breathing, or a blue tint around the lips",
+      "escalation": "call-911"
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-t20-cdc-2y",
+      "title": "Milestones at 2 years",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/act-early/milestones/2-years.html",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    },
+    {
+      "id": "src-t20-hc-play",
+      "title": "Safety at play",
+      "publisher": "AAP",
+      "url": "https://www.healthychildren.org/English/safety-prevention/at-play/Pages/default.aspx",
+      "kind": "clinical",
+      "accessed": "2026-10-21"
+    }
+  ]
+}

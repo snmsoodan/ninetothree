@@ -62,6 +62,30 @@ import infantMonth9 from "../packs/infant-month-9.json";
 import infantMonth10 from "../packs/infant-month-10.json";
 import infantMonth11 from "../packs/infant-month-11.json";
 import infantMonth12 from "../packs/infant-month-12.json";
+import toddlerMonth13 from "../packs/toddler-month-13.json";
+import toddlerMonth14 from "../packs/toddler-month-14.json";
+import toddlerMonth15 from "../packs/toddler-month-15.json";
+import toddlerMonth16 from "../packs/toddler-month-16.json";
+import toddlerMonth17 from "../packs/toddler-month-17.json";
+import toddlerMonth18 from "../packs/toddler-month-18.json";
+import toddlerMonth19 from "../packs/toddler-month-19.json";
+import toddlerMonth20 from "../packs/toddler-month-20.json";
+import toddlerMonth21 from "../packs/toddler-month-21.json";
+import toddlerMonth22 from "../packs/toddler-month-22.json";
+import toddlerMonth23 from "../packs/toddler-month-23.json";
+import toddlerMonth24 from "../packs/toddler-month-24.json";
+import toddlerMonth25 from "../packs/toddler-month-25.json";
+import toddlerMonth26 from "../packs/toddler-month-26.json";
+import toddlerMonth27 from "../packs/toddler-month-27.json";
+import toddlerMonth28 from "../packs/toddler-month-28.json";
+import toddlerMonth29 from "../packs/toddler-month-29.json";
+import toddlerMonth30 from "../packs/toddler-month-30.json";
+import toddlerMonth31 from "../packs/toddler-month-31.json";
+import toddlerMonth32 from "../packs/toddler-month-32.json";
+import toddlerMonth33 from "../packs/toddler-month-33.json";
+import toddlerMonth34 from "../packs/toddler-month-34.json";
+import toddlerMonth35 from "../packs/toddler-month-35.json";
+import toddlerMonth36 from "../packs/toddler-month-36.json";
 
 /**
  * Every pack, validated at module load. A broken pack fails the build
@@ -132,6 +156,30 @@ export const PACKS: StagePack[] = assertValidPacks([
   infantMonth10,
   infantMonth11,
   infantMonth12,
+  toddlerMonth13,
+  toddlerMonth14,
+  toddlerMonth15,
+  toddlerMonth16,
+  toddlerMonth17,
+  toddlerMonth18,
+  toddlerMonth19,
+  toddlerMonth20,
+  toddlerMonth21,
+  toddlerMonth22,
+  toddlerMonth23,
+  toddlerMonth24,
+  toddlerMonth25,
+  toddlerMonth26,
+  toddlerMonth27,
+  toddlerMonth28,
+  toddlerMonth29,
+  toddlerMonth30,
+  toddlerMonth31,
+  toddlerMonth32,
+  toddlerMonth33,
+  toddlerMonth34,
+  toddlerMonth35,
+  toddlerMonth36,
 ]);
 
 export const PACKS_BY_ID: ReadonlyMap<string, StagePack> = new Map(

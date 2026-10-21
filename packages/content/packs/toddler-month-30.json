@@ -1,0 +1,112 @@
+{
+  "locale": "en-US",
+  "country": "US",
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-21",
+  "updatedAt": "2026-10-21",
+  "id": "toddler-month-30",
+  "kind": "toddler",
+  "stageIndex": 30,
+  "stageUnit": "month",
+  "title": "Month 30",
+  "subtitle": "Two and a half. The thirty-month visit is this month, and the next one is at three.",
+  "baby": {
+    "development": "Your child says three words together, can jump with both feet, and can walk up stairs alternating feet with a hand held. They can name a friend and are starting to take turns."
+  },
+  "you": {
+    "body": "If you are pregnant again, thirty months is the gap where the older child can help. Let them.",
+    "mind": "Thirty months is when the child's play gets a plot. It is the best thing to watch, and it is the thing to protect time for."
+  },
+  "coreActions": [
+    {
+      "id": "t30-visit",
+      "type": "book",
+      "priority": "essential",
+      "domain": "health-baby",
+      "title": "Go to the thirty-month visit",
+      "why": "This is a short developmental check, and it is the last visit before the three-year check.",
+      "detail": "The thirty-month visit usually has no vaccines. The doctor will check language, movement, and teeth, and will ask about sleep, eating, and toilet learning. Ask about preschool and about the three-year visit.",
+      "minutes": 60,
+      "keywords": ["thirty month", "checkup", "development"]
+    },
+    {
+      "id": "t30-stairs",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "play",
+      "title": "Practise stairs, alternating feet",
+      "why": "Alternating feet on stairs is a thirty-month milestone, and it is built by doing it with a hand held.",
+      "detail": "Walk up and down with a hand held, and say the feet out loud. A child who is still going up one foot at a time at thirty months is not behind, but it is worth practising. Keep the gates until three.",
+      "minutes": 10,
+      "keywords": ["stairs", "gross motor", "movement"]
+    },
+    {
+      "id": "t30-plot",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "play",
+      "title": "Give the pretend play a plot",
+      "why": "Pretend play with a sequence is what builds narrative, and narrative is what reading comprehension is made of.",
+      "detail": "Set up a scene: the teddy is sick, the doctor comes, the teddy gets better. Let the child direct. Add one prop, not five. Ask what happens next. This is the work of a two-and-a-half-year-old.",
+      "minutes": 20,
+      "keywords": ["pretend play", "narrative", "imagination"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "t30-preschool",
+      "title": "Preschool starts thinking now",
+      "body": "Most preschools take children from two and a half or three. Ask about ratios, staff turnover, and how they handle a child who is upset. A visit tells you more than a brochure."
+    },
+    {
+      "id": "t30-nap",
+      "title": "The nap may be ending, but not yet",
+      "body": "Most children drop the nap between three and four. A child who is fighting the nap at thirty months is more likely overtired than ready to drop it."
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "t30-flag-choking",
+      "text": "Choking — cannot breathe, cough, or make a sound",
+      "escalation": "call-911"
+    },
+    {
+      "id": "t30-flag-fever",
+      "text": "A fever over 100.4°F with unusual sleepiness or a rash",
+      "escalation": "call-pediatrician"
+    },
+    {
+      "id": "t30-flag-mood",
+      "text": "Feeling hopeless, or thoughts of harming yourself or the child",
+      "escalation": "call-988",
+      "phone": "988"
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-t30-cdc-30",
+      "title": "Milestones at 30 months",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/act-early/milestones/30-months.html",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    },
+    {
+      "id": "src-t30-hc-toddler",
+      "title": "Toddler health",
+      "publisher": "AAP",
+      "url": "https://www.healthychildren.org/English/ages-stages/toddler/Pages/default.aspx",
+      "kind": "clinical",
+      "accessed": "2026-10-21"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "t30-appt-thirty",
+      "label": "Thirty-month visit",
+      "from": 910,
+      "to": 924,
+      "who": "Pediatrician"
+    }
+  ]
+}

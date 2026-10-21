@@ -1,0 +1,100 @@
+{
+  "locale": "en-US",
+  "country": "US",
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-21",
+  "updatedAt": "2026-10-21",
+  "id": "toddler-month-33",
+  "kind": "toddler",
+  "stageIndex": 33,
+  "stageUnit": "month",
+  "title": "Month 33",
+  "subtitle": "The three-year visit is next month. It is the last one in this guide.",
+  "baby": {
+    "development": "Your child speaks in sentences, can jump, pedal, and climb. They can follow a three-step instruction and are starting to understand the idea of yesterday and tomorrow."
+  },
+  "you": {
+    "body": "If you are pregnant again, the three-year gap is the one where the older child can understand that a baby is coming. Tell them early and simply.",
+    "mind": "Thirty-three months is when the child starts to ask about the baby, or about the world, in a way that has an answer. Answer it."
+  },
+  "coreActions": [
+    {
+      "id": "t33-visit",
+      "type": "book",
+      "priority": "essential",
+      "domain": "health-baby",
+      "title": "Book the three-year visit",
+      "why": "This is the last visit in this guide, and it is the one where preschool readiness and language get checked.",
+      "detail": "The three-year visit usually has no vaccines if the eighteen-month set is complete. The doctor will check language, movement, teeth, and growth, and will ask about preschool and toilet learning. Bring the questions.",
+      "minutes": 15,
+      "keywords": ["three year", "checkup", "preschool"]
+    },
+    {
+      "id": "t33-time",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "play",
+      "title": "Teach yesterday, today, and tomorrow",
+      "why": "Time words are abstract and they are learned from hearing them used about real events.",
+      "detail": "Yesterday we went to the park. Tomorrow we will see grandma. Use a calendar on the wall and point at the day. A child who understands yesterday and tomorrow at three is on track.",
+      "keywords": ["time", "language", "yesterday"]
+    },
+    {
+      "id": "t33-feelings",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "mind",
+      "title": "Name feelings out loud, including your own",
+      "why": "A child who has words for a feeling has something to do with it other than hit.",
+      "detail": "I am frustrated because the traffic is slow. You are disappointed that the park is closed. Name it, do not fix it. A feelings chart on the wall helps. This is the foundation for the conversations at four and five.",
+      "keywords": ["feelings", "emotions", "language"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "t33-sentences",
+      "title": "Sentences of three or more words",
+      "body": "Most three-year-olds speak in sentences of three or more words and can be understood by strangers most of the time. A child who is not understood at three is worth raising at the visit."
+    },
+    {
+      "id": "t33-screens",
+      "title": "An hour a day, and not alone",
+      "body": "The recommendation for two to five is no more than an hour a day of high-quality content, watched with an adult. A screen alone in a room is the thing to avoid."
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "t33-flag-choking",
+      "text": "Choking — cannot breathe, cough, or make a sound",
+      "escalation": "call-911"
+    },
+    {
+      "id": "t33-flag-fever",
+      "text": "A fever over 100.4°F with unusual sleepiness or a rash",
+      "escalation": "call-pediatrician"
+    },
+    {
+      "id": "t33-flag-fall",
+      "text": "A fall from a height, or a head injury with vomiting or unusual sleepiness",
+      "escalation": "call-911"
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-t33-cdc-3y",
+      "title": "Milestones at 3 years",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/act-early/milestones/3-years.html",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    },
+    {
+      "id": "src-t33-hc-media",
+      "title": "Media and children",
+      "publisher": "AAP",
+      "url": "https://www.healthychildren.org/English/family-life/Media/Pages/default.aspx",
+      "kind": "clinical",
+      "accessed": "2026-10-21"
+    }
+  ]
+}

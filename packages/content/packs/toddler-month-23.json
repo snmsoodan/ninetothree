@@ -1,0 +1,101 @@
+{
+  "locale": "en-US",
+  "country": "US",
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-21",
+  "updatedAt": "2026-10-21",
+  "id": "toddler-month-23",
+  "kind": "toddler",
+  "stageIndex": 23,
+  "stageUnit": "month",
+  "title": "Month 23",
+  "subtitle": "The two-year visit is next month. It is the second autism screen, and the last one before school.",
+  "baby": {
+    "development": "Your child says fifty or more words, puts two together, and can run and climb. They are starting to sort shapes and colors and can follow a two-step instruction."
+  },
+  "you": {
+    "body": "If you are pregnant again, the two-year gap is the one where the lifting and the naps collide. Ask for help now rather than at thirty-eight weeks.",
+    "mind": "Twenty-three months is the last month before the check that everyone talks about. Write the questions down now, because the visit is short."
+  },
+  "coreActions": [
+    {
+      "id": "t23-visit",
+      "type": "book",
+      "priority": "essential",
+      "domain": "health-baby",
+      "title": "Book the two-year visit",
+      "why": "This is the second autism screen, the language check, and the visit where a concern is easiest to raise.",
+      "detail": "The two-year visit usually has no vaccines if the eighteen-month set is complete. The doctor will do a second autism screen and check language, movement, teeth, and growth. Bring the word list and the two-word phrases.",
+      "minutes": 15,
+      "keywords": ["two year", "autism screen", "checkup"]
+    },
+    {
+      "id": "t23-potty",
+      "type": "know",
+      "priority": "recommended",
+      "domain": "health-baby",
+      "title": "Know the signs of potty readiness, and do not start early",
+      "why": "Starting before the child is ready makes the whole thing take longer, and the signs are behavioural rather than about age.",
+      "detail": "Ready means staying dry for two hours, telling you when they have gone, showing interest in the toilet, and being able to pull trousers down. Most children are ready between two and three. Starting at eighteen months because a book said so is the common mistake.",
+      "keywords": ["potty", "toilet training", "readiness"]
+    },
+    {
+      "id": "t23-molars",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "health-baby",
+      "title": "Watch for the second molars",
+      "why": "The second molars are the largest teeth and the ones that wake a child at night, and they arrive around now.",
+      "detail": "Chewing on fingers, drool, night waking, and a low fever can come with them. A fever over 100.4°F is not teething and is worth a call. A cold teether and a dose of pain relief at the right weight is the whole treatment.",
+      "keywords": ["molars", "teething", "pain"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "t23-sleep",
+      "title": "Twelve hours at night and one nap",
+      "body": "A two-year-old usually sleeps eleven to fourteen hours in a day, including one nap of one to two hours. A child who is fighting the nap may be ready to drop it, but most are not until three."
+    },
+    {
+      "id": "t23-milk",
+      "title": "Whole milk until two, then 2% is fine",
+      "body": "After the second birthday, the fat can come down to 2% if the child is eating well. Keep it to about sixteen ounces a day so it does not crowd out food."
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "t23-flag-choking",
+      "text": "Choking — cannot breathe, cough, or make a sound",
+      "escalation": "call-911"
+    },
+    {
+      "id": "t23-flag-fever",
+      "text": "A fever over 100.4°F with unusual sleepiness or a rash",
+      "escalation": "call-pediatrician"
+    },
+    {
+      "id": "t23-flag-mood",
+      "text": "Feeling hopeless, or thoughts of harming yourself or the child",
+      "escalation": "call-988",
+      "phone": "988"
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-t23-cdc-2y",
+      "title": "Milestones at 2 years",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/act-early/milestones/2-years.html",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    },
+    {
+      "id": "src-t23-hc-potty",
+      "title": "Toilet training",
+      "publisher": "AAP",
+      "url": "https://www.healthychildren.org/English/ages-stages/toddler/toilet-training/Pages/default.aspx",
+      "kind": "clinical",
+      "accessed": "2026-10-21"
+    }
+  ]
+}
