@@ -544,7 +544,7 @@ There is deliberately no "you are fine". A tree that can tell a worried parent n
 
 ### The tree is content
 
-`packages/content/triage/triage.json` holds the whole thing: 13 nodes, 30 results, 15 sources, and 31 root-to-outcome paths across three roots — `me-pregnant`, `me-after-birth` and `baby`.
+`packages/content/triage/triage.json` holds the whole thing: **29 nodes, 67 results, 30 sources, and 69 root-to-outcome paths** across four first answers — `me-pregnant`, `me-after-birth`, `baby` and `child`.
 
 ```json
 {
@@ -592,6 +592,20 @@ A clinician can review and change it without a deploy, and the same lint that ru
 | ids          | kebab-case, at least two characters — so `yes` and `no` are legal answers |
 
 `treeIssues` adds the structural checks the schema cannot express: no duplicate ids, no id that is both a node and a result, no answer pointing at nothing, and no node or result unreachable from the root.
+
+### The first question is the only one everybody sees
+
+The root asks who the problem is about, and it is the only place a whole stage of childhood can go missing. It did: the tree shipped with answers for a pregnant parent, a parent who had just given birth, and a baby — and **nothing for a child past their first birthday**, while the guide itself runs to thirty-six months. A parent of a two-year-old who had swallowed a button battery had no path.
+
+There are now four first answers, and a test in `triage.test.ts` asserts that the root reaches all four branches. The reachability check in `treeIssues` is the real guard — removing the `child` answer makes the tree fail to load with fifteen unreachable nodes — but the test states the product rule rather than the schema rule.
+
+### Six answers is the ceiling, and it shapes the tree
+
+`pregnant-what`, `postpartum-what` and `baby-what` are all at the schema's maximum of six answers, so every branch added after the first version hangs off an existing "something else" answer rather than sitting beside it. That is the right shape — a first question with nine answers is a menu, not a question — but it means the next expansion has the same constraint, and a third level is the alternative.
+
+### A result is written for one person
+
+Three results were deliberately **not** reused for the child branch. `urgent-fever-symptoms` says "refusing feeds", `watch-fever-older` says "older baby", and `watch-rash` says "in a baby who is feeding and alert". All three are true of a baby and wrong for a two-year-old. Reusing a result because the escalation matches is how a tree starts telling a parent of a toddler to watch for a symptom a toddler cannot have.
 
 ### The lint
 

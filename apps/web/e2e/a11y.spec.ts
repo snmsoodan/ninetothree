@@ -219,6 +219,11 @@ test("a triage outcome has no violations", async ({ page }) => {
   expect(await audit(page)).toEqual([]);
 });
 
+test("a triage outcome for a child has no violations", async ({ page }) => {
+  await page.goto("/triage?p=child,swallowed,medicine");
+  expect(await audit(page)).toEqual([]);
+});
+
 test("the help drawer has no violations", async ({ page }) => {
   await onboardToWeek(page);
   await page.getByRole("link", { name: "Get help now" }).click();
@@ -292,6 +297,7 @@ test("every route has exactly one skip-link target", async ({ page }) => {
     "/choose/m6-highchair",
     "/triage",
     "/triage?p=me-pregnant,bleeding,spotting",
+    "/triage?p=child,swallowed,medicine",
     "/safety",
     "/settings",
     "/email",

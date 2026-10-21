@@ -138,6 +138,21 @@ describe("the shipped tree", () => {
     const outcomes = new Set(paths(TRIAGE).map((path) => path.result.id));
     for (const candidate of TRIAGE.results) expect(outcomes).toContain(candidate.id);
   });
+
+  /**
+   * The first question is the only one every parent sees, so it is the only
+   * place a whole stage of childhood can go missing. It did: the tree had no
+   * answer for a child past their first birthday, so a parent of a two-year-old
+   * who had swallowed something had nowhere to go. This is the guard.
+   */
+  it("asks who is unwell before it asks what is wrong", () => {
+    const root = TRIAGE.nodes.find((node) => node.id === TRIAGE.root);
+    expect(root).toBeDefined();
+    const targets = new Set(root?.answers.map((answer) => answer.next));
+    for (const stage of ["pregnant-what", "postpartum-what", "baby-what", "child-what"]) {
+      expect(targets).toContain(stage);
+    }
+  });
 });
 
 describe("treeIssues", () => {

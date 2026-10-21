@@ -503,10 +503,12 @@ test("changing a setting re-personalizes the week without a reload", async ({ pa
   await page.getByRole("link", { name: "Open this week" }).click();
   await expect(page).toHaveURL(/\/week\/pregnancy-w28$/);
   // Every week is written now, so 28 to 36 is eight hops, all client-side.
-  for (let i = 0; i < 10 && !page.url().endsWith("/week/pregnancy-w36"); i += 1) {
+  // Each hop is awaited: a click resolves before the next page renders, so
+  // clicking in a bare loop loses hops under load and lands short of week 36.
+  for (let week = 29; week <= 36; week += 1) {
     await page.getByRole("link", { name: "Next →" }).click();
+    await expect(page).toHaveURL(new RegExp(`/week/pregnancy-w${week}$`));
   }
-  await expect(page).toHaveURL(/\/week\/pregnancy-w36$/);
 
   await expect(page.getByText("Install the car seat and get it checked")).toHaveCount(0);
   await expect(page.getByText("Get your group B strep test")).toBeVisible();
@@ -763,6 +765,41 @@ test("a quiet triage answer still says who to call, and never says you are fine"
   const text = (await page.locator("main").textContent()) ?? "";
   expect(text).not.toMatch(/you(?:'re| are) (?:fine|okay)/i);
   expect(text).not.toMatch(/nothing to worry about/i);
+});
+
+// The tree had no answer for a child past their first birthday, so a parent of a
+// two-year-old who had swallowed something had nowhere to go. This walks the
+// branch that was missing, from the first question to the number.
+test("a parent of a two-year-old can find the path for something swallowed", async ({ page }) => {
+  await page.goto("/triage");
+
+  await page.getByRole("link", { name: "A child, and they are past their first birthday" }).click();
+  await expect(page.getByRole("heading", { level: 1, name: "What is happening?" })).toBeVisible();
+
+  await page.getByRole("link", { name: "They swallowed something" }).click();
+  await expect(
+    page.getByRole("heading", { level: 1, name: "What did they swallow?" }),
+  ).toBeVisible();
+
+  await page.getByRole("link", { name: "A button battery, or a magnet" }).click();
+  await expect(
+    page.getByRole("heading", { level: 1, name: "Go to the emergency department now." }),
+  ).toBeVisible();
+  await expect(page.getByRole("link", { name: "911" })).toHaveAttribute("href", "tel:911");
+});
+
+test("a swallowed medicine sends a parent to Poison Control, not to a search engine", async ({
+  page,
+}) => {
+  await page.goto("/triage?p=child,swallowed,medicine");
+
+  await expect(
+    page.getByRole("heading", { level: 1, name: "Call Poison Control now: 1-800-222-1222." }),
+  ).toBeVisible();
+  await expect(page.getByRole("link", { name: /1-800-222-1222/ })).toHaveAttribute(
+    "href",
+    "tel:18002221222",
+  );
 });
 
 test("a triage answer can be walked back one question at a time", async ({ page }) => {
