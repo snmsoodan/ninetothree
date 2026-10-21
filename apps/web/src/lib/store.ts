@@ -113,6 +113,8 @@ export interface Pin {
   packTitle: string;
   /** ISO timestamp. The tiebreak when order is not explicit. */
   at: string;
+  /** ISO date, YYYY-MM-DD. The day the parent asked to be reminded. */
+  remindOn?: string;
 }
 
 /**
@@ -219,6 +221,8 @@ export interface AppState {
   choices: Record<string, Choice>;
   notices: Record<string, Notice>;
   notifications: NotificationPrefs;
+  /** Reminder key → the ISO timestamp it was put away. */
+  reminded: Record<string, string>;
 }
 
 export const EMPTY_STATE: AppState = {
@@ -234,6 +238,7 @@ export const EMPTY_STATE: AppState = {
   choices: {},
   notices: {},
   notifications: DEFAULT_NOTIFICATIONS,
+  reminded: {},
 };
 
 let state: AppState = EMPTY_STATE;
@@ -273,6 +278,7 @@ function migratePins(raw: unknown): Pin[] {
         packId: pin.packId ?? "",
         packTitle: pin.packTitle ?? "",
         at: pin.at ?? "",
+        ...(typeof pin.remindOn === "string" ? { remindOn: pin.remindOn } : {}),
       });
     }
   }
@@ -357,6 +363,15 @@ function migrateNotices(raw: unknown): Record<string, Notice> {
   return notices;
 }
 
+function migrateReminded(raw: unknown): Record<string, string> {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return {};
+  const reminded: Record<string, string> = {};
+  for (const [key, value] of Object.entries(raw as Record<string, unknown>)) {
+    if (typeof value === "string") reminded[key] = value;
+  }
+  return reminded;
+}
+
 function migrateNotifications(raw: unknown): NotificationPrefs {
   if (!raw || typeof raw !== "object" || Array.isArray(raw)) return DEFAULT_NOTIFICATIONS;
   const value = raw as Partial<NotificationPrefs>;
@@ -396,6 +411,7 @@ function hydrate(): void {
       choices: migrateChoices(parsed.choices),
       notices: migrateNotices(parsed.notices),
       notifications: migrateNotifications(parsed.notifications),
+      reminded: migrateReminded(parsed.reminded),
     };
     emit();
   } catch {
@@ -649,6 +665,38 @@ export function updateProfile(profile: Profile): void {
  */
 export function setProfile(profile: Profile): void {
   set({ ...state, profile });
+}
+
+/**
+ * Sets or clears the day a pin should be reminded on.
+ *
+ * A reminder is a property of the pin, not a separate object: unpinning
+ * removes the reminder with it, and there is no second list to keep in step.
+ */
+export function setPinReminder(id: string, remindOn?: string): void {
+  set({
+    ...state,
+    pins: state.pins.map((pin) => {
+      if (pin.id !== id) return pin;
+      const { remindOn: _previous, ...rest } = pin;
+      return remindOn ? { ...rest, remindOn } : rest;
+    }),
+  });
+}
+
+/**
+ * Records that a reminder was put away, so it does not come back today.
+ *
+ * Idempotent: the first timestamp wins, so a double click cannot move the
+ * record of when a parent dismissed something.
+ */
+export function markReminded(keys: string[], at?: string): void {
+  const fresh = keys.filter((key) => state.reminded[key] === undefined);
+  if (fresh.length === 0) return;
+  const stamp = at ?? new Date().toISOString();
+  const reminded = { ...state.reminded };
+  for (const key of fresh) reminded[key] = stamp;
+  set({ ...state, reminded });
 }
 
 /**

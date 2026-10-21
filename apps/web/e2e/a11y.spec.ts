@@ -67,6 +67,42 @@ test("the dashboard has no violations with a recall showing", async ({ page }) =
   expect(await audit(page)).toEqual([]);
 });
 
+test("the dashboard has no violations with a reminder showing", async ({ page }) => {
+  await onboard(page);
+  await page.evaluate(() => {
+    const key = "ninetothree.v1";
+    const raw = window.localStorage.getItem(key);
+    const state = raw ? JSON.parse(raw) : {};
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const month = `${tomorrow.getMonth() + 1}`.padStart(2, "0");
+    const day = `${tomorrow.getDate()}`.padStart(2, "0");
+    state.appointments = [
+      {
+        id: "own-1",
+        label: "Growth scan",
+        date: `${tomorrow.getFullYear()}-${month}-${day}`,
+        who: "Dr Okafor",
+        at: "",
+      },
+    ];
+    state.pins = [
+      {
+        id: "t-glucose",
+        title: "Book your glucose screening",
+        packId: "pregnancy-w28",
+        packTitle: "Week 28",
+        at: "",
+        remindOn: new Date().toISOString().slice(0, 10),
+      },
+    ];
+    window.localStorage.setItem(key, JSON.stringify(state));
+  });
+  await page.reload();
+  await expect(page.getByRole("region", { name: "Coming up" })).toBeVisible();
+  expect(await audit(page)).toEqual([]);
+});
+
 test("the appointments page has no violations", async ({ page }) => {
   await onboard(page);
   await page.goto("/appointments");

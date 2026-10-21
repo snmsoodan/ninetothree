@@ -36,7 +36,9 @@ import {
   readDraft,
   saveDraft,
   resetAll,
+  markReminded,
   setNotifications,
+  setPinReminder,
   setProfile,
   snooze,
   stageInput,
@@ -1145,5 +1147,116 @@ describe("notification preferences", () => {
     setNotifications({ email: true, paused: true });
     resetAll();
     expect(getSnapshot().notifications).toEqual(EMPTY_STATE.notifications);
+  });
+});
+
+describe("pin reminders", () => {
+  it("sets a day on a pin", () => {
+    togglePin({ id: "p1", title: "Pack the bag", packId: "w36", packTitle: "Week 36" });
+    setPinReminder("p1", "2026-11-01");
+    expect(getSnapshot().pins[0]?.remindOn).toBe("2026-11-01");
+  });
+
+  it("clears the day without removing the pin", () => {
+    togglePin({ id: "p1", title: "Pack the bag", packId: "w36", packTitle: "Week 36" });
+    setPinReminder("p1", "2026-11-01");
+    setPinReminder("p1", undefined);
+    expect(getSnapshot().pins).toHaveLength(1);
+    expect(getSnapshot().pins[0]?.remindOn).toBeUndefined();
+  });
+
+  it("leaves other pins alone", () => {
+    togglePin({ id: "p1", title: "One", packId: "w36", packTitle: "Week 36" });
+    togglePin({ id: "p2", title: "Two", packId: "w36", packTitle: "Week 36" });
+    setPinReminder("p1", "2026-11-01");
+    expect(getSnapshot().pins.find((pin) => pin.id === "p2")?.remindOn).toBeUndefined();
+  });
+
+  it("survives a reload", () => {
+    togglePin({ id: "p1", title: "Pack the bag", packId: "w36", packTitle: "Week 36" });
+    setPinReminder("p1", "2026-11-01");
+    __resetForTests();
+    subscribe(() => {});
+    expect(getSnapshot().pins[0]?.remindOn).toBe("2026-11-01");
+  });
+
+  it("drops a stored reminder that is not a string", () => {
+    window.localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        ...EMPTY_STATE,
+        pins: [
+          { id: "p1", title: "One", packId: "w36", packTitle: "Week 36", at: "", remindOn: 7 },
+        ],
+      }),
+    );
+    __resetForTests();
+    subscribe(() => {});
+    expect(getSnapshot().pins[0]?.remindOn).toBeUndefined();
+  });
+});
+
+describe("reminded", () => {
+  it("starts empty", () => {
+    expect(getSnapshot().reminded).toEqual({});
+  });
+
+  it("records a key with a timestamp", () => {
+    markReminded(["appointment:w28:2026-10-21"], "2026-10-20T09:00:00.000Z");
+    expect(getSnapshot().reminded["appointment:w28:2026-10-21"]).toBe("2026-10-20T09:00:00.000Z");
+  });
+
+  it("keeps the first timestamp when the same key is recorded twice", () => {
+    markReminded(["appointment:w28:2026-10-21"], "2026-10-20T09:00:00.000Z");
+    markReminded(["appointment:w28:2026-10-21"], "2026-10-20T18:00:00.000Z");
+    expect(getSnapshot().reminded["appointment:w28:2026-10-21"]).toBe("2026-10-20T09:00:00.000Z");
+  });
+
+  it("does not write when every key is already recorded", () => {
+    markReminded(["a"], "2026-10-20T09:00:00.000Z");
+    const before = getSnapshot();
+    markReminded(["a"], "2026-10-20T10:00:00.000Z");
+    expect(getSnapshot()).toBe(before);
+  });
+
+  it("records several keys at once", () => {
+    markReminded(["a", "b"], "2026-10-20T09:00:00.000Z");
+    expect(Object.keys(getSnapshot().reminded).sort()).toEqual(["a", "b"]);
+  });
+
+  it("stamps the current time when none is given", () => {
+    markReminded(["a"]);
+    expect(typeof getSnapshot().reminded["a"]).toBe("string");
+  });
+
+  it("survives a reload", () => {
+    markReminded(["a"], "2026-10-20T09:00:00.000Z");
+    __resetForTests();
+    subscribe(() => {});
+    expect(getSnapshot().reminded["a"]).toBe("2026-10-20T09:00:00.000Z");
+  });
+
+  it("ignores a stored value that is not an object", () => {
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...EMPTY_STATE, reminded: "yes" }));
+    __resetForTests();
+    subscribe(() => {});
+    expect(getSnapshot().reminded).toEqual({});
+  });
+
+  it("ignores a stored array", () => {
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...EMPTY_STATE, reminded: ["a"] }));
+    __resetForTests();
+    subscribe(() => {});
+    expect(getSnapshot().reminded).toEqual({});
+  });
+
+  it("drops a stored entry that is not a string", () => {
+    window.localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ ...EMPTY_STATE, reminded: { a: "2026-10-20T09:00:00.000Z", b: 3 } }),
+    );
+    __resetForTests();
+    subscribe(() => {});
+    expect(getSnapshot().reminded).toEqual({ a: "2026-10-20T09:00:00.000Z" });
   });
 });

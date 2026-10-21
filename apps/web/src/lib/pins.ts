@@ -12,6 +12,8 @@ export interface ResolvedPin {
    * cannot link anywhere, and the shelf offers to remove it.
    */
   stale: boolean;
+  /** ISO date, YYYY-MM-DD. Carried through so the row can show it. */
+  remindOn?: string;
 }
 
 /**
@@ -33,6 +35,7 @@ export function resolvePins(pins: Pin[], packs: StagePack[]): ResolvedPin[] {
         packId: hit.pack.id,
         packTitle: hit.pack.title,
         stale: false,
+        ...(pin.remindOn ? { remindOn: pin.remindOn } : {}),
       });
     } else if (pin.title) {
       resolved.push({
@@ -41,6 +44,7 @@ export function resolvePins(pins: Pin[], packs: StagePack[]): ResolvedPin[] {
         packId: pin.packId,
         packTitle: pin.packTitle,
         stale: true,
+        ...(pin.remindOn ? { remindOn: pin.remindOn } : {}),
       });
     }
   }

@@ -1019,6 +1019,28 @@ The fix is `settledIds(pack, state)` in `apps/web/src/lib/week.ts`: a step is se
 
 **What this does not do.** There is no email transport, no push subscription, no service worker, and no job. `shouldSend` is called by nothing in production yet — it is called by 20 tests. The AC "every toggle is honoured by the jobs" is satisfied in the only way it can be before the jobs exist: the gate is the single function they must call, and every toggle is proven to change its answer. When #33 and #34 land, they will call it, and the tests that prove the toggles work will already be there.
 
-## 30. How this file is maintained
+## 30. Reminders (issue #34)
+
+**The issue asked for an appointment reminder 24 hours before, a pinned reminder, and push opt-in, with an AC of timezone-correct, no duplicate sends, and quiet hours respected.** The first two are real; the third is the gate from #35, which now has its first production caller.
+
+**"Tomorrow" is a fact about the parent's calendar, not about UTC.** `localDate(now)` reads `getFullYear`/`getMonth`/`getDate` rather than `toISOString().slice(0, 10)`. At 8pm in New York the UTC date is already tomorrow, so the naive version would tell a parent their appointment is tomorrow when it is the day after — and, worse, would raise the reminder a day early for anyone west of Greenwich. The test pins it: `new Date(2026, 9, 20, 20, 30)` is `2026-10-20`, not `2026-10-21`. The same bug existed in `apps/web/src/app/appointments/page.tsx`, which used `toISOString().slice(0, 10)` for "today"; it now calls `localDate` too.
+
+**An appointment is a window, not a moment.** The reminder fires on the day before the window opens, not 24 hours before a time that does not exist. Inventing a 9am would put a fake appointment in a parent's head, and the schedule deliberately stores a `from`/`to` range for exactly this reason.
+
+**The dismissal key carries the day.** `reminderKey` is `${kind}:${id}:${on}`. Putting away "your visit is tomorrow" must not silence the same appointment a week later, and a pin reminder set for a new day is a new reminder. The store test asserts that a key for a different day does not suppress the current one.
+
+**`markReminded` is idempotent and does not write when there is nothing new.** The first timestamp wins, so a double click cannot move the record of when a parent dismissed something, and a second tab that re-renders the same reminder does not churn storage. `markReminded` returns early without calling `set` when every key is already recorded — the same rule `recordNotices` follows.
+
+**The card is information, not a notification.** It is not gated by quiet hours or by the push toggle: a parent who opened the app is asking to see what is coming up, and hiding it because it is 11pm would be the product being coy about a fact the parent came for. What the gate decides is whether the reminder would _also_ be pushed, and that is `wouldPush`, which routes through `shouldSend` with `channel: "push"` and the local hour. Six tests cover it: push off, awake hour, quiet hour, paused, loss mode, and — importantly — that a monthly cadence does not hold a reminder back. A reminder is about a date; holding it for four weeks would be the product deciding an appointment can wait.
+
+**A reminder is a property of the pin, not a second list.** `Pin.remindOn` is an optional ISO date, set by `setPinReminder` and cleared by passing `undefined`. Unpinning removes the reminder with it, and there is no second collection to keep in step. `resolvePins` carries the date through for both a live pin and a retired one, so a reminder survives a content rename.
+
+**The date field is a native `<input type="date">`.** No calendar widget, no time picker, no timezone selector. A parent picks a day; the dashboard says so on the morning of it. The control is a button that reveals the field, so a pin row is not permanently taller than its content.
+
+**What this does not do.** There is no push transport and no service worker, so `wouldPush` is called by nothing in production — it is called by six tests, and it is the function a future job will call. The card is the delivery mechanism in this version, and it is honest about that: it says "Coming up", not "we sent you a notification". The AC "no duplicate sends" is satisfied for the card (a dismissal survives a reload, proven in e2e) and for the future job (the key is recorded before anything would be sent).
+
+**Verification.** 28 tests for `reminders.ts` (100% lines, branches, functions, statements), 7 for `appointments.ts` (100%), 8 for `ReminderCard.tsx` (100%), 6 new for `PinList.tsx` (100%), 3 for `pins.ts`, 17 new store tests. 6 e2e tests in `e2e/reminders.spec.ts`, one axe run on the dashboard with both a reminder and a pin reminder showing, 3 stories. Full gate: 1,284 unit tests, 74 chromium e2e, 82 storybook stories, 135 links none broken none moved, Lighthouse 1.0 accessibility on all seven URLs.
+
+## 31. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.

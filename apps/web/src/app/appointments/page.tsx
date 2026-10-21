@@ -6,6 +6,7 @@ import { appointmentsFor, buildIcs, type DatedAppointment } from "@ninetothree/c
 import { Button, Card, CardBody } from "@ninetothree/ui";
 import { AppShell } from "@/components/AppShell";
 import { ScheduleList, type ScheduleItem } from "@/components/ScheduleList";
+import { localDate } from "@/lib/reminders";
 import {
   addAppointment,
   removeAppointment,
@@ -15,7 +16,7 @@ import {
 } from "@/lib/store";
 
 function todayIso(): string {
-  return new Date().toISOString().slice(0, 10);
+  return localDate(new Date());
 }
 
 function stamp(): string {

@@ -80,4 +80,50 @@ describe("PinList", () => {
     expect(screen.getAllByRole("listitem")).toHaveLength(2);
     expect(screen.getByText("7 more on your shelf.")).toBeInTheDocument();
   });
+
+  it("offers no reminder control when the page does not handle one", () => {
+    render(<PinList pins={pins.slice(0, 1)} />);
+    expect(screen.queryByRole("button", { name: "Remind me" })).not.toBeInTheDocument();
+  });
+
+  it("sets a reminder day on a pin", async () => {
+    const onRemind = vi.fn();
+    render(<PinList pins={pins.slice(0, 1)} onRemind={onRemind} />);
+
+    await userEvent.click(screen.getByRole("button", { name: "Remind me" }));
+    const input = screen.getByLabelText("Remind me on");
+    await userEvent.type(input, "2026-11-01");
+
+    expect(onRemind).toHaveBeenCalledWith("pin-1", "2026-11-01");
+  });
+
+  it("closes the date field once a day is chosen", async () => {
+    render(<PinList pins={pins.slice(0, 1)} onRemind={() => {}} />);
+    await userEvent.click(screen.getByRole("button", { name: "Remind me" }));
+    await userEvent.type(screen.getByLabelText("Remind me on"), "2026-11-01");
+    expect(screen.queryByLabelText("Remind me on")).not.toBeInTheDocument();
+  });
+
+  it("shows the day a reminder is set for", () => {
+    render(<PinList pins={[{ ...pin(1), remindOn: "2026-11-01" }]} onRemind={() => {}} />);
+    expect(screen.getByText(/Reminder Nov 1\./)).toBeInTheDocument();
+  });
+
+  it("clears a reminder without unpinning", async () => {
+    const onRemind = vi.fn();
+    render(<PinList pins={[{ ...pin(1), remindOn: "2026-11-01" }]} onRemind={onRemind} />);
+
+    await userEvent.click(screen.getByRole("button", { name: "Clear" }));
+    expect(onRemind).toHaveBeenCalledWith("pin-1", undefined);
+  });
+
+  it("offers the date field again once the reminder is cleared", async () => {
+    const onRemind = vi.fn();
+    const { rerender } = render(
+      <PinList pins={[{ ...pin(1), remindOn: "2026-11-01" }]} onRemind={onRemind} />,
+    );
+    await userEvent.click(screen.getByRole("button", { name: "Clear" }));
+    rerender(<PinList pins={[pin(1)]} onRemind={onRemind} />);
+    expect(screen.getByRole("button", { name: "Remind me" })).toBeInTheDocument();
+  });
 });

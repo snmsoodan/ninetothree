@@ -1,22 +1,27 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { PACKS, RECALLS, findPackForStage, nextPack } from "@ninetothree/content";
 import { computeStage, stageLabel } from "@ninetothree/rules";
 import { AppShell } from "@/components/AppShell";
 import { AppointmentList } from "@/components/AppointmentList";
 import { PinList, type PinItem } from "@/components/PinList";
 import { RecallList } from "@/components/RecallList";
+import { ReminderCard } from "@/components/ReminderCard";
 import { ProgressLine } from "@/components/ProgressLine";
 import { ShareCard } from "@/components/ShareCard";
 import { WeekSummaryCard } from "@/components/WeekSummaryCard";
 import { QuietWeek } from "@/components/QuietWeek";
+import { datedAppointments } from "@/lib/appointments";
 import { resolvePins } from "@/lib/pins";
+import { dueReminders, localDate, reminderKey, unseen } from "@/lib/reminders";
 import { syncNotices } from "@/lib/recalls";
 import {
   dismissNotice,
+  markReminded,
   removePin,
+  setPinReminder,
   stageInput,
   useAppState,
   useHydrated,
@@ -29,6 +34,7 @@ export default function DashboardPage() {
   const ready = useHydrated();
   const router = useRouter();
   const input = stageInput(state);
+  const [now] = useState(() => new Date());
 
   useEffect(() => {
     if (ready && !state.onboarded) router.replace("/onboarding");
@@ -36,6 +42,20 @@ export default function DashboardPage() {
 
   const pins = useMemo<PinItem[]>(() => resolvePins(state.pins, PACKS), [state.pins]);
   const notices = useMemo(() => visibleNotices(state), [state]);
+
+  // Reminders are about a date, so they are computed from the local calendar
+  // rather than from the stage. A parent whose visit is tomorrow should see it
+  // whatever week the guide thinks they are in.
+  const reminders = useMemo(() => {
+    const due = dueReminders(
+      { appointments: datedAppointments(state, localDate(now)), pins: state.pins },
+      now,
+    );
+    return {
+      today: unseen(due.today, state.reminded),
+      tomorrow: unseen(due.tomorrow, state.reminded),
+    };
+  }, [state, now]);
 
   // The queue is filled on the dashboard, not on a timer: a recall is
   // something a parent looks at, not something that interrupts them.
@@ -85,6 +105,11 @@ export default function DashboardPage() {
   return (
     <AppShell stage={label}>
       <div className="space-y-10">
+        <ReminderCard
+          today={reminders.today}
+          tomorrow={reminders.tomorrow}
+          onDismiss={(items) => markReminded(items.map(reminderKey))}
+        />
         {quiet ? (
           <QuietWeek />
         ) : (
@@ -97,7 +122,7 @@ export default function DashboardPage() {
           />
         )}
         <RecallList notices={notices} recalls={RECALLS} onDismiss={dismissNotice} />
-        <PinList pins={pins} onUnpin={removePin} />
+        <PinList pins={pins} onUnpin={removePin} onRemind={setPinReminder} />
         <AppointmentList appointments={pack.appointments} unit={pack.stageUnit} />
         <ShareCard stage={label} />
         <ProgressLine weeksDone={weeksDone} actionsDone={actionsDone} />

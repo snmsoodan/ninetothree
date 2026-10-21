@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useId, useState } from "react";
 import { Card, CardBody } from "@ninetothree/ui";
 
 export interface PinItem {
@@ -11,6 +12,8 @@ export interface PinItem {
   packId: string;
   /** The action is gone from the registry; only the snapshot is left. */
   stale?: boolean;
+  /** ISO date, YYYY-MM-DD. The day the parent asked to be reminded. */
+  remindOn?: string;
 }
 
 export interface PinListProps {
@@ -18,6 +21,7 @@ export interface PinListProps {
   /** The dashboard shows six. The shelf shows all of them. */
   max?: number;
   onUnpin?: (id: string) => void;
+  onRemind?: (id: string, date?: string) => void;
 }
 
 export const PIN_LIMIT = 6;
@@ -27,7 +31,75 @@ export const PIN_LIMIT = 6;
  * says so, rather than silently hiding the rest — a pin that disappears is
  * worse than a pin that is one tap away.
  */
-export function PinList({ pins, max = PIN_LIMIT, onUnpin }: PinListProps) {
+function formatDay(date: string): string {
+  return new Date(`${date}T12:00:00`).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+  });
+}
+
+interface ReminderControlProps {
+  pin: PinItem;
+  onRemind: (id: string, date?: string) => void;
+}
+
+/**
+ * A reminder is a day, not a time. The parent picks the day and the dashboard
+ * says so on the morning of it — no alarm, no countdown.
+ */
+function ReminderControl({ pin, onRemind }: ReminderControlProps) {
+  const [open, setOpen] = useState(false);
+  const inputId = useId();
+
+  if (pin.remindOn) {
+    return (
+      <p className="mt-1 text-sm text-ink-faint">
+        Reminder {formatDay(pin.remindOn)}.{" "}
+        <button
+          type="button"
+          onClick={() => onRemind(pin.id, undefined)}
+          className="rounded-sm underline underline-offset-2 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-clay"
+        >
+          Clear
+        </button>
+      </p>
+    );
+  }
+
+  if (!open) {
+    return (
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="mt-1 rounded-sm text-sm text-ink-faint underline underline-offset-2 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-clay"
+      >
+        Remind me
+      </button>
+    );
+  }
+
+  return (
+    <div className="mt-2">
+      <label htmlFor={inputId} className="block text-sm text-ink-muted">
+        Remind me on
+      </label>
+      <input
+        id={inputId}
+        type="date"
+        defaultValue={pin.remindOn ?? ""}
+        onChange={(event) => {
+          if (event.target.value) {
+            onRemind(pin.id, event.target.value);
+            setOpen(false);
+          }
+        }}
+        className="mt-1 rounded-sm border border-line-strong bg-surface px-2 py-1 text-sm text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-clay"
+      />
+    </div>
+  );
+}
+
+export function PinList({ pins, max = PIN_LIMIT, onUnpin, onRemind }: PinListProps) {
   const shown = pins.slice(0, max);
   const hidden = pins.length - shown.length;
 
@@ -83,6 +155,7 @@ export function PinList({ pins, max = PIN_LIMIT, onUnpin }: PinListProps) {
                     <p className="mt-0.5 text-sm text-ink-faint">
                       {pin.stale ? "This step has changed since you pinned it." : pin.packTitle}
                     </p>
+                    {onRemind ? <ReminderControl pin={pin} onRemind={onRemind} /> : null}
                   </div>
                   {onUnpin ? (
                     <button

@@ -9,6 +9,39 @@ changelog written after the fact from memory is a changelog nobody can trust.
 
 ## Unreleased
 
+### Reminders: a date, not a week (#34)
+
+- Added `apps/web/src/lib/reminders.ts`: `localDate`, `addDays`,
+  `dueReminders`, `reminderKey`, `unseen` and `wouldPush`. An appointment is
+  raised the day before its window opens; a pin is raised on the day the
+  parent chose.
+- **"Tomorrow" is computed from the local calendar, not from UTC.**
+  `toISOString().slice(0, 10)` rolls over at 7pm in New York, which would
+  raise the reminder a day early for anyone west of Greenwich. The same bug
+  was in `apps/web/src/app/appointments/page.tsx` and is fixed there too.
+- Added `apps/web/src/lib/appointments.ts` — `datedAppointments` merges the
+  generated schedule with the parent's own appointments, so the dashboard and
+  the appointments page cannot disagree about what is coming up.
+- Added `Pin.remindOn` with `setPinReminder`, and a "Remind me" control on
+  each pin row. A reminder is a property of the pin, so unpinning removes it
+  and there is no second list to keep in step.
+- Added `reminded` to `AppState` with `markReminded`. The key carries the day
+  (`appointment:w28:2026-10-21`), so putting away tomorrow's visit does not
+  silence the same visit a week later. `markReminded` is idempotent and does
+  not write when every key is already recorded.
+- Added `apps/web/src/components/ReminderCard.tsx` — "Coming up", with a
+  "Tomorrow" group and a "Today" group, each with its own "Got it". It sits
+  above the week card because an appointment tomorrow outranks a step that
+  can wait until Sunday.
+- **The card is information, not a notification.** It is not gated by quiet
+  hours or by the push toggle — a parent who opened the app is asking what is
+  coming up. `wouldPush` is the gated question, and it is the first
+  production caller of `shouldSend` from #35.
+- Added 28 tests for `reminders.ts`, 7 for `appointments.ts`, 8 for
+  `ReminderCard.tsx`, 6 for `PinList.tsx`, 3 for `pins.ts` and 17 store
+  tests. 6 e2e tests, one axe run with both groups showing, 3 stories.
+- See [`EVIDENCE.md`](EVIDENCE.md) §30.
+
 ### Notification preferences: one gate every job must call (#35)
 
 - Added `apps/web/src/lib/notifications.ts`: `NotificationPrefs`,

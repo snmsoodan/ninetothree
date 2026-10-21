@@ -33,6 +33,21 @@ describe("resolvePins", () => {
     });
   });
 
+  it("carries a reminder day through for a live pin", () => {
+    const [resolved] = resolvePins([pin({ remindOn: "2026-11-01" })], packs);
+    expect(resolved?.remindOn).toBe("2026-11-01");
+  });
+
+  it("carries a reminder day through for a retired pin", () => {
+    const [resolved] = resolvePins([pin({ id: "retired-action", remindOn: "2026-11-01" })], packs);
+    expect(resolved?.remindOn).toBe("2026-11-01");
+  });
+
+  it("leaves the reminder off when there is none", () => {
+    const [resolved] = resolvePins([pin()], packs);
+    expect(resolved).not.toHaveProperty("remindOn");
+  });
+
   it("drops a legacy pin that has neither an action nor a snapshot", () => {
     expect(resolvePins([pin({ id: "retired-action", title: "" })], packs)).toEqual([]);
   });
