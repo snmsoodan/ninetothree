@@ -76,7 +76,7 @@
   },
   {
     "id": "cdc-milestones",
-    "title": "CDC — Learn the Signs. Act Early.",
+    "title": "Milestones by age",
     "url": "https://www.cdc.gov/act-early/milestones/index.html",
     "publisher": "Centers for Disease Control and Prevention",
     "type": "authoritative",
@@ -103,7 +103,7 @@
     "id": "healthychildren",
     "title": "HealthyChildren.org",
     "url": "https://www.healthychildren.org/",
-    "publisher": "American Academy of Pediatrics",
+    "publisher": "American Academy of Pediatrics (AAP)",
     "type": "authoritative",
     "domains": ["health-baby", "feeding", "sleep", "safety"],
     "stages": {
@@ -1198,5 +1198,1405 @@
     "lastChecked": "2026-10-20",
     "affiliate": false,
     "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "cdc-milestones-2mo",
+    "title": "Milestones by 2 months",
+    "url": "https://www.cdc.gov/act-early/milestones/2-months.html",
+    "publisher": "CDC",
+    "type": "authoritative",
+    "domains": ["milestones", "health-baby"],
+    "stages": {
+      "from": {
+        "kind": "infant",
+        "index": 3
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "What most babies do by two months, and the one thing to ask about if something looks different.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "cdc-milestones-4mo",
+    "title": "Milestones by 4 months",
+    "url": "https://www.cdc.gov/act-early/milestones/4-months.html",
+    "publisher": "CDC",
+    "type": "authoritative",
+    "domains": ["milestones", "health-baby"],
+    "stages": {
+      "from": {
+        "kind": "infant",
+        "index": 3
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "The four-month list, including the social smile and head control a visit will check.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "cdc-milestones-6mo",
+    "title": "Milestones by 6 months",
+    "url": "https://www.cdc.gov/act-early/milestones/6-months.html",
+    "publisher": "CDC",
+    "type": "authoritative",
+    "domains": ["milestones", "health-baby"],
+    "stages": {
+      "from": {
+        "kind": "infant",
+        "index": 3
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "Sitting with support, babbling, and reaching. The list a six-month visit works from.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "cdc-milestones-9mo",
+    "title": "Milestones by 9 months",
+    "url": "https://www.cdc.gov/act-early/milestones/9-months.html",
+    "publisher": "CDC",
+    "type": "authoritative",
+    "domains": ["milestones", "health-baby"],
+    "stages": {
+      "from": {
+        "kind": "infant",
+        "index": 3
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "Nine months is when pincer grasp and stranger awareness show up. Here is the full list.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "cdc-milestones-1yr",
+    "title": "Milestones by 1 year",
+    "url": "https://www.cdc.gov/act-early/milestones/1-year.html",
+    "publisher": "CDC",
+    "type": "authoritative",
+    "domains": ["milestones", "health-baby"],
+    "stages": {
+      "from": {
+        "kind": "infant",
+        "index": 3
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "Pulling to stand, first words, and drinking from a cup. What a one-year visit looks for.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "cdc-milestones-15mo",
+    "title": "Milestones by 15 months",
+    "url": "https://www.cdc.gov/act-early/milestones/15-months.html",
+    "publisher": "CDC",
+    "type": "authoritative",
+    "domains": ["milestones", "health-baby"],
+    "stages": {
+      "from": {
+        "kind": "toddler",
+        "index": 13
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "Walking, a few words, and pointing to ask. The list behind the 15-month check.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "cdc-milestones-18mo",
+    "title": "Milestones by 18 months",
+    "url": "https://www.cdc.gov/act-early/milestones/18-months.html",
+    "publisher": "CDC",
+    "type": "authoritative",
+    "domains": ["milestones", "health-baby"],
+    "stages": {
+      "from": {
+        "kind": "toddler",
+        "index": 13
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "The 18-month list, including the autism screen most pediatricians run at this visit.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "cdc-milestones-2yr",
+    "title": "Milestones by 2 years",
+    "url": "https://www.cdc.gov/act-early/milestones/2-years.html",
+    "publisher": "CDC",
+    "type": "authoritative",
+    "domains": ["milestones", "health-baby"],
+    "stages": {
+      "from": {
+        "kind": "toddler",
+        "index": 13
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "Two-word phrases, running, and copying. What the two-year visit is measuring.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "cdc-milestones-30mo",
+    "title": "Milestones by 30 months",
+    "url": "https://www.cdc.gov/act-early/milestones/30-months.html",
+    "publisher": "CDC",
+    "type": "authoritative",
+    "domains": ["milestones", "health-baby"],
+    "stages": {
+      "from": {
+        "kind": "toddler",
+        "index": 13
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "The 30-month list. Short, specific, and the one most parents have never seen.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "cdc-milestones-3yr",
+    "title": "Milestones by 3 years",
+    "url": "https://www.cdc.gov/act-early/milestones/3-years.html",
+    "publisher": "CDC",
+    "type": "authoritative",
+    "domains": ["milestones", "health-baby"],
+    "stages": {
+      "from": {
+        "kind": "toddler",
+        "index": 13
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "Sentences, stairs, and pretend play. What a three-year visit checks before preschool.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "cdc-act-early",
+    "title": "Learn the Signs. Act Early.",
+    "url": "https://www.cdc.gov/act-early/index.html",
+    "publisher": "CDC",
+    "type": "authoritative",
+    "domains": ["milestones", "health-baby"],
+    "stages": {
+      "from": {
+        "kind": "infant",
+        "index": 3
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "The whole developmental screening programme, with free checklists you can print and take to a visit.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "cdc-breastfeeding-guidance",
+    "title": "Breastfeeding recommendations",
+    "url": "https://www.cdc.gov/breastfeeding/php/guidelines-recommendations/index.html",
+    "publisher": "CDC",
+    "type": "authoritative",
+    "domains": ["feeding", "health-baby"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 1
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "What the US recommends on duration and exclusivity, and where the evidence is thin.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "cdc-child-development-about",
+    "title": "Healthy habits for child development",
+    "url": "https://www.cdc.gov/child-development/about/index.html",
+    "publisher": "CDC",
+    "type": "authoritative",
+    "domains": ["milestones", "play"],
+    "stages": {
+      "from": {
+        "kind": "infant",
+        "index": 3
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "The everyday things that move development along, written for a parent rather than a clinician.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "acog-during-pregnancy",
+    "title": "Staying healthy during pregnancy",
+    "url": "https://www.acog.org/womens-health/pregnancy/during-pregnancy",
+    "publisher": "ACOG",
+    "type": "authoritative",
+    "domains": ["health-parent"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "pregnancy",
+        "index": 42
+      }
+    },
+    "cost": "free",
+    "why": "ACOG's own index for the middle of pregnancy: nutrition, exercise, sleep, travel, warning signs.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "acog-after-pregnancy",
+    "title": "After pregnancy",
+    "url": "https://www.acog.org/womens-health/pregnancy/after-pregnancy",
+    "publisher": "ACOG",
+    "type": "authoritative",
+    "domains": ["health-parent", "mind"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 1
+      },
+      "to": {
+        "kind": "postpartum",
+        "index": 12
+      }
+    },
+    "cost": "free",
+    "why": "Recovery, the postpartum visit, birth control, and how long the bleeding and soreness last.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "acog-labor-delivery",
+    "title": "Labor and delivery",
+    "url": "https://www.acog.org/womens-health/pregnancy/labor-and-delivery",
+    "publisher": "ACOG",
+    "type": "authoritative",
+    "domains": ["health-parent"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 30
+      },
+      "to": {
+        "kind": "postpartum",
+        "index": 2
+      }
+    },
+    "cost": "free",
+    "why": "Induction, pain relief, cesarean, and what the last weeks of pregnancy actually look like.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "acog-getting-pregnant",
+    "title": "Getting pregnant",
+    "url": "https://www.acog.org/womens-health/pregnancy/getting-pregnant",
+    "publisher": "ACOG",
+    "type": "authoritative",
+    "domains": ["health-parent"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "pregnancy",
+        "index": 12
+      }
+    },
+    "cost": "free",
+    "why": "For the early weeks, when the first question is often what happens at the first visit.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "acog-exercise-pregnancy",
+    "title": "Exercise during pregnancy",
+    "url": "https://www.acog.org/womens-health/faqs/exercise-during-pregnancy",
+    "publisher": "ACOG",
+    "type": "authoritative",
+    "domains": ["health-parent"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "pregnancy",
+        "index": 42
+      }
+    },
+    "cost": "free",
+    "why": "How much, how hard, and the short list of things to stop doing. Answers the gym question.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "acog-travel-pregnancy",
+    "title": "Travel during pregnancy",
+    "url": "https://www.acog.org/womens-health/faqs/travel-during-pregnancy",
+    "publisher": "ACOG",
+    "type": "authoritative",
+    "domains": ["health-parent"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 12
+      },
+      "to": {
+        "kind": "pregnancy",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "When flying is fine, when it is not, and what to do about a long car trip.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "acog-back-pain-pregnancy",
+    "title": "Back pain during pregnancy",
+    "url": "https://www.acog.org/womens-health/faqs/back-pain-during-pregnancy",
+    "publisher": "ACOG",
+    "type": "authoritative",
+    "domains": ["health-parent"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 16
+      },
+      "to": {
+        "kind": "pregnancy",
+        "index": 40
+      }
+    },
+    "cost": "free",
+    "why": "Why it happens, what helps, and the red flags that mean it is something else.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "acog-breastfeeding",
+    "title": "Breastfeeding your baby",
+    "url": "https://www.acog.org/womens-health/faqs/breastfeeding-your-baby",
+    "publisher": "ACOG",
+    "type": "authoritative",
+    "domains": ["feeding"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 30
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "Getting started, how to tell the baby is getting enough, and when to call for help.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "acog-postpartum-birth-control",
+    "title": "Postpartum birth control",
+    "url": "https://www.acog.org/womens-health/faqs/postpartum-birth-control",
+    "publisher": "ACOG",
+    "type": "authoritative",
+    "domains": ["health-parent"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 2
+      },
+      "to": {
+        "kind": "postpartum",
+        "index": 12
+      }
+    },
+    "cost": "free",
+    "why": "What is safe while breastfeeding, and how soon fertility can return. A question nobody asks out loud.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "acog-cesarean",
+    "title": "Cesarean birth",
+    "url": "https://www.acog.org/womens-health/faqs/cesarean-birth",
+    "publisher": "ACOG",
+    "type": "authoritative",
+    "domains": ["health-parent"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 30
+      },
+      "to": {
+        "kind": "postpartum",
+        "index": 12
+      }
+    },
+    "cost": "free",
+    "why": "What a cesarean involves, what recovery is like, and what a repeat pregnancy might mean.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "acog-early-pregnancy-loss",
+    "title": "Early pregnancy loss",
+    "url": "https://www.acog.org/womens-health/faqs/early-pregnancy-loss",
+    "publisher": "ACOG",
+    "type": "authoritative",
+    "domains": ["health-parent", "mind"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "pregnancy",
+        "index": 14
+      }
+    },
+    "cost": "free",
+    "why": "What happens, what the options are, and that it is not caused by anything you did.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "acog-preterm-labor",
+    "title": "Preterm labor and birth",
+    "url": "https://www.acog.org/womens-health/faqs/preterm-labor-and-birth",
+    "publisher": "ACOG",
+    "type": "authoritative",
+    "domains": ["health-parent", "health-baby"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 20
+      },
+      "to": {
+        "kind": "pregnancy",
+        "index": 37
+      }
+    },
+    "cost": "free",
+    "why": "The signs to act on, and what happens if a baby arrives early.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "acog-pain-relief",
+    "title": "Pain relief in labor",
+    "url": "https://www.acog.org/womens-health/experts-and-stories/the-latest/making-sense-of-childbirth-pain-relief-options",
+    "publisher": "ACOG",
+    "type": "authoritative",
+    "domains": ["health-parent"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 28
+      },
+      "to": {
+        "kind": "postpartum",
+        "index": 1
+      }
+    },
+    "cost": "free",
+    "why": "Epidural, nitrous, and unmedicated options, explained without a side in the argument.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "acog-depression-anxiety",
+    "title": "Depression and anxiety in pregnancy and after",
+    "url": "https://www.acog.org/womens-health/experts-and-stories/the-latest/what-i-tell-my-pregnant-and-postpartum-patients-about-depression-and-anxiety",
+    "publisher": "ACOG",
+    "type": "authoritative",
+    "domains": ["mind"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 12
+      },
+      "to": {
+        "kind": "postpartum",
+        "index": 12
+      }
+    },
+    "cost": "free",
+    "why": "An OB writing plainly about what she tells patients, and why treatment is not a last resort.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "acog-high-risk-pregnancy",
+    "title": "A high-risk pregnancy",
+    "url": "https://www.acog.org/womens-health/experts-and-stories/the-latest/so-you-have-a-high-risk-pregnancy-heres-what-to-expect",
+    "publisher": "ACOG",
+    "type": "authoritative",
+    "domains": ["health-parent"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 12
+      },
+      "to": {
+        "kind": "pregnancy",
+        "index": 40
+      }
+    },
+    "cost": "free",
+    "why": "What the label means, what changes about your care, and what does not.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "acog-rsv-vaccine",
+    "title": "The RSV vaccine in pregnancy",
+    "url": "https://www.acog.org/womens-health/experts-and-stories/the-latest/why-i-recommend-the-rsv-vaccine-to-my-pregnant-patients",
+    "publisher": "ACOG",
+    "type": "authoritative",
+    "domains": ["health-parent", "health-baby"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 32
+      },
+      "to": {
+        "kind": "pregnancy",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "Why it is offered in a narrow window late in pregnancy, and what it protects.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "healthychildren-prenatal",
+    "title": "Prenatal health",
+    "url": "https://www.healthychildren.org/English/ages-stages/prenatal/Pages/default.aspx",
+    "publisher": "AAP HealthyChildren",
+    "type": "authoritative",
+    "domains": ["health-parent"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "pregnancy",
+        "index": 42
+      }
+    },
+    "cost": "free",
+    "why": "The pediatrician's view of pregnancy, which is a different angle from your OB's.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "healthychildren-baby-nutrition",
+    "title": "Baby nutrition",
+    "url": "https://www.healthychildren.org/English/ages-stages/baby/feeding-nutrition/Pages/default.aspx",
+    "publisher": "AAP HealthyChildren",
+    "type": "authoritative",
+    "domains": ["feeding", "nutrition"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 1
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "AAP's feeding index: formula, solids, allergies, and how much is enough.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "healthychildren-baby-sleep",
+    "title": "Baby sleep",
+    "url": "https://www.healthychildren.org/English/ages-stages/baby/sleep/Pages/default.aspx",
+    "publisher": "AAP HealthyChildren",
+    "type": "authoritative",
+    "domains": ["sleep"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 1
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "Safe sleep, sleep patterns by age, and what to do about a baby who will not settle.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "healthychildren-safety-home",
+    "title": "Safety at home",
+    "url": "https://www.healthychildren.org/English/safety-prevention/at-home/Pages/default.aspx",
+    "publisher": "AAP HealthyChildren",
+    "type": "authoritative",
+    "domains": ["safety", "home"],
+    "stages": {
+      "from": {
+        "kind": "infant",
+        "index": 3
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "Room by room, what to fix before a baby becomes mobile.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "healthychildren-safety-play",
+    "title": "Safety at play",
+    "url": "https://www.healthychildren.org/English/safety-prevention/at-play/Pages/default.aspx",
+    "publisher": "AAP HealthyChildren",
+    "type": "authoritative",
+    "domains": ["safety", "play"],
+    "stages": {
+      "from": {
+        "kind": "infant",
+        "index": 3
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "Outdoors, water, wheels, and playgrounds, with the age each risk starts.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "healthychildren-media",
+    "title": "Screen time and media",
+    "url": "https://www.healthychildren.org/English/family-life/Media/Pages/default.aspx",
+    "publisher": "AAP HealthyChildren",
+    "type": "authoritative",
+    "domains": ["play", "milestones"],
+    "stages": {
+      "from": {
+        "kind": "infant",
+        "index": 3
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "AAP's screen guidance by age, including what to do instead and why it is not a moral failing.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "medlineplus-pregnancy",
+    "title": "Pregnancy",
+    "url": "https://medlineplus.gov/pregnancy.html",
+    "publisher": "MedlinePlus",
+    "type": "authoritative",
+    "domains": ["health-parent"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "pregnancy",
+        "index": 42
+      }
+    },
+    "cost": "free",
+    "why": "Plain-language summaries with links to the primary sources, for when you want to read further.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "medlineplus-toddler-health",
+    "title": "Toddler health",
+    "url": "https://medlineplus.gov/toddlerhealth.html",
+    "publisher": "MedlinePlus",
+    "type": "authoritative",
+    "domains": ["health-baby"],
+    "stages": {
+      "from": {
+        "kind": "toddler",
+        "index": 13
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "A broad index of toddler health topics, written at a reading level a tired parent can manage.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "medlineplus-child-behavior",
+    "title": "Child behaviour",
+    "url": "https://medlineplus.gov/childbehaviordisorders.html",
+    "publisher": "MedlinePlus",
+    "type": "authoritative",
+    "domains": ["mind", "milestones"],
+    "stages": {
+      "from": {
+        "kind": "toddler",
+        "index": 13
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "What is a phase and what is worth asking about, with the clinical names for both.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "womenshealth-pregnancy",
+    "title": "Pregnancy",
+    "url": "https://womenshealth.gov/pregnancy",
+    "publisher": "HHS Office on Women's Health",
+    "type": "authoritative",
+    "domains": ["health-parent"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "pregnancy",
+        "index": 42
+      }
+    },
+    "cost": "free",
+    "why": "Federal guidance on pregnancy written for patients, including the parts about money and work.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "womenshealth-mental-health",
+    "title": "Mental health",
+    "url": "https://womenshealth.gov/mental-health",
+    "publisher": "HHS Office on Women's Health",
+    "type": "authoritative",
+    "domains": ["mind"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "Depression, anxiety, and where to get help, including free and low-cost options.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "nimh-perinatal-depression",
+    "title": "Perinatal depression",
+    "url": "https://www.nimh.nih.gov/health/publications/perinatal-depression",
+    "publisher": "NIMH",
+    "type": "authoritative",
+    "domains": ["mind"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 20
+      },
+      "to": {
+        "kind": "postpartum",
+        "index": 12
+      }
+    },
+    "cost": "free",
+    "why": "The clinical picture, the difference from the baby blues, and the treatments that work.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "nichd-pregnancy",
+    "title": "Pregnancy research",
+    "url": "https://www.nichd.nih.gov/health/topics/pregnancy",
+    "publisher": "NICHD",
+    "type": "authoritative",
+    "domains": ["health-parent"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "pregnancy",
+        "index": 42
+      }
+    },
+    "cost": "free",
+    "why": "For a parent who wants the research rather than the advice. Dense, but honest about uncertainty.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "nichd-breastfeeding",
+    "title": "Breastfeeding and breast milk",
+    "url": "https://www.nichd.nih.gov/health/topics/breastfeeding",
+    "publisher": "NICHD",
+    "type": "authoritative",
+    "domains": ["feeding"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 1
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "What the evidence says about milk, supply, and the things that do and do not affect either.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "dol-pump-at-work",
+    "title": "Pumping at work",
+    "url": "https://www.dol.gov/agencies/whd/pump-at-work",
+    "publisher": "US Department of Labor",
+    "type": "authoritative",
+    "domains": ["money", "feeding"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 28
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "The federal right to break time and a private space, and who it does not cover.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "irs-eitc",
+    "title": "Earned Income Tax Credit",
+    "url": "https://www.irs.gov/credits-deductions/individuals/earned-income-tax-credit-eitc",
+    "publisher": "IRS",
+    "type": "authoritative",
+    "domains": ["money"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 1
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "A credit many eligible families never claim. Worth ten minutes with last year's return.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "acf-office-of-child-care",
+    "title": "Office of Child Care",
+    "url": "https://acf.gov/occ",
+    "publisher": "Administration for Children and Families",
+    "type": "authoritative",
+    "domains": ["childcare", "money"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 28
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "Federal childcare help, including the subsidy programme most states run under a different name.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "ssa-disability",
+    "title": "Social Security disability",
+    "url": "https://www.ssa.gov/disability",
+    "publisher": "Social Security Administration",
+    "type": "authoritative",
+    "domains": ["money"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 1
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "For a family where a parent cannot work. Slow, paperwork-heavy, and worth starting early.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "usagov-food-help",
+    "title": "Food assistance",
+    "url": "https://www.usa.gov/food-help",
+    "publisher": "USAGov",
+    "type": "authoritative",
+    "domains": ["money", "nutrition"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "One page that routes to SNAP, WIC, school meals, and food banks by state.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "usagov-benefit-finder",
+    "title": "Find government benefits",
+    "url": "https://www.usa.gov/benefit-finder",
+    "publisher": "USAGov",
+    "type": "authoritative",
+    "domains": ["money"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "A short questionnaire that lists what your household may qualify for. Ten minutes, no account.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "usagov",
+    "title": "USAGov",
+    "url": "https://www.usa.gov/",
+    "publisher": "USAGov",
+    "type": "authoritative",
+    "domains": ["money"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "The front door to federal services, for the questions that do not fit anywhere else.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "hhs",
+    "title": "Department of Health and Human Services",
+    "url": "https://www.hhs.gov/",
+    "publisher": "HHS",
+    "type": "authoritative",
+    "domains": ["health-parent"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "The parent agency for most of the health programmes here, with state-level links.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "usda",
+    "title": "US Department of Agriculture",
+    "url": "https://www.usda.gov/",
+    "publisher": "USDA",
+    "type": "authoritative",
+    "domains": ["nutrition"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "Food programmes, nutrition guidance, and the WIC and SNAP pages in one place.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "healthcare-gov",
+    "title": "Health Insurance Marketplace",
+    "url": "https://www.healthcare.gov/",
+    "publisher": "HealthCare.gov",
+    "type": "authoritative",
+    "domains": ["money", "health-parent"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "Coverage, pregnancy as a qualifying event, and what a plan has to cover for a birth.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "pathways",
+    "title": "Pathways.org",
+    "url": "https://www.pathways.org/",
+    "publisher": "Pathways.org",
+    "type": "authoritative",
+    "domains": ["milestones", "play"],
+    "stages": {
+      "from": {
+        "kind": "infant",
+        "index": 3
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "Free milestone checklists and activity ideas by age, with a strong focus on the first year.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "aap",
+    "title": "AAP — American Academy of Pediatrics",
+    "url": "https://www.aap.org/",
+    "publisher": "American Academy of Pediatrics",
+    "type": "authoritative",
+    "domains": ["health-baby", "milestones"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "The academy that writes the schedule your pediatrician follows. Policy statements, in full.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending",
+    "id": "headstart",
+    "title": "Head Start and Early Head Start",
+    "url": "https://headstart.gov/",
+    "publisher": "US Office of Head Start",
+    "type": "authoritative",
+    "domains": ["childcare", "money"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 20
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "Free early learning and childcare for families who qualify on income. Early Head Start starts before birth."
   }
 ]

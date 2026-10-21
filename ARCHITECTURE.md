@@ -277,6 +277,8 @@ create table content_events (
 
 ## 5. Content pipeline
 
+**A link is content, and it is checked like content.** The catalogue is 251 entries, each with a `lastChecked` date and an `affiliate` flag. `scripts/check-links.mjs` follows every redirect and fails on a different registrable domain or an unrelated final path segment, because a 200 is not proof the link is right — it has caught three reassigned domains and two publisher book IDs that served a different book. `affiliate` is only legal on a `commercial` type, so a charity or a government page cannot be marked as earning us money, and `LinkCard` renders the commission as one sentence in `text-ink-faint` rather than a banner. The calm rules apply to disclosures too.
+
 ```
 Author (MDX/JSON)
    │
@@ -286,6 +288,7 @@ Author (MDX/JSON)
    ├─ Reading level check (CI, target grade ≤ 8)
    ├─ Forbidden-claims lint (CI: "cure", "guarantee", "safe", "normal")
    ├─ Registry check (CI: every pack file is imported)
+   ├─ Redirect check (CI: a 200 that lands somewhere else is a move)
    │
    ▼
 Clinical review (human, recorded in frontmatter)

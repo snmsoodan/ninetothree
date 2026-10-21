@@ -1,7 +1,7 @@
 [
   {
     "id": "cdc-breastfeeding",
-    "title": "CDC \u2014 Breastfeeding",
+    "title": "CDC — Breastfeeding",
     "url": "https://www.cdc.gov/breastfeeding/",
     "publisher": "Centers for Disease Control and Prevention",
     "type": "authoritative",
@@ -26,7 +26,7 @@
   },
   {
     "id": "healthychildren-baby",
-    "title": "HealthyChildren \u2014 Baby",
+    "title": "HealthyChildren — Baby",
     "url": "https://www.healthychildren.org/English/ages-stages/baby/Pages/default.aspx",
     "publisher": "American Academy of Pediatrics",
     "type": "authoritative",
@@ -51,7 +51,7 @@
   },
   {
     "id": "healthychildren-toddler",
-    "title": "HealthyChildren \u2014 Toddler",
+    "title": "HealthyChildren — Toddler",
     "url": "https://www.healthychildren.org/English/ages-stages/toddler/Pages/default.aspx",
     "publisher": "American Academy of Pediatrics",
     "type": "authoritative",
@@ -101,7 +101,7 @@
   },
   {
     "id": "cdc-hearing",
-    "title": "CDC \u2014 Hearing loss in children",
+    "title": "CDC — Hearing loss in children",
     "url": "https://www.cdc.gov/hearing-loss-children/",
     "publisher": "Centers for Disease Control and Prevention",
     "type": "authoritative",
@@ -176,7 +176,7 @@
   },
   {
     "id": "march-of-dimes-support",
-    "title": "March of Dimes \u2014 Find support",
+    "title": "March of Dimes — Find support",
     "url": "https://www.marchofdimes.org/find-support",
     "publisher": "March of Dimes",
     "type": "charity",
@@ -201,7 +201,7 @@
   },
   {
     "id": "nichd-preterm",
-    "title": "NICHD \u2014 Preterm birth",
+    "title": "NICHD — Preterm birth",
     "url": "https://www.nichd.nih.gov/health/topics/preterm",
     "publisher": "National Institutes of Health",
     "type": "authoritative",
@@ -226,7 +226,7 @@
   },
   {
     "id": "cdc-child-development",
-    "title": "CDC \u2014 Child development",
+    "title": "CDC — Child development",
     "url": "https://www.cdc.gov/child-development/",
     "publisher": "Centers for Disease Control and Prevention",
     "type": "authoritative",
@@ -246,6 +246,456 @@
     "country": ["US"],
     "language": "en-US",
     "lastChecked": "2026-10-20",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "zerotothree-resources",
+    "title": "Zero to Three resources",
+    "url": "https://www.zerotothree.org/resources/",
+    "publisher": "Zero to Three",
+    "type": "charity",
+    "domains": ["milestones", "mind"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 1
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "The best single source on the emotional side of the first three years, written for parents.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "safekids-tips",
+    "title": "Safe Kids safety tips",
+    "url": "https://www.safekids.org/safetytips",
+    "publisher": "Safe Kids Worldwide",
+    "type": "charity",
+    "domains": ["safety"],
+    "stages": {
+      "from": {
+        "kind": "infant",
+        "index": 3
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "One page per risk, in the order the risks actually appear as a child grows.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "healthychildren-preschool",
+    "title": "Preschool health",
+    "url": "https://www.healthychildren.org/English/ages-stages/preschool/Pages/default.aspx",
+    "publisher": "AAP HealthyChildren",
+    "type": "authoritative",
+    "domains": ["milestones", "health-baby"],
+    "stages": {
+      "from": {
+        "kind": "toddler",
+        "index": 13
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "What comes after three, for the parent who is already looking at the next step.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "healthychildren-fever",
+    "title": "Fever",
+    "url": "https://www.healthychildren.org/English/health-issues/conditions/fever/Pages/default.aspx",
+    "publisher": "AAP HealthyChildren",
+    "type": "authoritative",
+    "domains": ["health-baby"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 1
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "What counts as a fever at each age, and the ages where it means call now rather than wait.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "healthychildren-choking",
+    "title": "Choking prevention",
+    "url": "https://www.healthychildren.org/English/health-issues/injuries-emergencies/Pages/Choking-Prevention.aspx",
+    "publisher": "AAP HealthyChildren",
+    "type": "authoritative",
+    "domains": ["safety", "nutrition"],
+    "stages": {
+      "from": {
+        "kind": "infant",
+        "index": 3
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "The foods and objects that cause most choking, and how to prepare food so they do not.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "healthychildren-jaundice",
+    "title": "Jaundice in newborns",
+    "url": "https://www.healthychildren.org/English/ages-stages/baby/Pages/Jaundice.aspx",
+    "publisher": "AAP HealthyChildren",
+    "type": "authoritative",
+    "domains": ["health-baby"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 1
+      },
+      "to": {
+        "kind": "postpartum",
+        "index": 4
+      }
+    },
+    "cost": "free",
+    "why": "Why most newborns go yellow, and the signs that mean it needs checking today.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "healthychildren-colic",
+    "title": "Crying and colic",
+    "url": "https://www.healthychildren.org/English/ages-stages/baby/crying-colic/Pages/default.aspx",
+    "publisher": "AAP HealthyChildren",
+    "type": "authoritative",
+    "domains": ["health-baby", "mind"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 1
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "The crying curve, why it peaks at six weeks, and what actually helps at 2am.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "healthychildren-solids",
+    "title": "Starting solid foods",
+    "url": "https://www.healthychildren.org/English/ages-stages/baby/feeding-nutrition/Pages/starting-solid-foods.aspx",
+    "publisher": "AAP HealthyChildren",
+    "type": "authoritative",
+    "domains": ["nutrition", "feeding"],
+    "stages": {
+      "from": {
+        "kind": "infant",
+        "index": 3
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "Readiness signs, first foods, and the allergen timing that changed a few years ago.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "healthychildren-safe-sleep",
+    "title": "A parent's guide to safe sleep",
+    "url": "https://www.healthychildren.org/English/ages-stages/baby/sleep/Pages/A-Parents-Guide-to-Safe-Sleep.aspx",
+    "publisher": "AAP HealthyChildren",
+    "type": "authoritative",
+    "domains": ["sleep", "safety"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 28
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "The AAP policy in plain language, including the parts people get wrong.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "healthychildren-potty",
+    "title": "Potty training",
+    "url": "https://www.healthychildren.org/English/ages-stages/toddler/toilet-training/Pages/default.aspx",
+    "publisher": "AAP HealthyChildren",
+    "type": "authoritative",
+    "domains": ["milestones", "home"],
+    "stages": {
+      "from": {
+        "kind": "toddler",
+        "index": 13
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "Readiness signs and a method that does not require a deadline or a reward chart.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "healthychildren-toddler-nutrition",
+    "title": "Toddler nutrition",
+    "url": "https://www.healthychildren.org/English/ages-stages/toddler/nutrition/Pages/default.aspx",
+    "publisher": "AAP HealthyChildren",
+    "type": "authoritative",
+    "domains": ["nutrition"],
+    "stages": {
+      "from": {
+        "kind": "toddler",
+        "index": 13
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "What a toddler actually needs, which is much less than most parents expect.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "healthychildren-toddler-fitness",
+    "title": "Toddler fitness and movement",
+    "url": "https://www.healthychildren.org/English/ages-stages/toddler/fitness/Pages/default.aspx",
+    "publisher": "AAP HealthyChildren",
+    "type": "authoritative",
+    "domains": ["play", "milestones"],
+    "stages": {
+      "from": {
+        "kind": "toddler",
+        "index": 13
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "How much movement a toddler needs, and why the answer is not a class.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "cdc-oral-health",
+    "title": "Oral health",
+    "url": "https://www.cdc.gov/oral-health/",
+    "publisher": "CDC",
+    "type": "authoritative",
+    "domains": ["health-baby", "nutrition"],
+    "stages": {
+      "from": {
+        "kind": "infant",
+        "index": 3
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "Brushing, fluoride, and the first dental visit, with the evidence behind each.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "healthychildren-how-much",
+    "title": "How often and how much a baby eats",
+    "url": "https://www.healthychildren.org/English/ages-stages/baby/feeding-nutrition/Pages/How-Often-and-How-Much-Should-Your-Baby-Eat.aspx",
+    "publisher": "AAP HealthyChildren",
+    "type": "authoritative",
+    "domains": ["feeding"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 1
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "Ounces by age and weight, which is the number every new parent is trying to guess.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "healthychildren-skin",
+    "title": "Skin conditions",
+    "url": "https://www.healthychildren.org/English/health-issues/conditions/skin/Pages/default.aspx",
+    "publisher": "AAP HealthyChildren",
+    "type": "authoritative",
+    "domains": ["health-baby"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 1
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "Rashes, eczema, and the newborn skin things that look alarming and are not.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "healthychildren-childproofing",
+    "title": "Childproofing for poisons",
+    "url": "https://www.healthychildren.org/English/safety-prevention/at-home/Pages/Childproofing-Your-Home.aspx",
+    "publisher": "AAP HealthyChildren",
+    "type": "authoritative",
+    "domains": ["safety", "home"],
+    "stages": {
+      "from": {
+        "kind": "infant",
+        "index": 3
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "What to move, what to lock, and the one cupboard most people forget.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "healthychildren-medical-home",
+    "title": "Finding a medical home",
+    "url": "https://www.healthychildren.org/English/family-life/health-management/Pages/default.aspx",
+    "publisher": "AAP HealthyChildren",
+    "type": "authoritative",
+    "domains": ["health-baby", "childcare"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 28
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "What to ask a pediatrician before you pick one, and what a good practice looks like.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "healthychildren-newborn-reflexes",
+    "title": "Newborn reflexes",
+    "url": "https://www.healthychildren.org/English/ages-stages/baby/Pages/Newborn-Reflexes.aspx",
+    "publisher": "AAP HealthyChildren",
+    "type": "authoritative",
+    "domains": ["health-baby"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 1
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "The startle, the grasp, and the stepping reflex, so they do not frighten you at 3am.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
     "affiliate": false,
     "reviewedBy": "Clinical review pending"
   }

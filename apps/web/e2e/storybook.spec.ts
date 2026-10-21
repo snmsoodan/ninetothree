@@ -36,6 +36,7 @@ const STORIES = [
   "app-linkcard--official",
   "app-linkcard--app",
   "app-linkcard--paid",
+  "app-linkcard--affiliate",
   "app-linkcard--local-help",
   "app-weeksummarycard--open",
   "app-weeksummarycard--finished",

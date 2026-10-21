@@ -63,6 +63,23 @@ describe("LinkCard", () => {
     expect(screen.getByText("Subscription required.")).toBeInTheDocument();
   });
 
+  it("says so when a link earns us a commission", () => {
+    render(<LinkCard link={{ ...BASE, type: "commercial", affiliate: true }} />);
+    expect(
+      screen.getByText(/We earn a commission if you buy through this link/),
+    ).toBeInTheDocument();
+  });
+
+  it("says nothing about commission on a link that earns none", () => {
+    render(<LinkCard link={{ ...BASE, type: "commercial" }} />);
+    expect(screen.queryByText(/We earn a commission/)).not.toBeInTheDocument();
+  });
+
+  it("shows the day the link was last opened", () => {
+    render(<LinkCard link={BASE} />);
+    expect(screen.getByText("Checked October 20, 2026")).toBeInTheDocument();
+  });
+
   it("renders no platform line and no note when neither is set", () => {
     render(<LinkCard link={BASE} />);
     expect(screen.queryByText(/^On /)).not.toBeInTheDocument();

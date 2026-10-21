@@ -204,7 +204,7 @@ A parent in the US can:
 8. Use the whole thing offline at 3am on a phone, with a screen reader, at 200% zoom.
 9. Export or delete all their data.
 
-**V1 content:** pregnancy W4–W42 + months 0–36, **US-first, en-US**. 85 stage packs shipped, ~250 actions, 89 vetted links. The blueprint's ~120 packs and ~250 links are the target, not the current state.
+**V1 content:** pregnancy W4–W42 + months 0–36, **US-first, en-US**. 85 stage packs shipped, ~250 actions, 251 vetted links. The blueprint's ~120 packs and ~250 links are the target, not the current state.
 **V2:** 12–36 months, **UK locale**, partner app, baby log, registry.
 **V3:** personalization engine, local classes marketplace, employer/insurer B2B.
 
@@ -266,9 +266,11 @@ Five CI jobs run on every pull request. Each one fails for exactly one class of 
 
 **A rule that adds a step still lives in content.** Personalisation has three kinds of rule — hide, add, adjust — and all three have an id and a written reason, so "why am I not seeing this?" is answered by a rule rather than a shrug. But a rule only decides _whether_ a step appears; the pack decides _what_ it is, through `profileActions`. That keeps an added step inside the schema, the content lint, and clinical review, instead of putting clinical copy in the rules package where none of those gates reach it. No pack uses it yet, because writing the first one is a clinical decision.
 
-**Search runs in the browser, because the content is already there.** Eighty-five packs and eighty-nine catalogue entries are a few hundred kilobytes of JSON that the app already ships. `buildIndex` turns them into one document per step, per week and per catalogue entry at module load, and `search` ranks them in memory. There is no Postgres and no round trip, and the acceptance criterion — a relevant cited result for the top 100 queries, p95 under 300 ms — is met in single-digit milliseconds. A new pack is searchable on the next build with no deploy step.
+**Search runs in the browser, because the content is already there.** Eighty-five packs and two hundred and fifty-one catalogue entries are a few hundred kilobytes of JSON that the app already ships. `buildIndex` turns them into one document per step, per week and per catalogue entry at module load, and `search` ranks them in memory. There is no Postgres and no round trip, and the acceptance criterion — a relevant cited result for the top 100 queries, p95 under 300 ms — is met in single-digit milliseconds. A new pack is searchable on the next build with no deploy step.
 
 **A parent's word for a step is content, not a synonym table.** "Ultrasound" is what a parent types; the pack says "anatomy scan". Rather than teach the search engine synonyms, `Action` has a `keywords` field where the content author declares the words a parent will use. Twenty-seven actions declare them. A clinician reviewing a pack can see and correct them, which a hardcoded synonym list would never allow.
+
+**A commission is a sentence on the card, not a banner on the page.** The catalogue has 251 entries and none of them is there because someone paid for it. `affiliate` is a boolean on the entry, and the schema forbids it on anything but a `commercial` type, so a charity or a government page cannot be marked as earning us money. When it is true, `LinkCard` renders one sentence in `text-ink-faint` — "We earn a commission if you buy through this link. It does not change what we recommend." — and nothing at all when it is false. No icon, no "AD", no coloured strip: the calm rules apply to disclosures too. Every card also says when it was last opened, so a stale link is visible rather than silent.
 
 **The week is readable before any script runs.** `WeekView` is a client component, but Next.js server-renders it, and its first render uses an empty state rather than waiting for hydration — so the steps, the red flags, the appointments and the sources are all in the HTML. A `no-js` Playwright project turns JavaScript off entirely and asserts it, because "it happens to work" is not the same as "it is tested". The also-know and red-flag sections are deliberately not drawers: a red flag is never collapsed, and a drawer that needs a script is a drawer a parent on one bar of signal cannot open.
 
@@ -302,9 +304,9 @@ Five CI jobs run on every pull request. Each one fails for exactly one class of 
 
 **The content schema is a gate, not a suggestion.** A pack with two essentials, no red flag, no source, or a `buy` action with no options fails the build. It has already caught four real content bugs.
 
-**The link check treats 403 as "verify by hand", not "broken".** CDC, CPSC, NHTSA, DOL, medicaid.gov, naeyc.org, adaa.org and ssa.gov block non-browser clients. A 404 or 410 fails the build; a 403 from those hosts is printed for manual review. It found seven dead citations in the first nine packs and eight dead URLs in the first 89 catalogue entries.
+**The link check treats 403 as "verify by hand", not "broken".** CDC, CPSC, NHTSA, DOL, medicaid.gov, naeyc.org, adaa.org and ssa.gov block non-browser clients. A 404 or 410 fails the build; a 403 from those hosts is printed for manual review. It found seven dead citations in the first nine packs, eight dead URLs in the first 89 catalogue entries, three reassigned domains in the next 162, and six parked domains that answered 200 with a redirect script.
 
-**A 200 is not proof the link is right.** The checker follows the redirect and fails when a link now lands on a different site or a different page. It found nine such links in the shipped catalogue, including two Penguin Random House book URLs that returned 200 while serving a completely different book, and an app URL that now serves a product recall. A status check only proves a server is up.
+**A 200 is not proof the link is right.** The checker follows the redirect and fails when a link now lands on a different site or a different page. It found nine such links in the shipped catalogue, including two Penguin Random House book URLs that returned 200 while serving a completely different book, and an app URL that now serves a product recall. It also reads the body of a small 200, because a parked domain answers 200 with a one-line script that redirects to `/lander` — six entries were sitting on one. A status check only proves a server is up.
 
 **The link check also runs weekly, on a schedule.** A citation that was live when it was written can rot while nobody is pushing. The `Links` job runs every Monday at 13:00 UTC against `main`, so a dead link is found by CI rather than by a parent at 3am. It retries a 5xx or a network failure twice before reporting, because a Cloudflare handshake failure is not a broken citation.
 

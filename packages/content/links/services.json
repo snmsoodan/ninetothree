@@ -148,5 +148,205 @@
     "lastChecked": "2026-10-20",
     "affiliate": false,
     "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "national-diaper-bank",
+    "title": "National Diaper Bank Network",
+    "url": "https://nationaldiaperbanknetwork.org/",
+    "publisher": "National Diaper Bank Network",
+    "type": "charity",
+    "domains": ["money", "gear"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 1
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "Free nappies through a local bank. Find your state and call, rather than waiting for a form.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "childbirth-connection",
+    "title": "Childbirth Connection",
+    "url": "https://nationalpartnership.org/childbirthconnection/",
+    "publisher": "National Partnership for Women & Families",
+    "type": "charity",
+    "domains": ["health-parent"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 20
+      },
+      "to": {
+        "kind": "postpartum",
+        "index": 2
+      }
+    },
+    "cost": "free",
+    "why": "Evidence on birth practices, written to help you question a default rather than accept it.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "bradley-method",
+    "title": "The Bradley Method",
+    "url": "https://bradleymethod.com/",
+    "publisher": "Bradley Method",
+    "type": "course",
+    "domains": ["health-parent"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 20
+      },
+      "to": {
+        "kind": "pregnancy",
+        "index": 36
+      }
+    },
+    "cost": "$$",
+    "why": "Twelve weeks of classes aimed at an unmedicated birth with a coached partner.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "hypnobirthing",
+    "title": "HypnoBirthing",
+    "url": "https://hypnobirthing.com/",
+    "publisher": "HypnoBirthing International",
+    "type": "course",
+    "domains": ["health-parent", "mind"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 20
+      },
+      "to": {
+        "kind": "pregnancy",
+        "index": 36
+      }
+    },
+    "cost": "$$",
+    "why": "A breathing and relaxation method. Useful for the fear as much as the pain.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "lamaze-classes",
+    "title": "Lamaze classes",
+    "url": "https://lamaze.org/",
+    "publisher": "Lamaze International",
+    "type": "course",
+    "domains": ["health-parent"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 20
+      },
+      "to": {
+        "kind": "pregnancy",
+        "index": 36
+      }
+    },
+    "cost": "varies",
+    "why": "The class most US hospitals offer under this name. Ask what your hospital actually teaches.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "id": "usagov-child-support",
+    "title": "Child support",
+    "url": "https://www.usa.gov/child-support",
+    "publisher": "USAGov",
+    "type": "local-service",
+    "domains": ["money"],
+    "stages": {
+      "from": {
+        "kind": "postpartum",
+        "index": 1
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "How to open a case, and what the state can do that you cannot do alone.",
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending"
+  },
+  {
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending",
+    "id": "crisis-text-line",
+    "title": "Crisis Text Line",
+    "url": "https://www.crisistextline.org/",
+    "publisher": "Crisis Text Line",
+    "type": "charity",
+    "domains": ["mind"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 4
+      },
+      "to": {
+        "kind": "toddler",
+        "index": 36
+      }
+    },
+    "cost": "free",
+    "why": "Text HOME to 741741. For the nights when talking out loud is too much."
+  },
+  {
+    "country": ["US"],
+    "language": "en-US",
+    "lastChecked": "2026-10-21",
+    "affiliate": false,
+    "reviewedBy": "Clinical review pending",
+    "id": "boot-camp-for-new-dads",
+    "title": "Boot Camp for New Dads",
+    "url": "https://www.bootcampfornewdads.org/",
+    "publisher": "Boot Camp for New Dads",
+    "type": "community",
+    "domains": ["mind", "childcare"],
+    "stages": {
+      "from": {
+        "kind": "pregnancy",
+        "index": 20
+      },
+      "to": {
+        "kind": "postpartum",
+        "index": 12
+      }
+    },
+    "cost": "free",
+    "why": "New fathers showing expectant fathers how it actually goes, in person, before the baby arrives."
   }
 ]

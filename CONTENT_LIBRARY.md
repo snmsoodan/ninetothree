@@ -641,7 +641,25 @@ A recall is the one kind of content we do not write. It is an agency record, and
 
 **What is not here yet.** No ingestion, no email, no `check` or `info` recall in the shipped feed. The five entries say `"reviewedBy": "Clinical review pending"` like everything else, and the recall lint does not check that field.
 
-## 15. The pack inventory
+## 15. The link catalogue
+
+**251 entries, and every one was opened before it was written down.** 103 authoritative, 53 gear, 28 apps, 28 extra, 15 community, 12 books, 12 services. A node `fetch` prober with a Chrome UA checks each candidate and prints its status, final URL and page title; about 40 of roughly 150 candidates were rejected for 403, 402, 404 or a refused connection. `curl` and node `fetch` disagree on CDC, so node `fetch` is the arbiter.
+
+**A 200 is not proof the link is right.** The redirect check in `scripts/check-links.mjs` fails on a different registrable domain or an unrelated final path segment. It has caught three reassigned domains: `aquaphor.com` is now a water-filter company, `diono.com` redirects to an Amazon storefront, and `fabermazlish.com` redirects to `howtotalkworkshops.com`. It also caught two Penguin Random House book IDs that returned 200 while serving a completely different book. Never link a publisher's book page; link the author's own site.
+
+**A parked domain is the harder version of the same problem, because the local probe says 200.** Six entries were parked: `theyesbrain.com`, `shadesofblue.org`, `mush.app`, `emilyoster.com`, `spectra-baby.com` and `thinkbaby.com`. Each returns 200 with a body of one line — `<script>window.onload=function(){window.location.href="/lander"}</script>` — which is a GoDaddy/Afternic parking page. Two unrelated domains sharing the same IP pair and a fresh GoDaddy DV certificate is the tell. The checker now reads the body of any small 200 and fails on a `/lander` redirect. **When a probe prints 200 and an empty title, read the title.**
+
+**Reddit cannot be linked.** `reddit.com/r/*` returns 200 with a "Prove your humanity" page, and `old.reddit.com/r/*` redirects to a login. Every parenting subreddit was dropped in favour of forums and organisations that serve a real page to a non-browser client.
+
+**No paid placement, and the commission is on the card.** Nothing is in the catalogue because someone paid for it. `affiliate` is a boolean on the entry, and the schema forbids it on anything but a `commercial` type — a charity or a government page cannot be marked as earning us money. When it is true, `LinkCard` renders one sentence in `text-ink-faint`: "We earn a commission if you buy through this link. It does not change what we recommend." No banner, no icon, no "AD". All 251 entries are currently `affiliate: false`, so nothing is undisclosed; the affordance exists and is tested in both directions.
+
+**Three price tiers, and a filter to narrow to one.** `cost` is `free`, `$`, `$$`, `$$$` or `varies`. The gear entries deliberately include a `$`, a `$$` and a `$$$` option for car seats, strollers, carriers, pumps, sleep sacks and diapers, so a parent who can spend nothing is not shown only the expensive answer. `/library` has a "What can you spend?" select that narrows to one tier.
+
+**`last_checked` is visible.** Every card says "Checked October 20, 2026", formatted with `T12:00:00` appended so a timezone west of UTC cannot show yesterday. Whether a parent should see this rather than only an editor is a judgement call the issue did not settle; the requirement was explicit, so it is visible.
+
+**What is not here yet.** Clinical sign-off — every entry says `"reviewedBy": "Clinical review pending"`. The commercial entries are brands whose products were not tested; the `why` says what the product is known for, not that it is the best. `book-how-to-talk` is the one entry whose destination cannot be verified from a non-browser client, because Simon & Schuster returns 403 to everything.
+
+## 16. The pack inventory
 
 **85 stage packs, and the registry is generated.** 39 pregnancy weeks (4 to 42, no gaps), 12 postpartum weeks (1 to 12, no gaps), 10 infant months (3 to 12, no gaps) and 24 toddler months (13 to 36, no gaps). Every stage a parent can be in has a pack. `packages/content/src/registry.ts` is written by `scripts/gen-registry.mjs` from `packs/*.json`, sorted by kind then stage, and `pnpm content:registry:check` fails CI if the file on disk has drifted.
 
@@ -651,6 +669,6 @@ A recall is the one kind of content we do not write. It is an agency record, and
 
 **The corpus is complete for the stages the product covers.** Pregnancy week 4 to toddler month 36, with no gaps. A parent past month 36 gets the month-36 pack, which is the intended fallback rather than a hole. `loader.test.ts` walks every reachable stage and fails if any of them has no pack — the guard that would have caught the toddler gap, which existed for two content issues because nothing was checking.
 
-**What is not here yet.** Breadth rather than coverage. The catalogue is 89 links against a blueprint that implies hundreds, the recall feed is 5 hand-curated entries with no ingestion job, and clinical review of every pack is still pending.
+**What is not here yet.** The recall feed is 5 hand-curated entries with no ingestion job, and clinical review of every pack is still pending.
 
 **A pack that no stage can reach is not content.** `infant-month-2` had `stageIndex: 2`, and `computeStage` clamps infant to month 3, so `findPackForStage` returned month 3 and never month 2. It was reachable only by typing its URL. It was deleted, and its content lives in postpartum weeks 8 and 9, which is where a parent at that age actually is. The stage model is the authority on what a pack is for; a pack outside it is a file, not a week.

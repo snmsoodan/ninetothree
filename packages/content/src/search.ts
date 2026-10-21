@@ -220,7 +220,13 @@ export function search(index: readonly SearchDoc[], query: string, limit = 20): 
     hits.push({ ...doc, score, matched });
   }
 
-  hits.sort((a, b) => b.score - a.score || a.title.localeCompare(b.title));
+  // A shorter title is a broader page. When eleven "Milestones by 2 months"
+  // pages tie with "Milestones by age", the parent searching a broad word
+  // wants the overview, not the first one alphabetically.
+  hits.sort(
+    (a, b) =>
+      b.score - a.score || a.title.length - b.title.length || a.title.localeCompare(b.title),
+  );
   return hits.slice(0, limit);
 }
 
