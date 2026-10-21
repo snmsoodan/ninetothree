@@ -1,0 +1,168 @@
+{
+  "id": "pregnancy-w41",
+  "kind": "pregnancy",
+  "stageIndex": 41,
+  "stageUnit": "week",
+  "locale": "en-US",
+  "country": "US",
+  "title": "Week 41",
+  "subtitle": "Late term. Monitoring is routine now, and induction is usually the next conversation.",
+  "baby": {
+    "size": "About the size of a watermelon",
+    "development": "The baby is still growing and still moving. The placenta is aging, which is why monitoring matters now. The baby is ready to be born."
+  },
+  "you": {
+    "body": "You may have strong Braxton Hicks, more pelvic pressure, and trouble sleeping. Your cervix may be dilated. You may feel more tired than at any point in the pregnancy.",
+    "mind": "Being past 41 weeks is tiring in a way that is hard to explain. It is not a failure and it is not unusual. Ask for the monitoring schedule so the days have a shape."
+  },
+  "coreActions": [
+    {
+      "id": "w41-monitoring",
+      "type": "do",
+      "priority": "essential",
+      "domain": "health-parent",
+      "title": "Go to the monitoring appointments",
+      "why": "Past 41 weeks the placenta can age, and monitoring is how they check the baby is still doing well. Skipping one is the one thing not to do this week.",
+      "detail": "Expect a non-stress test, which watches the heart rate for about twenty minutes, and possibly an ultrasound. These are quick and they are the reason it is safe to wait. If a test looks off, they will talk about induction that day.",
+      "minutes": 60,
+      "options": [
+        {
+          "id": "w41-mon-nst",
+          "label": "Non-stress test",
+          "detail": "Twenty minutes with a monitor on your belly.",
+          "url": "https://www.acog.org/womens-health/faqs/special-tests-for-monitoring-fetal-well-being",
+          "cost": "varies"
+        },
+        {
+          "id": "w41-mon-bpp",
+          "label": "Biophysical profile",
+          "detail": "An ultrasound that scores movement and breathing.",
+          "url": "https://www.acog.org/womens-health/faqs/special-tests-for-monitoring-fetal-well-being",
+          "cost": "varies"
+        }
+      ],
+      "skipIf": "You are already being monitored on a schedule.",
+      "keywords": ["monitoring", "non-stress test", "41 weeks", "placenta"]
+    },
+    {
+      "id": "w41-induction",
+      "type": "ask",
+      "priority": "recommended",
+      "domain": "health-parent",
+      "title": "Decide about induction",
+      "why": "Most practices recommend induction by 42 weeks. Deciding now means you are choosing, not being told.",
+      "detail": "Ask what date they recommend and what the alternatives are. Waiting with monitoring is an option at many practices. Ask how long an induction usually takes, what the methods are, and whether you can eat and move during it. Write the answers down.",
+      "minutes": 20,
+      "options": [
+        {
+          "id": "w41-ind-book",
+          "label": "Book the induction",
+          "detail": "A date is a backstop. It removes the open-ended waiting.",
+          "cost": "varies"
+        },
+        {
+          "id": "w41-ind-wait",
+          "label": "Wait with monitoring",
+          "detail": "An option at many practices. Ask what it involves.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You already have a date or a plan.",
+      "keywords": ["induction", "42 weeks", "decision", "monitoring"]
+    },
+    {
+      "id": "w41-sweep",
+      "type": "ask",
+      "priority": "optional",
+      "domain": "health-parent",
+      "title": "Ask whether a membrane sweep is worth trying",
+      "why": "It is a low-risk option that can start labor without medication. It does not always work, and it is worth knowing the trade-off.",
+      "detail": "A sweep is done during an exam and separates the membranes from the cervix. It can cause cramping and spotting and it can start labor within a couple of days. It is not recommended if your water has broken or you are group B strep positive without antibiotics in place. Ask your OB whether it fits your situation.",
+      "minutes": 10,
+      "options": [
+        {
+          "id": "w41-sweep-yes",
+          "label": "Try it",
+          "detail": "Low risk, sometimes works. Uncomfortable for a minute.",
+          "cost": "varies"
+        },
+        {
+          "id": "w41-sweep-no",
+          "label": "Skip it",
+          "detail": "Reasonable. It is a choice, not a step.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You have already discussed it, or your water has broken.",
+      "keywords": ["membrane sweep", "induction", "41 weeks"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "w41-placenta",
+      "title": "The placenta ages, and that is why monitoring exists",
+      "body": "Past 41 weeks the placenta works less well. Monitoring catches that early. It is the reason the extra appointments are worth the trip.",
+      "domain": "health-baby"
+    },
+    {
+      "id": "w41-movement-w41",
+      "title": "Movement is still the signal",
+      "body": "If the pattern changes, call. Do not wait for the next appointment and do not use a doppler to decide.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w41-mental",
+      "title": "The waiting is genuinely hard",
+      "body": "Being past 41 weeks is exhausting in a way that is hard to explain to people who are not there. Tell someone. Ask your OB for the schedule so the days have a shape.",
+      "domain": "mind"
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "w41-rf-movement",
+      "text": "A clear change in your baby's usual movement",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w41-rf-water",
+      "text": "Fluid that keeps leaking, or any vaginal bleeding",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w41-rf-headache",
+      "text": "A severe headache that will not go, or blurred vision or spots",
+      "escalation": "call-ob-triage"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "w41-appt-monitor",
+      "label": "Monitoring visit",
+      "from": 41,
+      "to": 42,
+      "who": "OB or midwife",
+      "note": "Twice a week at many practices. Do not skip."
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-acog-monitoring-w41",
+      "title": "Special Tests for Monitoring Fetal Well-Being",
+      "publisher": "ACOG",
+      "url": "https://www.acog.org/womens-health/faqs/special-tests-for-monitoring-fetal-well-being",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-acog-induction-w41",
+      "title": "Labor Induction",
+      "publisher": "ACOG",
+      "url": "https://www.acog.org/womens-health/faqs/labor-induction",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    }
+  ],
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-20",
+  "updatedAt": "2026-10-21"
+}

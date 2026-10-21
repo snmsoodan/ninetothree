@@ -21,29 +21,16 @@
   "coreActions": [
     {
       "id": "w20-anatomy",
-      "type": "book",
-      "priority": "essential",
+      "type": "ask",
+      "priority": "recommended",
       "domain": "health-baby",
-      "title": "Book your anatomy scan",
-      "why": "It is done between 18 and 22 weeks and it is the most detailed look at the baby's organs, growth, and placenta in the whole pregnancy.",
-      "detail": "It takes 30 to 60 minutes. You will usually be told the sex if you want to know, and you can ask not to be. The sonographer measures the brain, heart, spine, kidneys, and limbs. About 3 in 100 scans find something that needs a closer look, and most of those turn out to be nothing. If they ask you to come back for a repeat, that is common and it usually means the baby was in a bad position.",
-      "minutes": 60,
-      "options": [
-        {
-          "id": "w20-anatomy-ob",
-          "label": "At your OB's imaging suite",
-          "detail": "The default. Usually scheduled for you.",
-          "cost": "varies"
-        },
-        {
-          "id": "w20-anatomy-mfm",
-          "label": "At a maternal-fetal medicine practice",
-          "detail": "More detailed equipment and a specialist reading it. Often used if there is any concern.",
-          "cost": "varies"
-        }
-      ],
-      "skipIf": "You have already had a detailed anatomy scan this pregnancy.",
-      "keywords": ["ultrasound", "sonogram", "scan"]
+      "title": "Go over your anatomy scan results",
+      "why": "The scan happens between 18 and 22 weeks. The report is the part you keep, and the part every later appointment refers back to.",
+      "detail": "It takes 30 to 60 minutes and the sonographer measures the brain, heart, spine, kidneys, and limbs. You will usually be told the sex if you want to know, and you can ask not to be. About 3 in 100 scans find something that needs a closer look, and most of those turn out to be nothing. Ask for a copy of the report. If they ask you to come back for a repeat, that is common and it usually means the baby was in a bad position.",
+      "minutes": 20,
+      "options": [],
+      "skipIf": "You have not had the scan yet.",
+      "keywords": ["ultrasound", "sonogram", "scan", "results", "report"]
     },
     {
       "id": "w20-movement",

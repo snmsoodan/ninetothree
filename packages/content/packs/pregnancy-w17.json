@@ -1,0 +1,180 @@
+{
+  "id": "pregnancy-w17",
+  "kind": "pregnancy",
+  "stageIndex": 17,
+  "stageUnit": "week",
+  "locale": "en-US",
+  "country": "US",
+  "title": "Week 17",
+  "subtitle": "The anatomy scan is close. It is worth knowing what it is for before you are in the room.",
+  "baby": {
+    "size": "About the size of a turnip",
+    "development": "The baby is putting on fat, which will help with temperature after birth. The skeleton is hardening from cartilage to bone. Sweat glands are forming."
+  },
+  "you": {
+    "body": "You may feel the baby move more clearly now, especially if this is not your first pregnancy. Your appetite may be strong. Heartburn often starts around now.",
+    "mind": "The anatomy scan can be a joyful appointment and an anxious one. Knowing what it checks, and what happens if something is found, makes the wait easier."
+  },
+  "coreActions": [
+    {
+      "id": "w17-anatomy-prep",
+      "type": "know",
+      "priority": "essential",
+      "domain": "health-parent",
+      "title": "Know what the anatomy scan checks",
+      "why": "It is the most detailed look at the baby you will get, and it is the appointment where most structural findings are made. Knowing the list means you can ask about it.",
+      "detail": "It checks the brain, face, spine, heart, lungs, stomach, kidneys, bladder, arms, legs, hands, and feet. It measures the baby's size and checks the placenta, the umbilical cord, and the amount of fluid. It takes 30 to 60 minutes. It cannot see everything, and some conditions are found later or not at all.",
+      "minutes": 15,
+      "options": [
+        {
+          "id": "w17-prep-read",
+          "label": "Read what the scan covers",
+          "detail": "ACOG's page on ultrasound is plain and short.",
+          "url": "https://www.acog.org/womens-health/faqs/ultrasound-exams",
+          "cost": "free"
+        },
+        {
+          "id": "w17-prep-questions",
+          "label": "Write down three questions",
+          "detail": "You will forget them in the room. Put them in your phone.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You have already had the scan.",
+      "keywords": ["anatomy scan", "ultrasound", "20 weeks", "check"]
+    },
+    {
+      "id": "w17-birth-class",
+      "type": "book",
+      "priority": "recommended",
+      "domain": "health-parent",
+      "title": "Book a childbirth class",
+      "why": "Classes fill up, and the good ones run over several weeks. Starting around 28 weeks means finishing before the baby could arrive early.",
+      "detail": "Look for a class that covers labor, delivery, feeding, and the first weeks at home. A hospital class is convenient and often cheap. An independent class is often smaller and more detailed. Ask whether it covers cesarean birth and what happens if plans change — most do.",
+      "minutes": 30,
+      "options": [
+        {
+          "id": "w17-class-hospital",
+          "label": "A hospital class",
+          "detail": "Cheap or free, and it shows you the building you will deliver in.",
+          "cost": "$"
+        },
+        {
+          "id": "w17-class-independent",
+          "label": "An independent class",
+          "detail": "Smaller groups, more time for questions, often more expensive.",
+          "url": "https://lamaze.org/",
+          "cost": "$$"
+        },
+        {
+          "id": "w17-class-online",
+          "label": "An online course",
+          "detail": "Cheapest and most flexible. Less useful for meeting other parents.",
+          "cost": "$"
+        }
+      ],
+      "skipIf": "You have already taken a class, or you have given birth before and feel prepared.",
+      "keywords": ["childbirth class", "birth class", "lamaze", "preparation"]
+    },
+    {
+      "id": "w17-pediatrician",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "health-baby",
+      "title": "Start looking for a pediatrician",
+      "why": "The baby needs a pediatrician before you leave the hospital, and many good practices are not taking new patients. Looking now means choosing rather than taking whoever answers.",
+      "detail": "Ask three things when you call: are they taking new patients, do they accept your insurance, and who covers at night and on weekends. A practice with a nurse line saves you a lot of 2am guessing. You can also ask whether they do same-day sick visits.",
+      "minutes": 45,
+      "options": [
+        {
+          "id": "w17-ped-practice",
+          "label": "A group pediatric practice",
+          "detail": "More coverage, longer hours, and someone is always on call.",
+          "cost": "varies"
+        },
+        {
+          "id": "w17-ped-solo",
+          "label": "A solo pediatrician",
+          "detail": "You see the same person every time. Harder to reach at night.",
+          "cost": "varies"
+        },
+        {
+          "id": "w17-ped-fqhc",
+          "label": "A community health center",
+          "detail": "Sliding-scale fees and often a pediatrician on staff.",
+          "cost": "$"
+        }
+      ],
+      "skipIf": "You already have a pediatrician, or your OB practice also sees babies.",
+      "keywords": ["pediatrician", "doctor", "baby doctor", "new patient"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "w17-heartburn",
+      "title": "Heartburn is mechanical, not a sign of hair",
+      "body": "The growing uterus presses on the stomach and the valve relaxes. Smaller meals, not lying down for two hours after eating, and propping the head of the bed up all help. Ask before taking anything.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w17-scan-company",
+      "title": "You can bring someone to the scan",
+      "body": "Most practices allow one support person. Ask when you book, because some still limit it. If you would rather go alone, that is also fine.",
+      "domain": "mind"
+    },
+    {
+      "id": "w17-scan-results",
+      "title": "Results are not always the same day",
+      "body": "The sonographer takes the images; a doctor reads them. That can take a few days. A longer scan is not automatically bad news — it often means the baby would not hold still.",
+      "domain": "health-parent"
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "w17-rf-bleeding",
+      "text": "Bleeding that fills a pad, or bleeding with pain",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w17-rf-fever",
+      "text": "A fever over 100.4°F",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w17-rf-fluid",
+      "text": "A gush or steady trickle of fluid from the vagina",
+      "escalation": "call-ob-triage"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "w17-appt-anatomy",
+      "label": "Anatomy scan",
+      "from": 18,
+      "to": 22,
+      "who": "Ultrasound tech",
+      "note": "30 to 60 minutes. Bring your questions."
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-acog-ultrasound-w17",
+      "title": "Ultrasound Exams",
+      "publisher": "ACOG",
+      "url": "https://www.acog.org/womens-health/faqs/ultrasound-exams",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-lamaze",
+      "title": "Lamaze International",
+      "publisher": "Lamaze International",
+      "url": "https://lamaze.org/",
+      "kind": "charity",
+      "accessed": "2026-10-20"
+    }
+  ],
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-20",
+  "updatedAt": "2026-10-21"
+}

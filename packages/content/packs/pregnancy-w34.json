@@ -1,0 +1,175 @@
+{
+  "id": "pregnancy-w34",
+  "kind": "pregnancy",
+  "stageIndex": 34,
+  "stageUnit": "week",
+  "locale": "en-US",
+  "country": "US",
+  "title": "Week 34",
+  "subtitle": "Six weeks left. The group B strep swab is next week.",
+  "baby": {
+    "size": "About the size of a cantaloupe",
+    "development": "The lungs are nearly mature. The baby's fingernails are fully formed and the skin is smooth. The central nervous system is maturing fast, and the baby can grip."
+  },
+  "you": {
+    "body": "Your uterus is about five and a half inches above your belly button. You may have more pelvic pressure, more swelling, and more trouble sleeping. You may feel the baby drop in the next few weeks.",
+    "mind": "You may be ready for this to be over, and also not ready at all. Both are true at once for most people."
+  },
+  "coreActions": [
+    {
+      "id": "w34-gbs",
+      "type": "do",
+      "priority": "essential",
+      "domain": "health-parent",
+      "title": "Get the group B strep swab",
+      "why": "It is a five-minute swab that prevents a serious infection in a newborn. It is the single most useful test in the last month.",
+      "detail": "The swab goes in the vagina and rectum. It does not hurt. Results take a few days. If it is positive, you get antibiotics through an IV in labor, and that is the whole treatment. Being positive is common and it is not a sign of anything you did.",
+      "minutes": 15,
+      "options": [
+        {
+          "id": "w34-gbs-visit",
+          "label": "At a scheduled visit",
+          "detail": "Ask the front desk to add it.",
+          "cost": "free"
+        },
+        {
+          "id": "w34-gbs-ask",
+          "label": "Ask your OB to do it today",
+          "detail": "If you are already there, it takes a minute.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You have already had the swab this pregnancy.",
+      "keywords": ["group b strep", "gbs", "swab", "test"]
+    },
+    {
+      "id": "w34-preterm-signs",
+      "type": "know",
+      "priority": "recommended",
+      "domain": "health-parent",
+      "title": "Know the signs of preterm labor",
+      "why": "Before 37 weeks, the difference between a call and a wait can be a hospital stay. Knowing the signs means you call sooner.",
+      "detail": "Regular contractions that get closer together, fluid leaking, bleeding, low back pain that comes in waves, or a feeling of pressure low down. If any of these happen before 37 weeks, call your OB's after-hours line. Do not wait to see if it stops.",
+      "minutes": 10,
+      "options": [
+        {
+          "id": "w34-preterm-read",
+          "label": "Read the signs",
+          "detail": "Two minutes. Worth knowing by heart.",
+          "url": "https://www.nichd.nih.gov/health/topics/preterm",
+          "cost": "free"
+        },
+        {
+          "id": "w34-preterm-number",
+          "label": "Save the after-hours number",
+          "detail": "In your phone, under a name you will find at 3am.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You already know the signs and have the number saved.",
+      "keywords": ["preterm", "early labor", "contractions", "signs"]
+    },
+    {
+      "id": "w34-bag-car",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "home",
+      "title": "Put the bag in the car",
+      "why": "A bag by the door is good. A bag in the car is better, because the door is not where you will be when it starts.",
+      "detail": "Check the bag has the charger, the ID, and the insurance card. Put the car seat in and check the install one more time. Leave a note on the fridge with the hospital address and the after-hours number for whoever is watching the house or the pets.",
+      "minutes": 20,
+      "options": [
+        {
+          "id": "w34-car-bag",
+          "label": "Bag in the trunk",
+          "detail": "Done. One less thing.",
+          "cost": "free"
+        },
+        {
+          "id": "w34-car-note",
+          "label": "Add the fridge note",
+          "detail": "Hospital address, after-hours number, pet instructions.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "The bag is already in the car.",
+      "keywords": ["hospital bag", "car", "prepared", "go bag"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "w34-dropping",
+      "title": "The baby dropping is called lightening",
+      "body": "It happens in the last weeks for some people and not at all for others. Breathing gets easier and peeing gets more frequent. It is not a sign labor is starting.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w34-antibiotics",
+      "title": "Antibiotics in labor are a small interruption",
+      "body": "They go through an IV every four hours. You can still move, eat if allowed, and use the tub at most hospitals. It does not commit you to anything else.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w34-pets",
+      "title": "Plan for the pets now",
+      "body": "Who feeds them, who walks them, and who has a key. A neighbor with a key and a written note is worth more than a perfect plan.",
+      "domain": "home"
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "w34-rf-contractions",
+      "text": "Regular contractions before 37 weeks",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w34-rf-fluid",
+      "text": "Fluid that keeps leaking, or any vaginal bleeding",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w34-rf-movement",
+      "text": "A clear change in your baby's usual movement",
+      "escalation": "call-ob-triage"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "w34-appt-gbs",
+      "label": "Group B strep swab",
+      "from": 36,
+      "to": 37,
+      "who": "OB or midwife",
+      "note": "Quick swab. Results in a few days."
+    },
+    {
+      "id": "w34-appt-visit",
+      "label": "Prenatal visit",
+      "from": 34,
+      "to": 36,
+      "who": "OB or midwife",
+      "note": "Every two weeks until 36."
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-nichd-preterm",
+      "title": "Preterm Labor and Birth",
+      "publisher": "NICHD",
+      "url": "https://www.nichd.nih.gov/health/topics/preterm",
+      "kind": "government",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-cdc-gbs-w34",
+      "title": "Group B Strep",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/group-b-strep/about/index.html",
+      "kind": "government",
+      "accessed": "2026-10-20"
+    }
+  ],
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-20",
+  "updatedAt": "2026-10-21"
+}

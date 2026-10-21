@@ -1,0 +1,189 @@
+{
+  "id": "pregnancy-w29",
+  "kind": "pregnancy",
+  "stageIndex": 29,
+  "stageUnit": "week",
+  "locale": "en-US",
+  "country": "US",
+  "title": "Week 29",
+  "subtitle": "The baby is running out of room, so the kicks feel different — bigger, fewer, more definite.",
+  "baby": {
+    "size": "About the size of a butternut squash",
+    "development": "The bones are fully formed but still soft. The muscles and lungs are maturing. The baby can turn their head and may hiccup, which you will feel as a rhythmic tap."
+  },
+  "you": {
+    "body": "Your uterus is about three and a half inches above your belly button. You may have more backache, more leg cramps at night, and more swelling. Your belly may feel tight and hard at times.",
+    "mind": "The third trimester can feel long. If the weeks are dragging, it helps to have one thing to look forward to each week that is not about the baby."
+  },
+  "coreActions": [
+    {
+      "id": "w29-movement",
+      "type": "know",
+      "priority": "essential",
+      "domain": "health-parent",
+      "title": "Learn your baby's movement pattern",
+      "why": "The pattern matters more than the number. Knowing what is usual for your baby is what lets you notice a change early.",
+      "detail": "Pick a time of day when the baby is usually active and pay attention for a few days. There is no required count. What matters is that you know what a normal hour looks like for you. If the pattern changes, call — do not wait until morning and do not use a home doppler to reassure yourself.",
+      "minutes": 15,
+      "options": [
+        {
+          "id": "w29-move-note",
+          "label": "Note the usual active times",
+          "detail": "A line in your phone notes is enough.",
+          "cost": "free"
+        },
+        {
+          "id": "w29-move-ask",
+          "label": "Ask your OB what to do if it changes",
+          "detail": "Get the after-hours number now, not at 2am.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You already know the pattern and have the after-hours number.",
+      "keywords": ["movement", "kicks", "count", "fetal movement"]
+    },
+    {
+      "id": "w29-leave-paperwork",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "money",
+      "title": "File the leave paperwork",
+      "why": "FMLA and short-term disability both have deadlines that start before the birth, not after. Filing now means the pay starts when it should.",
+      "detail": "FMLA gives 12 weeks of job protection if your employer is covered and you have worked there a year. It is unpaid. Short-term disability or your state's paid leave may pay part of it, and those claims often need to be opened before you deliver. Ask HR for the forms and the deadline in writing.",
+      "minutes": 45,
+      "options": [
+        {
+          "id": "w29-leave-fmla",
+          "label": "Read the FMLA rules",
+          "detail": "Eligibility, notice, and what your employer owes you.",
+          "url": "https://www.dol.gov/agencies/whd/fmla",
+          "cost": "free"
+        },
+        {
+          "id": "w29-leave-state",
+          "label": "Check your state's paid leave",
+          "detail": "A growing number of states pay part of the leave. The rules differ a lot.",
+          "url": "https://www.dol.gov/agencies/whd/state/paid-leave",
+          "cost": "free"
+        },
+        {
+          "id": "w29-leave-hr",
+          "label": "Ask HR for the deadline in writing",
+          "detail": "The single most useful email you can send this month.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "Your leave is already approved.",
+      "keywords": ["fmla", "leave", "paperwork", "disability", "hr"]
+    },
+    {
+      "id": "w29-birth-class",
+      "type": "book",
+      "priority": "recommended",
+      "domain": "health-parent",
+      "title": "Book a birth class if you have not",
+      "why": "A class covers what the visits do not: what labor feels like, when to go in, and what your options are. It is also where you meet people due the same month.",
+      "detail": "Most run four to six sessions and finish before 36 weeks. Hospital classes are practical and local. Independent classes cover more about choices. Online works if your schedule is tight. Bring your support person.",
+      "minutes": 20,
+      "options": [
+        {
+          "id": "w29-class-hospital",
+          "label": "Your hospital's class",
+          "detail": "Covers their policies, which is what you will actually meet.",
+          "cost": "$$"
+        },
+        {
+          "id": "w29-class-lamaze",
+          "label": "A Lamaze class",
+          "detail": "More focus on coping and choices.",
+          "url": "https://lamaze.org/",
+          "cost": "$$"
+        },
+        {
+          "id": "w29-class-online",
+          "label": "An online class",
+          "detail": "Cheaper and flexible. Less local detail.",
+          "cost": "$"
+        }
+      ],
+      "skipIf": "You have already taken one, or you are having a planned cesarean and have taken a cesarean class.",
+      "keywords": ["birth class", "childbirth", "lamaze", "preparation"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "w29-hiccups",
+      "title": "Rhythmic tapping is probably hiccups",
+      "body": "The baby hiccups in the womb. It is a steady tap in one place, not a kick. It is not a sign of anything wrong.",
+      "domain": "health-baby"
+    },
+    {
+      "id": "w29-leg-cramps",
+      "title": "Leg cramps at night respond to stretching",
+      "body": "Flex your foot toward your shin when one starts. Stretching before bed helps. Ask about magnesium and about your iron if they are frequent.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w29-doppler",
+      "title": "A home doppler is not reassurance",
+      "body": "Hearing a heartbeat does not tell you the baby is well. If movement changes, call your OB. Do not use a doppler to decide whether to call.",
+      "domain": "safety"
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "w29-rf-movement",
+      "text": "A clear change in your baby's usual movement",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w29-rf-bleeding",
+      "text": "Any vaginal bleeding, or fluid that keeps leaking",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w29-rf-contractions",
+      "text": "Regular contractions before 37 weeks",
+      "escalation": "call-ob-triage"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "w29-appt-visit",
+      "label": "Prenatal visit",
+      "from": 29,
+      "to": 32,
+      "who": "OB or midwife",
+      "note": "Every two weeks. Ask for the after-hours number."
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-acog-movement",
+      "title": "Special Tests for Monitoring Fetal Well-Being",
+      "publisher": "ACOG",
+      "url": "https://www.acog.org/womens-health/faqs/special-tests-for-monitoring-fetal-well-being",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-dol-fmla",
+      "title": "Family and Medical Leave Act",
+      "publisher": "US Department of Labor",
+      "url": "https://www.dol.gov/agencies/whd/fmla",
+      "kind": "government",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-lamaze",
+      "title": "Lamaze International",
+      "publisher": "Lamaze International",
+      "url": "https://lamaze.org/",
+      "kind": "charity",
+      "accessed": "2026-10-20"
+    }
+  ],
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-20",
+  "updatedAt": "2026-10-21"
+}

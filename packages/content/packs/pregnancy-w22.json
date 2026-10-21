@@ -1,0 +1,173 @@
+{
+  "id": "pregnancy-w22",
+  "kind": "pregnancy",
+  "stageIndex": 22,
+  "stageUnit": "week",
+  "locale": "en-US",
+  "country": "US",
+  "title": "Week 22",
+  "subtitle": "The baby looks like a small newborn now. The next milestone is 24 weeks, and it matters.",
+  "baby": {
+    "size": "About the size of a papaya",
+    "development": "The baby has eyebrows and eyelashes. The sense of touch is developing, and the hands can grip the umbilical cord. The lungs are making surfactant, which will let them inflate after birth."
+  },
+  "you": {
+    "body": "Your uterus is about an inch above your belly button. Stretch marks may appear on the belly, breasts, or thighs. They fade to silver after birth and they are not preventable by any cream.",
+    "mind": "You may be thinking about the birth more now. A class or a book helps some people; for others it makes it worse. Both are reasonable."
+  },
+  "coreActions": [
+    {
+      "id": "w22-birth-class",
+      "type": "book",
+      "priority": "recommended",
+      "domain": "health-parent",
+      "title": "Book the class if you have not",
+      "why": "Classes fill, and the useful ones run over several weeks. Starting now means finishing before 37 weeks.",
+      "detail": "Look for one that covers labor, pain relief options, cesarean birth, feeding, and the first weeks at home. Ask whether partners are included — most expect them. A hospital class is cheap and shows you the building; an independent class is smaller and more detailed.",
+      "minutes": 30,
+      "options": [
+        {
+          "id": "w22-class-hospital",
+          "label": "A hospital class",
+          "detail": "Cheap or free, and it shows you where you will deliver.",
+          "cost": "$"
+        },
+        {
+          "id": "w22-class-independent",
+          "label": "An independent class",
+          "detail": "Smaller groups and more time for questions.",
+          "url": "https://lamaze.org/",
+          "cost": "$$"
+        },
+        {
+          "id": "w22-class-online",
+          "label": "An online course",
+          "detail": "Cheapest and most flexible. Less useful for meeting people.",
+          "cost": "$"
+        }
+      ],
+      "skipIf": "You have already booked or taken one.",
+      "keywords": ["birth class", "childbirth", "lamaze", "preparation"]
+    },
+    {
+      "id": "w22-hospital-tour",
+      "type": "book",
+      "priority": "recommended",
+      "domain": "health-parent",
+      "title": "Take a hospital or birth center tour",
+      "why": "Knowing where to park, where to go at 2am, and what the rooms look like removes a real source of fear on the day.",
+      "detail": "Ask about the entrance to use at night, whether there is a triage room, what the visitor policy is, and whether they have a tub or a birth ball. Ask how long a typical stay is for a vaginal birth and for a cesarean. Write the answers down — you will not remember them.",
+      "minutes": 60,
+      "options": [
+        {
+          "id": "w22-tour-inperson",
+          "label": "An in-person tour",
+          "detail": "The most useful. You see the actual rooms and the actual door.",
+          "cost": "free"
+        },
+        {
+          "id": "w22-tour-virtual",
+          "label": "A virtual tour",
+          "detail": "Better than nothing, and often the only option now.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You have already toured, or you are having a home birth.",
+      "keywords": ["hospital tour", "birth center", "where to go"]
+    },
+    {
+      "id": "w22-pediatrician-choose",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "health-baby",
+      "title": "Choose a pediatrician and tell them",
+      "why": "The hospital will ask who the baby's doctor is before you leave. Having a name ready means the first visit is booked, not improvised.",
+      "detail": "Call two or three practices and ask about new patients, insurance, night coverage, and same-day sick visits. Many let you book a free meet-and-greet. Once you choose, ask them to note you as a patient so the hospital can reach them.",
+      "minutes": 45,
+      "options": [
+        {
+          "id": "w22-ped-meet",
+          "label": "A meet-and-greet visit",
+          "detail": "Free at most practices. You get a feel for the place.",
+          "cost": "free"
+        },
+        {
+          "id": "w22-ped-call",
+          "label": "A phone call with the office",
+          "detail": "Faster. Ask the four questions and decide.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You have already chosen one.",
+      "keywords": ["pediatrician", "baby doctor", "choose"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "w22-stretch-marks",
+      "title": "No cream prevents stretch marks",
+      "body": "They come from how the skin stretches, not from dryness. Most fade to silver within a year. Anything sold as a prevention is selling hope.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w22-24-weeks",
+      "title": "24 weeks is a milestone, and a hard one",
+      "body": "It is the point where many hospitals will attempt to save a baby born early. It is also the point where the outcome is still very uncertain. Knowing this is not the same as expecting it.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w22-partner",
+      "title": "The other parent needs a job too",
+      "body": "Decide now who handles what on the day: the bag, the phone calls, the parking, the food. A partner with a task is calmer than one who is watching.",
+      "domain": "mind"
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "w22-rf-movement",
+      "text": "A clear change in your baby's usual movement",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w22-rf-contractions",
+      "text": "Regular contractions, or a heavy feeling in the pelvis",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w22-rf-fluid",
+      "text": "A gush or steady trickle of fluid from the vagina",
+      "escalation": "call-ob-triage"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "w22-appt-visit",
+      "label": "Prenatal visit",
+      "from": 22,
+      "to": 26,
+      "who": "OB or midwife",
+      "note": "Short. Ask about the glucose test date."
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-acog-prenatal-w22",
+      "title": "Prenatal Care",
+      "publisher": "ACOG",
+      "url": "https://www.acog.org/womens-health/faqs/prenatal-care",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-nichd-preterm",
+      "title": "Preterm Birth",
+      "publisher": "NICHD",
+      "url": "https://www.nichd.nih.gov/health/topics/preterm",
+      "kind": "government",
+      "accessed": "2026-10-20"
+    }
+  ],
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-20",
+  "updatedAt": "2026-10-21"
+}

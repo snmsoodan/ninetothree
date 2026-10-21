@@ -49,6 +49,9 @@ jobs:
       - name: Content is valid
         run: pnpm content:validate
 
+      - name: Every pack is registered
+        run: pnpm content:registry:check
+
       - name: Test
         run: pnpm test
 

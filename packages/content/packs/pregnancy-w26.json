@@ -1,0 +1,201 @@
+{
+  "id": "pregnancy-w26",
+  "kind": "pregnancy",
+  "stageIndex": 26,
+  "stageUnit": "week",
+  "locale": "en-US",
+  "country": "US",
+  "title": "Week 26",
+  "subtitle": "The eyes are opening. The third trimester starts next week.",
+  "baby": {
+    "size": "About the size of a scallion bunch",
+    "development": "The eyes are opening for the first time. The baby can hear and may respond to your voice with a kick. The lungs are still maturing, and the brain is developing the grooves that will hold memory."
+  },
+  "you": {
+    "body": "Your uterus is about three inches above your belly button. You may have more backache, more heartburn, and trouble sleeping. Braxton Hicks may be more noticeable.",
+    "mind": "The third trimester can bring a mix of impatience and dread. Both are ordinary. If you are feeling low most days, tell your OB — that is a treatable thing, not a personality."
+  },
+  "coreActions": [
+    {
+      "id": "w26-tdap",
+      "type": "do",
+      "priority": "essential",
+      "domain": "health-parent",
+      "title": "Get the Tdap vaccine",
+      "why": "It is recommended in every pregnancy, and the antibodies cross the placenta to protect the baby before they can be vaccinated. Whooping cough is most dangerous in the first months.",
+      "detail": "The window is 27 to 36 weeks, and earlier in that window is better so the antibodies have time. Ask your OB to schedule it at a visit, or get it at a pharmacy. Your partner and anyone who will be around the baby should also be up to date.",
+      "minutes": 30,
+      "options": [
+        {
+          "id": "w26-tdap-ob",
+          "label": "At your OB's office",
+          "detail": "Simplest. Ask them to add it to a visit.",
+          "cost": "varies"
+        },
+        {
+          "id": "w26-tdap-pharmacy",
+          "label": "At a pharmacy",
+          "detail": "Often free with insurance and no appointment needed.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You have already had Tdap in this pregnancy.",
+      "keywords": ["tdap", "vaccine", "whooping cough", "pertussis"]
+    },
+    {
+      "id": "w26-mood",
+      "type": "ask",
+      "priority": "recommended",
+      "domain": "mind",
+      "title": "Tell someone if you feel low most days",
+      "why": "Depression and anxiety in pregnancy are common and treatable. They are not a sign of weakness, and they do not make you a bad parent.",
+      "detail": "The signs are feeling low or hopeless most days for two weeks, losing interest in things, sleeping badly even when you can, or feeling anxious in a way that stops you doing things. Your OB can screen for it and refer you. Treatment in pregnancy is safe and it works.",
+      "minutes": 15,
+      "options": [
+        {
+          "id": "w26-mood-ob",
+          "label": "Tell your OB at the next visit",
+          "detail": "They screen for this routinely. It is a normal thing to raise.",
+          "cost": "free"
+        },
+        {
+          "id": "w26-mood-psi",
+          "label": "Call the PSI HelpLine",
+          "detail": "1-800-944-4773. Free, and they will find you local support.",
+          "url": "https://www.postpartum.net/",
+          "cost": "free"
+        },
+        {
+          "id": "w26-mood-988",
+          "label": "Call or text 988",
+          "detail": "If you are thinking about hurting yourself, call now. It is free and 24 hours.",
+          "url": "https://988lifeline.org/",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You feel well most days.",
+      "keywords": ["depression", "anxiety", "mood", "mental health"]
+    },
+    {
+      "id": "w26-nursery",
+      "type": "buy",
+      "priority": "optional",
+      "domain": "home",
+      "title": "Set up a safe sleep space",
+      "why": "The baby will sleep in your room for the first months, but the sleep space still needs to be right. It is the one piece of gear with a safety standard attached.",
+      "detail": "A firm flat mattress with a fitted sheet, in a crib, bassinet, or play yard that meets the federal standard. No bumpers, no pillows, no blankets, no toys. A sleep sack instead of a blanket. The crib slats should be no more than 2 3/8 inches apart. Check for recalls before you use anything secondhand.",
+      "minutes": 45,
+      "options": [
+        {
+          "id": "w26-sleep-bassinet",
+          "label": "A bassinet",
+          "detail": "Small, portable, and in your room. Outgrown in about five months.",
+          "url": "https://safetosleep.nichd.nih.gov/",
+          "cost": "$$"
+        },
+        {
+          "id": "w26-sleep-crib",
+          "label": "A crib",
+          "detail": "Lasts years. Must meet 16 CFR 1219 if it is a full-size crib.",
+          "url": "https://www.ecfr.gov/current/title-16/chapter-II/subchapter-B/part-1219",
+          "cost": "$$$"
+        },
+        {
+          "id": "w26-sleep-playard",
+          "label": "A play yard",
+          "detail": "Doubles as a travel bed. Cheaper than a crib and smaller.",
+          "url": "https://safetosleep.nichd.nih.gov/",
+          "cost": "$$"
+        }
+      ],
+      "noChooser": "Any of these is safe if it meets the federal standard and is set up bare. The choice is about space and budget, not safety.",
+      "skipIf": "You already have a safe sleep space set up.",
+      "keywords": ["crib", "bassinet", "safe sleep", "nursery"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "w26-safe-sleep",
+      "title": "The safe sleep rules are short",
+      "body": "On the back, on a firm flat surface, in the same room as you, with nothing else in the bed. No bumpers, no blankets, no pillows, no toys. That is the whole list.",
+      "domain": "safety"
+    },
+    {
+      "id": "w26-hemorrhoids",
+      "title": "Hemorrhoids are common and treatable",
+      "body": "Pressure and constipation both contribute. Fiber, water, and not straining help. Ask your OB about a cream if they are painful.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w26-braxton-w26",
+      "title": "Tightenings that stop are not labor",
+      "body": "Braxton Hicks are irregular and ease with rest or water. Contractions that get closer together and stronger do not. If you are timing them, call.",
+      "domain": "health-parent"
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "w26-rf-movement",
+      "text": "A clear change in your baby's usual movement",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w26-rf-headache",
+      "text": "A severe headache that will not go, or blurred vision or spots",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w26-rf-self-harm",
+      "text": "Thoughts of hurting yourself or ending your life",
+      "escalation": "call-988",
+      "phone": "988"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "w26-appt-tdap",
+      "label": "Tdap vaccine",
+      "from": 27,
+      "to": 36,
+      "who": "OB or pharmacy",
+      "note": "Earlier in the window is better."
+    },
+    {
+      "id": "w26-appt-visit",
+      "label": "Prenatal visit",
+      "from": 26,
+      "to": 28,
+      "who": "OB or midwife",
+      "note": "Ask about the glucose result and the Tdap date."
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-cdc-tdap-w26",
+      "title": "Tdap Vaccine in Pregnancy",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/vaccines/vpd/dtap-tdap-td/hcp/index.html",
+      "kind": "government",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-nichd-safe-sleep",
+      "title": "Safe to Sleep",
+      "publisher": "NICHD",
+      "url": "https://safetosleep.nichd.nih.gov/",
+      "kind": "government",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-psi",
+      "title": "Postpartum Support International",
+      "publisher": "Postpartum Support International",
+      "url": "https://www.postpartum.net/",
+      "kind": "charity",
+      "accessed": "2026-10-20"
+    }
+  ],
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-20",
+  "updatedAt": "2026-10-21"
+}

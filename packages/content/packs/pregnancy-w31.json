@@ -1,0 +1,167 @@
+{
+  "id": "pregnancy-w31",
+  "kind": "pregnancy",
+  "stageIndex": 31,
+  "stageUnit": "week",
+  "locale": "en-US",
+  "country": "US",
+  "title": "Week 31",
+  "subtitle": "The baby is practicing breathing, and you are probably practicing patience.",
+  "baby": {
+    "size": "About the size of a coconut",
+    "development": "The baby is practicing breathing movements with amniotic fluid. All five senses are working. The pupils can react to light. Most babies turn head-down around now, though there is still time."
+  },
+  "you": {
+    "body": "Your uterus is about four and a half inches above your belly button. You may have more pressure low down, more frequent urination, and more trouble getting comfortable. Colostrum may start to leak.",
+    "mind": "You may start to feel ready and unready at the same time. That is not a contradiction — it is what the last two months are like."
+  },
+  "coreActions": [
+    {
+      "id": "w31-bag-pack",
+      "type": "do",
+      "priority": "essential",
+      "domain": "home",
+      "title": "Pack the bag and leave it by the door",
+      "why": "Labor does not wait for you to find the charger. A packed bag is the one thing you can control about a day you cannot schedule.",
+      "detail": "For you: ID, insurance card, a long phone cable, comfortable clothes, a robe, slippers, toiletries, snacks, and a going-home outfit. For the baby: a going-home outfit, a hat, and a blanket. For your support person: clothes, snacks, cash for parking, and their own charger. Put the car seat in the car now, not later.",
+      "minutes": 45,
+      "options": [
+        {
+          "id": "w31-bag-hospital-list",
+          "label": "The hospital's list",
+          "detail": "Short and accurate for that hospital.",
+          "cost": "free"
+        },
+        {
+          "id": "w31-bag-minimal",
+          "label": "Ten things, nothing more",
+          "detail": "The hospital has most of it. Travel light.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "The bag is packed and in the car.",
+      "keywords": ["hospital bag", "packing", "labor", "go bag"]
+    },
+    {
+      "id": "w31-birth-plan-review",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "health-parent",
+      "title": "Review your birth preferences with your support person",
+      "why": "The person with you in labor will speak for you at the moments you cannot. They need to know what matters before, not during.",
+      "detail": "Walk through each preference and say why it matters. Agree on what happens if you cannot decide. Give them a copy and put one in your chart. Keep it to one page — a long list is harder to follow under pressure.",
+      "minutes": 30,
+      "options": [
+        {
+          "id": "w31-plan-talk",
+          "label": "Talk it through at home",
+          "detail": "Twenty minutes, one page, two copies.",
+          "cost": "free"
+        },
+        {
+          "id": "w31-plan-ob",
+          "label": "Bring it to your next visit",
+          "detail": "Ask your OB to put it in the chart.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You have no support person, or the plan is already shared.",
+      "keywords": ["birth plan", "support person", "preferences"]
+    },
+    {
+      "id": "w31-colostrum",
+      "type": "know",
+      "priority": "optional",
+      "domain": "feeding",
+      "title": "Know what colostrum is",
+      "why": "It is what you make first, and it is not a small amount of milk — it is a different food, in small amounts, which is what a newborn stomach holds.",
+      "detail": "Colostrum is thick and yellow and comes in teaspoons, not ounces. A newborn's stomach is about the size of a cherry on day one. Feeding often in the first days is what brings your milk in. If you plan to formula feed, none of this changes what you do — it is just what your body is doing.",
+      "minutes": 10,
+      "options": [
+        {
+          "id": "w31-colostrum-read",
+          "label": "Read the CDC page",
+          "detail": "Plain and short.",
+          "url": "https://www.cdc.gov/breastfeeding/",
+          "cost": "free"
+        },
+        {
+          "id": "w31-colostrum-ask",
+          "label": "Ask a lactation consultant",
+          "detail": "Most hospitals have one. Free while you are there.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You already know, or you are not breastfeeding.",
+      "keywords": ["colostrum", "breastfeeding", "milk", "newborn"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "w31-breech",
+      "title": "Most babies turn by 36 weeks",
+      "body": "There is still room to turn. If the baby is breech at 36 weeks, your OB will talk through options, including a version. That conversation can wait until then.",
+      "domain": "health-baby"
+    },
+    {
+      "id": "w31-frequent-pee",
+      "title": "More bathroom trips is pressure, not a problem",
+      "body": "The head pressing on the bladder is why. It eases if the baby drops, then comes back. Call if it burns or comes with fever.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w31-parking",
+      "title": "Know the hospital entrance before the day",
+      "body": "Drive the route once. Find the labor and delivery entrance, not the main one. Ask where to park at 2am. It is a small thing that removes a real panic.",
+      "domain": "home"
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "w31-rf-movement",
+      "text": "A clear change in your baby's usual movement",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w31-rf-fluid",
+      "text": "Fluid that keeps leaking, or any vaginal bleeding",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w31-rf-contractions",
+      "text": "Regular contractions before 37 weeks",
+      "escalation": "call-ob-triage"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "w31-appt-visit",
+      "label": "Prenatal visit",
+      "from": 31,
+      "to": 34,
+      "who": "OB or midwife",
+      "note": "Every two weeks. Ask about the baby's position."
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-cdc-breastfeeding",
+      "title": "Breastfeeding",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/breastfeeding/",
+      "kind": "government",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-acog-labor",
+      "title": "How to Tell When Labor Begins",
+      "publisher": "ACOG",
+      "url": "https://www.acog.org/womens-health/faqs/how-to-tell-when-labor-begins",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    }
+  ],
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-20",
+  "updatedAt": "2026-10-21"
+}

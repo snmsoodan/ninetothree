@@ -1,0 +1,185 @@
+{
+  "id": "pregnancy-w14",
+  "kind": "pregnancy",
+  "stageIndex": 14,
+  "stageUnit": "week",
+  "locale": "en-US",
+  "country": "US",
+  "title": "Week 14",
+  "subtitle": "The second-trimester blood test window opens. It is a choice, not a requirement.",
+  "baby": {
+    "size": "About the size of a peach",
+    "development": "The baby can squint, frown, and make sucking motions. Lanugo — a fine down — is starting to cover the skin. The liver and spleen are making blood cells."
+  },
+  "you": {
+    "body": "Appetite often comes back this week, sometimes with a vengeance. Your uterus is now above the pubic bone, so you can feel it if you press gently. Some people get a dark line down the belly, which fades after birth.",
+    "mind": "The second trimester is often the most comfortable one, and it is fine to enjoy it. It is also fine if you do not. There is no required mood for any week."
+  },
+  "coreActions": [
+    {
+      "id": "w14-quad-screen",
+      "type": "ask",
+      "priority": "recommended",
+      "domain": "health-parent",
+      "title": "Ask whether you want the second-trimester blood test",
+      "why": "The quad screen runs from about 15 to 22 weeks. If you skipped first-trimester screening, this is the other chance.",
+      "detail": "It measures four substances in your blood and estimates risk for Down syndrome, trisomy 18, and neural tube defects. It has a higher false-positive rate than cell-free DNA screening. If you already had cell-free DNA screening, many practices skip it. Ask what yours recommends and why.",
+      "minutes": 15,
+      "options": [
+        {
+          "id": "w14-quad-yes",
+          "label": "Have the quad screen",
+          "detail": "One blood draw. Results in about a week.",
+          "cost": "varies"
+        },
+        {
+          "id": "w14-quad-no",
+          "label": "Skip it",
+          "detail": "Reasonable if you already had cell-free DNA screening.",
+          "cost": "free"
+        },
+        {
+          "id": "w14-quad-ask",
+          "label": "Ask your OB which test they recommend",
+          "detail": "The honest answer depends on what you have already had.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You have already had second-trimester screening.",
+      "keywords": ["quad screen", "afp", "blood test", "screening"]
+    },
+    {
+      "id": "w14-appetite",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "nutrition",
+      "title": "Build meals around protein and color",
+      "why": "Appetite returning is a good sign, and it is also when the 'eating for two' idea does damage. You need about 340 extra calories a day in the second trimester, not double.",
+      "detail": "A rough plate: a palm of protein, a fist of vegetables or fruit, a fist of whole grains, and a thumb of fat. That covers most of what the baby takes from you. Prenatal vitamins cover the gaps. If you are hungry all the time, add protein rather than cutting back.",
+      "minutes": 15,
+      "options": [
+        {
+          "id": "w14-food-plan",
+          "label": "Plan three dinners you can repeat",
+          "detail": "Repetition is not boring, it is a system. Pick things you can cook in 30 minutes.",
+          "cost": "$"
+        },
+        {
+          "id": "w14-food-protein",
+          "label": "Add a protein snack",
+          "detail": "Greek yogurt, eggs, nuts, cheese, or beans. Keeps you full longer than crackers.",
+          "cost": "$"
+        },
+        {
+          "id": "w14-food-wic",
+          "label": "Check WIC eligibility",
+          "detail": "Pregnancy raises the income limit. It covers milk, eggs, beans, produce, and cereal.",
+          "url": "https://www.fna.usda.gov/wic",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You already eat this way and feel well.",
+      "keywords": ["nutrition", "protein", "diet", "calories"]
+    },
+    {
+      "id": "w14-announce-work",
+      "type": "ask",
+      "priority": "optional",
+      "domain": "money",
+      "title": "Decide when to tell your employer",
+      "why": "Telling work starts a clock on some protections and on leave planning. Waiting is also a legitimate choice.",
+      "detail": "FMLA protects your job for 12 weeks unpaid if you have worked a year and your employer has 50 or more employees. Some states have paid family leave on top. Ask HR for the leave policy in writing before you disclose, so you know what you are walking into. You can ask for accommodations without disclosing a pregnancy.",
+      "minutes": 30,
+      "options": [
+        {
+          "id": "w14-work-now",
+          "label": "Tell them now",
+          "detail": "Gives more time to plan coverage and to ask about leave.",
+          "cost": "free"
+        },
+        {
+          "id": "w14-work-later",
+          "label": "Wait until you are showing",
+          "detail": "Common, and legal. Nothing is lost except planning time.",
+          "cost": "free"
+        },
+        {
+          "id": "w14-work-hr-first",
+          "label": "Ask HR for the policy first, without saying why",
+          "detail": "You can read the leave policy before you decide anything.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You do not work, or you have already told them.",
+      "keywords": ["work", "employer", "leave", "hr"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "w14-linea-nigra",
+      "title": "The dark line down your belly is temporary",
+      "body": "It is called the linea nigra and it comes from pregnancy hormones. It fades within a few months after birth. Sun exposure makes it darker.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w14-skin",
+      "title": "Skin changes are common and mostly fade",
+      "body": "Dark patches on the face, darker nipples, and more visible veins are all normal hormonal effects. Sunscreen helps the face patches. Most fade after birth.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w14-teeth-w14",
+      "title": "If you have not booked the dentist, do it now",
+      "body": "The second trimester is the most comfortable time for a cleaning. Gum disease is linked to preterm birth, and treatment is safe.",
+      "domain": "health-parent"
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "w14-rf-bleeding",
+      "text": "Bleeding that fills a pad, or bleeding with pain",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w14-rf-fever",
+      "text": "A fever over 100.4°F",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w14-rf-burning",
+      "text": "Burning when you pee, or pain in your side with a fever",
+      "escalation": "call-ob-triage"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "w14-appt-quad",
+      "label": "Second-trimester blood screening, if you choose it",
+      "from": 15,
+      "to": 22,
+      "who": "Lab",
+      "note": "One blood draw. Ask about cost first."
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-acog-genetic-w14",
+      "title": "Prenatal Genetic Screening Tests",
+      "publisher": "ACOG",
+      "url": "https://www.acog.org/womens-health/faqs/prenatal-genetic-screening-tests",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-dol-fmla-w14",
+      "title": "Family and Medical Leave Act",
+      "publisher": "US Department of Labor",
+      "url": "https://www.dol.gov/agencies/whd/fmla",
+      "kind": "government",
+      "accessed": "2026-10-20"
+    }
+  ],
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-20",
+  "updatedAt": "2026-10-21"
+}

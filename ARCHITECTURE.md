@@ -285,6 +285,7 @@ Author (MDX/JSON)
    ├─ Link check (CI, weekly)
    ├─ Reading level check (CI, target grade ≤ 8)
    ├─ Forbidden-claims lint (CI: "cure", "guarantee", "safe", "normal")
+   ├─ Registry check (CI: every pack file is imported)
    │
    ▼
 Clinical review (human, recorded in frontmatter)
@@ -298,6 +299,8 @@ Publish (status = published, published_at)
    ▼
 Weekly digest job reads published packs
 ```
+
+**The pack registry is generated, not maintained.** `packages/content/src/registry.ts` is written by `scripts/gen-registry.mjs` from `packs/*.json`, and `pnpm content:registry:check` fails CI if it has drifted. It used to be a hand-written list of imports, which meant a new pack file did nothing until someone remembered to add one — and for a while 33 validated packs were invisible to the app. A list of files that already exist on disk should never be typed by hand.
 
 ### Content schema (Zod, simplified)
 

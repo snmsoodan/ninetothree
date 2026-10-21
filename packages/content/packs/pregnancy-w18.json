@@ -1,0 +1,172 @@
+{
+  "id": "pregnancy-w18",
+  "kind": "pregnancy",
+  "stageIndex": 18,
+  "stageUnit": "week",
+  "locale": "en-US",
+  "country": "US",
+  "title": "Week 18",
+  "subtitle": "The anatomy scan window is open. This is the week most people have it.",
+  "baby": {
+    "size": "About the size of a bell pepper",
+    "development": "The baby can hear your voice and your heartbeat. A protective coating called vernix is forming on the skin. The genitals are developed enough to be seen on an ultrasound."
+  },
+  "you": {
+    "body": "You are probably showing now. Your uterus is just below your belly button. You may feel movement more regularly, though there is no schedule to it yet.",
+    "mind": "If you are waiting for the scan, the days can drag. It is fine to plan something for the day after, so the week does not end at the appointment."
+  },
+  "coreActions": [
+    {
+      "id": "w18-anatomy-scan",
+      "type": "book",
+      "priority": "essential",
+      "domain": "health-parent",
+      "title": "Have your anatomy scan",
+      "why": "This is the scan that checks the baby's structure in detail. It is the single most informative appointment of the pregnancy.",
+      "detail": "It takes 30 to 60 minutes. The sonographer will move the wand around and take many images, and may ask you to change position or empty your bladder. You can ask them to explain what they are looking at. If they go quiet, that is usually concentration, not bad news.",
+      "minutes": 60,
+      "options": [
+        {
+          "id": "w18-scan-ob",
+          "label": "At your OB's office",
+          "detail": "Simplest, and the report goes straight into your chart.",
+          "cost": "varies"
+        },
+        {
+          "id": "w18-scan-mfm",
+          "label": "At a maternal-fetal medicine center",
+          "detail": "More detailed equipment and a specialist reading it.",
+          "cost": "varies"
+        }
+      ],
+      "skipIf": "You have already had the scan.",
+      "keywords": ["anatomy scan", "ultrasound", "20 weeks"]
+    },
+    {
+      "id": "w18-sex",
+      "type": "ask",
+      "priority": "optional",
+      "domain": "mind",
+      "title": "Decide whether you want to know the sex",
+      "why": "The scan can usually tell you. Whether you want to know is a separate question, and both answers are fine.",
+      "detail": "If you want to be surprised, tell the sonographer before they start, and ask them to note it in the chart rather than say it out loud. If you want to know, ask them to confirm at the end — early in the scan it can be harder to see.",
+      "minutes": 10,
+      "options": [
+        {
+          "id": "w18-sex-yes",
+          "label": "Find out at the scan",
+          "detail": "The most common choice. Ask them to confirm before you leave.",
+          "cost": "free"
+        },
+        {
+          "id": "w18-sex-no",
+          "label": "Wait until birth",
+          "detail": "Tell them at the start so nobody slips.",
+          "cost": "free"
+        },
+        {
+          "id": "w18-sex-later",
+          "label": "Have them write it down",
+          "detail": "A sealed note you can open when you decide.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You already know, or you have already decided.",
+      "keywords": ["sex", "gender", "boy", "girl", "surprise"]
+    },
+    {
+      "id": "w18-birth-plan",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "health-parent",
+      "title": "Start a birth preferences page",
+      "why": "A short list of what matters to you is more useful than a script. It gives your team something to work with when plans change.",
+      "detail": "Keep it to one page. Cover pain relief, who is in the room, feeding, cord clamping, and what happens if a cesarean is needed. Write it as preferences, not demands — the staff will follow it when they can, and tell you when they cannot. Bring two copies.",
+      "minutes": 30,
+      "options": [
+        {
+          "id": "w18-plan-template",
+          "label": "Use a template",
+          "detail": "Most hospitals publish one. Ask at your next visit.",
+          "cost": "free"
+        },
+        {
+          "id": "w18-plan-own",
+          "label": "Write your own one-pager",
+          "detail": "Five headings, a few lines each. Shorter is better.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You already have one written.",
+      "keywords": ["birth plan", "preferences", "labor", "delivery"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "w18-scan-length",
+      "title": "A long scan is usually a wriggly baby",
+      "body": "The sonographer needs specific views, and a baby who will not turn means waiting and trying again. It is the most common reason a scan runs over.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w18-soft-markers",
+      "title": "Soft markers are common and usually mean nothing",
+      "body": "Small findings like a bright spot in the heart are seen in many healthy babies. They are a reason for a conversation, not a diagnosis.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w18-ankles",
+      "title": "Swelling in the ankles is common now",
+      "body": "Put your feet up when you can, and avoid standing for long stretches. Sudden swelling in one leg, or swelling with a headache or blurred vision, is different — call about that.",
+      "domain": "health-parent"
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "w18-rf-bleeding",
+      "text": "Bleeding that fills a pad, or bleeding with pain",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w18-rf-headache",
+      "text": "A severe headache that will not go, or blurred vision",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w18-rf-swelling",
+      "text": "Sudden swelling in your face or hands, or in one leg only",
+      "escalation": "call-ob-triage"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "w18-appt-anatomy",
+      "label": "Anatomy scan",
+      "from": 18,
+      "to": 22,
+      "who": "Ultrasound tech",
+      "note": "The long scan. Ask them to explain as they go."
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-acog-ultrasound-w18",
+      "title": "Ultrasound Exams",
+      "publisher": "ACOG",
+      "url": "https://www.acog.org/womens-health/faqs/ultrasound-exams",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-acog-prenatal-w18",
+      "title": "Prenatal Care",
+      "publisher": "ACOG",
+      "url": "https://www.acog.org/womens-health/faqs/prenatal-care",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    }
+  ],
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-20",
+  "updatedAt": "2026-10-21"
+}

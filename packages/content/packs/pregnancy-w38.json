@@ -1,0 +1,167 @@
+{
+  "id": "pregnancy-w38",
+  "kind": "pregnancy",
+  "stageIndex": 38,
+  "stageUnit": "week",
+  "locale": "en-US",
+  "country": "US",
+  "title": "Week 38",
+  "subtitle": "Two weeks to the due date. Most first babies come after it.",
+  "baby": {
+    "size": "About the size of a leek",
+    "development": "The organs are ready. The baby is still gaining fat, about an ounce a day. The grasp is firm and the eyes can focus at close range after birth."
+  },
+  "you": {
+    "body": "Your uterus is about seven inches above your belly button. You may have more pelvic pressure, more Braxton Hicks, and more trouble sleeping. Your cervix may start to soften and open.",
+    "mind": "The due date is a guess, not a promise. Only about one in twenty babies arrives on it. Planning for a week either side is more useful than planning for the date."
+  },
+  "coreActions": [
+    {
+      "id": "w38-due-date",
+      "type": "know",
+      "priority": "recommended",
+      "domain": "health-parent",
+      "title": "Treat the due date as a range",
+      "why": "Expecting the exact date makes every day after it feel like a failure. Expecting a two-week window makes the same days feel ordinary.",
+      "detail": "A due date is 40 weeks from the first day of your last period, and it is accurate to about two weeks either way. First babies often come a few days late. If you go past 41 weeks, your OB will talk about monitoring and induction.",
+      "minutes": 10,
+      "options": [
+        {
+          "id": "w38-date-range",
+          "label": "Write the window, not the date",
+          "detail": "Put a two-week range in your calendar instead.",
+          "cost": "free"
+        },
+        {
+          "id": "w38-date-ask",
+          "label": "Ask what happens at 41 weeks",
+          "detail": "So the plan is not a surprise.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You already have a plan for going past the due date.",
+      "keywords": ["due date", "40 weeks", "late", "overdue"]
+    },
+    {
+      "id": "w38-induction",
+      "type": "ask",
+      "priority": "recommended",
+      "domain": "health-parent",
+      "title": "Ask about the plan for 39 to 41 weeks",
+      "why": "Induction is offered at 39 weeks for some people and at 41 for most. Knowing your practice's plan means you can think about it before you are tired and in a room.",
+      "detail": "Induction at 39 weeks is recommended for some conditions and offered as a choice for others. After 41 weeks, most practices recommend it. Ask what they do, what the methods are, and how long it usually takes. You can ask for more time and monitoring instead.",
+      "minutes": 15,
+      "options": [
+        {
+          "id": "w38-ind-read",
+          "label": "Read about induction",
+          "detail": "Methods, timing, and what it feels like.",
+          "url": "https://www.acog.org/womens-health/faqs/labor-induction",
+          "cost": "free"
+        },
+        {
+          "id": "w38-ind-ask",
+          "label": "Ask your OB their plan",
+          "detail": "One conversation now saves a hard one later.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You have already discussed induction.",
+      "keywords": ["induction", "39 weeks", "41 weeks", "plan"]
+    },
+    {
+      "id": "w38-rest",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "sleep",
+      "title": "Rest and stop trying to start labor",
+      "why": "Nothing you do at home reliably starts labor. Castor oil, long walks, and spicy food mostly make you uncomfortable. Rest is the thing that actually helps.",
+      "detail": "Walking is fine if you enjoy it. Rest is better. Do not take castor oil — it causes diarrhea and dehydration and does not start labor. Do not try to sweep your own membranes. If you are uncomfortable, call your OB rather than trying something at home.",
+      "minutes": 30,
+      "options": [
+        {
+          "id": "w38-rest-nap",
+          "label": "Lie down",
+          "detail": "The most evidence-backed thing on this list.",
+          "cost": "free"
+        },
+        {
+          "id": "w38-rest-walk",
+          "label": "A short walk",
+          "detail": "Fine if you want to. Not a method.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You are already resting.",
+      "keywords": ["rest", "castor oil", "walking", "start labor"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "w38-braxton-w38",
+      "title": "Braxton Hicks get stronger near the end",
+      "body": "They are irregular and ease with rest or water. Contractions that get closer, longer, and stronger do not. If you are timing them, call.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w38-mucus-plug",
+      "title": "The mucus plug coming out means little",
+      "body": "It can come out days or weeks before labor, or during it. It is not a sign to go in. Call if there is bleeding with it.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w38-visitors-w38",
+      "title": "Decide who comes to the hospital",
+      "body": "Agree with your partner before labor. It is easier to say no now. You are allowed to want no visitors at all.",
+      "domain": "home"
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "w38-rf-movement",
+      "text": "A clear change in your baby's usual movement",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w38-rf-water",
+      "text": "Fluid that keeps leaking, or any vaginal bleeding",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w38-rf-headache",
+      "text": "A severe headache that will not go, or blurred vision or spots",
+      "escalation": "call-ob-triage"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "w38-appt-weekly",
+      "label": "Weekly prenatal visit",
+      "from": 38,
+      "to": 41,
+      "who": "OB or midwife",
+      "note": "Every week. Ask about the plan past 40."
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-acog-induction-w38",
+      "title": "Labor Induction",
+      "publisher": "ACOG",
+      "url": "https://www.acog.org/womens-health/faqs/labor-induction",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-acog-labor-w38",
+      "title": "How to Tell When Labor Begins",
+      "publisher": "ACOG",
+      "url": "https://www.acog.org/womens-health/faqs/how-to-tell-when-labor-begins",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    }
+  ],
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-20",
+  "updatedAt": "2026-10-21"
+}

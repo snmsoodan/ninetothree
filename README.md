@@ -216,15 +216,17 @@ A parent in the US can:
 
 Five CI jobs run on every pull request. Each one fails for exactly one class of mistake, so a red build tells you what broke without reading a log.
 
-| Job                   | Fails when                                                                        | Command                                                                                                |
-| --------------------- | --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| **Verify**            | formatting, lint, types, content schema, unit tests, or the build is wrong        | `pnpm format:check && pnpm lint && pnpm typecheck && pnpm content:validate && pnpm test && pnpm build` |
-| **End to end**        | a parent-facing journey breaks, or axe finds a WCAG 2.2 AA violation              | `pnpm test:e2e`                                                                                        |
-| **Storybook**         | a story throws, renders unstyled, or has an axe violation                         | `pnpm build-storybook && pnpm test:storybook`                                                          |
-| **Links**             | a pack or a catalogue entry cites a URL that no longer resolves                   | `pnpm links:check`                                                                                     |
-| **Lighthouse budget** | performance < 0.9, accessibility < 1.0, best practices < 0.95, or a console error | `pnpm lighthouse`                                                                                      |
+| Job                   | Fails when                                                                                       | Command                                                                                                                               |
+| --------------------- | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------- |
+| **Verify**            | formatting, lint, types, content schema, an unregistered pack, unit tests, or the build is wrong | `pnpm format:check && pnpm lint && pnpm typecheck && pnpm content:validate && pnpm content:registry:check && pnpm test && pnpm build` |
+| **End to end**        | a parent-facing journey breaks, or axe finds a WCAG 2.2 AA violation                             | `pnpm test:e2e`                                                                                                                       |
+| **Storybook**         | a story throws, renders unstyled, or has an axe violation                                        | `pnpm build-storybook && pnpm test:storybook`                                                                                         |
+| **Links**             | a pack or a catalogue entry cites a URL that no longer resolves                                  | `pnpm links:check`                                                                                                                    |
+| **Lighthouse budget** | performance < 0.9, accessibility < 1.0, best practices < 0.95, or a console error                | `pnpm lighthouse`                                                                                                                     |
 
 **The content lint bans the promise, not the word.** `pnpm content:validate` fails a pack that says "this will cure", "you should", "normal babies", or that reads above grade 8 — and prints the file, the path inside the pack, the rule and the sentence. A blanket ban on `safe` and `normal` was the first draft; it rejected "cleanings are safe in pregnancy" and "that is normal and not a sign your supply is dropping", so the rules target the claim instead. Every shipped pack scores between 4.6 and 7.4.
+
+**The pack registry is generated, not maintained.** `packages/content/src/registry.ts` used to be a hand-written list of nine imports, which meant a new pack file did nothing until someone remembered to add one — and for a while 33 validated packs were invisible to the app. `pnpm content:registry` regenerates it from `packs/*.json`, and `pnpm content:registry:check` fails CI if the file on disk has drifted. Add a pack, run the generator, commit both.
 
 **The dashboard is the front door.** Onboarding lands on `/`, which is one card with one button — the week you are in, a progress bar with no percentage, and "Open this week". Pins, appointments, a share card and one line of progress sit below it. There is no feed. When the week is finished the card stops asking and says "Nothing else to do until Monday." The nav's first tab is "This week" and stays lit on `/week` and `/week/*`.
 

@@ -1,0 +1,173 @@
+{
+  "id": "pregnancy-w11",
+  "kind": "pregnancy",
+  "stageIndex": 11,
+  "stageUnit": "week",
+  "locale": "en-US",
+  "country": "US",
+  "title": "Week 11",
+  "subtitle": "The first-trimester screening window is open. It is a scan and a blood test, and it is optional.",
+  "baby": {
+    "size": "About the size of a fig",
+    "development": "The baby is starting to move in a way that looks like stretching rather than twitching. Tooth buds are forming under the gums. The head is still about half the body, which is why the scan measures it."
+  },
+  "you": {
+    "body": "Nausea may start to lift this week, or it may not. Your uterus is moving up out of the pelvis, which will eventually change how often you pee.",
+    "mind": "The gap between appointments can feel long. If you are anxious, ask whether your practice has a nurse line you can call between visits. Most do."
+  },
+  "coreActions": [
+    {
+      "id": "w11-nt-scan",
+      "type": "book",
+      "priority": "recommended",
+      "domain": "health-parent",
+      "title": "Book the first-trimester screening, if you want it",
+      "why": "The nuchal translucency scan has a narrow window — roughly 11 to 14 weeks. Miss it and the option is gone until the anatomy scan.",
+      "detail": "It is an abdominal ultrasound that measures a pocket of fluid at the back of the baby's neck, combined with a blood test. Together they estimate risk for certain chromosomal conditions. It is a screening test, not a diagnosis. Not every practice offers it; ask whether yours does.",
+      "minutes": 20,
+      "options": [
+        {
+          "id": "w11-nt-yes",
+          "label": "Book the scan and blood test",
+          "detail": "Usually one appointment, about 45 minutes.",
+          "cost": "varies"
+        },
+        {
+          "id": "w11-nt-skip",
+          "label": "Skip it and wait for the anatomy scan",
+          "detail": "A reasonable choice, especially if you already had cell-free DNA screening.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You have already had first-trimester screening, or your practice does not offer it.",
+      "keywords": ["nt scan", "nuchal", "screening", "ultrasound"]
+    },
+    {
+      "id": "w11-movement",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "health-parent",
+      "title": "Move for 20 minutes, most days",
+      "why": "Regular movement lowers the risk of gestational diabetes and high blood pressure, and it helps sleep and mood. It is the single most useful thing you can do that is not a test.",
+      "detail": "Walking counts. So does swimming, stationary cycling, and prenatal yoga. The test is whether you can hold a conversation while you do it. Skip anything with a fall risk, contact sports, and hot yoga. If you were not active before, start with ten minutes.",
+      "minutes": 20,
+      "options": [
+        {
+          "id": "w11-move-walk",
+          "label": "A daily walk",
+          "detail": "Free, and the easiest thing to keep doing in the third trimester.",
+          "cost": "free"
+        },
+        {
+          "id": "w11-move-swim",
+          "label": "Swimming or water aerobics",
+          "detail": "Takes the weight off your joints. Very good later on.",
+          "cost": "$$"
+        },
+        {
+          "id": "w11-move-yoga",
+          "label": "Prenatal yoga",
+          "detail": "Look for a class taught by someone trained in prenatal. Avoid deep twists and hot rooms.",
+          "cost": "$$"
+        }
+      ],
+      "skipIf": "Your OB has told you to limit activity.",
+      "keywords": ["exercise", "walking", "yoga", "movement"]
+    },
+    {
+      "id": "w11-food-refresh",
+      "type": "know",
+      "priority": "optional",
+      "domain": "nutrition",
+      "title": "Relearn the short list of foods to avoid",
+      "why": "The list is shorter than the internet suggests, and knowing it stops you from worrying about the wrong things.",
+      "detail": "Avoid raw and undercooked meat and fish, raw sprouts, unpasteurized milk and soft cheese, deli meat unless heated until steaming, refrigerated smoked seafood, and high-mercury fish like swordfish, shark, king mackerel, and tilefish. Limit albacore tuna to about 6 ounces a week. Everything else is mostly fine.",
+      "minutes": 10,
+      "options": [
+        {
+          "id": "w11-food-cdc",
+          "label": "Read the CDC list",
+          "detail": "Short, plain, and updated. Better than most blog posts.",
+          "url": "https://www.cdc.gov/pregnancy/",
+          "cost": "free"
+        },
+        {
+          "id": "w11-food-print",
+          "label": "Print it and put it on the fridge",
+          "detail": "Useful for anyone cooking for you.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You already know the list well.",
+      "keywords": ["food", "diet", "avoid", "listeria"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "w11-hair",
+      "title": "Hair dye and nail polish are considered fine",
+      "body": "The evidence does not show harm from occasional use in a ventilated space. If you would rather wait, waiting is also fine.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w11-sex",
+      "title": "Sex is fine in an uncomplicated pregnancy",
+      "body": "The baby is well protected. If you have bleeding, placenta previa, or a history of preterm birth, ask your OB first.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w11-screening-cost",
+      "title": "Ask what a test will cost before you agree",
+      "body": "Screening tests are sometimes covered and sometimes billed to you. A two-minute call to your insurer before the appointment avoids a bill in month seven.",
+      "domain": "money"
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "w11-rf-bleeding",
+      "text": "Bleeding that fills a pad, or bleeding with pain",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w11-rf-fever",
+      "text": "A fever over 100.4°F",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w11-rf-pee",
+      "text": "Burning when you pee, or pain in your side with a fever",
+      "escalation": "call-ob-triage"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "w11-appt-nt",
+      "label": "First-trimester screening ultrasound",
+      "from": 11,
+      "to": 14,
+      "who": "Ultrasound tech",
+      "note": "A narrow window. Book it now if you want it."
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-acog-ultrasound",
+      "title": "Ultrasound Exams",
+      "publisher": "ACOG",
+      "url": "https://www.acog.org/womens-health/faqs/ultrasound-exams",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-acog-genetic-w11",
+      "title": "Prenatal Genetic Screening Tests",
+      "publisher": "ACOG",
+      "url": "https://www.acog.org/womens-health/faqs/prenatal-genetic-screening-tests",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    }
+  ],
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-20",
+  "updatedAt": "2026-10-21"
+}

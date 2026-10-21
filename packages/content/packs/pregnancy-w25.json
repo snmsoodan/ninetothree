@@ -1,0 +1,173 @@
+{
+  "id": "pregnancy-w25",
+  "kind": "pregnancy",
+  "stageIndex": 25,
+  "stageUnit": "week",
+  "locale": "en-US",
+  "country": "US",
+  "title": "Week 25",
+  "subtitle": "The third trimester is two weeks away. This is the last stretch with real energy.",
+  "baby": {
+    "size": "About the size of a rutabaga",
+    "development": "The baby is putting on fat and the skin is becoming less translucent. Hands are fully formed and the grip is strong. The startle reflex is developing."
+  },
+  "you": {
+    "body": "Your uterus is about two and a half inches above your belly button. You may have trouble getting comfortable at night, and heartburn may be worse. Your hair may look thicker, which is because you are shedding less, not growing more.",
+    "mind": "The countdown feeling starts here. If you have not done the practical planning, this is the week with the most energy left to do it."
+  },
+  "coreActions": [
+    {
+      "id": "w25-birth-plan",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "health-parent",
+      "title": "Finish your birth preferences",
+      "why": "A one-page list of what matters is more useful than a script, and it is easier to write now than at 38 weeks.",
+      "detail": "Cover pain relief, who is in the room, feeding, cord clamping, and what happens if a cesarean is needed. Write it as preferences, not demands. Bring two copies and give one to your support person. Ask your OB to put it in your chart.",
+      "minutes": 30,
+      "options": [
+        {
+          "id": "w25-plan-template",
+          "label": "Use a hospital template",
+          "detail": "Most publish one. It covers the questions they actually ask.",
+          "cost": "free"
+        },
+        {
+          "id": "w25-plan-own",
+          "label": "Write your own one-pager",
+          "detail": "Five headings, a few lines each. Shorter is better.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You already have one written and shared.",
+      "keywords": ["birth plan", "preferences", "labor"]
+    },
+    {
+      "id": "w25-car-seat-install",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "safety",
+      "title": "Install the car seat and get it checked",
+      "why": "Most seats are installed wrong the first time. A free check by a certified technician is the single highest-value thing you can do for the baby's safety.",
+      "detail": "Install it now, not in the hospital parking lot. The seat should not move more than an inch at the belt path. The chest clip goes at armpit level. If you are using an infant seat, check the base is level. Book a free inspection through NHTSA's locator.",
+      "minutes": 60,
+      "options": [
+        {
+          "id": "w25-seat-check",
+          "label": "A free inspection",
+          "detail": "A certified technician checks the install. Free, and worth the appointment.",
+          "url": "https://www.nhtsa.gov/vehicle-safety/car-seats-and-booster-seats#installation-help-inspection",
+          "cost": "free"
+        },
+        {
+          "id": "w25-seat-self",
+          "label": "Install it yourself and read the manual",
+          "detail": "Fine if you read the whole manual. Most people skip a step.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You do not have a car, or the seat is already installed and checked.",
+      "keywords": ["car seat", "install", "inspection", "safety"]
+    },
+    {
+      "id": "w25-freezer",
+      "type": "do",
+      "priority": "optional",
+      "domain": "home",
+      "title": "Put a few meals in the freezer",
+      "why": "The first two weeks at home are not a good time to cook. Ten meals now is a real gift to yourself later.",
+      "detail": "Cook double on nights you already cook, and freeze half in portions you can reheat one-handed. Soup, chili, stew, and pasta sauce all freeze well. Label with the date. Ask friends to bring food instead of gifts if they offer.",
+      "minutes": 90,
+      "options": [
+        {
+          "id": "w25-freezer-double",
+          "label": "Double your normal dinners",
+          "detail": "No extra cooking, just extra containers.",
+          "cost": "$"
+        },
+        {
+          "id": "w25-freezer-batch",
+          "label": "One batch-cooking day",
+          "detail": "Four recipes, one afternoon, ten meals.",
+          "cost": "$$"
+        },
+        {
+          "id": "w25-freezer-buy",
+          "label": "Buy frozen meals",
+          "detail": "Less good, much easier. Still better than takeout every night.",
+          "cost": "$$"
+        }
+      ],
+      "skipIf": "You have help lined up, or you do not cook.",
+      "keywords": ["freezer", "meals", "cooking", "prep"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "w25-hair",
+      "title": "Thicker hair is a shedding change",
+      "body": "You shed less in pregnancy, so the hair looks fuller. It comes out in the months after birth, which is normal and temporary.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w25-restless-legs",
+      "title": "Restless legs are common in the third trimester",
+      "body": "Stretching before bed, a warm bath, and less caffeine in the evening all help. Ask about iron — low iron is linked to it.",
+      "domain": "sleep"
+    },
+    {
+      "id": "w25-partner-leave",
+      "title": "The other parent has leave too",
+      "body": "Many employers offer paternity or partner leave, and some states include it in paid family leave. Ask now, because the paperwork has a deadline.",
+      "domain": "money"
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "w25-rf-headache",
+      "text": "A severe headache that will not go, or blurred vision or spots",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w25-rf-movement",
+      "text": "A clear change in your baby's usual movement",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w25-rf-contractions",
+      "text": "Regular contractions before 37 weeks",
+      "escalation": "call-ob-triage"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "w25-appt-visit",
+      "label": "Prenatal visit",
+      "from": 25,
+      "to": 28,
+      "who": "OB or midwife",
+      "note": "Ask about the Tdap date and the glucose result."
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-nhtsa-seats-w25",
+      "title": "Car Seats and Booster Seats",
+      "publisher": "NHTSA",
+      "url": "https://www.nhtsa.gov/vehicle-safety/car-seats-and-booster-seats",
+      "kind": "government",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-acog-prenatal-w25",
+      "title": "Prenatal Care",
+      "publisher": "ACOG",
+      "url": "https://www.acog.org/womens-health/faqs/prenatal-care",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    }
+  ],
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-20",
+  "updatedAt": "2026-10-21"
+}

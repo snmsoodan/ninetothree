@@ -1,0 +1,167 @@
+{
+  "id": "pregnancy-w23",
+  "kind": "pregnancy",
+  "stageIndex": 23,
+  "stageUnit": "week",
+  "locale": "en-US",
+  "country": "US",
+  "title": "Week 23",
+  "subtitle": "The glucose test is next. It is the last big screening before the third trimester.",
+  "baby": {
+    "size": "About the size of a grapefruit",
+    "development": "The baby can hear your voice clearly now and may startle at loud sounds. The lungs are developing blood vessels. Skin is still thin and translucent, and fat is starting to fill it out."
+  },
+  "you": {
+    "body": "Your uterus is about an inch and a half above your belly button. You may have more Braxton Hicks tightenings. Your belly button may flatten or pop out, and it goes back after birth.",
+    "mind": "The third trimester is close. If you have been putting off the practical planning, this is a good week for it — energy tends to dip again later."
+  },
+  "coreActions": [
+    {
+      "id": "w23-glucose",
+      "type": "do",
+      "priority": "essential",
+      "domain": "health-parent",
+      "title": "Have the glucose test",
+      "why": "Gestational diabetes usually has no symptoms. Finding it means it can be managed, which lowers the risk of a large baby and delivery complications.",
+      "detail": "You drink a sweet drink, wait an hour, and have a blood draw. Do not fast unless they tell you to. If the result is high, the next step is a longer test — a high screening result is not a diagnosis. About 1 in 10 pregnant people have gestational diabetes, and most manage it with food and monitoring.",
+      "minutes": 90,
+      "options": [
+        {
+          "id": "w23-glucose-one",
+          "label": "The one-hour test",
+          "detail": "The usual first step. No fasting at most practices.",
+          "cost": "varies"
+        },
+        {
+          "id": "w23-glucose-two",
+          "label": "The two-hour test",
+          "detail": "Some practices start here. You fast beforehand.",
+          "cost": "varies"
+        }
+      ],
+      "skipIf": "You have already had it.",
+      "keywords": ["glucose", "gestational diabetes", "test", "sugar"]
+    },
+    {
+      "id": "w23-preterm-signs",
+      "type": "know",
+      "priority": "recommended",
+      "domain": "health-parent",
+      "title": "Learn the signs of preterm labor",
+      "why": "Preterm labor can be stopped or slowed if it is caught early. Knowing the signs is the difference between calling and waiting.",
+      "detail": "Regular contractions that get closer together, a low heavy feeling in the pelvis, a change in discharge, a gush of fluid, or backache that does not go away. If any of these happen before 37 weeks, call your OB rather than waiting for the next appointment. Calling and being wrong is fine.",
+      "minutes": 10,
+      "options": [
+        {
+          "id": "w23-preterm-read",
+          "label": "Read the signs once",
+          "detail": "Ten minutes now is worth it. You will remember more than you think.",
+          "url": "https://www.nichd.nih.gov/health/topics/preterm",
+          "cost": "free"
+        },
+        {
+          "id": "w23-preterm-save",
+          "label": "Save the triage number",
+          "detail": "Put it in your phone under a name you will find at 2am.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You already know the signs and have the number saved.",
+      "keywords": ["preterm", "early labor", "contractions", "signs"]
+    },
+    {
+      "id": "w23-bag",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "home",
+      "title": "Start a hospital bag, and leave it half-packed",
+      "why": "You may need it at 34 weeks, not 40. A bag that is mostly ready is better than one that is perfect and unpacked.",
+      "detail": "The useful list is short: ID and insurance card, phone charger with a long cable, comfortable clothes, toiletries, snacks, a going-home outfit for you and one for the baby, and a car seat in the car. The hospital provides most of the rest. Pack your partner a bag too.",
+      "minutes": 30,
+      "options": [
+        {
+          "id": "w23-bag-list",
+          "label": "Use a hospital's list",
+          "detail": "Most publish one. It is shorter than the internet's version.",
+          "cost": "free"
+        },
+        {
+          "id": "w23-bag-own",
+          "label": "Write your own",
+          "detail": "Ten items, one bag. Add as you think of things.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "Your bag is already packed.",
+      "keywords": ["hospital bag", "packing", "labor bag"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "w23-belly-button",
+      "title": "A popping belly button is temporary",
+      "body": "The uterus pushes it out. It goes back after birth, though it may look different. A small hernia is possible and usually harmless — mention it at a visit.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w23-braxton",
+      "title": "Braxton Hicks are practice, not progress",
+      "body": "They are irregular, they do not get stronger, and they usually stop if you change position or drink water. Real contractions get closer together and do not stop.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w23-shoes",
+      "title": "Your feet may grow, and not only from swelling",
+      "body": "Relaxin loosens ligaments, and some people go up half a size permanently. Buy shoes that fit now rather than hoping.",
+      "domain": "gear"
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "w23-rf-contractions",
+      "text": "Regular contractions before 37 weeks",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w23-rf-fluid",
+      "text": "A gush or steady trickle of fluid from the vagina",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w23-rf-movement",
+      "text": "A clear change in your baby's usual movement",
+      "escalation": "call-ob-triage"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "w23-appt-glucose",
+      "label": "Glucose screening test",
+      "from": 24,
+      "to": 28,
+      "who": "Lab",
+      "note": "About an hour. Ask whether to fast."
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-acog-gd-w23",
+      "title": "Gestational Diabetes",
+      "publisher": "ACOG",
+      "url": "https://www.acog.org/womens-health/faqs/gestational-diabetes",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-nichd-preterm-w23",
+      "title": "Preterm Birth",
+      "publisher": "NICHD",
+      "url": "https://www.nichd.nih.gov/health/topics/preterm",
+      "kind": "government",
+      "accessed": "2026-10-20"
+    }
+  ],
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-20",
+  "updatedAt": "2026-10-21"
+}

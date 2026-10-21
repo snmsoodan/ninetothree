@@ -1,0 +1,268 @@
+{
+  "id": "pregnancy-w16",
+  "kind": "pregnancy",
+  "stageIndex": 16,
+  "stageUnit": "week",
+  "locale": "en-US",
+  "country": "US",
+  "title": "Week 16",
+  "subtitle": "You may be visibly pregnant now, or not at all. Both are ordinary.",
+  "baby": {
+    "size": "About the size of an avocado",
+    "development": "The baby's eyes can move slowly behind closed lids. The ears are in their final position, so sounds are clearer. The heart is pumping about 25 quarts of blood a day."
+  },
+  "you": {
+    "body": "The top of your uterus is about halfway to your belly button. Backache and round-ligament pain are common as things shift. You may have more discharge, which is normal unless it itches or smells strong.",
+    "mind": "Some people feel a burst of energy and start planning everything. Others feel flat. Both are ordinary second-trimester experiences."
+  },
+  "coreActions": [
+    {
+      "id": "w16-back",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "health-parent",
+      "title": "Protect your back before it hurts",
+      "why": "Your center of gravity moves forward as the bump grows, and the lower back takes the load. A few habits now prevent months of ache.",
+      "detail": "Sit with your feet flat and a cushion behind your lower back. Bend at the knees, not the waist. Sleep with a pillow between your knees. If you sit at a desk, raise the screen to eye level. A support belt helps later, not now.",
+      "minutes": 15,
+      "options": [
+        {
+          "id": "w16-back-chair",
+          "label": "A cushion or rolled towel",
+          "detail": "Cheapest fix. Behind the lower back, at your desk and in the car.",
+          "cost": "$"
+        },
+        {
+          "id": "w16-back-belt",
+          "label": "A maternity support belt",
+          "detail": "Useful from the third trimester. Ask your OB before relying on one.",
+          "cost": "$$"
+        },
+        {
+          "id": "w16-back-pt",
+          "label": "A physical therapist",
+          "detail": "Ask for a referral. Prenatal PT is usually covered and works.",
+          "cost": "varies"
+        }
+      ],
+      "skipIf": "Your back feels fine and you already sit and lift carefully.",
+      "keywords": ["back", "pain", "posture", "support"]
+    },
+    {
+      "id": "w16-registry",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "gear",
+      "title": "Start a registry, and keep it short",
+      "why": "People will buy you things whether or not you make a list. A short list means the things you get are the things you wanted.",
+      "detail": "The genuinely essential list is small: a safe place to sleep, a car seat, a way to feed, clothes, diapers, and a few cloths. Everything else is a convenience. Put the boring things on it — diapers in sizes 1 and 2, wipes, burp cloths, a thermometer. Those are what you run out of at 2am.",
+      "minutes": 45,
+      "options": [
+        {
+          "id": "w16-registry-big",
+          "label": "A big-box registry",
+          "detail": "Widest choice, easy for guests, and a completion discount at the end.",
+          "cost": "free"
+        },
+        {
+          "id": "w16-registry-small",
+          "label": "A small independent shop",
+          "detail": "Better advice, fewer options, sometimes pricier.",
+          "cost": "free"
+        },
+        {
+          "id": "w16-registry-list",
+          "label": "A plain list you send people",
+          "detail": "No registry, no discount, total control. Works well for a small circle.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You are not having a shower, or you already have a registry.",
+      "keywords": ["registry", "shower", "baby list", "gifts"]
+    },
+    {
+      "id": "w16-car-seat",
+      "type": "buy",
+      "priority": "recommended",
+      "domain": "safety",
+      "title": "Start looking at car seats",
+      "why": "Every US state requires a car seat to leave the hospital. It is the one piece of gear you cannot skip and cannot buy late.",
+      "detail": "For a newborn, an infant car seat or a convertible seat rated from birth both work. Check that it meets FMVSS 213 and has not been recalled. Avoid a used seat unless you know its history — a seat that has been in a crash cannot be reused. The seat expires, usually after six to ten years.",
+      "minutes": 45,
+      "options": [
+        {
+          "id": "w16-seat-infant",
+          "label": "An infant car seat",
+          "detail": "Clips in and out of a base, so you can carry a sleeping baby. Outgrown in about a year.",
+          "url": "https://www.nhtsa.gov/vehicle-safety/car-seats-and-booster-seats",
+          "cost": "$$"
+        },
+        {
+          "id": "w16-seat-convertible",
+          "label": "A convertible seat",
+          "detail": "Rear-facing from birth, then forward-facing, then a booster. One purchase for years.",
+          "url": "https://www.nhtsa.gov/vehicle-safety/car-seats-and-booster-seats",
+          "cost": "$$$"
+        },
+        {
+          "id": "w16-seat-check",
+          "label": "Get a free installation check",
+          "detail": "A certified technician checks the install. Free, and most people get it wrong the first time.",
+          "url": "https://www.nhtsa.gov/vehicle-safety/car-seats-and-booster-seats#installation-help-inspection",
+          "cost": "free"
+        }
+      ],
+      "chooser": {
+        "questions": [
+          {
+            "id": "w16-q-cars",
+            "question": "How many cars will the baby ride in regularly?",
+            "why": "Two cars usually means two bases, which changes the math.",
+            "answers": [
+              {
+                "id": "w16-a-one",
+                "label": "One"
+              },
+              {
+                "id": "w16-a-two",
+                "label": "Two or more"
+              }
+            ]
+          },
+          {
+            "id": "w16-q-carry",
+            "question": "Do you want to carry the baby in the seat?",
+            "why": "An infant seat lets you move a sleeping baby without waking them.",
+            "answers": [
+              {
+                "id": "w16-a-yes",
+                "label": "Yes, that sounds useful"
+              },
+              {
+                "id": "w16-a-no",
+                "label": "No, I would rather not carry it"
+              }
+            ]
+          },
+          {
+            "id": "w16-q-budget",
+            "question": "What would you like to spend?",
+            "answers": [
+              {
+                "id": "w16-a-low",
+                "label": "Under $200"
+              },
+              {
+                "id": "w16-a-high",
+                "label": "$200 or more"
+              }
+            ]
+          }
+        ],
+        "recommendations": [
+          {
+            "optionId": "w16-seat-infant",
+            "when": {
+              "w16-q-carry": ["w16-a-yes"],
+              "w16-q-budget": ["w16-a-low"]
+            },
+            "reason": "An infant seat is the cheapest way to get the carry-in-and-out convenience."
+          },
+          {
+            "optionId": "w16-seat-convertible",
+            "when": {
+              "w16-q-carry": ["w16-a-no"],
+              "w16-q-budget": ["w16-a-high"]
+            },
+            "reason": "One seat from birth to booster, and you never carry it."
+          },
+          {
+            "optionId": "w16-seat-check",
+            "when": {
+              "w16-q-cars": ["w16-a-two"]
+            },
+            "reason": "With two cars, get the install checked in both. It is free and it is the step people skip."
+          }
+        ]
+      },
+      "skipIf": "You already have a car seat that is unexpired and has never been in a crash.",
+      "keywords": ["car seat", "infant seat", "convertible", "safety"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "w16-discharge",
+      "title": "More discharge is expected",
+      "body": "It increases through pregnancy. Call if it itches, smells strong, or is green or grey — those are signs of an infection that is easy to treat.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w16-gums",
+      "title": "Bleeding gums are common and treatable",
+      "body": "Pregnancy gingivitis affects a lot of people. Brushing gently and flossing still helps. Do not stop brushing because it bleeds.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w16-nursery",
+      "title": "The nursery does not need to be finished",
+      "body": "A bassinet in your room is what the first months actually look like. The crib can wait. Paint and assemble early if you can, so the fumes and the boxes are gone before the baby arrives.",
+      "domain": "home"
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "w16-rf-bleeding",
+      "text": "Bleeding that fills a pad, or bleeding with pain",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w16-rf-fever",
+      "text": "A fever over 100.4°F",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w16-rf-burning",
+      "text": "Burning when you pee, or pain in your side with a fever",
+      "escalation": "call-ob-triage"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "w16-appt-visit",
+      "label": "Prenatal visit",
+      "from": 16,
+      "to": 20,
+      "who": "OB or midwife",
+      "note": "Short. Blood pressure, weight, and the heartbeat."
+    },
+    {
+      "id": "w16-appt-anatomy",
+      "label": "Anatomy scan",
+      "from": 18,
+      "to": 22,
+      "who": "Ultrasound tech",
+      "note": "The long one. Book it if you have not."
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-nhtsa-seats",
+      "title": "Car Seats and Booster Seats",
+      "publisher": "NHTSA",
+      "url": "https://www.nhtsa.gov/vehicle-safety/car-seats-and-booster-seats",
+      "kind": "government",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-acog-prenatal-w16",
+      "title": "Prenatal Care",
+      "publisher": "ACOG",
+      "url": "https://www.acog.org/womens-health/faqs/prenatal-care",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    }
+  ],
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-20",
+  "updatedAt": "2026-10-21"
+}

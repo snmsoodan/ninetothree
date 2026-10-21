@@ -1,0 +1,166 @@
+{
+  "id": "pregnancy-w21",
+  "kind": "pregnancy",
+  "stageIndex": 21,
+  "stageUnit": "week",
+  "locale": "en-US",
+  "country": "US",
+  "title": "Week 21",
+  "subtitle": "The glucose test is coming up. It is a screening, and there is a way to make it less unpleasant.",
+  "baby": {
+    "size": "About the size of a carrot",
+    "development": "The baby is swallowing amniotic fluid and the digestive system is practising. Eyebrows and eyelids are fully formed. Sleep and wake cycles are starting."
+  },
+  "you": {
+    "body": "Your uterus is above your belly button now. You may have a stronger appetite, more heartburn, and a linea nigra. Movement should be getting more noticeable.",
+    "mind": "The middle stretch can feel like a lull. It is a good time to do the planning that is hard to do later, and to rest without guilt."
+  },
+  "coreActions": [
+    {
+      "id": "w21-glucose-book",
+      "type": "book",
+      "priority": "essential",
+      "domain": "health-parent",
+      "title": "Book your glucose test",
+      "why": "Gestational diabetes usually has no symptoms, and it is treatable. The test happens between 24 and 28 weeks, and the window is not flexible.",
+      "detail": "You drink a sweet drink, wait an hour, and have a blood draw. Do not fast unless they tell you to. Ask whether they use the one-hour or two-hour version. If the result is high, the next step is a three-hour test, not a diagnosis.",
+      "minutes": 15,
+      "options": [
+        {
+          "id": "w21-glucose-one",
+          "label": "The one-hour test",
+          "detail": "The usual first step. No fasting at most practices.",
+          "cost": "varies"
+        },
+        {
+          "id": "w21-glucose-two",
+          "label": "The two-hour test",
+          "detail": "Some practices start here. You fast beforehand.",
+          "cost": "varies"
+        }
+      ],
+      "skipIf": "Your glucose test is already booked, or you have already had it.",
+      "keywords": ["glucose", "gestational diabetes", "sugar", "test"]
+    },
+    {
+      "id": "w21-glucose-prep",
+      "type": "know",
+      "priority": "recommended",
+      "domain": "health-parent",
+      "title": "Know how to make the glucose test easier",
+      "why": "The drink is cold and sweet and some people feel sick after it. A few small things make the hour pass better.",
+      "detail": "Ask for the drink chilled and drink it slowly. Bring something to do for an hour — you usually cannot leave. Bring water and a snack for after the blood draw. If you feel faint, tell the staff; it is common and they will lie you down.",
+      "minutes": 10,
+      "options": [
+        {
+          "id": "w21-prep-book",
+          "label": "Bring a book or headphones",
+          "detail": "An hour is longer than it sounds.",
+          "cost": "free"
+        },
+        {
+          "id": "w21-prep-snack",
+          "label": "Bring a snack for after",
+          "detail": "Especially if you fasted. Protein is better than sugar.",
+          "cost": "$"
+        }
+      ],
+      "skipIf": "You have already had the test.",
+      "keywords": ["glucose", "prep", "fasting", "drink"]
+    },
+    {
+      "id": "w21-kick-counts",
+      "type": "know",
+      "priority": "recommended",
+      "domain": "health-parent",
+      "title": "Learn how to check movement",
+      "why": "From about 28 weeks, a change in movement is the main thing you can notice at home. Knowing your baby's pattern is more useful than counting to a number.",
+      "detail": "There is no single correct count. The useful skill is knowing what is usual for your baby, and calling the same day if it changes. Do not use a home Doppler to reassure yourself — they are hard to use correctly and can give false comfort.",
+      "minutes": 10,
+      "options": [
+        {
+          "id": "w21-kick-learn",
+          "label": "Learn your baby's pattern",
+          "detail": "Pick a time of day when the baby is usually active and notice it.",
+          "cost": "free"
+        },
+        {
+          "id": "w21-kick-app",
+          "label": "Use a counting app",
+          "detail": "Helpful for some, anxiety-inducing for others. Either is fine.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You already know your baby's pattern well.",
+      "keywords": ["movement", "kick counts", "fetal movement"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "w21-gd",
+      "title": "Gestational diabetes is not caused by what you ate",
+      "body": "The placenta makes hormones that work against insulin. It happens in about 1 in 10 pregnancies, often in people with none of the usual risk factors. It is managed, and it usually goes away after birth.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w21-anemia",
+      "title": "Ask about your iron again around now",
+      "body": "Many practices recheck hemoglobin in the second half. Low iron is common and easy to treat, and it explains a lot of fatigue.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w21-nesting",
+      "title": "The urge to organize is real and can wait",
+      "body": "Nesting is common. Do the small things now and leave the big projects. You will have less energy, not more, in the third trimester.",
+      "domain": "home"
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "w21-rf-movement",
+      "text": "A clear change in your baby's usual movement",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w21-rf-headache",
+      "text": "A severe headache that will not go, or blurred vision",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w21-rf-bleeding",
+      "text": "Bleeding that fills a pad, or bleeding with pain",
+      "escalation": "call-ob-triage"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "w21-appt-glucose",
+      "label": "Glucose screening test",
+      "from": 24,
+      "to": 28,
+      "who": "Lab",
+      "note": "Book it now. Ask whether to fast."
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-acog-gd",
+      "title": "Gestational Diabetes",
+      "publisher": "ACOG",
+      "url": "https://www.acog.org/womens-health/faqs/gestational-diabetes",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-acog-fetal-monitoring",
+      "title": "Special Tests for Monitoring Fetal Well-Being",
+      "publisher": "ACOG",
+      "url": "https://www.acog.org/womens-health/faqs/special-tests-for-monitoring-fetal-well-being",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    }
+  ],
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-20",
+  "updatedAt": "2026-10-21"
+}

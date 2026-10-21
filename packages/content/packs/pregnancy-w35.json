@@ -1,0 +1,167 @@
+{
+  "id": "pregnancy-w35",
+  "kind": "pregnancy",
+  "stageIndex": 35,
+  "stageUnit": "week",
+  "locale": "en-US",
+  "country": "US",
+  "title": "Week 35",
+  "subtitle": "Five weeks left. Weekly visits start next week.",
+  "baby": {
+    "size": "About the size of a honeydew melon",
+    "development": "The kidneys are fully developed and the liver can process some waste. Most of the physical development is done. The baby is mostly gaining weight now, about half a pound a week."
+  },
+  "you": {
+    "body": "Your uterus is about six inches above your belly button. You may have more pelvic pressure, more frequent urination, and more trouble sleeping. Your belly may feel very tight at times.",
+    "mind": "The last month is a strange mix of wanting it over and not feeling ready. Both are ordinary. Neither means anything is wrong."
+  },
+  "coreActions": [
+    {
+      "id": "w35-gbs-result",
+      "type": "ask",
+      "priority": "essential",
+      "domain": "health-parent",
+      "title": "Get the group B strep result",
+      "why": "If it is positive, the plan for labor changes. Knowing before you are in labor means the antibiotics start on time instead of after a conversation.",
+      "detail": "Ask at your next visit or check the portal. If it is positive, ask them to note it in your chart and tell your support person. If it is negative, nothing changes. Either way, ask what happens if you go into labor before the result comes back.",
+      "minutes": 10,
+      "options": [
+        {
+          "id": "w35-gbs-portal",
+          "label": "Check the patient portal",
+          "detail": "Usually there within a few days.",
+          "cost": "free"
+        },
+        {
+          "id": "w35-gbs-ask",
+          "label": "Ask at the next visit",
+          "detail": "One question. They have it in the chart.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You already have the result.",
+      "keywords": ["group b strep", "gbs", "result", "positive"]
+    },
+    {
+      "id": "w35-weekly-visits",
+      "type": "know",
+      "priority": "recommended",
+      "domain": "health-parent",
+      "title": "Know what weekly visits check",
+      "why": "From 36 weeks you go every week. Knowing what they check makes the appointments feel less like waiting and more like information.",
+      "detail": "They check blood pressure, weight, the baby's heartbeat, and your belly size. They may check your cervix and the baby's position. From 36 weeks they may offer a cervical check — you can decline it. Ask what each number means.",
+      "minutes": 10,
+      "options": [
+        {
+          "id": "w35-weekly-ask",
+          "label": "Ask what they check each week",
+          "detail": "Makes the visits useful instead of routine.",
+          "cost": "free"
+        },
+        {
+          "id": "w35-weekly-decline",
+          "label": "Know you can decline a check",
+          "detail": "Cervical checks are optional. Saying no is allowed.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You already know the weekly routine.",
+      "keywords": ["weekly visits", "prenatal", "cervical check", "36 weeks"]
+    },
+    {
+      "id": "w35-when-to-go",
+      "type": "know",
+      "priority": "recommended",
+      "domain": "health-parent",
+      "title": "Learn when to go in",
+      "why": "The 5-1-1 rule is the usual guide, but your OB's rule is the one that counts. Knowing it means you are not guessing at 2am.",
+      "detail": "The common guide is contractions every five minutes, lasting one minute, for one hour. Some practices say come sooner if your water breaks, if you are bleeding, or if you are group B strep positive. Ask your OB for their rule and write it down.",
+      "minutes": 10,
+      "options": [
+        {
+          "id": "w35-go-read",
+          "label": "Read the ACOG guide",
+          "detail": "Plain and short.",
+          "url": "https://www.acog.org/womens-health/faqs/how-to-tell-when-labor-begins",
+          "cost": "free"
+        },
+        {
+          "id": "w35-go-ask",
+          "label": "Ask your OB for their rule",
+          "detail": "Theirs is the one that matters.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You already know your practice's rule.",
+      "keywords": ["labor", "when to go", "contractions", "5-1-1"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "w35-cervical",
+      "title": "A cervical check is information, not a prediction",
+      "body": "Being dilated at 36 weeks does not mean labor is soon, and being closed does not mean it is far off. You can decline the check.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w35-sleep-w35",
+      "title": "Sleep is hard, and it is not a sign of anything",
+      "body": "The bump, the bladder, and the pressure all interfere. Rest when you can. Lying still counts.",
+      "domain": "sleep"
+    },
+    {
+      "id": "w35-support-person",
+      "title": "Your support person needs a plan too",
+      "body": "Where they will park, what they will eat, and how they will get home. A support person who is hungry and lost is not much support.",
+      "domain": "home"
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "w35-rf-contractions",
+      "text": "Regular contractions before 37 weeks",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w35-rf-fluid",
+      "text": "Fluid that keeps leaking, or any vaginal bleeding",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w35-rf-movement",
+      "text": "A clear change in your baby's usual movement",
+      "escalation": "call-ob-triage"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "w35-appt-weekly",
+      "label": "Weekly prenatal visit",
+      "from": 36,
+      "to": 40,
+      "who": "OB or midwife",
+      "note": "Every week from 36."
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-acog-labor-w35",
+      "title": "How to Tell When Labor Begins",
+      "publisher": "ACOG",
+      "url": "https://www.acog.org/womens-health/faqs/how-to-tell-when-labor-begins",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-cdc-gbs-w35",
+      "title": "Group B Strep",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/group-b-strep/about/index.html",
+      "kind": "government",
+      "accessed": "2026-10-20"
+    }
+  ],
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-20",
+  "updatedAt": "2026-10-21"
+}

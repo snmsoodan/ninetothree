@@ -1,0 +1,167 @@
+{
+  "id": "pregnancy-w32",
+  "kind": "pregnancy",
+  "stageIndex": 32,
+  "stageUnit": "week",
+  "locale": "en-US",
+  "country": "US",
+  "title": "Week 32",
+  "subtitle": "Eight weeks left. The baby is upside down in most pregnancies by now.",
+  "baby": {
+    "size": "About the size of a jicama",
+    "development": "The skin is becoming opaque and the fat layer is filling out. The fingernails have reached the tips of the fingers. The baby is practicing sucking and swallowing."
+  },
+  "you": {
+    "body": "Your uterus is about five inches above your belly button. You may have more pressure on your ribs, more heartburn, and more trouble sleeping. Your belly button may flatten or pop out.",
+    "mind": "You may be counting down in weeks and in days at the same time. Both counts are fine. Neither makes the time go faster."
+  },
+  "coreActions": [
+    {
+      "id": "w32-position",
+      "type": "ask",
+      "priority": "recommended",
+      "domain": "health-parent",
+      "title": "Ask what position the baby is in",
+      "why": "Most babies are head-down by now. Knowing means you can ask about options early if yours is not, rather than finding out at 39 weeks.",
+      "detail": "Your OB can usually tell by feeling your belly, and an ultrasound confirms it. If the baby is breech, there is still time to turn. Ask what they do at your practice and when they would want to talk about it.",
+      "minutes": 10,
+      "options": [
+        {
+          "id": "w32-pos-ask",
+          "label": "Ask at your next visit",
+          "detail": "One question. They check anyway.",
+          "cost": "free"
+        },
+        {
+          "id": "w32-pos-read",
+          "label": "Read about breech",
+          "detail": "So the conversation is not the first time you hear the word.",
+          "url": "https://www.acog.org/womens-health/faqs/ultrasound-exams",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You already know the position.",
+      "keywords": ["breech", "position", "head down", "version"]
+    },
+    {
+      "id": "w32-pediatrician-confirm",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "health-baby",
+      "title": "Confirm the pediatrician takes your insurance",
+      "why": "A practice that is out of network is a bill you do not want in the first month. Confirming now is a five-minute call.",
+      "detail": "Call and give them your plan name and member ID. Ask whether the specific doctor you want is in network, not just the practice. Ask about the newborn visit timing and whether they have after-hours coverage. Write the number on the fridge.",
+      "minutes": 15,
+      "options": [
+        {
+          "id": "w32-ped-call",
+          "label": "Call the office",
+          "detail": "Fastest and most reliable.",
+          "cost": "free"
+        },
+        {
+          "id": "w32-ped-portal",
+          "label": "Check your insurer's directory",
+          "detail": "Faster, but directories go stale. Confirm by phone too.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You already confirmed it.",
+      "keywords": ["pediatrician", "insurance", "network", "coverage"]
+    },
+    {
+      "id": "w32-rest",
+      "type": "do",
+      "priority": "optional",
+      "domain": "sleep",
+      "title": "Protect one rest block a day",
+      "why": "The last two months are physically expensive. Rest now is not laziness — it is the thing that keeps you out of the exhausted, tearful place.",
+      "detail": "Pick a time and defend it. Twenty minutes lying down, not scrolling. If you cannot sleep, lying still with your eyes closed still helps. Ask your partner to take one evening task so the block is real.",
+      "minutes": 20,
+      "options": [
+        {
+          "id": "w32-rest-nap",
+          "label": "A short nap",
+          "detail": "Twenty minutes. Longer and you wake groggy.",
+          "cost": "free"
+        },
+        {
+          "id": "w32-rest-lie",
+          "label": "Lie down without sleeping",
+          "detail": "Still restorative. Easier to fit in.",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You already rest when you are tired.",
+      "keywords": ["rest", "nap", "tired", "sleep"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "w32-belly-button",
+      "title": "A popping belly button is the uterus, not a problem",
+      "body": "The uterus pushes it out. It goes back after birth. If it is painful or you feel a bulge that hurts when you cough, mention it.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w32-rib-pain",
+      "title": "Rib pain on one side is usually the baby's feet",
+      "body": "It eases when the baby moves. If it is sharp, constant, and comes with breathlessness, call instead.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w32-visitors",
+      "title": "Decide about visitors before the birth",
+      "body": "Agree with your partner on the first week. It is easier to say no now than to manage it while recovering. You are allowed to want quiet.",
+      "domain": "home"
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "w32-rf-movement",
+      "text": "A clear change in your baby's usual movement",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w32-rf-headache",
+      "text": "A severe headache that will not go, or blurred vision or spots",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w32-rf-bleeding",
+      "text": "Any vaginal bleeding, or fluid that keeps leaking",
+      "escalation": "call-ob-triage"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "w32-appt-visit",
+      "label": "Prenatal visit",
+      "from": 32,
+      "to": 35,
+      "who": "OB or midwife",
+      "note": "Every two weeks. Ask about position."
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-acog-ultrasound",
+      "title": "Ultrasound Exams",
+      "publisher": "ACOG",
+      "url": "https://www.acog.org/womens-health/faqs/ultrasound-exams",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-healthychildren-w32",
+      "title": "HealthyChildren.org",
+      "publisher": "American Academy of Pediatrics",
+      "url": "https://www.healthychildren.org/",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    }
+  ],
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-20",
+  "updatedAt": "2026-10-21"
+}

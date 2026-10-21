@@ -1,0 +1,178 @@
+{
+  "id": "pregnancy-w42",
+  "kind": "pregnancy",
+  "stageIndex": 42,
+  "stageUnit": "week",
+  "locale": "en-US",
+  "country": "US",
+  "title": "Week 42",
+  "subtitle": "The last week of the range. Induction is usually the plan now.",
+  "baby": {
+    "size": "About the size of a watermelon, and still growing",
+    "development": "The baby is post-term. The skin may be a little dry and the nails long. The baby is ready to be born, and the placenta is the reason not to wait much longer."
+  },
+  "you": {
+    "body": "You may be very tired, very uncomfortable, and very ready. Your cervix may be dilated. Contractions may be stronger and more frequent.",
+    "mind": "This is the hardest week for most people. It is not a reflection of anything you did. Ask for help with the waiting, and let people bring food."
+  },
+  "coreActions": [
+    {
+      "id": "w42-induction",
+      "type": "do",
+      "priority": "essential",
+      "domain": "health-parent",
+      "title": "Go in for the induction",
+      "why": "Past 42 weeks the risks of waiting go up for both of you. Induction is the recommended path, and it is a plan rather than an emergency.",
+      "detail": "Bring the bag, the ID, the insurance card, and the car seat. Eat before you go if they let you. Expect it to take a day or more — inductions are slow, especially with a first baby. Ask what the first step is so you know what is happening.",
+      "minutes": 60,
+      "options": [
+        {
+          "id": "w42-ind-scheduled",
+          "label": "A scheduled induction",
+          "detail": "You have a date and a time. Bring the bag.",
+          "cost": "varies"
+        },
+        {
+          "id": "w42-ind-now",
+          "label": "Go in today",
+          "detail": "If monitoring showed something, go now. Do not wait.",
+          "cost": "varies"
+        }
+      ],
+      "skipIf": "You are already in labor or already induced.",
+      "keywords": ["induction", "42 weeks", "hospital", "post-term"]
+    },
+    {
+      "id": "w42-monitoring",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "health-parent",
+      "title": "Keep every monitoring appointment",
+      "why": "If you are waiting rather than inducing, monitoring is what makes waiting safe. It is the whole reason the wait is allowed.",
+      "detail": "Expect a non-stress test and possibly an ultrasound, twice a week at many practices. If a test looks off, they will talk about induction that day. Do not skip one because you are tired — that is exactly the week not to skip.",
+      "minutes": 60,
+      "options": [
+        {
+          "id": "w42-mon-nst",
+          "label": "Non-stress test",
+          "detail": "Twenty minutes with a monitor.",
+          "url": "https://www.acog.org/womens-health/faqs/special-tests-for-monitoring-fetal-well-being",
+          "cost": "varies"
+        },
+        {
+          "id": "w42-mon-bpp",
+          "label": "Biophysical profile",
+          "detail": "An ultrasound that scores movement and breathing.",
+          "url": "https://www.acog.org/womens-health/faqs/special-tests-for-monitoring-fetal-well-being",
+          "cost": "varies"
+        }
+      ],
+      "skipIf": "You are already induced or in labor.",
+      "keywords": ["monitoring", "non-stress test", "42 weeks"]
+    },
+    {
+      "id": "w42-support",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "mind",
+      "title": "Tell someone how you are doing",
+      "why": "The last week is isolating. Saying it out loud to one person makes it smaller, and it is the week people most often go quiet.",
+      "detail": "Tell your partner, a friend, or your OB. If you are feeling hopeless or thinking about hurting yourself, call or text 988. That is not an overreaction — it is the right number for that feeling.",
+      "minutes": 15,
+      "options": [
+        {
+          "id": "w42-sup-talk",
+          "label": "Tell one person",
+          "detail": "A partner, a friend, your OB. Anyone.",
+          "cost": "free"
+        },
+        {
+          "id": "w42-sup-988",
+          "label": "Call or text 988",
+          "detail": "Free, 24 hours, if you are thinking about hurting yourself.",
+          "url": "https://988lifeline.org/",
+          "cost": "free"
+        }
+      ],
+      "skipIf": "You are doing well and have people around you.",
+      "keywords": ["support", "mental health", "988", "waiting"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "w42-post-term",
+      "title": "Post-term is a medical word, not a judgement",
+      "body": "It means past 42 weeks. It is common enough that practices have a routine for it. It is not something you caused.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w42-induction-slow",
+      "title": "Inductions are slow",
+      "body": "A first induction often takes a day or more. Bring something to do, snacks if allowed, and a support person who can stay. It is not an emergency — it is a process.",
+      "domain": "health-parent"
+    },
+    {
+      "id": "w42-movement-w42",
+      "title": "Movement is still the signal",
+      "body": "If the pattern changes, call. Do not wait for the next appointment and do not use a doppler to decide.",
+      "domain": "health-parent"
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "w42-rf-movement",
+      "text": "A clear change in your baby's usual movement",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w42-rf-water",
+      "text": "Fluid that keeps leaking, or any vaginal bleeding",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "w42-rf-self-harm",
+      "text": "Thoughts of hurting yourself or ending your life",
+      "escalation": "call-988",
+      "phone": "988"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "w42-appt-induction",
+      "label": "Induction",
+      "from": 42,
+      "to": 42,
+      "who": "OB or midwife",
+      "note": "Bring the bag, the ID, and the car seat."
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-acog-induction-w42",
+      "title": "Labor Induction",
+      "publisher": "ACOG",
+      "url": "https://www.acog.org/womens-health/faqs/labor-induction",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-acog-monitoring-w42",
+      "title": "Special Tests for Monitoring Fetal Well-Being",
+      "publisher": "ACOG",
+      "url": "https://www.acog.org/womens-health/faqs/special-tests-for-monitoring-fetal-well-being",
+      "kind": "clinical",
+      "accessed": "2026-10-20"
+    },
+    {
+      "id": "src-988",
+      "title": "988 Suicide and Crisis Lifeline",
+      "publisher": "988 Lifeline",
+      "url": "https://988lifeline.org/",
+      "kind": "charity",
+      "accessed": "2026-10-20"
+    }
+  ],
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-20",
+  "updatedAt": "2026-10-21"
+}
