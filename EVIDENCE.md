@@ -995,6 +995,30 @@ The fix is `settledIds(pack, state)` in `apps/web/src/lib/week.ts`: a step is se
 
 **What this does not do.** The feed is five entries and all `stop-use`; there is no `check` or `info` recall in it, so those two severities are exercised only by tests and stories. There is no ingestion job. There is no email. The five recalls, like the nine packs and the 89 catalogue entries, say `"reviewedBy": "Clinical review pending"` — the recall lint deliberately does not check that field, so nothing in CI will notice when it is finally filled in.
 
-## 29. How this file is maintained
+## 29. Notification preferences (issue #35)
+
+**The issue asked for email and push toggles, a frequency, pause-all and loss mode, with an AC that every toggle is honoured by the jobs.** The jobs do not exist yet. So what shipped is the thing the jobs will read: one pure function, `shouldSend`, and a settings screen that says plainly that nothing is sent.
+
+**A toggle that quietly does nothing is worse than no toggle.** The section opens with "Nothing is sent yet. This version has no email and no push. These are the settings the first one will use." The alternative — shipping four switches that appear to control something — would leave a parent believing they had silenced a message they had not. That is the one failure mode this product cannot afford.
+
+**`shouldSend` returns a reason, not a boolean.** `ok`, `loss`, `paused`, `off`, `quiet-hours`, `not-due`. A job that decides not to send can log why, a test can assert the specific reason rather than "false", and the settings screen has a sentence for each (`SEND_REASON_COPY`). A boolean would have collapsed six different promises into one.
+
+**The order of the checks is the order of the promises.** Loss mode first, because a bereaved parent must never be emailed about a week they are not having — not even if they forgot they had paused. Then the parent's own off switch, then the channel, then the hour, then the cadence. The order is asserted: `shouldSend(prefs({ paused: true }), ctx({ loss: true }))` is `"loss"`, not `"paused"`.
+
+**Quiet hours apply to push only.** An email at 3am waits in an inbox; a push at 3am wakes someone. The window wraps midnight (`21 → 8`), and `from === to` is treated as no window rather than as either nothing or everything — neither is what a parent means by "quiet overnight". The settings screen exposes it as one checkbox, not two number inputs, because a parent does not want to configure a cron expression.
+
+**The cadence applies to the weekly message and nothing else.** An appointment reminder and a recall notice are not on a schedule; holding them back because the parent chose "once a month" would be the product deciding a recall can wait four weeks. `FREQUENCY_WEEKS` is `{ weekly: 1, fortnightly: 2, monthly: 4 }`, and `weeksSinceLast: null` — never sent — always passes, so the first message is never held.
+
+**Off by default.** `DEFAULT_NOTIFICATIONS` has `email: false` and `push: false`. A product that has never sent anything should not start switched on. The test asserts it: with the defaults, both channels return `"off"`.
+
+**`setNotifications` merges; it does not replace.** The settings screen changes one toggle at a time, and a replacement would silently reset the others to their defaults — a parent who turned on email and then changed the frequency would find email off again. The store test asserts the merge directly.
+
+**Migration falls back rather than throwing.** An unrecognised frequency becomes `weekly`, an hour outside 0–23 becomes the default, and a non-boolean toggle becomes `false`. `"yes"` and `1` are not `true`. A corrupt preference is not worth an error dialog, and the same rule already governs pins, appointments and notices.
+
+**Loss mode is read from the profile, not duplicated.** `suppressesEmail(profile)` already existed in `packages/rules` for exactly this purpose; the settings page passes it in as `loss`, and the gate takes a boolean so it stays pure and independent of the profile shape. There is one definition of "the guide is paused", and it is not in the web app.
+
+**What this does not do.** There is no email transport, no push subscription, no service worker, and no job. `shouldSend` is called by nothing in production yet — it is called by 20 tests. The AC "every toggle is honoured by the jobs" is satisfied in the only way it can be before the jobs exist: the gate is the single function they must call, and every toggle is proven to change its answer. When #33 and #34 land, they will call it, and the tests that prove the toggles work will already be there.
+
+## 30. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.

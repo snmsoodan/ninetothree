@@ -3,15 +3,23 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { PACKS } from "@ninetothree/content";
-import { PROFILE_FIELDS, PROFILE_GROUPS, readField, writeField } from "@ninetothree/rules";
+import {
+  PROFILE_FIELDS,
+  PROFILE_GROUPS,
+  readField,
+  suppressesEmail,
+  writeField,
+} from "@ninetothree/rules";
 import { Button, Card, CardBody, Dialog, RadioGroup } from "@ninetothree/ui";
 import { ButtonLink } from "@/components/ButtonLink";
 import { AppShell } from "@/components/AppShell";
+import { NotificationSettings } from "@/components/NotificationSettings";
 import { ProfilePreview } from "@/components/ProfilePreview";
 import {
   resetAll,
   stageInput,
   updateDates,
+  setNotifications,
   setProfile,
   useAppState,
   useHydrated,
@@ -145,6 +153,21 @@ export default function SettingsPage() {
               );
             })}
           </div>
+        </section>
+
+        <section aria-labelledby="notify-heading" className="mt-10">
+          <h2 id="notify-heading" className="font-display text-2xl text-ink">
+            What we send you
+          </h2>
+          <Card className="mt-3">
+            <CardBody className="pt-5">
+              <NotificationSettings
+                prefs={state.notifications}
+                onChange={setNotifications}
+                loss={suppressesEmail(state.profile)}
+              />
+            </CardBody>
+          </Card>
         </section>
 
         <ProfilePreview packs={PACKS} profile={state.profile} />
