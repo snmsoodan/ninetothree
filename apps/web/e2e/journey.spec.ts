@@ -314,7 +314,7 @@ test("every week page renders without a client error", async ({ page }) => {
   page.on("pageerror", (error) => errors.push(error.message));
 
   await onboardAsPregnant(page);
-  for (const id of ["pregnancy-w28", "pregnancy-w39", "postpartum-week-1", "infant-month-2"]) {
+  for (const id of ["pregnancy-w28", "pregnancy-w39", "postpartum-week-1", "infant-month-3"]) {
     await page.goto(`/week/${id}`);
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
   }

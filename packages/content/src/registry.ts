@@ -41,8 +41,27 @@ import pregnancyW40 from "../packs/pregnancy-w40.json";
 import pregnancyW41 from "../packs/pregnancy-w41.json";
 import pregnancyW42 from "../packs/pregnancy-w42.json";
 import postpartumWeek1 from "../packs/postpartum-week-1.json";
-import infantMonth2 from "../packs/infant-month-2.json";
+import postpartumWeek2 from "../packs/postpartum-week-2.json";
+import postpartumWeek3 from "../packs/postpartum-week-3.json";
+import postpartumWeek4 from "../packs/postpartum-week-4.json";
+import postpartumWeek5 from "../packs/postpartum-week-5.json";
+import postpartumWeek6 from "../packs/postpartum-week-6.json";
+import postpartumWeek7 from "../packs/postpartum-week-7.json";
+import postpartumWeek8 from "../packs/postpartum-week-8.json";
+import postpartumWeek9 from "../packs/postpartum-week-9.json";
+import postpartumWeek10 from "../packs/postpartum-week-10.json";
+import postpartumWeek11 from "../packs/postpartum-week-11.json";
+import postpartumWeek12 from "../packs/postpartum-week-12.json";
+import infantMonth3 from "../packs/infant-month-3.json";
+import infantMonth4 from "../packs/infant-month-4.json";
+import infantMonth5 from "../packs/infant-month-5.json";
 import infantMonth6 from "../packs/infant-month-6.json";
+import infantMonth7 from "../packs/infant-month-7.json";
+import infantMonth8 from "../packs/infant-month-8.json";
+import infantMonth9 from "../packs/infant-month-9.json";
+import infantMonth10 from "../packs/infant-month-10.json";
+import infantMonth11 from "../packs/infant-month-11.json";
+import infantMonth12 from "../packs/infant-month-12.json";
 
 /**
  * Every pack, validated at module load. A broken pack fails the build
@@ -92,8 +111,27 @@ export const PACKS: StagePack[] = assertValidPacks([
   pregnancyW41,
   pregnancyW42,
   postpartumWeek1,
-  infantMonth2,
+  postpartumWeek2,
+  postpartumWeek3,
+  postpartumWeek4,
+  postpartumWeek5,
+  postpartumWeek6,
+  postpartumWeek7,
+  postpartumWeek8,
+  postpartumWeek9,
+  postpartumWeek10,
+  postpartumWeek11,
+  postpartumWeek12,
+  infantMonth3,
+  infantMonth4,
+  infantMonth5,
   infantMonth6,
+  infantMonth7,
+  infantMonth8,
+  infantMonth9,
+  infantMonth10,
+  infantMonth11,
+  infantMonth12,
 ]);
 
 export const PACKS_BY_ID: ReadonlyMap<string, StagePack> = new Map(

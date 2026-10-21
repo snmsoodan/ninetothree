@@ -1,0 +1,111 @@
+{
+  "locale": "en-US",
+  "country": "US",
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-21",
+  "updatedAt": "2026-10-21",
+  "id": "postpartum-week-5",
+  "kind": "postpartum",
+  "stageIndex": 5,
+  "stageUnit": "week",
+  "title": "The fifth week",
+  "subtitle": "The six-week visit is next week. Write your questions down now, while you remember them.",
+  "baby": {
+    "development": "Your baby is cooing back at you and may smile in response to a face rather than by accident. They are awake for longer and sleep in slightly longer stretches at night."
+  },
+  "you": {
+    "body": "Bleeding should be spotting or finished. If you are breastfeeding, your period may not return for months, and that is not a reliable sign of anything.",
+    "mind": "Sleep deprivation builds. If you are snapping at people or crying at small things, that is the sleep talking, and it is also worth mentioning at the visit."
+  },
+  "coreActions": [
+    {
+      "id": "pp5-six-week",
+      "type": "book",
+      "priority": "essential",
+      "domain": "health-parent",
+      "title": "Book the six-week postpartum visit",
+      "why": "This is the visit that clears you for exercise, checks the wound and the pelvic floor, and covers contraception.",
+      "detail": "Ask for a pelvic floor check, not just a look at the wound. Ask what exercise is safe to start and what to wait on. Ask about contraception you actually want, including options that do not affect milk supply.",
+      "minutes": 15,
+      "keywords": ["six week", "postpartum visit", "pelvic floor"]
+    },
+    {
+      "id": "pp5-bleeding",
+      "type": "know",
+      "priority": "recommended",
+      "domain": "health-parent",
+      "title": "Know when bleeding is not normal anymore",
+      "why": "Bleeding that was tapering and then gets heavier is the pattern worth calling about.",
+      "detail": "Spotting that comes and goes for six weeks is common. Bleeding that fills a pad in an hour, passes large clots, or comes back heavy after it had stopped is not.",
+      "keywords": ["bleeding", "lochia", "clots"]
+    },
+    {
+      "id": "pp5-walk",
+      "type": "do",
+      "priority": "optional",
+      "domain": "health-parent",
+      "title": "Walk outside once a day",
+      "why": "Daylight and gentle movement do more for mood in the first months than almost anything else you can do alone.",
+      "detail": "Ten minutes is enough. Go at a time when someone else can hold the baby, or take the baby. It is not exercise, it is a change of scene.",
+      "minutes": 10,
+      "keywords": ["walk", "daylight", "mood"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "pp5-period",
+      "title": "Your period may be months away",
+      "body": "If you are breastfeeding, the first period often does not return until feeds drop. That does not mean you cannot get pregnant, and it is not a contraception method."
+    },
+    {
+      "id": "pp5-carrier",
+      "title": "A carrier buys you two hands",
+      "body": "A soft structured carrier or a wrap lets you eat, walk, and answer a door. Look for one that holds the baby high and tight, with the head clear and the chin off the chest."
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "pp5-bleeding-flag",
+      "text": "Bleeding that soaks a pad in an hour, or bleeding that returns heavy after stopping",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "pp5-calf",
+      "text": "Pain or swelling in one calf",
+      "escalation": "go-to-er"
+    },
+    {
+      "id": "pp5-mood",
+      "text": "Feeling hopeless, or thoughts of harming yourself or the baby",
+      "escalation": "call-988",
+      "phone": "988"
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-pp5-acog-postpartum",
+      "title": "Optimizing postpartum care",
+      "publisher": "ACOG",
+      "url": "https://www.acog.org/clinical/clinical-guidance/committee-opinion/articles/2018/05/optimizing-postpartum-care",
+      "kind": "clinical",
+      "accessed": "2026-10-21"
+    },
+    {
+      "id": "src-pp5-marchofdimes-hemorrhage",
+      "title": "Postpartum hemorrhage",
+      "publisher": "March of Dimes",
+      "url": "https://www.marchofdimes.org/find-support/topics/postpartum/postpartum-hemorrhage",
+      "kind": "charity",
+      "accessed": "2026-10-21"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "pp5-appt-six-week",
+      "label": "Six-week postpartum visit",
+      "from": 35,
+      "to": 42,
+      "who": "OB or midwife"
+    }
+  ]
+}

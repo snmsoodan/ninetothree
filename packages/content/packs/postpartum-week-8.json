@@ -1,0 +1,111 @@
+{
+  "locale": "en-US",
+  "country": "US",
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-21",
+  "updatedAt": "2026-10-21",
+  "id": "postpartum-week-8",
+  "kind": "postpartum",
+  "stageIndex": 8,
+  "stageUnit": "week",
+  "title": "The eighth week",
+  "subtitle": "The two-month visit is coming, and it is the one with the first real vaccines.",
+  "baby": {
+    "development": "Your baby is cooing in conversation, following you across the room, and holding their head up for longer. Hands are starting to open."
+  },
+  "you": {
+    "body": "Your hair may be shedding. Your joints are still looser than usual from pregnancy hormones, which is why a return to running can feel odd.",
+    "mind": "The two-month vaccines are the first decision that feels like a real one. Read about them before the visit, not in the room."
+  },
+  "coreActions": [
+    {
+      "id": "pp8-vaccines",
+      "type": "book",
+      "priority": "essential",
+      "domain": "health-baby",
+      "title": "Book the two-month visit and read the vaccine list first",
+      "why": "The two-month visit is where the first set of routine vaccines happens, and knowing what is coming makes the appointment calmer.",
+      "detail": "The US schedule at two months is DTaP, IPV, Hib, PCV, and rotavirus, and hepatitis B if it was not given at birth. Ask for the vaccine information statements for each one. It is fine to ask questions and it is fine to ask them to go one at a time.",
+      "minutes": 15,
+      "keywords": ["vaccines", "two month", "immunizations"]
+    },
+    {
+      "id": "pp8-tummy",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "play",
+      "title": "Tummy time, several times a day",
+      "why": "Tummy time is the single best thing for the strength that comes before rolling and sitting.",
+      "detail": "Aim for a few minutes at a time, several times a day, while the baby is awake. Get down at eye level. A rolled towel under the chest helps a baby who hates it. Stop when they are upset and try again later.",
+      "minutes": 10,
+      "keywords": ["tummy time", "rolling", "strength"]
+    },
+    {
+      "id": "pp8-childcare",
+      "type": "ask",
+      "priority": "optional",
+      "domain": "childcare",
+      "title": "Start the childcare search if you are going back",
+      "why": "Good childcare in most US cities has a waitlist measured in months, and the search takes longer than people expect.",
+      "detail": "Ask about ratios, staff turnover, and licensing. Visit in person at a time when children are awake. Get on two or three waitlists rather than one. A nanny share is often cheaper than a center for one child.",
+      "keywords": ["childcare", "daycare", "nanny"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "pp8-crying-peak",
+      "title": "Crying peaks around six to eight weeks",
+      "body": "It is normal for crying to increase until about two months and then fall. It is not caused by anything you are doing wrong, and it is not a sign of a problem."
+    },
+    {
+      "id": "pp8-shots",
+      "title": "A mild fever after vaccines is common",
+      "body": "Fussiness, a low fever, and a sore leg for a day or two are common and expected. Ask the pediatrician what dose of infant acetaminophen is right for your baby's weight before you need it."
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "pp8-flag-fever",
+      "text": "A fever of 100.4°F or higher in a baby under three months",
+      "escalation": "call-pediatrician"
+    },
+    {
+      "id": "pp8-flag-breathing",
+      "text": "Fast or labored breathing, or a blue tint around the lips",
+      "escalation": "call-911"
+    },
+    {
+      "id": "pp8-flag-mood",
+      "text": "Feeling hopeless, or thoughts of harming yourself or the baby",
+      "escalation": "call-988",
+      "phone": "988"
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-pp8-cdc-schedule",
+      "title": "Immunization schedules",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/vaccines/hcp/imz-schedules/",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    },
+    {
+      "id": "src-pp8-aap-colic",
+      "title": "Crying and colic",
+      "publisher": "AAP",
+      "url": "https://www.healthychildren.org/English/ages-stages/baby/crying-colic/Pages/default.aspx",
+      "kind": "clinical",
+      "accessed": "2026-10-21"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "pp8-appt-two-month",
+      "label": "Two-month visit and vaccines",
+      "from": 56,
+      "to": 63,
+      "who": "Pediatrician"
+    }
+  ]
+}

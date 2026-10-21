@@ -1,0 +1,110 @@
+{
+  "locale": "en-US",
+  "country": "US",
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-21",
+  "updatedAt": "2026-10-21",
+  "id": "infant-month-9",
+  "kind": "infant",
+  "stageIndex": 9,
+  "stageUnit": "month",
+  "title": "Month 9",
+  "subtitle": "The nine-month visit is this month. It is the one where the doctor watches the baby move, not just measures them.",
+  "baby": {
+    "development": "Your baby is crawling well, pulling to stand, and may be cruising along furniture. They can pick up a pea with a thumb and finger and are starting to copy sounds and gestures."
+  },
+  "you": {
+    "body": "If you are breastfeeding, supply is stable. If you are not, the baby is eating more food and drinking less milk, which is the direction of travel.",
+    "mind": "Nine months is often when the baby's personality arrives in full. It is also when the house needs a second look, because the baby is faster than last month."
+  },
+  "coreActions": [
+    {
+      "id": "m9-visit",
+      "type": "book",
+      "priority": "essential",
+      "domain": "health-baby",
+      "title": "Go to the nine-month visit",
+      "why": "This visit checks movement, hearing, and development, and it is where a concern is easiest to raise.",
+      "detail": "The nine-month visit usually has no vaccines. The doctor will watch the baby sit, crawl, and pick things up. Ask about movement, hearing, and whether the baby is saying consonant sounds. Write your questions down before you go.",
+      "minutes": 60,
+      "keywords": ["nine month", "checkup", "development"]
+    },
+    {
+      "id": "m9-finger-food",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "feeding",
+      "title": "Move toward three meals and two snacks",
+      "why": "By nine months, food is becoming nutrition rather than practice, and the rhythm of meals is what makes the next year easier.",
+      "detail": "Three meals and two snacks, with milk around them rather than instead of them. Offer iron-rich food at two of the meals. Let the baby feed themselves, even when it is slow.",
+      "keywords": ["meals", "finger food", "iron"]
+    },
+    {
+      "id": "m9-cruise",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "play",
+      "title": "Let the baby cruise along the furniture",
+      "why": "Cruising is the bridge between pulling up and walking, and it is built by doing it.",
+      "detail": "Line up sturdy furniture with small gaps. Put a toy on the far end. Bare feet. Do not hold both hands and walk them, because that teaches a posture they cannot use alone.",
+      "minutes": 20,
+      "keywords": ["cruising", "walking", "standing"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "m9-words",
+      "title": "First words are close",
+      "body": "Most babies say a first word between ten and fourteen months. Babbling with consonants at nine months is the thing that comes before it."
+    },
+    {
+      "id": "m9-sleep-9mo",
+      "title": "A nine-month sleep wobble is common",
+      "body": "Crawling, standing, and separation anxiety all arrive at once, and sleep often gets worse before it gets better. It is developmental and it passes."
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "m9-flag-choking",
+      "text": "Choking — cannot breathe, cough, or make a sound",
+      "escalation": "call-911"
+    },
+    {
+      "id": "m9-flag-breathing",
+      "text": "Fast or labored breathing, or a blue tint around the lips",
+      "escalation": "call-911"
+    },
+    {
+      "id": "m9-flag-fever",
+      "text": "A fever over 100.4°F with unusual sleepiness or a rash",
+      "escalation": "call-pediatrician"
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-m9-cdc-milestones",
+      "title": "CDC milestones",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/act-early/milestones/index.html",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    },
+    {
+      "id": "src-m9-cdc-solids",
+      "title": "When, what, and how to introduce solid foods",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/infant-toddler-nutrition/foods-and-drinks/when-what-and-how-to-introduce-solid-foods.html",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "m9-appt-nine-month",
+      "label": "Nine-month visit",
+      "from": 266,
+      "to": 280,
+      "who": "Pediatrician"
+    }
+  ]
+}

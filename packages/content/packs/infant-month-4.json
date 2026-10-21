@@ -1,0 +1,111 @@
+{
+  "locale": "en-US",
+  "country": "US",
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-21",
+  "updatedAt": "2026-10-21",
+  "id": "infant-month-4",
+  "kind": "infant",
+  "stageIndex": 4,
+  "stageUnit": "month",
+  "title": "Month 4",
+  "subtitle": "The four-month visit is this month, and the sleep change is real. Both are developmental, and neither is your fault.",
+  "baby": {
+    "development": "Your baby is rolling, reaching with both hands, and laughing. They can hold their head steady and are starting to bear weight on their legs when held upright."
+  },
+  "you": {
+    "body": "If you are breastfeeding, supply is well established. Your period may have returned. Your hair shedding is at its peak and will slow soon.",
+    "mind": "Four months is the most common time for sleep to fall apart, and the most common time for people to buy something they do not need. The change is developmental and it passes."
+  },
+  "coreActions": [
+    {
+      "id": "m4-visit",
+      "type": "book",
+      "priority": "essential",
+      "domain": "health-baby",
+      "title": "Go to the four-month visit",
+      "why": "This is the second vaccine set and the developmental check where rolling and head shape get looked at.",
+      "detail": "The US schedule at four months is DTaP, IPV, Hib, PCV, and rotavirus. Ask about the head shape if the baby always turns the same way. Ask what dose of infant acetaminophen is right for the baby's weight.",
+      "minutes": 60,
+      "keywords": ["four month", "vaccines", "checkup"]
+    },
+    {
+      "id": "m4-sleep",
+      "type": "know",
+      "priority": "recommended",
+      "domain": "sleep",
+      "title": "Know that the four-month sleep change is not a regression",
+      "why": "Sleep reorganizes into cycles closer to an adult's, which means more partial waking between cycles. It is a step forward that feels like a step back.",
+      "detail": "It usually settles over two to six weeks. A consistent bedtime routine, a dark room, and a predictable wind-down help more than any product. It is not caused by teething, and it is not caused by anything you did.",
+      "keywords": ["sleep regression", "four month", "night waking"]
+    },
+    {
+      "id": "m4-floor",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "play",
+      "title": "Give the baby floor time, not container time",
+      "why": "A baby on a firm floor builds the strength to roll, sit, and crawl. A baby in a seat or a jumper does not.",
+      "detail": "A blanket on the floor with a few toys is the whole setup. Limit swings, bouncers, and jumpers to short stretches. There is no evidence that jumpers help walking and some evidence they delay it.",
+      "minutes": 30,
+      "keywords": ["floor time", "container", "rolling"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "m4-solids-not-yet",
+      "title": "Solids are not yet",
+      "body": "Most babies are ready around six months, when they can sit with support and hold their head steady. Starting at four months does not help sleep and does not prevent allergies."
+    },
+    {
+      "id": "m4-teeth",
+      "title": "Teeth may be close",
+      "body": "First teeth usually arrive between four and seven months. Chewing, drool, and fussiness can start weeks before a tooth appears."
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "m4-flag-fever",
+      "text": "A fever of 100.4°F or higher with unusual sleepiness or a rash",
+      "escalation": "call-pediatrician"
+    },
+    {
+      "id": "m4-flag-breathing",
+      "text": "Fast or labored breathing, or a blue tint around the lips",
+      "escalation": "call-911"
+    },
+    {
+      "id": "m4-flag-mood",
+      "text": "Feeling hopeless, or thoughts of harming yourself or the baby",
+      "escalation": "call-988",
+      "phone": "988"
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-m4-cdc-schedule",
+      "title": "Immunization schedules",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/vaccines/hcp/imz-schedules/",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    },
+    {
+      "id": "src-m4-cdc-milestones",
+      "title": "CDC milestones",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/act-early/milestones/index.html",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "m4-appt-four-month",
+      "label": "Four-month visit and vaccines",
+      "from": 112,
+      "to": 126,
+      "who": "Pediatrician"
+    }
+  ]
+}

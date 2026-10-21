@@ -1,0 +1,111 @@
+{
+  "locale": "en-US",
+  "country": "US",
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-21",
+  "updatedAt": "2026-10-21",
+  "id": "postpartum-week-12",
+  "kind": "postpartum",
+  "stageIndex": 12,
+  "stageUnit": "week",
+  "title": "The twelfth week",
+  "subtitle": "Three months. The hardest stretch is behind you, and the next stage starts next week.",
+  "baby": {
+    "development": "Your baby is laughing, babbling, and may be rolling. They can see across a room and are starting to reach for what they want."
+  },
+  "you": {
+    "body": "Bleeding is long finished. Your core and pelvic floor are still healing, and they will keep healing for a year. Your hair is shedding and will stop.",
+    "mind": "The end of the fourth trimester is a real milestone and it is worth noticing. If you have been waiting to feel better before asking for help, this is the week to stop waiting."
+  },
+  "coreActions": [
+    {
+      "id": "pp12-visit",
+      "type": "book",
+      "priority": "recommended",
+      "domain": "health-baby",
+      "title": "Book the four-month visit",
+      "why": "The four-month visit is the next vaccine set and the next developmental check, and the good slots go early.",
+      "detail": "Ask about rolling, head shape, and sleep. Ask whether the baby is ready for solids yet, which is usually a conversation for the six-month visit. Bring the mood screening up if it has not been asked.",
+      "minutes": 15,
+      "keywords": ["four month", "checkup", "vaccines"]
+    },
+    {
+      "id": "pp12-tummy",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "play",
+      "title": "Keep tummy time going, every day",
+      "why": "Tummy time is still the best thing for the strength that comes before sitting and crawling.",
+      "detail": "Aim for twenty to thirty minutes a day in short bursts. Get down at eye level with a toy or a mirror. A baby who can push up on straight arms is getting close to rolling.",
+      "minutes": 20,
+      "keywords": ["tummy time", "rolling", "strength"]
+    },
+    {
+      "id": "pp12-mood",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "mind",
+      "title": "Decide what support you want for the next year",
+      "why": "The first year is long, and the support that got you through the first three months is not the support you need for the next nine.",
+      "detail": "A therapist, a parent group, a weekly call with a friend, or childcare one morning a week. Pick one thing and put it in the calendar. The maternal mental health line is free if you want to talk to someone first.",
+      "keywords": ["support", "therapy", "mood"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "pp12-solids-later",
+      "title": "Solids are still a few months away",
+      "body": "Most babies are ready around six months, when they can sit with support and hold their head steady. Starting earlier does not help sleep and does not help allergies."
+    },
+    {
+      "id": "pp12-teeth",
+      "title": "Teeth may be close",
+      "body": "First teeth usually arrive between four and seven months. Drool and chewing on hands start earlier and are not a sign that a tooth is imminent."
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "pp12-flag-fever",
+      "text": "A fever of 100.4°F or higher in a baby under three months",
+      "escalation": "call-pediatrician"
+    },
+    {
+      "id": "pp12-flag-breathing",
+      "text": "Fast or labored breathing, or a blue tint around the lips",
+      "escalation": "call-911"
+    },
+    {
+      "id": "pp12-flag-mood",
+      "text": "Feeling hopeless most of the day, or thoughts of harming yourself or the baby",
+      "escalation": "call-psi",
+      "phone": "1-833-943-5746"
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-pp12-cdc-milestones",
+      "title": "CDC milestones",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/act-early/milestones/index.html",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    },
+    {
+      "id": "src-pp12-cdc-depression",
+      "title": "Depression during and after pregnancy",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/reproductive-health/depression/index.html",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "pp12-appt-four-month",
+      "label": "Four-month visit and vaccines",
+      "from": 112,
+      "to": 126,
+      "who": "Pediatrician"
+    }
+  ]
+}

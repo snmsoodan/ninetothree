@@ -1,0 +1,110 @@
+{
+  "locale": "en-US",
+  "country": "US",
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-21",
+  "updatedAt": "2026-10-21",
+  "id": "infant-month-11",
+  "kind": "infant",
+  "stageIndex": 11,
+  "stageUnit": "month",
+  "title": "Month 11",
+  "subtitle": "The twelve-month visit is next month, and it is the one with the most decisions in it.",
+  "baby": {
+    "development": "Your baby is standing, may be taking first steps, and can say one or two words. They understand no and can follow a simple instruction."
+  },
+  "you": {
+    "body": "If you are breastfeeding, you may be down to morning and night feeds. If you are formula feeding, you are close to the end of it.",
+    "mind": "Eleven months is when the first birthday planning starts, and when the twelve-month visit questions start to matter. Write them down now."
+  },
+  "coreActions": [
+    {
+      "id": "m11-visit",
+      "type": "book",
+      "priority": "essential",
+      "domain": "health-baby",
+      "title": "Book the twelve-month visit",
+      "why": "This is the visit with the most decisions: vaccines, the switch to whole milk, and the developmental check.",
+      "detail": "The US schedule at twelve months is MMR, varicella, Hib, and PCV, and hepatitis A and B depending on what was given earlier. Ask about whole milk, iron, and whether the baby needs a lead test. Ask about walking if they are not yet.",
+      "minutes": 15,
+      "keywords": ["twelve month", "vaccines", "checkup"]
+    },
+    {
+      "id": "m11-milk",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "feeding",
+      "title": "Plan the switch to whole milk",
+      "why": "The switch is a change of habit as much as a change of drink, and doing it over a week is easier than doing it overnight.",
+      "detail": "Whole milk from twelve months, two to three cups a day, in an open cup. Mix it with formula over a week if the baby refuses it. Do not add it to a bottle at bedtime, because that is the habit that causes tooth decay.",
+      "keywords": ["whole milk", "transition", "cup"]
+    },
+    {
+      "id": "m11-walk",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "play",
+      "title": "Give the baby something to push",
+      "why": "A push toy gives a baby who is not yet confident the balance to take steps.",
+      "detail": "A sturdy push wagon or a laundry basket with something heavy in it. Not a baby walker with wheels and a seat, which is banned in Canada and associated with injuries here.",
+      "minutes": 15,
+      "keywords": ["walking", "push toy", "steps"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "m11-lead",
+      "title": "Ask about a lead test",
+      "body": "The CDC recommends a blood lead test for children at twelve months in many areas, and the pediatrician will know whether yours is one. Lead has no symptoms at low levels."
+    },
+    {
+      "id": "m11-cups",
+      "title": "Drop the bottle by twelve months",
+      "body": "Prolonged bottle use is linked to tooth decay and to iron deficiency from too much milk. Twelve months is the usual time to move to an open cup and a straw cup."
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "m11-flag-choking",
+      "text": "Choking — cannot breathe, cough, or make a sound",
+      "escalation": "call-911"
+    },
+    {
+      "id": "m11-flag-breathing",
+      "text": "Fast or labored breathing, or a blue tint around the lips",
+      "escalation": "call-911"
+    },
+    {
+      "id": "m11-flag-fever",
+      "text": "A fever over 100.4°F with unusual sleepiness or a rash",
+      "escalation": "call-pediatrician"
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-m11-cdc-schedule",
+      "title": "Immunization schedules",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/vaccines/hcp/imz-schedules/",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    },
+    {
+      "id": "src-m11-cdc-lead",
+      "title": "Lead prevention",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/lead-prevention/",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "m11-appt-twelve-month",
+      "label": "Twelve-month visit and vaccines",
+      "from": 364,
+      "to": 378,
+      "who": "Pediatrician"
+    }
+  ]
+}

@@ -1,0 +1,101 @@
+{
+  "locale": "en-US",
+  "country": "US",
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-21",
+  "updatedAt": "2026-10-21",
+  "id": "postpartum-week-11",
+  "kind": "postpartum",
+  "stageIndex": 11,
+  "stageUnit": "week",
+  "title": "The eleventh week",
+  "subtitle": "If you are going back to work, this is the week to practise the handover, not the week to start it.",
+  "baby": {
+    "development": "Your baby is babbling with consonants, reaching accurately, and may be rolling. They recognize your face and voice from across a room."
+  },
+  "you": {
+    "body": "If you are pumping, supply responds to frequency and to stress. If you are not, your body is adjusting to what the baby actually takes.",
+    "mind": "Going back to work is a loss as well as a logistics problem. Both are allowed. The first week is the worst one and it does get easier."
+  },
+  "coreActions": [
+    {
+      "id": "pp11-pump",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "feeding",
+      "title": "Build a small freezer stash before you go back",
+      "why": "A stash is insurance, not a target. Fifty ounces is plenty and two hundred is a hobby.",
+      "detail": "Pump once in the morning after the first feed, when supply is highest. Store in two to four ounce portions so nothing is wasted. Milk is good for four hours at room temperature, four days in the fridge, and six months in a freezer.",
+      "minutes": 20,
+      "keywords": ["pumping", "freezer stash", "storage"]
+    },
+    {
+      "id": "pp11-handover",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "childcare",
+      "title": "Do a practice handover before the first real day",
+      "why": "The first day back is not the day to discover that the baby will not take a bottle from your partner.",
+      "detail": "Leave the baby with the caregiver for two hours while you are still nearby. Write down the feed times, the nap routine, and the pediatrician's number. Leave a shirt that smells like you.",
+      "keywords": ["handover", "caregiver", "return to work"]
+    },
+    {
+      "id": "pp11-rights",
+      "type": "know",
+      "priority": "recommended",
+      "domain": "money",
+      "title": "Know your pumping rights at work",
+      "why": "US law requires break time and a private space to pump for a year after birth, and the space cannot be a bathroom.",
+      "detail": "The PUMP Act covers most employees. Ask for a room with a door that locks, a surface, and an outlet. Ask for the breaks in writing before your first day, not on it.",
+      "keywords": ["pumping at work", "pump act", "breaks"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "pp11-sleep-4mo",
+      "title": "The four-month sleep change is close",
+      "body": "Around three to four months, sleep cycles reorganize and night waking often increases. It is developmental, it is temporary, and it is not caused by anything you did."
+    },
+    {
+      "id": "pp11-bottles",
+      "title": "A bottle-fed baby needs a slower flow nipple",
+      "body": "A fast flow lets a baby take too much too quickly, which is why bottle-fed babies sometimes overfeed. Use the slowest flow that works and pace the feed."
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "pp11-flag-fever",
+      "text": "A fever of 100.4°F or higher in a baby under three months",
+      "escalation": "call-pediatrician"
+    },
+    {
+      "id": "pp11-flag-feeding",
+      "text": "Refusing feeds, or far fewer wet diapers than usual",
+      "escalation": "call-pediatrician"
+    },
+    {
+      "id": "pp11-flag-mood",
+      "text": "Feeling hopeless, or thoughts of harming yourself or the baby",
+      "escalation": "call-988",
+      "phone": "988"
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-pp11-dol-pump",
+      "title": "Pump at work",
+      "publisher": "US Department of Labor",
+      "url": "https://www.dol.gov/agencies/whd/pump-at-work",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    },
+    {
+      "id": "src-pp11-cdc-breastfeeding",
+      "title": "Breastfeeding",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/breastfeeding/",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    }
+  ]
+}

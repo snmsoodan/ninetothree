@@ -1,0 +1,111 @@
+{
+  "locale": "en-US",
+  "country": "US",
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-21",
+  "updatedAt": "2026-10-21",
+  "id": "postpartum-week-4",
+  "kind": "postpartum",
+  "stageIndex": 4,
+  "stageUnit": "week",
+  "title": "The fourth week",
+  "subtitle": "One month in. The fog is thinning, and the baby is starting to look at you on purpose.",
+  "baby": {
+    "development": "Your baby can hold their head briefly when upright and is beginning to coo. They may follow a moving face across the room. Hands are still fists most of the time."
+  },
+  "you": {
+    "body": "Bleeding is usually down to spotting or gone. If you had a caesarean, the incision is closed but the area around it may still be numb. Your hair may start shedding in a few weeks, which is normal and temporary.",
+    "mind": "The one-month mark is when a lot of people feel worse rather than better, because the help has gone and the sleep has not come back. That is a reason to be screened, not a reason to wait."
+  },
+  "coreActions": [
+    {
+      "id": "pp4-visit",
+      "type": "book",
+      "priority": "essential",
+      "domain": "health-baby",
+      "title": "Go to the one-month visit",
+      "why": "This is the visit where the mood screening happens, the feeding is reviewed, and the head shape is checked.",
+      "detail": "Bring your questions written down, because it is easy to forget them in the room. Ask about the mood screening if they do not bring it up. Ask about the head shape if the baby always turns the same way.",
+      "minutes": 60,
+      "keywords": ["one month", "checkup", "screening"]
+    },
+    {
+      "id": "pp4-safe-sleep",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "safety",
+      "title": "Check the sleep space against the safe sleep rules",
+      "why": "Every sleep surface is either safe or not, and the check takes two minutes.",
+      "detail": "On the back, on a firm flat surface, in the same room as you, with nothing else in the sleep space. No bumpers, no pillows, no blankets, no inclined sleepers, no car seat or swing for overnight sleep.",
+      "minutes": 5,
+      "keywords": ["safe sleep", "back to sleep", "crib"]
+    },
+    {
+      "id": "pp4-head",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "health-baby",
+      "title": "Change the head position at every sleep",
+      "why": "A baby who always lies the same way can develop a flat spot, and the fix is easier the earlier it starts.",
+      "detail": "Alternate which end of the crib the head goes. Turn the baby's head to the other side when they are asleep and you are watching. More tummy time while awake helps too.",
+      "keywords": ["flat head", "positional", "plagiocephaly"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "pp4-hair-loss",
+      "title": "Hair loss at three months is not a sign of anything wrong",
+      "body": "Hair that stops shedding during pregnancy starts falling out around three to four months after birth. It is temporary and it grows back."
+    },
+    {
+      "id": "pp4-six-week",
+      "title": "The six-week visit is yours, not the baby's",
+      "body": "It is a check on your recovery: bleeding, the wound, the pelvic floor, mood, and contraception. Write down what you want to ask before you go."
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "pp4-fever",
+      "text": "A fever of 100.4°F or higher in a baby under three months",
+      "escalation": "call-pediatrician"
+    },
+    {
+      "id": "pp4-breathing",
+      "text": "Fast or labored breathing, or a blue tint around the lips",
+      "escalation": "call-911"
+    },
+    {
+      "id": "pp4-mood",
+      "text": "Feeling hopeless most of the day, or not wanting to be alone with the baby",
+      "escalation": "call-psi",
+      "phone": "1-833-943-5746"
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-pp4-aap-sleep",
+      "title": "A parent's guide to safe sleep",
+      "publisher": "AAP",
+      "url": "https://www.healthychildren.org/English/ages-stages/baby/sleep/Pages/A-Parents-Guide-to-Safe-Sleep.aspx",
+      "kind": "clinical",
+      "accessed": "2026-10-21"
+    },
+    {
+      "id": "src-pp4-cdc-depression",
+      "title": "Depression during and after pregnancy",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/reproductive-health/depression/index.html",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "pp4-appt-one-month",
+      "label": "One-month visit",
+      "from": 28,
+      "to": 34,
+      "who": "Pediatrician"
+    }
+  ]
+}

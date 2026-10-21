@@ -1,0 +1,115 @@
+{
+  "locale": "en-US",
+  "country": "US",
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-21",
+  "updatedAt": "2026-10-21",
+  "id": "postpartum-week-2",
+  "kind": "postpartum",
+  "stageIndex": 2,
+  "stageUnit": "week",
+  "title": "The second week",
+  "subtitle": "The visitors have gone home and the nights are long. This is the week it usually gets harder before it gets easier.",
+  "baby": {
+    "development": "Your baby is back to birth weight or close to it, and is awake for longer stretches. They can see about a foot away, which is exactly the distance to your face while feeding."
+  },
+  "you": {
+    "body": "Bleeding is lighter and browner. Afterpains are milder. If you had a tear or a caesarean, the wound is knitting but still sore, and you may still be taking stool softeners.",
+    "mind": "The baby blues usually lift by day ten. If the tearfulness is getting worse instead of better, that is worth saying out loud to your OB or midwife at the next visit."
+  },
+  "coreActions": [
+    {
+      "id": "pp2-weight",
+      "type": "do",
+      "priority": "essential",
+      "domain": "health-baby",
+      "title": "Weigh the baby at the two-week visit",
+      "why": "Birth weight is usually back by now. If it is not, the visit is where you find out why, and the fix is usually a feeding change rather than anything serious.",
+      "detail": "The two-week visit is the last of the early weight checks. Bring the discharge papers and write down how many feeds and wet diapers you had yesterday, because that is what they will ask.",
+      "minutes": 60,
+      "keywords": ["weight", "two week visit", "checkup"]
+    },
+    {
+      "id": "pp2-feeding",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "feeding",
+      "title": "Feed on cue, not on a schedule",
+      "why": "A two-week-old who is fed whenever they show hunger cues is easier to feed and easier to settle than one held to a clock.",
+      "detail": "Early cues are stirring, rooting, and hands to the mouth. Crying is a late cue, and a crying baby is harder to latch. Expect eight to twelve feeds in 24 hours, and expect cluster feeding in the evening.",
+      "keywords": ["feeding", "hunger cues", "cluster feeding"]
+    },
+    {
+      "id": "pp2-sleep",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "sleep",
+      "title": "Take a sleep shift, not a sleep night",
+      "why": "Four hours of broken sleep is not the same as four hours in a row. One protected stretch is what makes the rest survivable.",
+      "detail": "Pick a four-hour window and hand the baby to someone else for all of it, with a bottle if you are not feeding. Earplugs and a closed door are part of the plan, not a luxury.",
+      "keywords": ["sleep", "shift", "night"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "pp2-jaundice",
+      "title": "Jaundice usually peaks and fades",
+      "body": "Jaundice is common in the first week and usually fades by two weeks. It is the reason for the weight check. Call the pediatrician the same day if the yellow spreads to the palms or soles, or if the baby is hard to wake for feeds."
+    },
+    {
+      "id": "pp2-visitors",
+      "title": "You can say no to visitors",
+      "body": "A short visit is not a small thing when you are feeding every two hours. It is fine to say the baby is not ready for visitors yet, and it is fine to ask people to come back next month."
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "pp2-bleeding",
+      "text": "Bleeding that soaks a pad in an hour, or passes clots bigger than a golf ball",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "pp2-fever",
+      "text": "A fever of 100.4°F or higher",
+      "escalation": "call-ob-triage"
+    },
+    {
+      "id": "pp2-calf",
+      "text": "Pain, swelling, or redness in one calf",
+      "escalation": "go-to-er"
+    },
+    {
+      "id": "pp2-mood",
+      "text": "Feeling hopeless, or unable to feel anything, for most of the day",
+      "escalation": "call-psi",
+      "phone": "1-833-943-5746"
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-pp2-acog-postpartum",
+      "title": "Optimizing postpartum care",
+      "publisher": "ACOG",
+      "url": "https://www.acog.org/clinical/clinical-guidance/committee-opinion/articles/2018/05/optimizing-postpartum-care",
+      "kind": "clinical",
+      "accessed": "2026-10-21"
+    },
+    {
+      "id": "src-pp2-cdc-depression",
+      "title": "Depression during and after pregnancy",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/reproductive-health/depression/index.html",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    }
+  ],
+  "appointments": [
+    {
+      "id": "pp2-appt-two-week",
+      "label": "Two-week weight check",
+      "from": 14,
+      "to": 17,
+      "who": "Pediatrician"
+    }
+  ]
+}

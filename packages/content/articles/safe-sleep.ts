@@ -14,7 +14,7 @@ export const safeSleep: Article = {
     from: { kind: "postpartum", index: 1 },
     to: { kind: "infant", index: 12 },
   },
-  relatedActions: ["m2-safe-sleep"],
+  relatedActions: ["pp4-safe-sleep"],
   sources: [
     {
       id: "src-nichd-safesleep",

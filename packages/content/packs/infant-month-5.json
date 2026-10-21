@@ -1,0 +1,101 @@
+{
+  "locale": "en-US",
+  "country": "US",
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-21",
+  "updatedAt": "2026-10-21",
+  "id": "infant-month-5",
+  "kind": "infant",
+  "stageIndex": 5,
+  "stageUnit": "month",
+  "title": "Month 5",
+  "subtitle": "Sitting is coming, and so is the first tooth. The six-month visit is next month.",
+  "baby": {
+    "development": "Your baby is rolling both ways, reaching accurately, and may be sitting with their hands propped in front. They are babbling in long strings and copying sounds."
+  },
+  "you": {
+    "body": "If you are breastfeeding, supply is stable. If you are pumping at work, output often dips on the days you are stressed, and that is not a supply problem.",
+    "mind": "Five months is often a good month. Sleep may have settled, the baby is fun, and the routine works. Notice it, because the next change is coming."
+  },
+  "coreActions": [
+    {
+      "id": "m5-sit",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "play",
+      "title": "Practise sitting with a pillow behind",
+      "why": "Sitting is the skill that unlocks everything after it: reaching, playing, and eventually pulling up.",
+      "detail": "Sit the baby on the floor with a nursing pillow or your legs behind them. Let them prop on their hands. Do not leave them alone, and do not use a seat that holds them upright before they can sit themselves.",
+      "minutes": 15,
+      "keywords": ["sitting", "core", "milestone"]
+    },
+    {
+      "id": "m5-solids-prep",
+      "type": "know",
+      "priority": "recommended",
+      "domain": "feeding",
+      "title": "Know the signs of readiness for solids",
+      "why": "The six-month visit is where solids get discussed, and the signs are about skills, not about weight or appetite.",
+      "detail": "Ready means sitting with little support, holding the head steady, and showing interest in food. Tongue thrust that pushes food back out is a sign to wait a few weeks. Most babies are ready between five and seven months.",
+      "keywords": ["solids", "readiness", "six months"]
+    },
+    {
+      "id": "m5-teeth",
+      "type": "do",
+      "priority": "optional",
+      "domain": "health-baby",
+      "title": "Start cleaning the gums and any teeth",
+      "why": "A tooth that arrives and is not cleaned starts the habit of not cleaning it.",
+      "detail": "Wipe the gums with a soft cloth once a day. When a tooth appears, use a soft baby toothbrush with a smear of fluoride toothpaste no bigger than a grain of rice. First dental visit by the first tooth or the first birthday.",
+      "keywords": ["teeth", "gums", "toothbrush"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "m5-separation",
+      "title": "Separation anxiety starts around now",
+      "body": "A baby who was happy to be handed over may start to cry when you leave the room. It is a sign of attachment, not a sign of a problem, and it peaks between nine and eighteen months."
+    },
+    {
+      "id": "m5-water",
+      "title": "No water before six months",
+      "body": "A baby under six months gets all the water they need from milk. Extra water can dilute their sodium and is not safe. From six months, a small amount in an open cup with meals is fine."
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "m5-flag-fever",
+      "text": "A fever of 100.4°F or higher with unusual sleepiness or a rash",
+      "escalation": "call-pediatrician"
+    },
+    {
+      "id": "m5-flag-breathing",
+      "text": "Fast or labored breathing, or a blue tint around the lips",
+      "escalation": "call-911"
+    },
+    {
+      "id": "m5-flag-mood",
+      "text": "Feeling hopeless, or thoughts of harming yourself or the baby",
+      "escalation": "call-988",
+      "phone": "988"
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-m5-cdc-solids",
+      "title": "When, what, and how to introduce solid foods",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/infant-toddler-nutrition/foods-and-drinks/when-what-and-how-to-introduce-solid-foods.html",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    },
+    {
+      "id": "src-m5-aap-solids",
+      "title": "Starting solid foods",
+      "publisher": "AAP",
+      "url": "https://www.healthychildren.org/English/ages-stages/baby/feeding-nutrition/Pages/starting-solid-foods.aspx",
+      "kind": "clinical",
+      "accessed": "2026-10-21"
+    }
+  ]
+}

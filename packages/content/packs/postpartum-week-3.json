@@ -1,0 +1,101 @@
+{
+  "locale": "en-US",
+  "country": "US",
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-21",
+  "updatedAt": "2026-10-21",
+  "id": "postpartum-week-3",
+  "kind": "postpartum",
+  "stageIndex": 3,
+  "stageUnit": "week",
+  "title": "The third week",
+  "subtitle": "Milk is in, the bleeding is easing, and the baby has opinions now.",
+  "baby": {
+    "development": "Your baby is starting to track a face and may hold eye contact for a few seconds. They are stronger at the breast or bottle and can take more at a feed, which is why the feeds start to space out a little."
+  },
+  "you": {
+    "body": "Engorgement is settling. If you are breastfeeding, you may feel let-down as a tingle or a sharp ache. Your abdomen is shrinking back, and the linea nigra is still there and will fade slowly.",
+    "mind": "This is the week the adrenaline runs out. If you are crying more than last week rather than less, tell someone at the next visit."
+  },
+  "coreActions": [
+    {
+      "id": "pp3-supply",
+      "type": "know",
+      "priority": "recommended",
+      "domain": "feeding",
+      "title": "Know what a good feed looks like",
+      "why": "Supply is set by how often milk leaves, not by how much you can pump. Watching the baby rather than the pump is the more accurate signal.",
+      "detail": "A good feed has rhythmic sucking with audible swallows, and the baby comes off relaxed with milk at the corner of the mouth. Six or more wet diapers a day and pale urine are the other signs. Pumped volume is not a measure of supply.",
+      "keywords": ["supply", "milk", "wet diapers"]
+    },
+    {
+      "id": "pp3-tummy",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "play",
+      "title": "Start tummy time, a minute at a time",
+      "why": "Tummy time builds the neck and shoulder strength that comes before rolling, sitting, and crawling.",
+      "detail": "Two or three short sessions a day is enough at this age. Do it while the baby is awake and not hungry, on a firm surface, with you right there. A baby who hates it will tolerate it longer on your chest.",
+      "minutes": 5,
+      "keywords": ["tummy time", "neck", "strength"]
+    },
+    {
+      "id": "pp3-mood",
+      "type": "do",
+      "priority": "recommended",
+      "domain": "mind",
+      "title": "Answer the mood questions honestly at the next visit",
+      "why": "Postpartum depression is common, treatable, and easy to miss when everyone is asking about the baby instead of you.",
+      "detail": "The screening is a short set of questions about the last seven days. Answer them as you actually are, not as you hope to be. Treatment works, and it does not mean anyone takes the baby away.",
+      "keywords": ["mood", "depression", "screening"]
+    }
+  ],
+  "alsoKnow": [
+    {
+      "id": "pp3-growth-spurt",
+      "title": "Growth spurts are real and temporary",
+      "body": "Around three weeks, six weeks, and three months, a baby feeds far more for two or three days and then settles. It is not a sign your supply is failing. Feed more and it passes."
+    },
+    {
+      "id": "pp3-baby-acne",
+      "title": "Baby acne is not a rash to treat",
+      "body": "Small red bumps on the cheeks and forehead are common from two to four weeks and clear on their own. Wash with water only. Do not use creams or oils on it."
+    }
+  ],
+  "redFlags": [
+    {
+      "id": "pp3-fever",
+      "text": "A fever of 100.4°F or higher in a baby under three months",
+      "escalation": "call-pediatrician"
+    },
+    {
+      "id": "pp3-feeding",
+      "text": "Refusing feeds, or fewer than six wet diapers a day",
+      "escalation": "call-pediatrician"
+    },
+    {
+      "id": "pp3-mood-flag",
+      "text": "Thoughts of harming yourself or the baby",
+      "escalation": "call-988",
+      "phone": "988"
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-pp3-aap-feeding",
+      "title": "How often and how much should your baby eat",
+      "publisher": "AAP",
+      "url": "https://www.healthychildren.org/English/ages-stages/baby/feeding-nutrition/Pages/How-Often-and-How-Much-Should-Your-Baby-Eat.aspx",
+      "kind": "clinical",
+      "accessed": "2026-10-21"
+    },
+    {
+      "id": "src-pp3-cdc-milestones",
+      "title": "CDC milestones",
+      "publisher": "CDC",
+      "url": "https://www.cdc.gov/act-early/milestones/index.html",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    }
+  ]
+}

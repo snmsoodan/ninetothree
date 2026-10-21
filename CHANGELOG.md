@@ -9,6 +9,21 @@ changelog written after the fact from memory is a changelog nobody can trust.
 
 ## Unreleased
 
+### The first year: 21 packs, and one that could never be reached (#48)
+
+- Wrote 21 packs covering postpartum weeks 2–12 and infant months 3–12. Every
+  week and month from birth to the first birthday now has one, with an
+  essential action, red flags, and sources cited to CDC, AAP and ACOG.
+- Deleted `infant-month-2`. It had `stageIndex: 2`, and `computeStage` clamps
+  infant to month 3, so no parent could ever land on it — `findPackForStage`
+  returned month 3 instead. Its content is covered by postpartum weeks 8 and 9,
+  which is where a parent at that age actually is. One article, two recall
+  matches, five search expectations and one e2e route list were repointed at
+  `pp4-safe-sleep`.
+- The issue asked for 14 daily packs. `computeStage` never produces
+  `unit: "day"`, so the delivered shape is the shape the stage model has.
+- Clinical sign-off is still pending on every pack.
+
 ### Pregnancy, week by week: all 39 weeks, and the registry that hid them (#47)
 
 - Wrote the 33 missing pregnancy packs, weeks 4 to 42. Every week now has one

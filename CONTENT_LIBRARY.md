@@ -643,10 +643,12 @@ A recall is the one kind of content we do not write. It is an agency record, and
 
 ## 15. The pack inventory
 
-**42 stage packs, and the registry is generated.** 39 pregnancy weeks (4 to 42, no gaps), one postpartum, one infant and one toddler pack. `packages/content/src/registry.ts` is written by `scripts/gen-registry.mjs` from `packs/*.json`, sorted by kind then stage, and `pnpm content:registry:check` fails CI if the file on disk has drifted.
+**61 stage packs, and the registry is generated.** 39 pregnancy weeks (4 to 42, no gaps), 12 postpartum weeks (1 to 12, no gaps), 9 infant months (3 to 12, with month 6 written earlier) and one toddler pack. `packages/content/src/registry.ts` is written by `scripts/gen-registry.mjs` from `packs/*.json`, sorted by kind then stage, and `pnpm content:registry:check` fails CI if the file on disk has drifted.
 
 **Why it is generated.** The registry used to be a hand-written list of nine imports. Adding a pack file did nothing until someone added an import, and nobody had — so 33 packs validated cleanly, passed the lint, and were invisible to the product. The build said so in the only place it could: `/week/[id]` prerendered 9 paths instead of 42. A hand-maintained list of files that already exist is a list that will be wrong.
 
 **Adding a pack is three steps.** Write the JSON, run `pnpm content:validate` (schema plus lint), run `pnpm content:registry`, and commit both files. The `verify` CI job runs the check, so a forgotten generator run is a red build rather than a missing week.
 
-**What is not here yet.** Months 0 to 36. The postpartum, infant and toddler packs are one each; the pregnancy timeline is complete and the rest is not. That is the next content gap, and it is roughly 40 more packs — which is exactly why the registry is generated now rather than later.
+**What is not here yet.** Toddler months 13 to 36. Pregnancy, the fourth trimester and the first year are complete; the toddler timeline is a single pack. That is the next content gap, and it is roughly 24 more packs — which is exactly why the registry is generated now rather than later.
+
+**A pack that no stage can reach is not content.** `infant-month-2` had `stageIndex: 2`, and `computeStage` clamps infant to month 3, so `findPackForStage` returned month 3 and never month 2. It was reachable only by typing its URL. It was deleted, and its content lives in postpartum weeks 8 and 9, which is where a parent at that age actually is. The stage model is the authority on what a pack is for; a pack outside it is a file, not a week.
