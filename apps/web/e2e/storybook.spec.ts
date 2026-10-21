@@ -93,6 +93,10 @@ const STORIES = [
   "app-remindercard--tomorrow",
   "app-remindercard--today",
   "app-remindercard--both",
+  "app-emailpreview--this-week",
+  "app-emailpreview--turned-off",
+  "app-emailpreview--nothing-left",
+  "app-emailpreview--after-a-loss",
 ];
 
 /**

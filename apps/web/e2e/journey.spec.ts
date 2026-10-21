@@ -474,7 +474,10 @@ test("changing a setting re-personalizes the week without a reload", async ({ pa
   ).toBeVisible();
 
   // Back to the week the long way round, so every hop is client-side.
-  await page.getByRole("link", { name: "This week" }).click();
+  await page
+    .getByRole("navigation", { name: "Main" })
+    .getByRole("link", { name: "This week", exact: true })
+    .click();
   await expect(page).toHaveURL(/\/$/);
   await page.getByRole("link", { name: "Open this week" }).click();
   await expect(page).toHaveURL(/\/week\/pregnancy-w28$/);
@@ -536,7 +539,10 @@ test("a loss pauses the weekly guide, and nothing is deleted", async ({ page }) 
     .click();
 
   // The dashboard stops showing a week.
-  await page.getByRole("link", { name: "This week" }).click();
+  await page
+    .getByRole("navigation", { name: "Main" })
+    .getByRole("link", { name: "This week", exact: true })
+    .click();
   await expect(page).toHaveURL(/\/$/);
   await expect(page.getByText("The weekly guide is paused.")).toBeVisible();
   await expect(page.getByRole("link", { name: "Open this week" })).toHaveCount(0);

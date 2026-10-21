@@ -9,6 +9,39 @@ changelog written after the fact from memory is a changelog nobody can trust.
 
 ## Unreleased
 
+### The weekly email: three things, and nothing if there is nothing (#33)
+
+- Added `apps/web/src/lib/email.ts`: the `WeeklyEmail` model, `resolve`,
+  `weeklyEmailReason`, `buildWeeklyEmail`, `nextSendAt` and
+  `sendWeeklyEmail`. **A reason, not a boolean** — ten values, so the preview
+  and the job log can both say which promise stopped the send.
+- Added `apps/web/src/emails/WeeklyEmail.tsx`, the React Email template:
+  hardcoded hex, no images, no tracking pixel, the unsubscribe link visible in
+  the body, and the red flag as a 2px clay left border rather than a banner.
+- Added `/email`, a preview of exactly what would be sent, and a
+  "See what this week's email would say" link from settings. It says in its
+  first sentence that nothing is sent yet, because there is no mail server.
+- **`null` in five cases, and each one is a promise.** Not onboarded, no
+  stage, no pack, the gate said no, and nothing left to do. An email that says
+  "you're all done" is a re-engagement drip wearing a friendly face.
+- **No re-engagement drips by construction.** There is no function that takes
+  a "last seen" date. The email is always about the week the parent is in now.
+- **The subject uses `stageLabel(stage)`, not `pack.title`.** A week-30 parent
+  reads the week-28 pack; heading that email "Week 28" would be a lie in the
+  subject line.
+- **8am in the parent's zone, not 8am UTC.** `nextSendAt` does two offset
+  passes because the offset at the guessed instant can differ from the offset
+  at the real one. At exactly the send hour it rolls to tomorrow: sending
+  twice is worse than sending late.
+- **The key is `packId:YYYY-MM-DD`**, recorded by the caller after a
+  successful send, so a transport that throws leaves the email sendable.
+- **Fixed a real bug this found:** the onboarding "assume I am 28 weeks"
+  shortcut computed its due date from the UTC date while every other surface
+  uses `localDate`. In Los Angeles after 5pm a brand-new parent landed on
+  week 27 and read the week-20 pack. Third place that bug has been fixed.
+- 36 tests for `email.ts`, 8 for the template, 9 for the preview, all at 100%
+  coverage. 7 e2e tests, 2 axe runs, 4 stories.
+
 ### Reminders: a date, not a week (#34)
 
 - Added `apps/web/src/lib/reminders.ts`: `localDate`, `addDays`,
