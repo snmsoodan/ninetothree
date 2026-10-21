@@ -1173,6 +1173,36 @@ Three real gaps were filled to keep the count at 251: Head Start and Early Head 
 
 **Verification.** 85 stage packs valid, 251 catalogue entries pass the same lint, zero findings. 287 links checked, none broken, none moved, 4 bot-blocked and unchanged, and no parked domains. 1,348 unit tests (content 500, rules 121, ui 53, web 674). 85 chromium e2e, 87 storybook stories, Lighthouse assertions pass on all seven URLs. `/week/[id]` prerenders 85 paths.
 
-## 36. How this file is maintained
+## 36. Offline (issue #42)
+
+**The product now installs, and it opens on a train.** A manifest, four icons, a hand-written service worker, an offline note on every page, an install prompt in Settings, and a static fallback page. The acceptance criterion was "airplane mode shows the current week and triage; no stale safety content", and the second half is the hard half.
+
+**A Next.js route cannot be the offline fallback, and finding that out cost a debugging cycle.** The first version had `src/app/offline/page.tsx` and the worker served its HTML for any navigation that failed. Offline, `/read/glucose-test` returned 200 and the body was **"Application error: a client-side exception has occurred"**. The reason: serving `/offline`'s HTML for a different URL means the browser needs `/offline`'s JavaScript chunks, and those chunks were never precached — a chunk that fails to load turns the page into Next's error boundary. That is the exact opposite of what an offline page is for.
+
+The fallback is now `public/offline.html`: no JavaScript, no build stylesheet, inline CSS with the design tokens copied as hex. It cannot throw. It is the same trade `WeeklyEmail.tsx` makes, and it carries the same debt — if a token changes, this file does not follow.
+
+**The worker's one rule: a navigation is network-first, always, with no timeout.** The cache is a fallback for when the network is gone, never a shortcut for when it is slow. A timeout would mean serving a cached safety page to a parent who is online, which would make "we checked this" a lie. A slow page is better than a stale safety page. `/_next/static/*`, `/fonts/*` and image extensions are cache-first, because they are content-hashed and a cached copy can never be the wrong copy.
+
+**Only a 200 is cached.** A 404 or a 500 written into the cache would be served back to a parent offline as though it were the page.
+
+**`install` fetches each precache URL individually rather than calling `addAll`.** `addAll` rejects the whole install if one URL fails, which would leave a parent with no worker at all because a single icon 404'd.
+
+**The safety page and the triage tree say something different when offline.** `AppShell` takes a `safetyContent` prop, and the note reads "You are offline. These numbers are always right. Anything added to this page since you last opened it is not here." That is the honest answer to "no stale safety content": offline the content _is_ a copy, and the product says so rather than pretending otherwise. Everywhere else the note is one line — "You are offline. This is the copy saved on your device." — in `text-ink-faint`, `role="status"`, no banner, no icon, no red. Being offline is not an error; it is a fact about the train.
+
+**The worker registers only in a production build.** Registering in development caches the dev server's HTML, and every subsequent edit is served from that cache until someone clears it by hand. A failed registration is swallowed: the app works without a worker, it just does not work offline, and a toast saying so would be worse than silently not having it.
+
+**The install prompt lives in Settings and has no dismissal state.** It is not a modal and not a nag; a parent who does not want it scrolls past. iOS has no `beforeinstallprompt`, so the only honest thing there is the Share → Add to Home Screen instruction. `display: "standalone"`, not `"fullscreen"` — a parent still wants the status bar, because the status bar is where the time is.
+
+**The icons are committed PNGs, not generated at build time.** `sharp` is not resolvable from the repo root or from `apps/web`, and no SVG rasterizer is installed on this machine except macOS `qlmanage`. Generating once with `qlmanage` and `sips` and committing the result means the build has no image dependency and CI needs no extra tool. `maskable-512.png` is a separate full-bleed render with the glyph scaled to 0.8 around the centre, so it survives a circular mask; `apple-touch-icon.png` comes from the same render because iOS composites transparency on black.
+
+**Two components were split in half so Storybook could render them.** `OfflineNote` and `InstallPrompt` read browser state, so a story of either would render `null` in a browser that is online and not installable — and the storybook spec waits for `#storybook-root > *`, so a `null` story times out. Each is now a presentational half (`OfflineLine`, `InstallCard`) that takes its state as a prop, plus a stateful wrapper. No `play` function fakes a browser global.
+
+**`page.waitForFunction` with an `async` predicate returns the truthy Promise immediately instead of awaiting it.** The service-worker registration test passed vacuously for one run because of this. It is now `expect.poll(() => page.evaluate(async () => ...), { timeout: 30_000, intervals: [200, 500, 1000] })`, which also requires `/offline.html` to be in the cache before it returns true.
+
+**What this does not do.** There is still no push transport, so the worker caches and serves but never wakes a parent. There is no update prompt: a new deploy installs a new worker and `skipWaiting()` takes over immediately, which means a parent mid-session could get a new worker under an old page. `sw.js` has no unit test — it is a plain script in `public/`, outside the TypeScript build, so the offline e2e suite is the only proof it works. The `beforeinstallprompt` path cannot be exercised in Playwright, because headless Chromium does not fire it without a real installability check; only the `ios` and `none` branches are reachable in e2e, and the `prompt` branch is covered by unit tests and Storybook.
+
+**Verification.** 85 stage packs valid, 251 catalogue entries, zero findings. 1,372 unit tests (content 500, rules 121, ui 53, web 698). 94 chromium e2e, 91 storybook stories, 287 links none broken none moved, Lighthouse assertions pass on all seven URLs. `/week/[id]` prerenders 85 paths.
+
+## 37. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.

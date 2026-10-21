@@ -13,6 +13,7 @@ import {
 import { Button, Card, CardBody, Dialog, RadioGroup, TextLink } from "@ninetothree/ui";
 import { ButtonLink } from "@/components/ButtonLink";
 import { AppShell } from "@/components/AppShell";
+import { InstallPrompt } from "@/components/InstallPrompt";
 import { NotificationSettings } from "@/components/NotificationSettings";
 import { ProfilePreview } from "@/components/ProfilePreview";
 import {
@@ -171,6 +172,13 @@ export default function SettingsPage() {
               </p>
             </CardBody>
           </Card>
+        </section>
+
+        <section aria-labelledby="install-heading" className="mt-10">
+          <h2 id="install-heading" className="font-display text-2xl text-ink">
+            On your phone
+          </h2>
+          <InstallPrompt />
         </section>
 
         <ProfilePreview packs={PACKS} profile={state.profile} />

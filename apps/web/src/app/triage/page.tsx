@@ -40,7 +40,7 @@ export default async function TriagePage({
   }
 
   return (
-    <AppShell stage="Safety">
+    <AppShell stage="Safety" safetyContent>
       {outcome ? (
         <TriageOutcome result={outcome.result} trail={trail} />
       ) : question ? (

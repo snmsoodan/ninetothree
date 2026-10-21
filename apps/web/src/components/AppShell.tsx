@@ -6,6 +6,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import type { RedFlag } from "@ninetothree/content";
 import { cn } from "@ninetothree/ui";
 import { HelpNow } from "./HelpNow";
+import { OfflineNote } from "./OfflineNote";
 
 const NAV = [
   // The week view is a detail page of "This week", so it keeps the tab lit.
@@ -22,9 +23,15 @@ export interface AppShellProps {
   stage?: string;
   /** The current week's warning signs, so the drawer can show them. */
   flags?: RedFlag[];
+  /**
+   * Set on the safety page and the triage tree. Offline, those two pages get
+   * different words, because their content is the reason the note exists: the
+   * phone numbers are always right and the list of warning signs may not be.
+   */
+  safetyContent?: boolean;
 }
 
-export function AppShell({ children, stage, flags }: AppShellProps) {
+export function AppShell({ children, stage, flags, safetyContent = false }: AppShellProps) {
   const pathname = usePathname();
 
   // A soft settle, not a transition. Transform only — dimming the text
@@ -74,6 +81,7 @@ export function AppShell({ children, stage, flags }: AppShellProps) {
           settling ? "translate-y-1" : "translate-y-0",
         )}
       >
+        <OfflineNote safety={safetyContent} />
         {children}
       </main>
 

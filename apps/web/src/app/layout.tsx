@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import { ToastProvider } from "@ninetothree/ui";
 import { RouteFocus } from "@/components/RouteFocus";
+import { ServiceWorker } from "@/components/ServiceWorker";
 import "./globals.css";
 
 /*
@@ -36,6 +37,24 @@ export const metadata: Metadata = {
   applicationName: "Nine to Three",
   formatDetection: { telephone: true },
   robots: { index: true, follow: true },
+  /*
+   * `icon.svg` is picked up from the app directory automatically and stays the
+   * favicon. The PNGs are for the two places that will not take an SVG: an
+   * Android launcher and an iOS home screen.
+   */
+  icons: {
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
+  },
+  appleWebApp: {
+    capable: true,
+    title: "Nine to Three",
+    statusBarStyle: "default",
+  },
 };
 
 export const viewport: Viewport = {
@@ -63,6 +82,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             Skip to content
           </a>
           <RouteFocus />
+          <ServiceWorker />
           <ToastProvider>{children}</ToastProvider>
         </div>
       </body>
