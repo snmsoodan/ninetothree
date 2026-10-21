@@ -9,6 +9,31 @@ changelog written after the fact from memory is a changelog nobody can trust.
 
 ## Unreleased
 
+### Offline: the guide opens on a train, and says what it is (#42)
+
+- Added a web app manifest, four committed PNG icons (192, 512, a full-bleed
+  maskable 512, and a 180 apple-touch icon), and a hand-written service worker
+  with no Workbox.
+- A navigation is **network-first with no timeout**. The cache is a fallback
+  for when the network is gone, never a shortcut for when it is slow — a
+  timeout would serve a cached safety page to a parent who is online.
+  Content-hashed assets are cache-first; only a 200 is ever cached.
+- **A Next.js route cannot be the offline fallback.** Serving `/offline`'s HTML
+  for another URL means its JS chunks are missing, and a missing chunk turns
+  the page into Next's "Application error" boundary. The fallback is now a
+  static `public/offline.html` with no JavaScript and inline CSS.
+- The safety page and the triage tree say something different offline: "These
+  numbers are always right. Anything added to this page since you last opened
+  it is not here." Everywhere else it is one line in `text-ink-faint`.
+- Added an install prompt in Settings with no dismissal state and no nag, and
+  the Share → Add to Home Screen path for iOS, which has no
+  `beforeinstallprompt`.
+- Split `OfflineNote` and `InstallPrompt` into a presentational half and a
+  stateful half so Storybook can render every state without faking a browser
+  global.
+- 24 new component tests, 9 offline e2e tests, 4 stories. 1,372 unit tests,
+  94 chromium e2e, 91 storybook stories.
+
 ### The link library: 251 places to go, and a disclosure on every one (#49)
 
 - Grew the catalogue from 89 entries to **251** across seven files: 104

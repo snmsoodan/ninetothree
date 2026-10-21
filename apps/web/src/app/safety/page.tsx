@@ -12,7 +12,7 @@ export default function SafetyPage() {
   );
 
   return (
-    <AppShell stage="Safety">
+    <AppShell stage="Safety" safetyContent>
       <div className="measure">
         <h1 className="font-display text-3xl text-ink">If something is wrong</h1>
         <p className="mt-2 text-base text-ink-muted">

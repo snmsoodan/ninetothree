@@ -425,6 +425,39 @@ const rules: Rule[] = [
 - No web fonts above 2 families; `font-display: swap`.
 - Images: AVIF/WebP, responsive `srcset`, no layout shift.
 
+### Offline
+
+The app installs and opens without a network. Three pieces, and one rule that
+governs all of them.
+
+**A navigation is network-first, always, with no timeout.** The cache is a
+fallback for when the network is gone, never a shortcut for when it is slow. A
+timeout would serve a cached safety page to a parent who is online, which would
+make "we checked this" a lie. A slow page is better than a stale safety page.
+Content-hashed assets (`/_next/static/*`, `/fonts/*`, images) are cache-first,
+because a cached copy of a hashed file can never be the wrong copy. Only a 200
+is ever written to the cache.
+
+**The offline fallback is a static file, not a route.** `public/offline.html`
+has no JavaScript and no build stylesheet — inline CSS with the design tokens
+copied as hex. A Next.js route cannot do this job: serving its HTML for a
+different URL means its JS chunks are missing, and a missing chunk turns the
+page into Next's "Application error" boundary. The static file cannot throw.
+It carries the same accepted debt as `WeeklyEmail.tsx`: if a token changes,
+this file does not follow.
+
+**Offline is a fact, not an error.** `AppShell` renders one line in
+`text-ink-faint` with `role="status"` — no banner, no icon, no red. The safety
+page and the triage tree get different words, because there the copy really is
+a snapshot: "These numbers are always right. Anything added to this page since
+you last opened it is not here." That is the honest answer to "no stale safety
+content" — offline the content _is_ a copy, and the product says so.
+
+The worker registers only in a production build, and a failed registration is
+swallowed: the app works without a worker, it just does not work offline. The
+install prompt lives in Settings with no dismissal state, because it is not a
+modal and not a nag.
+
 ---
 
 ## 8. Auth and household model

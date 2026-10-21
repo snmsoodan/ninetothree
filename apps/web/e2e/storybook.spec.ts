@@ -98,6 +98,10 @@ const STORIES = [
   "app-emailpreview--turned-off",
   "app-emailpreview--nothing-left",
   "app-emailpreview--after-a-loss",
+  "app-offlinenote--default",
+  "app-offlinenote--safety",
+  "app-installprompt--prompt",
+  "app-installprompt--ios",
 ];
 
 /**
