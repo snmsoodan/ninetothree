@@ -2,17 +2,26 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo } from "react";
-import { PACKS, findPackForStage, nextPack } from "@ninetothree/content";
+import { PACKS, RECALLS, findPackForStage, nextPack } from "@ninetothree/content";
 import { computeStage, stageLabel } from "@ninetothree/rules";
 import { AppShell } from "@/components/AppShell";
 import { AppointmentList } from "@/components/AppointmentList";
 import { PinList, type PinItem } from "@/components/PinList";
+import { RecallList } from "@/components/RecallList";
 import { ProgressLine } from "@/components/ProgressLine";
 import { ShareCard } from "@/components/ShareCard";
 import { WeekSummaryCard } from "@/components/WeekSummaryCard";
 import { QuietWeek } from "@/components/QuietWeek";
 import { resolvePins } from "@/lib/pins";
-import { removePin, stageInput, useAppState, useHydrated } from "@/lib/store";
+import { syncNotices } from "@/lib/recalls";
+import {
+  dismissNotice,
+  removePin,
+  stageInput,
+  useAppState,
+  useHydrated,
+  visibleNotices,
+} from "@/lib/store";
 import { weekProgress } from "@/lib/week";
 
 export default function DashboardPage() {
@@ -26,6 +35,13 @@ export default function DashboardPage() {
   }, [ready, state.onboarded, router]);
 
   const pins = useMemo<PinItem[]>(() => resolvePins(state.pins, PACKS), [state.pins]);
+  const notices = useMemo(() => visibleNotices(state), [state]);
+
+  // The queue is filled on the dashboard, not on a timer: a recall is
+  // something a parent looks at, not something that interrupts them.
+  useEffect(() => {
+    if (ready) syncNotices(state, RECALLS);
+  }, [ready, state]);
 
   const { weeksDone, actionsDone } = useMemo(() => {
     const settled = new Set(
@@ -80,6 +96,7 @@ export default function DashboardPage() {
             nextHref={ahead ? `/week/${ahead.id}` : undefined}
           />
         )}
+        <RecallList notices={notices} recalls={RECALLS} onDismiss={dismissNotice} />
         <PinList pins={pins} onUnpin={removePin} />
         <AppointmentList appointments={pack.appointments} unit={pack.stageUnit} />
         <ShareCard stage={label} />

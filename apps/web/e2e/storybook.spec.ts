@@ -77,6 +77,14 @@ const STORIES = [
   "app-triage--outcome",
   "app-triage--emergency",
   "app-triage--trail",
+  "app-recallnotice--pinned-step",
+  "app-recallnotice--chosen-product",
+  "app-recallnotice--keyword",
+  "app-recallnotice--check-yours",
+  "app-recallnotice--worth-knowing",
+  "app-recalllist--empty",
+  "app-recalllist--one",
+  "app-recalllist--several",
 ];
 
 /**

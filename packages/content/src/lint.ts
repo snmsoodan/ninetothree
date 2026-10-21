@@ -1,6 +1,7 @@
 import { articleProse, type Article } from "./articles";
 import type { LinkEntry } from "./links";
 import type { StagePack } from "./schema";
+import type { Recall } from "./recalls";
 import { reassuranceIn, type TriageTree } from "./triage";
 
 /**
@@ -425,4 +426,25 @@ export function lintTriage(tree: TriageTree): LintFinding[] {
 
 export function lintTriages(trees: TriageTree[]): LintFinding[] {
   return trees.flatMap(lintTriage);
+}
+
+/**
+ * A recall is an agency record, not our prose, so it is not held to the
+ * reading level or the review record. It is held to the same promise rule:
+ * a recall notice that says a product is "completely safe" once it is fixed,
+ * or that a parent "must" act by a date, is a sentence we would have to
+ * defend. The hazard and the action are the two places a claim can hide.
+ */
+export function lintRecall(recall: Recall): LintFinding[] {
+  const findings: LintFinding[] = [];
+
+  findings.push(...checkText(recall.id, "title", recall.title));
+  findings.push(...checkText(recall.id, "hazard", recall.hazard));
+  findings.push(...checkText(recall.id, "action", recall.action));
+
+  return findings;
+}
+
+export function lintRecalls(recalls: Recall[]): LintFinding[] {
+  return recalls.flatMap(lintRecall);
 }

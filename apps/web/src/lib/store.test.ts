@@ -1,5 +1,6 @@
 import { renderHook } from "@testing-library/react";
 import { writeField } from "@ninetothree/rules";
+import type { RecallMatch } from "@ninetothree/content";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   DRAFT_KEY,
@@ -12,6 +13,9 @@ import {
   clearChoice,
   clearDraft,
   clearProgress,
+  dismissNotice,
+  recordNotices,
+  visibleNotices,
   completeOnboarding,
   completeWeek,
   getServerSnapshot,
@@ -907,5 +911,154 @@ describe("the onboarding draft", () => {
     saveDraft(full);
     resetAll();
     expect(window.localStorage.getItem(DRAFT_KEY)).toBeNull();
+  });
+});
+
+describe("notices", () => {
+  const match = (over: Partial<RecallMatch> = {}): RecallMatch => ({
+    recall: {
+      id: "cpsc-1",
+      title: "High chairs recalled for a fall hazard",
+      product: "Bicystar high chairs",
+      hazard: "The seat can detach from the frame.",
+      action: "Stop using the chair and contact the maker for a free repair kit.",
+      severity: "stop-use",
+      publishedAt: "2026-09-01",
+      source: {
+        id: "cpsc",
+        title: "Bicystar high chairs",
+        publisher: "CPSC",
+        url: "https://www.cpsc.gov/Recalls/2026/example",
+        kind: "government",
+        accessed: "2026-10-20",
+      },
+      matches: { optionIds: [], actionIds: ["t-car-seat"], keywords: [] },
+    },
+    because: "step",
+    matchedOn: "t-car-seat",
+    ...over,
+  });
+
+  it("records a notice with the recall's title and product", () => {
+    expect(recordNotices([match()], "2026-10-02T00:00:00.000Z")).toBe(1);
+    expect(getSnapshot().notices["cpsc-1:t-car-seat"]).toEqual({
+      id: "cpsc-1:t-car-seat",
+      recallId: "cpsc-1",
+      title: "High chairs recalled for a fall hazard",
+      product: "Bicystar high chairs",
+      because: "step",
+      matchedOn: "t-car-seat",
+      at: "2026-10-02T00:00:00.000Z",
+    });
+  });
+
+  it("records nothing twice", () => {
+    recordNotices([match()], "2026-10-02T00:00:00.000Z");
+    expect(recordNotices([match()], "2026-10-03T00:00:00.000Z")).toBe(0);
+    expect(getSnapshot().notices["cpsc-1:t-car-seat"]?.at).toBe("2026-10-02T00:00:00.000Z");
+  });
+
+  it("keeps two reasons for the same recall as two notices", () => {
+    recordNotices([match(), match({ because: "option", matchedOn: "opt-graco" })]);
+    expect(Object.keys(getSnapshot().notices).sort()).toEqual([
+      "cpsc-1:opt-graco",
+      "cpsc-1:t-car-seat",
+    ]);
+  });
+
+  it("puts a notice away without deleting the record", () => {
+    recordNotices([match()], "2026-10-02T00:00:00.000Z");
+    dismissNotice("cpsc-1:t-car-seat", "2026-10-04T00:00:00.000Z");
+    expect(getSnapshot().notices["cpsc-1:t-car-seat"]?.dismissedAt).toBe(
+      "2026-10-04T00:00:00.000Z",
+    );
+    expect(visibleNotices(getSnapshot())).toEqual([]);
+  });
+
+  it("does not move a dismissal that already happened", () => {
+    recordNotices([match()], "2026-10-02T00:00:00.000Z");
+    dismissNotice("cpsc-1:t-car-seat", "2026-10-04T00:00:00.000Z");
+    dismissNotice("cpsc-1:t-car-seat", "2026-10-05T00:00:00.000Z");
+    expect(getSnapshot().notices["cpsc-1:t-car-seat"]?.dismissedAt).toBe(
+      "2026-10-04T00:00:00.000Z",
+    );
+  });
+
+  it("ignores a dismissal for a notice that does not exist", () => {
+    dismissNotice("nope");
+    expect(getSnapshot().notices).toEqual({});
+  });
+
+  it("shows the newest notice first", () => {
+    recordNotices([match()], "2026-10-02T00:00:00.000Z");
+    recordNotices(
+      [match({ because: "option", matchedOn: "opt-graco" })],
+      "2026-10-05T00:00:00.000Z",
+    );
+    expect(visibleNotices(getSnapshot()).map((n) => n.id)).toEqual([
+      "cpsc-1:opt-graco",
+      "cpsc-1:t-car-seat",
+    ]);
+  });
+
+  it("survives a reload", () => {
+    recordNotices([match()], "2026-10-02T00:00:00.000Z");
+    __resetForTests();
+    const unsubscribe = subscribe(() => {});
+    expect(visibleNotices(getSnapshot())).toHaveLength(1);
+    unsubscribe();
+  });
+
+  it("drops a stored notice with no recall id", () => {
+    window.localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ ...EMPTY_STATE, notices: { a: { title: "x" }, b: 7 } }),
+    );
+    const unsubscribe = subscribe(() => {});
+    expect(getSnapshot().notices).toEqual({});
+    unsubscribe();
+  });
+
+  it("drops a stored notice with a reason it does not recognise", () => {
+    window.localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        ...EMPTY_STATE,
+        notices: {
+          a: {
+            recallId: "cpsc-1",
+            title: "x",
+            product: "y",
+            matchedOn: "z",
+            because: "vibes",
+          },
+        },
+      }),
+    );
+    const unsubscribe = subscribe(() => {});
+    expect(getSnapshot().notices).toEqual({});
+    unsubscribe();
+  });
+
+  it("treats a non-object notices field as an empty queue", () => {
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...EMPTY_STATE, notices: [] }));
+    const unsubscribe = subscribe(() => {});
+    expect(getSnapshot().notices).toEqual({});
+    unsubscribe();
+  });
+
+  it("fills in a missing timestamp on a stored notice", () => {
+    window.localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        ...EMPTY_STATE,
+        notices: {
+          a: { recallId: "cpsc-1", title: "x", product: "y", matchedOn: "z", because: "step" },
+        },
+      }),
+    );
+    const unsubscribe = subscribe(() => {});
+    expect(getSnapshot().notices.a?.at).toBe("");
+    unsubscribe();
   });
 });

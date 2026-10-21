@@ -624,3 +624,19 @@ A red flag is written once, in the pack's `redFlags` array, and it appears in fo
 **A page about how a parent feels carries the numbers.** `/read/[slug]` renders the crisis footer when the article's domain is `mind`. The 988 and PSI numbers are there whether or not the article mentions them, because the worst moment is not the time to hope the prose covered it.
 
 **The five numbers live in one place.** `apps/web/src/lib/help.ts` holds `HELP_NUMBERS`, and both `/safety` and the drawer map over it. Adding a number is one edit, and the two surfaces cannot drift.
+
+## 14. The recall feed
+
+A recall is the one kind of content we do not write. It is an agency record, and our job is to carry it accurately and get it to the parent who has the thing.
+
+**The feed is `packages/content/recalls/recalls.json`.** Five entries today, all `stop-use`, all citing a `cpsc.gov/Recalls/...` page. There is no ingestion job: a recall reaches a parent only after someone adds it. The file is validated at module load like every pack, so a malformed recall fails the build rather than a parent at 3am.
+
+**A recall matches on three signals, ranked.** `option` (the parent chose this exact product) beats `step` (they pinned the step that offered it) beats `keyword` (a word in the title of a pinned step, for a recall about a category). One notice per recall, not one per signal.
+
+**A recall that matches nothing is a schema error.** The message is "a recall that matches nothing can never reach a parent". A recall published in the future is a `recallIssues` finding instead, because a date is a fact about the record and an empty match list is a mistake in it.
+
+**The recall lint is narrower than the pack lint.** `lintRecall` checks the title, the hazard and the action for a promise, an obligation or a norm. It does not apply the reading-level ceiling or the review record, because rewriting a CPSC hazard statement to hit grade 8 would mean changing the agency's words.
+
+**A recall is never personalized away.** Like a red flag, it is not a step and no rule can hide it. The queue only holds things that match something the parent pinned or chose, and putting one away is permanent.
+
+**What is not here yet.** No ingestion, no email, no `check` or `info` recall in the shipped feed. The five entries say `"reviewedBy": "Clinical review pending"` like everything else, and the recall lint does not check that field.

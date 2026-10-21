@@ -117,3 +117,20 @@ export {
   type TriageStep,
 } from "./triage";
 export { loadTriage, TRIAGE, TRIAGE_BY_ID, getTriage } from "./triage-registry";
+export {
+  RECALL_SEVERITIES,
+  RECALL_BECAUSES,
+  RecallMatches,
+  Recall,
+  recallIssues,
+  loadRecalls,
+  assertValidRecalls,
+  matchRecalls,
+  recallKey,
+  type RecallSeverity,
+  type RecallBecause,
+  type RecallIssue,
+  type RecallSubject,
+  type RecallMatch,
+} from "./recalls";
+export { loadRecallFeed, RECALLS, RECALLS_BY_ID, getRecall } from "./recall-registry";

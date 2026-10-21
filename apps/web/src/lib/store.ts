@@ -2,6 +2,12 @@
 
 import { useSyncExternalStore } from "react";
 import type { Profile } from "@ninetothree/rules";
+import {
+  RECALL_BECAUSES,
+  recallKey,
+  type RecallBecause,
+  type RecallMatch,
+} from "@ninetothree/content";
 
 /**
  * Local-first state.
@@ -169,6 +175,29 @@ export interface Choice {
   at: string;
 }
 
+/**
+ * A recall that reached this parent, and what it matched.
+ *
+ * The notice is the record of what an email would have said. There is no
+ * transport yet, so the queue is the honest local-first version of "email if
+ * matched": exactly one notice per (recall, reason) pair, and a dismissal that
+ * survives a reload.
+ */
+export interface Notice {
+  /** `${recallId}:${matchedOn}` — the same key `recallKey` builds. */
+  id: string;
+  recallId: string;
+  /** The recall's title at the time it was recorded. */
+  title: string;
+  product: string;
+  because: RecallBecause;
+  matchedOn: string;
+  /** ISO timestamp, when the notice was recorded. */
+  at: string;
+  /** ISO timestamp, when the parent put it away. */
+  dismissedAt?: string;
+}
+
 export interface AppState {
   version: 1;
   onboarded: boolean;
@@ -182,6 +211,7 @@ export interface AppState {
   snoozed: Record<string, SnoozedEntry>;
   completed: Record<string, WeekCompletion>;
   choices: Record<string, Choice>;
+  notices: Record<string, Notice>;
 }
 
 export const EMPTY_STATE: AppState = {
@@ -195,6 +225,7 @@ export const EMPTY_STATE: AppState = {
   snoozed: {},
   completed: {},
   choices: {},
+  notices: {},
 };
 
 let state: AppState = EMPTY_STATE;
@@ -295,6 +326,29 @@ function migrateChoices(raw: unknown): Record<string, Choice> {
   return choices;
 }
 
+function migrateNotices(raw: unknown): Record<string, Notice> {
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return {};
+  const notices: Record<string, Notice> = {};
+  for (const [id, entry] of Object.entries(raw as Record<string, unknown>)) {
+    if (!entry || typeof entry !== "object") continue;
+    const value = entry as Partial<Notice>;
+    if (typeof value.recallId !== "string" || typeof value.title !== "string") continue;
+    if (typeof value.product !== "string" || typeof value.matchedOn !== "string") continue;
+    if (!RECALL_BECAUSES.includes(value.because as RecallBecause)) continue;
+    notices[id] = {
+      id,
+      recallId: value.recallId,
+      title: value.title,
+      product: value.product,
+      because: value.because as RecallBecause,
+      matchedOn: value.matchedOn,
+      at: value.at ?? "",
+      ...(typeof value.dismissedAt === "string" ? { dismissedAt: value.dismissedAt } : {}),
+    };
+  }
+  return notices;
+}
+
 function hydrate(): void {
   if (hydrated || typeof window === "undefined") return;
   hydrated = true;
@@ -312,6 +366,7 @@ function hydrate(): void {
       snoozed: migrateSnoozed(parsed.snoozed),
       completed: migrateCompleted(parsed.completed),
       choices: migrateChoices(parsed.choices),
+      notices: migrateNotices(parsed.notices),
     };
     emit();
   } catch {
@@ -629,6 +684,50 @@ export function clearChoice(actionId: string): void {
   set({ ...state, choices });
 }
 
+/**
+ * Records every match that has not been recorded before, and returns how many
+ * were new.
+ *
+ * Idempotent on purpose: a parent who dismissed a notice must not see it again
+ * on the next sync, and a sync that runs twice must not double the queue. The
+ * key carries the reason as well as the recall, so a parent who put away a
+ * notice about a pinned step still hears about it if they later choose the
+ * exact product that was recalled.
+ */
+export function recordNotices(matches: RecallMatch[], at?: string): number {
+  const stamp = at ?? new Date().toISOString();
+  const fresh = matches.filter((match) => !state.notices[recallKey(match)]);
+  if (fresh.length === 0) return 0;
+  const notices = { ...state.notices };
+  for (const match of fresh) {
+    const id = recallKey(match);
+    notices[id] = {
+      id,
+      recallId: match.recall.id,
+      title: match.recall.title,
+      product: match.recall.product,
+      because: match.because,
+      matchedOn: match.matchedOn,
+      at: stamp,
+    };
+  }
+  set({ ...state, notices });
+  return fresh.length;
+}
+
+/** Puts a notice away. The record stays, so it cannot come back. */
+export function dismissNotice(id: string, at?: string): void {
+  const notice = state.notices[id];
+  if (!notice || notice.dismissedAt) return;
+  set({
+    ...state,
+    notices: {
+      ...state.notices,
+      [id]: { ...notice, dismissedAt: at ?? new Date().toISOString() },
+    },
+  });
+}
+
 export function resetAll(): void {
   set({ ...EMPTY_STATE });
   clearDraft();
@@ -663,6 +762,13 @@ export function isSnoozed(state: AppState, actionId: string, today: string): boo
 
 export function chosenOption(state: AppState, actionId: string): Choice | undefined {
   return state.choices[actionId];
+}
+
+/** Every notice still on the screen, newest first. */
+export function visibleNotices(state: AppState): Notice[] {
+  return Object.values(state.notices)
+    .filter((notice) => !notice.dismissedAt)
+    .sort((a, b) => b.at.localeCompare(a.at));
 }
 
 export function isWeekComplete(state: AppState, packId: string): boolean {
