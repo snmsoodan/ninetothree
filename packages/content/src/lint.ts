@@ -1,4 +1,5 @@
 import { articleProse, type Article } from "./articles";
+import { checklistProse, type Checklist } from "./checklists";
 import type { LinkEntry } from "./links";
 import type { StagePack } from "./schema";
 import type { Recall } from "./recalls";
@@ -24,6 +25,7 @@ export type LintRule =
   | "alt-text"
   | "unsourced-red-flag"
   | "unsourced-article"
+  | "unsourced-checklist"
   | "reassurance"
   | "unreviewed";
 
@@ -383,6 +385,66 @@ export function lintArticle(article: Article): LintFinding[] {
 
 export function lintArticles(articles: Article[]): LintFinding[] {
   return articles.flatMap(lintArticle);
+}
+
+/**
+ * A checklist is read standing up, in a hospital corridor, with one hand.
+ * That makes the reading level matter more here than anywhere else in the
+ * product, and it makes a promise worse: "you will not need the epidural" is
+ * a sentence a parent remembers and a checklist has no business making.
+ *
+ * The source rule is the same as an article's. A list of things to pack is
+ * still advice about a birth, so it cites a clinical or government source.
+ */
+export function lintChecklist(checklist: Checklist): LintFinding[] {
+  const findings: LintFinding[] = [];
+
+  findings.push(...checkText(checklist.id, "title", checklist.title));
+  findings.push(...checkText(checklist.id, "summary", checklist.summary));
+
+  for (const [index, section] of checklist.sections.entries()) {
+    findings.push(...checkText(checklist.id, `sections[${index}].title`, section.title));
+    if (section.note) {
+      findings.push(...checkText(checklist.id, `sections[${index}].note`, section.note));
+    }
+    for (const [itemIndex, item] of section.items.entries()) {
+      const path = `sections[${index}].items[${itemIndex}]`;
+      findings.push(...checkText(checklist.id, `${path}.label`, item.label));
+      if (item.detail) {
+        findings.push(...checkText(checklist.id, `${path}.detail`, item.detail));
+      }
+    }
+  }
+
+  const prose = checklistProse(checklist);
+  const grade = readingGrade(prose);
+  if (grade > MAX_GRADE) {
+    findings.push({
+      subject: checklist.id,
+      path: "sections",
+      rule: "reading-level",
+      message: `Reads at grade ${grade.toFixed(1)}. The ceiling is ${MAX_GRADE}. Shorten the sentences.`,
+      excerpt: `grade ${grade.toFixed(1)}`,
+    });
+  }
+
+  const backed = checklist.sources.some((source) => CLINICAL_SOURCE_KINDS.has(source.kind));
+  if (!backed) {
+    findings.push({
+      subject: checklist.id,
+      path: "sources",
+      rule: "unsourced-checklist",
+      message:
+        "A checklist about a birth is clinical advice. Cite a clinical or government source.",
+      excerpt: checklist.sources.map((s) => s.publisher).join(", "),
+    });
+  }
+
+  return findings;
+}
+
+export function lintChecklists(checklists: readonly Checklist[]): LintFinding[] {
+  return checklists.flatMap(lintChecklist);
 }
 
 /**

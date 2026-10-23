@@ -1264,6 +1264,34 @@ The fallback is now `public/offline.html`: no JavaScript, no build stylesheet, i
 
 **Verification.** 85 stage packs valid, 251 catalogue entries, 6 articles, 69 triage paths, 5 recalls, zero findings. 1,408 unit tests (content 501, rules 121, ui 53, web 733). **36 axe runs** in `a11y.spec.ts`, all zero violations, including four under the new settings. 104 chromium e2e. **96 storybook stories**, five of them new. 293 links none broken none moved. Lighthouse assertions pass on all seven URLs. `/week/[id]` prerenders 85 paths.
 
-## 39. How this file is maintained
+## 39. The print routes (issue #43)
+
+**The issue asked for two things that pull in opposite directions: "one-page weekly pack" and "fits A4".** A4 is 210 × 297 mm; US Letter is 216 × 279 mm. A4 is 6 mm narrower and 18 mm taller. A layout tuned to one letterboxes or overflows on the other, and the product is US-first while the issue's acceptance criterion is written in A4. The resolution is that the week card is asserted to be **exactly one page on both**, and the checklist is asserted to be **at most two pages on both** — see the AC reading below.
+
+**`@page { size: letter }` was wrong and had to go.** Forcing Letter on an A4 printer makes the browser scale the page down to fit, which shrinks 10pt type to about 9.4pt and adds white margins on all four sides. `size: auto` defers to whatever paper is actually in the machine, and the layout is built to be fluid between the two sizes instead. The comment in `globals.css` records the 6 mm/18 mm difference so the next person does not "fix" it back.
+
+**The binding constraint is A4's width and Letter's height: 650 × 912 px at 96 dpi.** With `margin: 0.75in`, Letter gives 672 × 912 px of printable area and A4 gives 650 × 978 px. A layout that fits 650 × 912 fits both. That number is the whole design brief for the print sheet, and it was measured rather than assumed.
+
+**The first version did not fit, and only a PDF could have shown it.** The week card measured **956 px** against a 912 px limit — one page on A4, **two pages on Letter**. The checklist measured **2008 px** — three pages on both. Unit tests, axe and Lighthouse all passed, because none of them measure paper. A Playwright script that sets `emulateMedia({ media: "print" })`, sizes the viewport to 650 px and reads `getBoundingClientRect().height` found both in one run.
+
+**The fix was typography and columns, not content.** `.print-sheet` went to 10pt/1.4 with a 16pt `h1` and 0.4rem section gaps, which took the week card to **896 px** — 16 px of headroom. The checklist got a two-column wrapper (`.print-columns`), which took it to **1684 px**, two sheets. Nothing was cut to make the numbers work.
+
+**Sections are deliberately left breakable.** `break-inside: avoid` on a `section` sounds right and is wrong: it pushes a whole section to the next page and turns one sheet into two. The rule is applied to `li`, `p` and `footer` — the units a parent would be annoyed to see split — and not to the section that contains them. The tallest checklist section is 443 px, so no section can exceed a page on its own.
+
+**The printed week card omits `detail` and `skipIf` on purpose.** Both need a link or a dialog to be useful — `detail` is the "how", and `skipIf` is the "when this does not apply to you". On paper they become a paragraph a parent cannot act on. The card prints the action's title and its `why`, which is the part that survives without a screen. The checklist keeps `detail`, because "pack this in your hand luggage, not the checked bag" is exactly the kind of thing you want on the sheet in your hand.
+
+**The route is `/print/checklist/[id]`, not `/print/[id]`.** The first shape put a dynamic segment next to a static one (`/print/week/[id]`), which Next.js resolves but which makes every future `/print/...` route a coin flip. `checklistHref` in `packages/content` was changed to match, so there is one place that knows the URL.
+
+**The print layout is not `AppShell`.** A sticky header and a five-tab bottom bar are the two things you least want on a sheet of paper, and `no-print` on each of them would be three rules to keep in sync. `app/print/layout.tsx` provides its own `<main id="main" tabIndex={-1}>` and nothing else. The skip link still works, because it lives in the root layout and the target exists.
+
+**The e2e test counts pages in the actual PDF.** `page.pdf()` is headless-Chromium only, and the page count comes from `pdf.toString("latin1").match(/\/Type\s*\/Page[^s]/g)` — the `[^s]` is what stops `/Type /Pages` from being counted as a page. The test runs the same assertion twice, once with `format: "A4"` and once with `format: "Letter"`, because a layout that fits one and not the other is the exact bug this issue was about.
+
+**The e2e spec cannot import `@ninetothree/content`.** The package imports its packs as JSON modules, and Playwright's ESM loader throws `Module "...json" needs an import attribute of "type: json"` before a single test is collected — the failure reads as "No tests found", which is a confusing way to learn about import attributes. The spec reads `pregnancy-w28.json` and `hospital-bag.json` off disk with `node:fs` and `JSON.parse` instead.
+
+**The AC reading, written down so it is a decision and not an implication.** "One-page weekly pack" is the week card, and it is asserted to be exactly one page on A4 and on Letter. "Fits A4" for the hospital bag is read as _prints correctly on A4 without splitting an item_, which allows two sheets for a 33-item list. A single sheet for 33 items with 22 explanations would need 7pt type, and 7pt type is not a kindness to a parent reading it in a hospital corridor at 3am. The e2e asserts `<= 2` and separately asserts that every `.print-columns li` carries `break-inside: avoid`. If a future checklist grows past about 40 items the assertion fails — that is the signal working, not a regression.
+
+**Verification.** 85 stage packs, 251 catalogue entries, 6 articles, 69 triage paths, 5 recalls, 1 checklist, zero lint findings. **1,462 unit tests** (content 532, rules 121, ui 53, web 756), 100% coverage on content, rules and ui. **123 chromium and no-js e2e**, 11 of them new for print. **100 storybook stories**, four of them new. 293 links, none broken, none moved. Lighthouse 1.0 accessibility on all **nine** URLs, including both print routes. Both print routes prerender.
+
+## 40. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.

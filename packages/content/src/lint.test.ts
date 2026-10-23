@@ -7,6 +7,8 @@ import {
   lintLinks,
   lintPack,
   lintPacks,
+  lintChecklist,
+  lintChecklists,
   lintRecall,
   lintRecalls,
   lintTriage,
@@ -19,6 +21,8 @@ import {
 import { ARTICLES } from "./article-registry";
 import { TRIAGE } from "./triage-registry";
 import { RECALLS } from "./recall-registry";
+import { CHECKLISTS } from "./checklist-registry";
+import type { Checklist } from "./checklists";
 import type { Recall } from "./recalls";
 import type { TriageResult, TriageTree } from "./triage";
 import { PACKS } from "./registry";
@@ -530,5 +534,87 @@ describe("recalls", () => {
 
   it("passes every recall we ship", () => {
     expect(lintRecalls(RECALLS)).toEqual([]);
+  });
+});
+
+describe("lintChecklist", () => {
+  const checklist = CHECKLISTS[0] as Checklist;
+
+  function withItem(label: string, detail?: string): Checklist {
+    return {
+      ...checklist,
+      sections: [
+        {
+          id: "one",
+          title: "One",
+          items: [{ id: "one-item", label, ...(detail ? { detail } : {}) }],
+        },
+      ],
+    };
+  }
+
+  it("passes the checklist we ship", () => {
+    expect(lintChecklists(CHECKLISTS)).toEqual([]);
+  });
+
+  it("catches a promise in an item label", () => {
+    const findings = lintChecklist(withItem("A bag that is completely safe"));
+    expect(rules(findings)).toContain("absolute-claim");
+    expect(findings[0]?.path).toBe("sections[0].items[0].label");
+  });
+
+  it("catches a promise in an item detail", () => {
+    const findings = lintChecklist(withItem("A bag", "This will cure your nerves."));
+    expect(rules(findings)).toContain("absolute-claim");
+    expect(findings[0]?.path).toBe("sections[0].items[0].detail");
+  });
+
+  it("catches a promise in the summary", () => {
+    const findings = lintChecklist({ ...checklist, summary: "Guarantee a calm birth." });
+    expect(rules(findings)).toContain("absolute-claim");
+    expect(findings[0]?.path).toBe("summary");
+  });
+
+  it("catches a section note that tells a parent what they must do", () => {
+    const findings = lintChecklist({
+      ...checklist,
+      sections: [
+        {
+          id: "one",
+          title: "One",
+          note: "You must pack this first.",
+          items: [{ id: "one-item", label: "A bag" }],
+        },
+      ],
+    });
+    expect(rules(findings)).toContain("obligation");
+    expect(findings[0]?.path).toBe("sections[0].note");
+  });
+
+  it("catches a reading level above the ceiling", () => {
+    const findings = lintChecklist(
+      withItem(
+        "Notwithstanding the aforementioned considerations, the implementation of a comprehensive preparatory methodology necessitates the acquisition of numerous supplementary items.",
+      ),
+    );
+    expect(rules(findings)).toContain("reading-level");
+    expect(findings[0]?.path).toBe("sections");
+  });
+
+  it("catches a checklist with no clinical or government source", () => {
+    const findings = lintChecklist({
+      ...checklist,
+      sources: [{ ...checklist.sources[0]!, kind: "editorial" }],
+    });
+    expect(rules(findings)).toContain("unsourced-checklist");
+    expect(findings[0]?.path).toBe("sources");
+  });
+
+  it("flattens every checklist it is given", () => {
+    const findings = lintChecklists([
+      { ...checklist, id: "one", summary: "Guarantee a calm birth." },
+      { ...checklist, id: "two", summary: "You must pack this." },
+    ]);
+    expect(findings.map((finding) => finding.subject)).toEqual(["one", "two"]);
   });
 });

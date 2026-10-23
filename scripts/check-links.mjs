@@ -19,6 +19,7 @@ const LINKS = "packages/content/links";
 const ARTICLES = "packages/content/articles";
 const TRIAGE = "packages/content/triage/triage.json";
 const RECALLS = "packages/content/recalls/recalls.json";
+const CHECKLISTS = "packages/content/checklists";
 const UA =
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0 Safari/537.36";
 const TIMEOUT_MS = 20_000;
@@ -155,6 +156,14 @@ async function collect() {
   // point of the notice, so it is checked like any other source.
   const recalls = JSON.parse(await readFile(RECALLS, "utf8"));
   for (const recall of recalls) add(urls, recall.source.url, recall.source.id);
+
+  // A checklist is printed and carried to the hospital, so its sources are
+  // read off paper. They are checked like every other citation.
+  const checklistFiles = (await readdir(CHECKLISTS)).filter((f) => f.endsWith(".json"));
+  for (const file of checklistFiles) {
+    const checklist = JSON.parse(await readFile(join(CHECKLISTS, file), "utf8"));
+    for (const source of checklist.sources) add(urls, source.url, source.id);
+  }
 
   return urls;
 }

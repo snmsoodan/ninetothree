@@ -107,6 +107,10 @@ const STORIES = [
   "app-offlinenote--safety",
   "app-installprompt--prompt",
   "app-installprompt--ios",
+  "app-printweek--default",
+  "app-printweek--month-pack",
+  "app-hospitalbag--default",
+  "app-printtoolbar--default",
 ];
 
 /**

@@ -324,6 +324,8 @@ test("every route has exactly one skip-link target", async ({ page }) => {
     "/safety",
     "/settings",
     "/email",
+    "/print/week/pregnancy-w28",
+    "/print/checklist/hospital-bag",
   ]) {
     await page.goto(path);
     await expect(page.locator("#main")).toHaveCount(1);

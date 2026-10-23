@@ -686,3 +686,19 @@ A recall is the one kind of content we do not write. It is an agency record, and
 **What is not here yet.** The recall feed is 5 hand-curated entries with no ingestion job, and clinical review of every pack is still pending.
 
 **A pack that no stage can reach is not content.** `infant-month-2` had `stageIndex: 2`, and `computeStage` clamps infant to month 3, so `findPackForStage` returned month 3 and never month 2. It was reachable only by typing its URL. It was deleted, and its content lives in postpartum weeks 8 and 9, which is where a parent at that age actually is. The stage model is the authority on what a pack is for; a pack outside it is a file, not a week.
+
+## 17. Checklists
+
+**A checklist is a different shape from a pack, and the schema says so.** A pack answers "what is happening this week and what are the three things to do about it". A checklist answers "what goes in the bag", and the answer does not change week to week. Forcing the hospital bag into a pack would have meant either repeating 33 items across 12 postpartum weeks or inventing a pack whose `coreActions` are a packing list. `Checklist` is its own type: a title, a summary, a stage range, 1–12 sections, and a source list.
+
+**The stage range is a range, not a stage.** `stages: { from, to }` — the hospital bag runs from pregnancy week 30 to postpartum week 2, because that is when a parent is actually packing it. `checklistsForStage(checklists, kind, index)` returns the checklists whose range contains the stage, so the same checklist surfaces for five weeks and then stops. A range that runs backwards is a schema error, the same rule the link catalogue uses.
+
+**Item ids are unique across every section, not just within one.** A parent ticks an item, and the tick is stored by id. Two sections that both contain `phone-charger` would share a tick, and unticking one would untick the other. The `superRefine` walks all sections together, which is the only place the constraint can be enforced — Zod validates each section in isolation.
+
+**A checklist gets the same editorial rules as a pack.** At least one source, a `reviewedBy` and a `reviewedAt`, the same content lint over every title, summary, section note, item label and item detail, the same grade-8 reading ceiling, and the same `unsourced-checklist` rule: a checklist with no `clinical` or `government` source fails. A packing list is not exempt from being right — "bring your own pillow" and "bring a car seat the baby can leave in" are both advice, and one of them is regulated.
+
+**`detail` is where the useful part lives.** 22 of the 33 hospital-bag items carry one, and it is the sentence that makes the item actionable: not "car seat" but "installed and checked before week 37 — the hospital will not let you drive home without one". The printed sheet keeps `detail` for exactly this reason, which is the opposite of the decision made for the printed week card, where `detail` needs a link to be useful.
+
+**The checklist has no on-screen home yet.** `checklistHref` points at `/print/checklist/[id]`, which is a print route with a toolbar and no navigation. That is enough for the one checklist that exists, and it is not enough for a library of them. A `/checklist/[id]` screen route — the full list, readable at length, with the ticks persisted — is the obvious follow-up, and it is not in this issue.
+
+**One checklist is a seed, not a library.** The hospital bag is the one every parent needs and the one with the clearest deadline. The next candidates are the safe-sleep setup, the first-week homecoming, and the daycare-start list, in that order.

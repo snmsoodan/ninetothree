@@ -1,8 +1,10 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { ARTICLES } from "../article-registry";
+import { loadChecklists } from "../checklists";
 import {
   lintArticles,
+  lintChecklists,
   lintLinks,
   lintPacks,
   lintRecalls,
@@ -15,26 +17,31 @@ import { RECALLS } from "../recall-registry";
 import { paths } from "../triage";
 import { TRIAGE } from "../triage-registry";
 
-const packsDir = join(import.meta.dirname, "..", "..", "packs");
-const files = readdirSync(packsDir).filter((f) => f.endsWith(".json"));
+/** Every JSON content directory is read the same way, so a finding names a file. */
+function readDir(name: string): { file: string; data: unknown }[] {
+  const dir = join(import.meta.dirname, "..", "..", name);
+  const files = readdirSync(dir).filter((f) => f.endsWith(".json"));
+  return files.flatMap((file) => {
+    const text = readFileSync(join(dir, file), "utf8");
+    try {
+      return [{ file, data: JSON.parse(text) as unknown }];
+    } catch (error) {
+      console.error(`✗ ${file}: invalid JSON — ${(error as Error).message}`);
+      process.exitCode = 1;
+      return [];
+    }
+  });
+}
 
-const raw = files.map((file) => {
-  const text = readFileSync(join(packsDir, file), "utf8");
-  try {
-    return { file, data: JSON.parse(text) as unknown };
-  } catch (error) {
-    console.error(`✗ ${file}: invalid JSON — ${(error as Error).message}`);
-    process.exitCode = 1;
-    return null;
-  }
-});
-
-const parsed = raw.filter((r) => r !== null);
+const parsed = readDir("packs");
 const { packs, issues } = loadPacks(parsed.map((r) => r.data));
+
+const checklistFiles = readDir("checklists");
+const { checklists, issues: checklistIssues } = loadChecklists(checklistFiles.map((r) => r.data));
 
 /** A finding names the file, not just the pack id, so the fix is one click away. */
 const fileFor = new Map<string, string>();
-for (const entry of parsed) {
+for (const entry of [...parsed, ...checklistFiles]) {
   const id =
     typeof entry.data === "object" && entry.data !== null && "id" in entry.data
       ? String((entry.data as { id: unknown }).id)
@@ -73,9 +80,27 @@ if (issues.length > 0) {
   }
 }
 
+if (checklistIssues.length > 0) {
+  console.error(`\n✗ ${checklistIssues.length} checklist problem(s):\n`);
+  for (const issue of checklistIssues) {
+    const where = fileFor.get(issue.checklistId) ?? issue.checklistId;
+    console.error(`  ${where} → ${issue.path}: ${issue.message}`);
+  }
+  process.exitCode = 1;
+} else {
+  console.log(`✓ ${checklists.length} checklists valid`);
+  for (const checklist of checklists) {
+    const items = checklist.sections.reduce((n, section) => n + section.items.length, 0);
+    console.log(
+      `  ${checklist.id.padEnd(22)} ${String(checklist.sections.length)} sections · ${String(items)} items · ${String(checklist.sources.length)} sources`,
+    );
+  }
+}
+
 report(lintPacks(packs), "content lint problem(s)");
 report(lintLinks(LINKS), "catalogue lint problem(s)");
 report(lintArticles(ARTICLES), "article lint problem(s)");
+report(lintChecklists(checklists), "checklist lint problem(s)");
 report(lintTriages([TRIAGE]), "triage lint problem(s)");
 report(lintRecalls(RECALLS), "recall lint problem(s)");
 
