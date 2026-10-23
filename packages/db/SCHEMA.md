@@ -207,11 +207,65 @@ PGlite ships Postgres 18; Neon runs 16. Nothing in the schema is newer than 13,
 and `gen_random_uuid()` has been built in since then, so no `pgcrypto` is
 needed. That is an assumption about the production target, not a proof of it.
 
+## Row-level security
+
+`0002_rls` turns on row-level security for the eleven tables that hold
+something about a person, and leaves the four that hold content alone.
+
+| Table                                                         | Policy                   | Who can see a row       |
+| ------------------------------------------------------------- | ------------------------ | ----------------------- |
+| `users`                                                       | `users_self`             | the person themselves   |
+| `household_members`                                           | `household_members_self` | the person themselves   |
+| `households`                                                  | `households_member`      | anyone in the household |
+| `pregnancies`, `children`, `appointments`, `subscriptions`    | `*_household`            | anyone in the household |
+| `stage_progress`, `item_state`, `reminders`, `content_events` | `*_self`                 | the person themselves   |
+
+`stage_packs`, `content_sources`, `link_catalogue` and `feature_flags` are
+deliberately unprotected. They are the same for everybody, and a policy on them
+would be a policy that says "yes" to every row.
+
+The policies read two functions:
+
+```sql
+app_user_id()       -- nullif(current_setting('app.user_id', true), '')::uuid
+app_household_ids() -- the households that user belongs to
+```
+
+`current_setting('app.user_id', true)` returns NULL when the setting was never
+set, so the policy evaluates to NULL and the answer is no rows. It fails
+closed. The `nullif(..., '')` is there because a setting that was explicitly
+cleared comes back as the empty string, and `''::uuid` is an error rather than
+a NULL — an error inside a policy is a 500, and a NULL is an empty page.
+
+### The deployment requirement this creates
+
+**Row-level security is only enforced for a role that is not a superuser and
+does not own the table.** PGlite connects as `postgres`, which is a superuser,
+and a superuser bypasses every policy even with `force row level security` set.
+The first probe of this migration appeared to do nothing for exactly that
+reason.
+
+So the application must connect as an ordinary role — `app_user` in the tests —
+that has been granted `usage` on the schema and the table privileges it needs.
+If it connects as the owner, the policies are decorative and every query returns
+everything. This is a runbook item, not a code item, and it is the one thing
+about this migration that a test cannot prove for production.
+
+The tests do prove it for a real Postgres: `repo.test.ts` creates `app_user`,
+switches to it with `set local role`, and then runs `select ... from pregnancies`
+with **no `where` clause at all**. It gets back one row, not two.
+
+### Why both RLS and a `where` clause
+
+The repository layer in `src/repo.ts` also filters by `scope.userId` or
+`scope.householdId` in every query. That is belt and braces, and it is
+deliberate. A query that relies only on RLS is a query that silently returns
+everything the day someone connects as the owner, or runs a migration, or adds
+a table and forgets the policy. A query that relies only on its `where` clause
+is one typo away from a cross-household read. Neither alone is enough.
+
 ## What is deliberately not here
 
-- **Row-level security.** There is one service and it scopes every query by
-  `user_id`. RLS is the right answer when there is more than one writer; there
-  is not yet.
 - **Soft delete on anything but `users`.** `users.deleted_at` exists because
   account deletion is a legal obligation with a grace period. Nothing else is
   soft-deleted, because a soft-deleted row that every query has to remember to
