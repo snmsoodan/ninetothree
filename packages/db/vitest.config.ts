@@ -3,8 +3,11 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   test: {
     globals: true,
-    testTimeout: 60_000,
-    hookTimeout: 60_000,
+    // PGlite compiles a large WASM module in `beforeAll`. Alone that takes
+    // under a second; with four other packages' suites competing for CPU it
+    // has been seen to exceed a minute, so the ceiling is generous on purpose.
+    testTimeout: 120_000,
+    hookTimeout: 120_000,
     fileParallelism: false,
     coverage: {
       provider: "v8",
