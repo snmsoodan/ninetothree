@@ -69,7 +69,7 @@ async function tableNames(db: SqlClient): Promise<string[]> {
 describe("loadMigrations", () => {
   it("pairs every up file with its down file", () => {
     const migrations = loadMigrations();
-    expect(migrations.map((m) => m.name)).toEqual(["0001_init"]);
+    expect(migrations.map((m) => m.name)).toEqual(["0001_init", "0002_rls"]);
     expect(migrations[0]?.up).toContain("create table users");
     expect(migrations[0]?.down).toContain("drop table if exists users");
   });
@@ -101,7 +101,7 @@ describe("loadMigrations", () => {
 describe("migrateUp", () => {
   it("creates every table on a fresh database", async () => {
     const db = await fresh();
-    expect(await migrateUp(db)).toEqual(["0001_init"]);
+    expect(await migrateUp(db)).toEqual(["0001_init", "0002_rls"]);
     expect(await tableNames(db)).toEqual(["_migrations", ...TABLES]);
   });
 
@@ -134,7 +134,7 @@ describe("migrateDown", () => {
   it("drops every table and leaves the ledger", async () => {
     const db = await fresh();
     await migrateUp(db);
-    expect(await migrateDown(db)).toEqual(["0001_init"]);
+    expect(await migrateDown(db, undefined, 2)).toEqual(["0002_rls", "0001_init"]);
     expect(await tableNames(db)).toEqual(["_migrations"]);
   });
 
@@ -153,7 +153,7 @@ describe("migrateDown", () => {
     for (let pass = 0; pass < 2; pass += 1) {
       await migrateUp(db);
       expect(await tableNames(db)).toEqual(["_migrations", ...TABLES]);
-      await migrateDown(db);
+      await migrateDown(db, undefined, 2);
       expect(await tableNames(db)).toEqual(["_migrations"]);
     }
   });
@@ -172,8 +172,8 @@ describe("migrateDown", () => {
   it("refuses to roll back more than was applied", async () => {
     const db = await fresh();
     await migrateUp(db);
-    await expect(migrateDown(db, undefined, 2)).rejects.toThrow(
-      "cannot roll back 2: only 1 applied",
+    await expect(migrateDown(db, undefined, 3)).rejects.toThrow(
+      "cannot roll back 3: only 2 applied",
     );
   });
 
@@ -206,11 +206,11 @@ describe("migrationStatus", () => {
     const db = await fresh();
     expect(await migrationStatus(db)).toEqual({
       applied: [],
-      pending: ["0001_init"],
+      pending: ["0001_init", "0002_rls"],
     });
     await migrateUp(db);
     expect(await migrationStatus(db)).toEqual({
-      applied: ["0001_init"],
+      applied: ["0001_init", "0002_rls"],
       pending: [],
     });
   });
