@@ -149,8 +149,14 @@
     --color-line: #cccccc;
   }
 
+  /*
+   * `auto`, not `letter`. The sheet has to fit A4 as well as US Letter, and
+   * forcing a size letterboxes the content on the other paper. A4 is 6mm
+   * narrower and 18mm taller than Letter, so the layout is fluid and the
+   * narrower width is the constraint that matters.
+   */
   @page {
-    size: letter;
+    size: auto;
     margin: 0.75in;
   }
 
@@ -177,6 +183,52 @@
 
   .article-body li,
   .article-body p {
+    break-inside: avoid;
+  }
+
+  /*
+   * The print sheet is one page. A list item may not split across a break, and
+   * a heading may not be orphaned at the foot of the page. Sections are left
+   * breakable on purpose: forbidding it pushes a whole section to page two and
+   * turns one sheet into two.
+   */
+  .print-sheet {
+    font-size: 10pt;
+    line-height: 1.4;
+  }
+
+  /*
+   * The sheet has to fit US Letter as well as A4, and Letter is 18mm shorter.
+   * The screen sizes are tuned for reading; these are tuned for fitting, and
+   * they are the difference between one sheet and two.
+   */
+  .print-sheet h1 {
+    font-size: 16pt;
+    line-height: 1.2;
+  }
+
+  .print-sheet section {
+    margin-top: 0.4rem;
+  }
+
+  /* A packing list is a list, not an essay: two columns halve the paper. */
+  .print-columns {
+    columns: 2;
+    column-gap: 1.5rem;
+  }
+
+  .print-columns > section {
+    break-inside: avoid;
+  }
+
+  .print-sheet h1,
+  .print-sheet h2 {
+    break-after: avoid;
+  }
+
+  .print-sheet li,
+  .print-sheet p,
+  .print-sheet footer {
     break-inside: avoid;
   }
 }

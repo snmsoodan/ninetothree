@@ -39,6 +39,8 @@ export {
   lintLinks,
   lintArticle,
   lintArticles,
+  lintChecklist,
+  lintChecklists,
   type LintRule,
   type LintFinding,
 } from "./lint";
@@ -54,6 +56,20 @@ export {
   type ArticleLoadResult,
 } from "./articles";
 export { ARTICLES, ARTICLES_BY_ID, getArticle } from "./article-registry";
+export {
+  Checklist,
+  ChecklistItem,
+  ChecklistSection,
+  loadChecklists,
+  assertValidChecklists,
+  checklistProse,
+  checklistsForStage,
+  checklistHref,
+  checklistCount,
+  type ChecklistIssue,
+  type ChecklistLoadResult,
+} from "./checklists";
+export { CHECKLISTS, CHECKLISTS_BY_ID, getChecklist } from "./checklist-registry";
 
 export {
   SCHEDULES,

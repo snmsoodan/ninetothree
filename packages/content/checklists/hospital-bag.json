@@ -1,0 +1,292 @@
+{
+  "id": "hospital-bag",
+  "title": "The hospital bag",
+  "summary": "What to put in the bag, in the order you will want it. Print it, tick it, and leave it by the door.",
+  "stages": {
+    "from": {
+      "kind": "pregnancy",
+      "index": 23
+    },
+    "to": {
+      "kind": "pregnancy",
+      "index": 42
+    }
+  },
+  "sections": [
+    {
+      "id": "paperwork",
+      "title": "Paperwork, first",
+      "note": "This is the section people forget, and the one you cannot buy at the hospital gift shop.",
+      "items": [
+        {
+          "id": "photo-id",
+          "label": "Photo ID and your insurance card",
+          "detail": "Some hospitals ask for both at the desk before you go up."
+        },
+        {
+          "id": "birth-plan",
+          "label": "Your birth preferences, on one page",
+          "detail": "A copy for the bag and a copy for your support person. Staff change shifts."
+        },
+        {
+          "id": "pediatrician",
+          "label": "The pediatrician's name and number",
+          "detail": "The hospital asks who will see the baby after you leave."
+        },
+        {
+          "id": "medications",
+          "label": "A list of every medicine you take, with doses",
+          "detail": "Include anything over the counter, and any allergies."
+        },
+        {
+          "id": "car-seat-manual",
+          "label": "The car seat manual, or a photo of the label",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "id": "in-labour",
+      "title": "For labour",
+      "note": "You will not want most of this. Bring it anyway; someone else can fetch it.",
+      "items": [
+        {
+          "id": "lip-balm",
+          "label": "Lip balm",
+          "detail": "The single most recommended item on every list, and the one nobody believes."
+        },
+        {
+          "id": "hair-tie",
+          "label": "A hair tie and a headband"
+        },
+        {
+          "id": "socks",
+          "label": "Warm socks with grips",
+          "detail": "Hospital floors are cold and you will be walking them."
+        },
+        {
+          "id": "phone-charger",
+          "label": "A phone charger with a long cable",
+          "detail": "Long enough to reach the bed from the wall. Six feet is not too long."
+        },
+        {
+          "id": "speaker",
+          "label": "A small speaker or headphones",
+          "optional": true
+        },
+        {
+          "id": "massage",
+          "label": "A tennis ball or a massage tool",
+          "detail": "For your back, held by your support person.",
+          "optional": true
+        },
+        {
+          "id": "snacks",
+          "label": "Snacks and a water bottle with a straw",
+          "detail": "Ask your team what you can eat. Some hospitals limit food in labour."
+        }
+      ]
+    },
+    {
+      "id": "after",
+      "title": "For after the birth",
+      "note": "You will be in a room, in a gown, for a day or more. These are the things that make that easier.",
+      "items": [
+        {
+          "id": "robe",
+          "label": "A dark robe or a loose nightgown",
+          "detail": "Dark, because of what happens to light fabric."
+        },
+        {
+          "id": "underwear",
+          "label": "High-waisted underwear you do not mind losing",
+          "detail": "Two sizes up. A cesarean scar sits where a waistband sits."
+        },
+        {
+          "id": "pads",
+          "label": "Heavy pads, unscented",
+          "detail": "The hospital supplies some. Bring your own for the ride home."
+        },
+        {
+          "id": "toiletries",
+          "label": "Toothbrush, toothpaste, and a hairbrush"
+        },
+        {
+          "id": "shower-shoes",
+          "label": "Flip-flops for the shower"
+        },
+        {
+          "id": "going-home",
+          "label": "Clothes to go home in that fit at seven months pregnant",
+          "detail": "Your body is not back to its usual size on day two, and that is not a problem to solve."
+        },
+        {
+          "id": "pillow",
+          "label": "Your own pillow, in a case you can tell apart",
+          "optional": true
+        },
+        {
+          "id": "nipple-cream",
+          "label": "Lanolin or nipple cream",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "id": "baby",
+      "title": "For the baby",
+      "note": "The hospital has most of this. What it does not have is the car seat.",
+      "items": [
+        {
+          "id": "car-seat",
+          "label": "The car seat, installed, with the base",
+          "detail": "The hospital will not let you leave in a car without one. Install it before week 36."
+        },
+        {
+          "id": "going-home-outfit",
+          "label": "One outfit to go home in, in newborn size",
+          "detail": "One. Not four. Bring the next size up as well, because newborn is a guess."
+        },
+        {
+          "id": "blanket",
+          "label": "A blanket for the car"
+        },
+        {
+          "id": "hat",
+          "label": "A hat and socks",
+          "optional": true
+        },
+        {
+          "id": "nail-file",
+          "label": "A soft nail file",
+          "detail": "Newborn nails are sharp and scissors are a bad idea in a hospital chair.",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "id": "partner",
+      "title": "For your support person",
+      "note": "They are there for a long time and nobody packs for them.",
+      "items": [
+        {
+          "id": "partner-clothes",
+          "label": "A change of clothes and a toothbrush"
+        },
+        {
+          "id": "partner-snacks",
+          "label": "Food that does not need a fridge",
+          "detail": "Cafeterias close. Vending machines do not take a card at 3am in every hospital."
+        },
+        {
+          "id": "cash",
+          "label": "Small bills and a card",
+          "detail": "Parking, and the vending machine."
+        },
+        {
+          "id": "partner-pillow",
+          "label": "A pillow and a blanket",
+          "detail": "The chair folds out. It is not a bed.",
+          "optional": true
+        },
+        {
+          "id": "notebook",
+          "label": "A notebook and a pen",
+          "detail": "For what the nurses tell you at 4am, which you will not remember.",
+          "optional": true
+        }
+      ]
+    },
+    {
+      "id": "car",
+      "title": "In the car, not in the bag",
+      "note": "Leave these in the car now, so the ride home is not the first time you think about them.",
+      "items": [
+        {
+          "id": "car-seat-check",
+          "label": "The car seat, checked against the manual",
+          "detail": "The seat does not move more than an inch at the belt path. The chest clip sits at armpit height."
+        },
+        {
+          "id": "car-blanket",
+          "label": "A blanket for the baby's legs",
+          "detail": "Over the buckled harness, never under it."
+        },
+        {
+          "id": "car-bag",
+          "label": "A bag with a change of clothes and a towel",
+          "optional": true
+        }
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "id": "src-owh-childbirth",
+      "title": "Childbirth and beyond",
+      "publisher": "US Office on Women's Health",
+      "url": "https://womenshealth.gov/pregnancy/childbirth-and-beyond",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    },
+    {
+      "id": "src-acog-labor",
+      "title": "How to tell when labor begins",
+      "publisher": "American College of Obstetricians and Gynecologists",
+      "url": "https://www.acog.org/womens-health/faqs/how-to-tell-when-labor-begins",
+      "kind": "clinical",
+      "accessed": "2026-10-21"
+    },
+    {
+      "id": "src-nichd-labor",
+      "title": "Labor and delivery",
+      "publisher": "Eunice Kennedy Shriver National Institute of Child Health and Human Development",
+      "url": "https://www.nichd.nih.gov/health/topics/labor-delivery",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    },
+    {
+      "id": "src-acog-cesarean",
+      "title": "Cesarean birth",
+      "publisher": "American College of Obstetricians and Gynecologists",
+      "url": "https://www.acog.org/womens-health/faqs/cesarean-birth",
+      "kind": "clinical",
+      "accessed": "2026-10-21"
+    },
+    {
+      "id": "src-nhtsa-car-seats",
+      "title": "Car seats and booster seats",
+      "publisher": "National Highway Traffic Safety Administration",
+      "url": "https://www.nhtsa.gov/vehicle-safety/car-seats-and-booster-seats",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    },
+    {
+      "id": "src-nichd-safe-sleep",
+      "title": "Safe to Sleep",
+      "publisher": "Eunice Kennedy Shriver National Institute of Child Health and Human Development",
+      "url": "https://safetosleep.nichd.nih.gov/",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    },
+    {
+      "id": "src-aap-newborn",
+      "title": "Baby",
+      "publisher": "American Academy of Pediatrics",
+      "url": "https://www.healthychildren.org/English/ages-stages/baby/Pages/default.aspx",
+      "kind": "clinical",
+      "accessed": "2026-10-21"
+    },
+    {
+      "id": "src-cdc-pregnancy",
+      "title": "Pregnancy",
+      "publisher": "Centers for Disease Control and Prevention",
+      "url": "https://www.cdc.gov/pregnancy/",
+      "kind": "government",
+      "accessed": "2026-10-21"
+    }
+  ],
+  "reviewedBy": "Clinical review pending",
+  "reviewedAt": "2026-10-21",
+  "updatedAt": "2026-10-21"
+}
