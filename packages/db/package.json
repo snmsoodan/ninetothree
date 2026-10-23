@@ -1,0 +1,31 @@
+{
+  "name": "@ninetothree/db",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./schema": "./src/schema.ts"
+  },
+  "scripts": {
+    "lint": "eslint src --max-warnings 0",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --coverage",
+    "db:migrate": "tsx src/cli/migrate.ts up",
+    "db:rollback": "tsx src/cli/migrate.ts down",
+    "db:status": "tsx src/cli/migrate.ts status"
+  },
+  "dependencies": {
+    "drizzle-orm": "^0.45.4"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.5.11",
+    "@ninetothree/config": "workspace:*",
+    "@types/pg": "^8.23.1",
+    "@vitest/coverage-v8": "^2.1.8",
+    "pg": "^8.23.1",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}

@@ -145,12 +145,14 @@ create table children (
 
 -- Content
 create table stage_packs (
-  id text primary key,                    -- 'preg-w24', 'month-08'
-  kind text not null check (kind in ('preconception','pregnancy','newborn','first-year','toddler','event')),
+  id text primary key,                    -- 'pregnancy-w24', 'infant-m08'
+  kind text not null check (kind in ('pregnancy','postpartum','infant','toddler','event')),
   stage_index int not null,               -- week number or month number
+  stage_unit text not null default 'week' check (stage_unit in ('week','month','day')),
   locale text not null default 'en-US',
   country char(2) not null default 'US',
   title text not null,
+  subtitle text,
   baby text,
   you text,
   payload jsonb not null,                 -- actions, also_know, red_flags, appointments
@@ -160,8 +162,7 @@ create table stage_packs (
   reviewed_by text,
   reviewed_at date,
   published_at timestamptz,
-  created_at timestamptz not null default now(),
-  unique (id, locale, country, version)
+  created_at timestamptz not null default now()
 );
 
 create table content_sources (
@@ -170,6 +171,8 @@ create table content_sources (
   label text not null,
   url text not null,
   publisher text,
+  kind text not null default 'clinical'
+    check (kind in ('clinical','government','charity','editorial','vendor')),
   last_checked date not null,
   reviewed_by text
 );
@@ -182,19 +185,23 @@ create table link_catalogue (
   country text[] not null default '{US}',
   type text not null check (type in ('authoritative','charity','community','editorial','commercial','app','course','book','local-service')),
   domains text[] not null,
+  platforms text[] not null default '{}',
   cost text,
   why text,
   affiliate boolean not null default false,
   last_checked date not null,
-  status text not null default 'active' check (status in ('active','broken','retired'))
+  status text not null default 'active' check (status in ('active','broken','retired')),
+  constraint link_catalogue_affiliate_is_commercial
+    check (not affiliate or type = 'commercial')
 );
 
 -- User state
 create table stage_progress (
   user_id uuid references users(id) on delete cascade,
-  stage_pack_id text references stage_packs(id),
+  stage_pack_id text references stage_packs(id) on delete cascade,
   state text not null default 'not_started'
     check (state in ('not_started','in_progress','complete','skipped')),
+  forced boolean not null default false,  -- finished by the parent, not by the steps
   completed_at timestamptz,
   primary key (user_id, stage_pack_id)
 );
@@ -202,13 +209,21 @@ create table stage_progress (
 create table item_state (
   user_id uuid references users(id) on delete cascade,
   item_id text not null,                  -- action id inside the pack
-  stage_pack_id text references stage_packs(id),
+  stage_pack_id text references stage_packs(id) on delete set null,
   state text not null default 'not_started'
     check (state in ('not_started','done','skipped','snoozed')),
-  skip_reason text check (skip_reason in ('not_relevant','already_done','too_expensive','too_much','other')),
+  skip_reason text check (skip_reason in ('not-now','already-done','not-for-me')),
   pinned boolean not null default false,
   pinned_at timestamptz,
+  remind_on date,
+  snoozed_until date,
   note text,
+  -- Snapshots, so a rename or a retirement cannot rewrite a parent's history.
+  title text,
+  pack_title text,
+  choice_option_id text,
+  choice_label text,
+  chosen_at timestamptz,
   updated_at timestamptz not null default now(),
   primary key (user_id, item_id)
 );
@@ -219,6 +234,7 @@ create table appointments (
   title text not null,
   kind text,
   due_at timestamptz,
+  who text,
   location text,
   notes text,
   source text not null default 'auto' check (source in ('auto','user')),
@@ -257,7 +273,7 @@ create table feature_flags (
 
 create table content_events (
   id bigserial primary key,
-  user_id uuid,
+  user_id uuid references users(id) on delete set null,
   event text not null,
   stage_pack_id text,
   item_id text,
@@ -265,6 +281,10 @@ create table content_events (
   created_at timestamptz not null default now()
 );
 ```
+
+**This block is the design. `packages/db/SCHEMA.md` is the record of what was
+built**, including the ten places where the shipped code and this design
+disagreed and how each was resolved. Where the two differ, `SCHEMA.md` is right.
 
 ### Why this shape
 
@@ -333,7 +353,7 @@ const Action = z.object({
 
 const StagePack = z.object({
   id: z.string().regex(/^(preg-w\d{2}|day-\d{2}|week-\d{2}|month-\d{2}|event-[a-z-]+)$/),
-  kind: z.enum(['preconception','pregnancy','newborn','first-year','toddler','event']),
+  kind: z.enum(['pregnancy','postpartum','infant','toddler','event']),
   stage_index: z.number().int().min(0).max(42),
   locale: z.string(),
   country: z.string().length(2),
