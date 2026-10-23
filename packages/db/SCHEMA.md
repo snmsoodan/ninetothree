@@ -264,6 +264,14 @@ everything the day someone connects as the owner, or runs a migration, or adds
 a table and forgets the policy. A query that relies only on its `where` clause
 is one typo away from a cross-household read. Neither alone is enough.
 
+## Seeding
+
+`pnpm db:seed` fills a local database with fixtures: three households, five people, two pregnancies, two children, forty item states, fourteen settled weeks, five appointments, two reminders, three subscriptions and all 85 stage packs. It reads `DATABASE_URL` and refuses any host that is not `localhost`, `127.0.0.1`, `[::1]` or empty unless `--force` is passed, because it deletes the personal tables before it inserts.
+
+Every id is fixed — `00000000-0000-4000-8000-<n>` — so the seed is idempotent and a test can assert against a literal. The stage packs are upserted rather than cleared, because they are content and deleting them would cascade to `stage_progress` and null out `item_state.stage_pack_id`. `--no-packs` skips them when they are already there.
+
+The fixtures are shaped around the screens rather than the tables. Maya is at week 28 with two pins, a settled week and a forced week; Priya is at week 6 with almost nothing done; Ingrid is four months postpartum. That spread is what makes the cross-household tests meaningful — `listItemState` for two people returns different rows, and the test asserts it.
+
 ## What is deliberately not here
 
 - **Soft delete on anything but `users`.** `users.deleted_at` exists because
