@@ -212,6 +212,16 @@ A parent in the US can:
 
 ---
 
+## Running it locally
+
+```bash
+pnpm install
+cp .env.example .env.local     # then set AUTH_SECRET to any long random string
+pnpm dev
+```
+
+`AUTH_SECRET` is the only thing you have to set. With no `DATABASE_URL`, the app uses an in-process PGlite database that is created and migrated on first use, so there is no server to install and no setup step. `pnpm db:seed` fills it with fixtures if you want a dashboard that looks lived-in.
+
 ## How it is verified
 
 Five CI jobs run on every pull request. Each one fails for exactly one class of mistake, so a red build tells you what broke without reading a log.
@@ -233,6 +243,14 @@ Five CI jobs run on every pull request. Each one fails for exactly one class of 
 **A cross-household read is impossible by construction, and that is two things, not one.** `packages/db/src/scope.ts` exports a `Scope` with a brand that is never exported, so it cannot be built from an object literal — the only way to get one is `scopeFor(db, userId)`, which reads the membership out of the database. Every repository function takes a `Scope` first and none of them accepts a bare `household_id` or `user_id`, so there is no parameter to pass the wrong one through. Underneath that, `0002_rls` turns on row-level security for the eleven tables that hold something about a person. The tests prove the second half by connecting as an ordinary role and running `select ... from pregnancies` with **no `where` clause at all**: one row comes back, not two. That test also documents a deployment requirement — a superuser bypasses every policy, so the application must not connect as the table owner or the policies are decorative.
 
 **`pnpm db:seed` gives you an app with something in it.** Three households, five people, two pregnancies, two children, forty item states, fourteen settled weeks, five appointments and all 85 stage packs — with fixed UUIDs, so running it twice leaves the same rows rather than a second Maya. Maya is at week 28 with two pins and a forced week; Priya is at week 6 with almost nothing done; Ingrid is four months postpartum. The seed deletes the personal tables first, which is why it refuses any host that is not localhost unless you pass `--force`.
+**Signing in is a magic link, and the session is a row you can delete.** Auth.js v5 with database sessions rather than JWT, because a JWT cannot be revoked — a stolen laptop stays signed in until the token expires and "sign out everywhere" becomes a lie. That choice rules out the `Credentials` provider, so the end-to-end suite drives the real magic-link flow: request a link, read it back from a gated endpoint, follow it, land signed in. Six journeys cover it — sign in, sign out, a signed-out settings page that offers a way in rather than an error, an expired link that says so in words, a link used twice that works once, and the sixth request in fifteen minutes refused with a time to try again. `AUTH_SECRET` is required for `pnpm dev` and for `pnpm build`.
+
+**The rate limiter counts per address, and it took a while to find out why it was not counting.** Auth.js calls the `signIn` callback twice for a magic link — once when the link is requested, once when it is followed — and the callback was clearing the attempt table on both, so it deleted the row the guard had just written. The fix is to return early when `email.verificationRequest` is true. `checkRateLimit` only reads and `recordAttempt` only writes, so a refused request cannot extend its own lockout.
+
+**A magic link is a hash in the database and a raw token in the URL.** Auth.js stores `sha256(token + secret)` and sends the token itself, which is what stops a copy of the database from being a set of working sign-in links. The dev-only endpoint that hands links to the test suite had to be taught the same construction twice: first it returned the stored hash, then it hashed the token without the secret. Both versions wrote a row, produced a well-formed URL, and were rejected with a bare `Verification` — which is why the debugging note in `EVIDENCE.md` §43 records how to tell the two apart.
+
+**`AUTH_TEST_MODE=1` is a real security surface.** It makes `GET /api/auth/dev/link` answer with a working sign-in link for any address. It is set by the Playwright configuration and nowhere else, and the deployment runbook (issue #52) has to assert it is unset. The same runbook has to assert the database role is not a superuser, because a superuser bypasses every row-level-security policy.
+
 **The week card and the hospital bag print, and the page count is asserted in a PDF.** `/print/week/[id]` and `/print/checklist/[id]` are static routes with no app shell — no sticky header, no bottom tabs, black on white. The e2e suite renders each one to a real PDF at both A4 and US Letter and counts the pages, because a layout that fits one paper size and not the other is invisible to every other test in this repo. The week card is exactly one page on both; the hospital bag is at most two, with every list item kept whole. `@page { size: auto }` defers to the printer rather than forcing Letter onto an A4 machine.
 
 **Every stage a parent can be in has a pack, and a test says so.** The guide covers pregnancy week 4 to toddler month 36 with no gaps. That was not true for two content issues: there were no toddler packs at all, so a parent whose child turned one stayed on the month-12 pack forever, because `findPackForStage` returns the most recent pack at or before the stage. Nothing failed, because nothing was checking. `loader.test.ts` now walks every reachable stage and fails if any of them has no pack, and an e2e test onboards a parent of a two-year-old and asserts the week page shows Month 26.

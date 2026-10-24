@@ -11,6 +11,11 @@ export default defineConfig({
     environment: "jsdom",
     globals: true,
     setupFiles: ["./src/test-setup.ts"],
+    // The auth tests boot an in-process Postgres, which compiles a large WASM
+    // module. Alone that is about half a second; with the rest of the suite
+    // running beside it, it has been seen to pass five.
+    testTimeout: 30_000,
+    hookTimeout: 30_000,
     exclude: ["e2e/**", "node_modules/**"],
     coverage: {
       provider: "v8",

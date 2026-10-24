@@ -5,17 +5,20 @@ import { join } from "node:path";
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 
 import {
-  loadMigrations,
+  MIGRATIONS,
   migrateDown,
   migrateUp,
   migrationStatus,
   type Migration,
   type SqlClient,
 } from "./migrate";
+import { loadMigrations } from "./load-migrations";
 import { createTestDb } from "./testing";
 
 const TABLES = [
+  "accounts",
   "appointments",
+  "auth_attempts",
   "children",
   "content_events",
   "content_sources",
@@ -26,10 +29,12 @@ const TABLES = [
   "link_catalogue",
   "pregnancies",
   "reminders",
+  "sessions",
   "stage_packs",
   "stage_progress",
   "subscriptions",
   "users",
+  "verification_tokens",
 ];
 
 /**
@@ -66,10 +71,19 @@ async function tableNames(db: SqlClient): Promise<string[]> {
   return rows.map((row) => row.table_name);
 }
 
+describe("the inlined migrations", () => {
+  it("are the same as the files on disk", () => {
+    // The app runs MIGRATIONS; the CLI and these tests read the directory. If
+    // someone adds a .sql file and forgets `pnpm migrations:generate`, the app
+    // would silently skip it. This is the guard against that.
+    expect(MIGRATIONS).toEqual(loadMigrations());
+  });
+});
+
 describe("loadMigrations", () => {
   it("pairs every up file with its down file", () => {
     const migrations = loadMigrations();
-    expect(migrations.map((m) => m.name)).toEqual(["0001_init", "0002_rls"]);
+    expect(migrations.map((m) => m.name)).toEqual(["0001_init", "0002_rls", "0003_auth"]);
     expect(migrations[0]?.up).toContain("create table users");
     expect(migrations[0]?.down).toContain("drop table if exists users");
   });
@@ -101,7 +115,7 @@ describe("loadMigrations", () => {
 describe("migrateUp", () => {
   it("creates every table on a fresh database", async () => {
     const db = await fresh();
-    expect(await migrateUp(db)).toEqual(["0001_init", "0002_rls"]);
+    expect(await migrateUp(db)).toEqual(["0001_init", "0002_rls", "0003_auth"]);
     expect(await tableNames(db)).toEqual(["_migrations", ...TABLES]);
   });
 
@@ -134,7 +148,7 @@ describe("migrateDown", () => {
   it("drops every table and leaves the ledger", async () => {
     const db = await fresh();
     await migrateUp(db);
-    expect(await migrateDown(db, undefined, 2)).toEqual(["0002_rls", "0001_init"]);
+    expect(await migrateDown(db, undefined, 3)).toEqual(["0003_auth", "0002_rls", "0001_init"]);
     expect(await tableNames(db)).toEqual(["_migrations"]);
   });
 
@@ -153,7 +167,7 @@ describe("migrateDown", () => {
     for (let pass = 0; pass < 2; pass += 1) {
       await migrateUp(db);
       expect(await tableNames(db)).toEqual(["_migrations", ...TABLES]);
-      await migrateDown(db, undefined, 2);
+      await migrateDown(db, undefined, 3);
       expect(await tableNames(db)).toEqual(["_migrations"]);
     }
   });
@@ -172,8 +186,8 @@ describe("migrateDown", () => {
   it("refuses to roll back more than was applied", async () => {
     const db = await fresh();
     await migrateUp(db);
-    await expect(migrateDown(db, undefined, 3)).rejects.toThrow(
-      "cannot roll back 3: only 2 applied",
+    await expect(migrateDown(db, undefined, 4)).rejects.toThrow(
+      "cannot roll back 4: only 3 applied",
     );
   });
 
@@ -206,11 +220,11 @@ describe("migrationStatus", () => {
     const db = await fresh();
     expect(await migrationStatus(db)).toEqual({
       applied: [],
-      pending: ["0001_init", "0002_rls"],
+      pending: ["0001_init", "0002_rls", "0003_auth"],
     });
     await migrateUp(db);
     expect(await migrationStatus(db)).toEqual({
-      applied: ["0001_init", "0002_rls"],
+      applied: ["0001_init", "0002_rls", "0003_auth"],
       pending: [],
     });
   });

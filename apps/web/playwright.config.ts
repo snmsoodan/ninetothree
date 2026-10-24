@@ -37,6 +37,14 @@ export default defineConfig({
       url: "http://127.0.0.1:3000",
       reuseExistingServer: !process.env.CI,
       timeout: 180_000,
+      env: {
+        // A fixed secret so a session cookie survives a restart mid-run. It is
+        // a test value and is not a secret anywhere else.
+        AUTH_SECRET: "e2e-not-a-secret-0000000000000000",
+        // Opens /api/auth/dev/link, which is how the suite gets a real magic
+        // link without an inbox. Unset everywhere else.
+        AUTH_TEST_MODE: "1",
+      },
     },
     {
       command: "pnpm build-storybook && npx http-server storybook-static -p 6006 -s",

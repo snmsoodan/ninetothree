@@ -16,6 +16,7 @@ import { AppShell } from "@/components/AppShell";
 import { InstallPrompt } from "@/components/InstallPrompt";
 import { NotificationSettings } from "@/components/NotificationSettings";
 import { ProfilePreview } from "@/components/ProfilePreview";
+import { AccountRow } from "@/components/AccountRow";
 import { ReadingSettings } from "@/components/ReadingSettings";
 import {
   resetAll,
@@ -199,6 +200,15 @@ export default function SettingsPage() {
         </section>
 
         <ProfilePreview packs={PACKS} profile={state.profile} />
+
+        <section aria-labelledby="account-heading" className="mt-10">
+          <h2 id="account-heading" className="font-display text-2xl text-ink">
+            Account
+          </h2>
+          <div className="mt-3">
+            <AccountRow />
+          </div>
+        </section>
 
         <section aria-labelledby="data-heading" className="mt-10">
           <h2 id="data-heading" className="font-display text-2xl text-ink">

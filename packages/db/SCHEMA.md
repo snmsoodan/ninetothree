@@ -40,25 +40,29 @@ guarantees is that no table of ours survives it.
 
 ## The tables
 
-Fifteen, in dependency order.
+Nineteen, in dependency order.
 
-| Table               | Holds                                                                                       |
-| ------------------- | ------------------------------------------------------------------------------------------- |
-| `users`             | One row per person. Email is `citext`, so `A@B.com` and `a@b.COM` are the same account.     |
-| `households`        | The unit a subscription and a set of appointments belong to.                                |
-| `household_members` | Who is in a household, and as what.                                                         |
-| `pregnancies`       | A due date, and whether it is still active.                                                 |
-| `children`          | A birth date, and whether the age should be corrected for prematurity.                      |
-| `stage_packs`       | The published content. `payload` is the whole validated pack as JSON.                       |
-| `content_sources`   | Where each pack's claims come from, one row per source.                                     |
-| `link_catalogue`    | The 251 places we send people, with the domains they serve and when they were last checked. |
-| `stage_progress`    | Whether a parent has finished a week, and whether they said so or the steps did.            |
-| `item_state`        | Everything a parent did to one action: done, skipped, snoozed, pinned, noted, chosen.       |
-| `appointments`      | What a parent typed. The generated schedule is derived from the due date and never stored.  |
-| `reminders`         | A time to send something, and whether it has been sent.                                     |
-| `subscriptions`     | The Stripe ids and the plan.                                                                |
-| `feature_flags`     | A key, a boolean, and an optional payload.                                                  |
-| `content_events`    | Append-only. What was shown, what was opened, what was skipped.                             |
+| Table                 | Holds                                                                                       |
+| --------------------- | ------------------------------------------------------------------------------------------- |
+| `users`               | One row per person. Email is `citext`, so `A@B.com` and `a@b.COM` are the same account.     |
+| `households`          | The unit a subscription and a set of appointments belong to.                                |
+| `household_members`   | Who is in a household, and as what.                                                         |
+| `pregnancies`         | A due date, and whether it is still active.                                                 |
+| `children`            | A birth date, and whether the age should be corrected for prematurity.                      |
+| `stage_packs`         | The published content. `payload` is the whole validated pack as JSON.                       |
+| `content_sources`     | Where each pack's claims come from, one row per source.                                     |
+| `link_catalogue`      | The 251 places we send people, with the domains they serve and when they were last checked. |
+| `stage_progress`      | Whether a parent has finished a week, and whether they said so or the steps did.            |
+| `item_state`          | Everything a parent did to one action: done, skipped, snoozed, pinned, noted, chosen.       |
+| `appointments`        | What a parent typed. The generated schedule is derived from the due date and never stored.  |
+| `reminders`           | A time to send something, and whether it has been sent.                                     |
+| `subscriptions`       | The Stripe ids and the plan.                                                                |
+| `feature_flags`       | A key, a boolean, and an optional payload.                                                  |
+| `content_events`      | Append-only. What was shown, what was opened, what was skipped.                             |
+| `accounts`            | One row per OAuth identity. Google and Apple land here.                                     |
+| `sessions`            | One row per signed-in browser. Deleting the row signs that browser out.                     |
+| `verification_tokens` | A magic link that has been sent and not yet used. Holds a hash, never the token.            |
+| `auth_attempts`       | When each address last asked for a link. The rate limiter reads it.                         |
 
 ## The indexes
 
@@ -272,6 +276,20 @@ Every id is fixed — `00000000-0000-4000-8000-<n>` — so the seed is idempoten
 
 The fixtures are shaped around the screens rather than the tables. Maya is at week 28 with two pins, a settled week and a forced week; Priya is at week 6 with almost nothing done; Ingrid is four months postpartum. That spread is what makes the cross-household tests meaningful — `listItemState` for two people returns different rows, and the test asserts it.
 
+## Auth
+
+Four tables, added by `0003_auth`. They are the shape `@auth/drizzle-adapter` expects, with two deliberate differences.
+
+**`sessions` is a table, not a JWT.** A JWT session cannot be revoked, so a stolen laptop stays signed in until the token expires and "sign out everywhere" is a lie. A row can be deleted. The cost is a read on every request that needs the session, which is a primary-key lookup.
+
+**`verification_tokens` holds a hash, never the token that was sent.** Auth.js sends the raw token in the URL and stores `sha256(token + secret)`. That is what stops a copy of the database from being a set of working sign-in links. The primary key is `(identifier, token)`, and the adapter consumes a token with a `delete … returning`, so a link works once and the row is gone.
+
+**`auth_attempts` is ours, not Auth.js's.** Auth.js has no hook between "someone asked for a link" and "an email is sent", so the rate limit sits in front of the route handler and needs somewhere to count. The key is the email address, because the harm being prevented is filling one person's inbox. `checkRateLimit` only reads; `recordAttempt` writes. Keeping them apart is what stops a refused request from extending its own lockout.
+
+**`users.email_verified` and `users.image` were added here** because the adapter writes them. `email_verified` is a timestamp rather than a boolean, which is what the adapter's `AdapterUser` type expects and what lets a future screen say when it was confirmed.
+
+**`users.email` stays `citext`.** The adapter's `DefaultPostgresColumn` type does not accept a `customType`, so the table map is cast once in `apps/web/src/lib/auth/config.ts`. Rewriting a merged migration to suit a library's type would have been the wrong trade: case-insensitive email is a property of the product, not of the library.
+
 ## What is deliberately not here
 
 - **Soft delete on anything but `users`.** `users.deleted_at` exists because
@@ -280,4 +298,4 @@ The fixtures are shaped around the screens rather than the tables. Maya is at we
   filter is a bug waiting to happen.
 - **Partitioning.** `content_events` is the only table that grows without bound,
   and it will not be large enough to matter for years.
-- **A `sessions` table.** Auth is issue #14.
+- **A `sessions` table.** It is here now — see below.

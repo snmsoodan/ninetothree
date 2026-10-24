@@ -37,6 +37,8 @@ export const users = pgTable("users", {
   timezone: text("timezone").notNull().default("America/New_York"),
   createdAt,
   deletedAt: timestamp("deleted_at", { withTimezone: true, mode: "date" }),
+  emailVerified: timestamp("email_verified", { withTimezone: true, mode: "date" }),
+  image: text("image"),
 });
 
 export const households = pgTable("households", {
@@ -379,6 +381,70 @@ export const contentEvents = pgTable(
 );
 
 /** Every table, in dependency order. Used by the schema test and the seeder. */
+
+// Auth.js ---------------------------------------------------------------------
+//
+// These four tables are shaped by @auth/drizzle-adapter, not by us. The column
+// names are the adapter's contract; renaming one breaks sign-in silently.
+
+export const accounts = pgTable(
+  "accounts",
+  {
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    type: text("type").notNull(),
+    provider: text("provider").notNull(),
+    providerAccountId: text("provider_account_id").notNull(),
+    refreshToken: text("refresh_token"),
+    accessToken: text("access_token"),
+    expiresAt: integer("expires_at"),
+    tokenType: text("token_type"),
+    scope: text("scope"),
+    idToken: text("id_token"),
+    sessionState: text("session_state"),
+  },
+  (table) => [
+    primaryKey({ columns: [table.provider, table.providerAccountId] }),
+    index("accounts_user_id_idx").on(table.userId),
+  ],
+);
+
+export const sessions = pgTable(
+  "sessions",
+  {
+    sessionToken: text("session_token").primaryKey(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    expires: timestamp("expires", { withTimezone: true, mode: "date" }).notNull(),
+  },
+  (table) => [index("sessions_user_id_idx").on(table.userId)],
+);
+
+export const verificationTokens = pgTable(
+  "verification_tokens",
+  {
+    identifier: text("identifier").notNull(),
+    token: text("token").notNull(),
+    expires: timestamp("expires", { withTimezone: true, mode: "date" }).notNull(),
+  },
+  (table) => [
+    primaryKey({ columns: [table.identifier, table.token] }),
+    index("verification_tokens_expires_idx").on(table.expires),
+  ],
+);
+
+export const authAttempts = pgTable(
+  "auth_attempts",
+  {
+    id: bigserial("id", { mode: "number" }).primaryKey(),
+    key: text("key").notNull(),
+    at: timestamp("at", { withTimezone: true, mode: "date" }).notNull().defaultNow(),
+  },
+  (table) => [index("auth_attempts_key_at_idx").on(table.key, table.at.desc())],
+);
+
 export const TABLES = [
   users,
   households,
@@ -395,4 +461,8 @@ export const TABLES = [
   subscriptions,
   featureFlags,
   contentEvents,
+  accounts,
+  sessions,
+  verificationTokens,
+  authAttempts,
 ] as const;
