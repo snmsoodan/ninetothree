@@ -7,7 +7,7 @@ import {
   recallKey,
   type RecallBecause,
   type RecallMatch,
-} from "@ninetothree/content";
+} from "@ninetothree/content/core";
 import {
   DEFAULT_NOTIFICATIONS,
   NOTIFICATION_FREQUENCIES,

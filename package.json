@@ -18,6 +18,7 @@
     "format": "prettier --write \"**/*.{ts,tsx,md,json,css}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,md,json,css}\"",
     "links:check": "node scripts/check-links.mjs",
+    "bundle:check": "node scripts/check-bundle.mjs",
     "lighthouse": "lhci autorun",
     "storybook": "pnpm --filter @ninetothree/web storybook",
     "build:storybook": "pnpm --filter @ninetothree/web build-storybook"

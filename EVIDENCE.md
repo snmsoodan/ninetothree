@@ -1416,6 +1416,54 @@ The fallback is now `public/offline.html`: no JavaScript, no build stylesheet, i
 
 **What is not tested.** Google and Apple are written but unexercised — there are no OAuth credentials in this environment, so the only evidence they are wired correctly is that the config typechecks. There is no automated test of the `pg` adapter; the PGlite path is what the suite runs. And the rate limiter is per address with no global ceiling, so a script that cycles addresses is not slowed down at all.
 
-## 44. How this file is maintained
+## 44. The client bundle (issue #91)
+
+**The symptom was a flake, and the flake was a real bug.** `categories.performance` on `/onboarding` failed at 0.75–0.86 on five consecutive PRs (#89, #90, #92, #93, #94) and passed on a re-run every time. A score that moves that much between identical runs is not noise; it is a page sitting on a threshold. The threshold was a 660 kB client chunk.
+
+**The cause was one line.** `packages/content/src/registry.ts` builds the library at module scope:
+
+```ts
+export const PACKS: StagePack[] = assertValidPacks([...85 JSON imports]);
+```
+
+Webpack cannot tree-shake a module-scope function call, so _any_ import from the content barrel — even `import { recallKey }` — pulled all 85 stage packs into the client graph. Twenty-two client modules imported from the barrel, and every route in `apps/web/src/app` is a `"use client"` component, so the whole library shipped to every visitor on every page.
+
+**The fix is a second entry point, not a refactor.** `packages/content/src/core.ts` re-exports every module except the six registries. Client modules import from `@ninetothree/content/core`; server modules keep importing the main entry. `package.json` gained `"./core": "./src/core.ts"` and `"sideEffects": false`.
+
+**`sideEffects: false` is a promise, and it is a slightly false one.** It tells webpack a module may be dropped when its exports are unused, which is what lets the registries fall out of the graph. It also means the `assertValidPacks` guard at module scope may not run in a production bundle. That guard is a development-time check; `pnpm content:validate`, `pnpm content:registry:check` and 536 content tests all still run it, so nothing is actually unguarded — but the promise is worth writing down rather than discovering later.
+
+**The measured result.** First Load JS per route, before and after:
+
+| Route                                       | Before  | After  |
+| ------------------------------------------- | ------- | ------ |
+| `/print/week/[id]`, `/print/checklist/[id]` | ~660 kB | 131 kB |
+| `/read`, `/read/[slug]`                     | ~660 kB | 148 kB |
+| `/choose/[actionId]`                        | ~660 kB | 154 kB |
+| `/appointments`                             | ~660 kB | 157 kB |
+| `/onboarding`                               | ~660 kB | 160 kB |
+| `/library`                                  | ~660 kB | 172 kB |
+| `/safety`                                   | ~660 kB | 245 kB |
+| `/shelf`                                    | ~660 kB | 250 kB |
+| `/history`                                  | ~660 kB | 251 kB |
+| `/email`                                    | ~660 kB | 254 kB |
+| `/settings`                                 | ~660 kB | 258 kB |
+| `/week`, `/week/[id]`                       | ~660 kB | 266 kB |
+| `/search`                                   | ~660 kB | 268 kB |
+
+Shared First Load JS is 102 kB. The largest client chunk is now 409,674 bytes, down from 660 kB, and it is loaded by the eight routes that genuinely need the library rather than by all of them.
+
+**Most of the win is parse time, not bytes.** The 660 kB chunk gzipped to about 148 kB, because 85 stage packs are highly repetitive JSON and compress extremely well. So the transfer saving is modest and the parse-and-compile saving is not. That is also why the Lighthouse failure looked like a flake: the page was not slow to download, it was slow to become interactive, and the score depended on how much of the main thread the machine had left.
+
+**A budget that measures the right thing.** Lighthouse can only see a page's total transfer size, and a page total hides the one enormous chunk that every route must parse before it can paint. `scripts/check-bundle.mjs` reads `app-build-manifest.json` and `build-manifest.json`, stats every emitted client chunk, and fails if any one exceeds the budget. React and Next's own runtime (`framework-*`, `polyfills-*`, `main-*`) are excluded, because they are not ours to shrink and are never small. The budget is **450,000 bytes** — a ratchet just above today's largest chunk, not a target. It is wired into the CI Verify job as `pnpm bundle:check`, after the build. `BUNDLE_BUDGET_BYTES` overrides it so the check itself can be tested; CI does not set it.
+
+**A test that guards the split.** `packages/content/src/core.test.ts` asserts four things: `core` exports no registry, `core` still exports the functions a client component needs, every `core` export also exists on the main entry (so it is a subset, not a fork), and every non-registry export of the main entry is reachable from `core`. The last one is the one that matters — a module added to `index.ts` and forgotten in `core.ts` would keep working on the server and silently bloat the browser, and nothing else in the suite would notice. It found two real omissions on its first run: `loadTriage` and `loadRecallFeed`. Both turned out to belong on the _excluded_ list rather than in `core`, because they live in the registry modules beside the data they load — importing `loadTriage` imports `triage-registry.ts`, which builds `TRIAGE` at module scope. The test now says so in a comment.
+
+**Two guards that disagreed.** `pnpm format` rewrote `packages/db/src/migrations.generated.ts`, and `migrations:check` then failed, because the generator emitted `JSON.stringify` output (double quotes, escaped inner quotes) while Prettier preferred single quotes for any string containing a double quote — and the `0003_auth` SQL contains several. The two checks were comparing the same file against two different formatters, so whichever ran second failed. Fixed in the generator: it now runs Prettier on its own output, so `migrations:check` and `format:check` agree by construction. This was pre-existing and only surfaced because this PR ran the full gate.
+
+**Verification.** **1,636 tests** (content 536, rules 121, ui 53, web 789, db 137), with 100% coverage on content, rules, ui and db. `pnpm format:check`, `pnpm lint`, `pnpm typecheck`, `pnpm content:validate`, `pnpm content:registry:check`, `pnpm migrations:check`, `pnpm build` and `pnpm bundle:check` are green. Lighthouse audits nine URLs with no errors — only the pre-existing `total-byte-weight` warnings on four URLs and `/triage`'s intentional `noindex` SEO score. The end-to-end suite is **229 tests**: 129 across chromium and no-js, and 100 Storybook stories.
+
+**What this does not fix.** Eight routes still load the 409 kB chunk, because the stage lives in `localStorage` and the server cannot know which pack to send. `/week/[id]` is the exception — the id is in the URL — and converting it is the next step, along with passing server-built projections to the other seven. Zod also still reaches the client: `store.ts` imports from `/core`, which re-exports `schema.ts`, which has module-scope `z.object(...)` calls, so 57 kB of `/onboarding`'s 160 kB is Zod. Both are filed as follow-up work rather than left implied.
+
+## 45. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.
