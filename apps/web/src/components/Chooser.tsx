@@ -8,10 +8,10 @@ import {
   type ChooserAnswers,
   type ChooserResult,
   type Cost,
-} from "@ninetothree/content";
+} from "@ninetothree/content/core";
 import { ButtonLink } from "@/components/ButtonLink";
 import { chooseOption } from "@/lib/store";
-import type { Option } from "@ninetothree/content";
+import type { Option } from "@ninetothree/content/core";
 
 export interface ChooserProps {
   actionId: string;

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type MouseEvent } from "react";
-import { ESCALATION_COPY, type RedFlag } from "@ninetothree/content";
+import { ESCALATION_COPY, type RedFlag } from "@ninetothree/content/core";
 import { Dialog, cn } from "@ninetothree/ui";
 import { HELP_NUMBERS } from "@/lib/help";
 import { ButtonLink } from "./ButtonLink";
