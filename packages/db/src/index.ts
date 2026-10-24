@@ -1,6 +1,7 @@
 export * from "./schema";
+export * as schema from "./schema";
 export {
-  loadMigrations,
+  MIGRATIONS,
   migrateDown,
   migrateUp,
   migrationStatus,
@@ -9,3 +10,5 @@ export {
 } from "./migrate";
 export { asUser, NoHouseholdError, scopeFor, type HouseholdRole, type Scope } from "./scope";
 export * from "./repo";
+export * from "./auth";
+export { createDb, type Database, type DbHandle } from "./client";

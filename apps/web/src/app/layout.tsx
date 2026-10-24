@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import { ToastProvider } from "@ninetothree/ui";
+import { AuthProvider } from "@/components/AuthProvider";
 import { ReadingAttributes } from "@/components/ReadingAttributes";
 import { RouteFocus } from "@/components/RouteFocus";
 import { ServiceWorker } from "@/components/ServiceWorker";
@@ -100,7 +101,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </a>
           <RouteFocus />
           <ServiceWorker />
-          <ToastProvider>{children}</ToastProvider>
+          <AuthProvider>
+            <ToastProvider>{children}</ToastProvider>
+          </AuthProvider>
         </div>
       </body>
     </html>

@@ -1,6 +1,6 @@
-import { readdirSync, readFileSync } from "node:fs";
-import { join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { MIGRATIONS } from "./migrations.generated";
+
+export { MIGRATIONS };
 
 /**
  * The smallest surface a migration needs. PGlite and `pg` both satisfy it, so
@@ -18,7 +18,13 @@ export interface Migration {
   down: string;
 }
 
-const MIGRATIONS_DIR = fileURLToPath(new URL("../migrations/", import.meta.url));
+async function applied(client: SqlClient): Promise<string[]> {
+  await client.exec(LEDGER);
+  const { rows } = await client.query<{ name: string }>(
+    "select name from _migrations order by name",
+  );
+  return rows.map((row) => row.name);
+}
 
 const LEDGER = `
   create table if not exists _migrations (
@@ -28,40 +34,6 @@ const LEDGER = `
 `;
 
 /**
- * Reads every `NNNN_name.up.sql` and pairs it with its `.down.sql`.
- *
- * A migration without a down file is a migration that cannot be rolled back,
- * so it is an error rather than a warning — the whole point of the pair is
- * that the reverse was written and reviewed at the same time as the forward.
- */
-export function loadMigrations(dir: string = MIGRATIONS_DIR): Migration[] {
-  const entries = readdirSync(dir);
-  const migrations = entries
-    .filter((file) => file.endsWith(".up.sql"))
-    .map((file) => {
-      const name = file.slice(0, -".up.sql".length);
-      const downFile = `${name}.down.sql`;
-      if (!entries.includes(downFile)) {
-        throw new Error(`${name} has no .down.sql`);
-      }
-      return {
-        name,
-        up: readFileSync(join(dir, file), "utf8"),
-        down: readFileSync(join(dir, downFile), "utf8"),
-      };
-    });
-  return migrations.sort((a, b) => a.name.localeCompare(b.name));
-}
-
-async function applied(client: SqlClient): Promise<string[]> {
-  await client.exec(LEDGER);
-  const { rows } = await client.query<{ name: string }>(
-    "select name from _migrations order by name",
-  );
-  return rows.map((row) => row.name);
-}
-
-/**
  * Applies every migration that has not been applied, in name order.
  *
  * Each one runs inside its own transaction together with the ledger insert, so
@@ -69,7 +41,7 @@ async function applied(client: SqlClient): Promise<string[]> {
  */
 export async function migrateUp(
   client: SqlClient,
-  migrations: Migration[] = loadMigrations(),
+  migrations: Migration[] = MIGRATIONS,
 ): Promise<string[]> {
   const done = new Set(await applied(client));
   const ran: string[] = [];
@@ -98,7 +70,7 @@ export async function migrateUp(
  */
 export async function migrateDown(
   client: SqlClient,
-  migrations: Migration[] = loadMigrations(),
+  migrations: Migration[] = MIGRATIONS,
   steps = 1,
 ): Promise<string[]> {
   const done = await applied(client);
@@ -129,7 +101,7 @@ export async function migrateDown(
 
 export async function migrationStatus(
   client: SqlClient,
-  migrations: Migration[] = loadMigrations(),
+  migrations: Migration[] = MIGRATIONS,
 ): Promise<{ applied: string[]; pending: string[] }> {
   const done = await applied(client);
   const doneSet = new Set(done);
