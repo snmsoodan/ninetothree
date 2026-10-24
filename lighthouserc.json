@@ -1,7 +1,7 @@
 {
   "ci": {
     "collect": {
-      "startServerCommand": "pnpm --filter @ninetothree/web start",
+      "startServerCommand": "AUTH_SECRET=lighthouse-not-a-secret-0000000000 pnpm --filter @ninetothree/web start",
       "startServerReadyPattern": "Ready in",
       "startServerReadyTimeout": 60000,
       "url": [
