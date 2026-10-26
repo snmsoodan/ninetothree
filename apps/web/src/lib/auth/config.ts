@@ -2,6 +2,7 @@ import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import {
   accounts,
   clearAttempts,
+  createHousehold,
   type Database,
   SESSION_MAX_AGE_S,
   sessions,
@@ -53,6 +54,19 @@ export async function buildConfig(env: ProviderEnv = process.env): Promise<NextA
       error: "/signin/error",
     },
     providers: buildProviders(sender, env),
+    events: {
+      /**
+       * Every account starts with a household of one.
+       *
+       * The alternative — creating it lazily on the first page that needs it —
+       * means every read has to cope with "no household yet", and the first
+       * person to hit a race gets two. Doing it here means the invariant holds
+       * from the moment the row exists.
+       */
+      async createUser({ user }) {
+        if (user.id) await createHousehold(sql, user.id);
+      },
+    },
     callbacks: {
       async signIn({
         user,

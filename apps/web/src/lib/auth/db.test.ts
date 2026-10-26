@@ -14,7 +14,12 @@ describe("getDb", () => {
     const { rows } = await sql.query<{ name: string }>(
       "select name from _migrations order by name",
     );
-    expect(rows.map((r) => r.name)).toEqual(["0001_init", "0002_rls", "0003_auth"]);
+    expect(rows.map((r) => r.name)).toEqual([
+      "0001_init",
+      "0002_rls",
+      "0003_auth",
+      "0004_household",
+    ]);
   });
 
   it("gives the same handle twice, so a request does not open a second database", async () => {
