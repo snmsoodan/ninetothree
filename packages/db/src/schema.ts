@@ -13,6 +13,7 @@ import {
   primaryKey,
   text,
   timestamp,
+  unique,
   uniqueIndex,
   uuid,
 } from "drizzle-orm/pg-core";
@@ -475,7 +476,7 @@ export const subscriptions = pgTable(
     createdAt,
   },
   (t) => [
-    index("subscriptions_household_idx").on(t.householdId),
+    unique("subscriptions_household_key").on(t.householdId),
     check("subscriptions_plan_check", sql`${t.plan} in ('free', 'plus', 'family', 'b2b')`),
   ],
 );

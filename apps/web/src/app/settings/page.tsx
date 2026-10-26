@@ -19,6 +19,7 @@ import { ProfilePreview } from "@/components/ProfilePreview";
 import { AccountRow } from "@/components/AccountRow";
 import { HouseholdCard } from "@/components/HouseholdCard";
 import { DataCard } from "@/components/DataCard";
+import { PlanCard } from "@/components/PlanCard";
 import { InviteCard } from "@/components/InviteCard";
 import { ReadingSettings } from "@/components/ReadingSettings";
 import {
@@ -232,6 +233,15 @@ export default function SettingsPage() {
           </h2>
           <div className="mt-3">
             <InviteCard />
+          </div>
+        </section>
+
+        <section aria-labelledby="plan-heading" className="mt-10">
+          <h2 id="plan-heading" className="font-display text-2xl text-ink">
+            Your plan
+          </h2>
+          <div className="mt-3">
+            <PlanCard />
           </div>
         </section>
 

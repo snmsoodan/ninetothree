@@ -99,8 +99,9 @@ test.describe("signing in", () => {
     await onboard(page);
     await page.goto("/settings");
 
-    await expect(page.getByText(/You are not signed in/)).toBeVisible();
-    await expect(page.getByRole("link", { name: "Sign in to keep it" })).toBeVisible();
+    const account = page.getByRole("region", { name: "Account" });
+    await expect(account.getByText(/You are not signed in/)).toBeVisible();
+    await expect(account.getByRole("link", { name: "Sign in to keep it" })).toBeVisible();
   });
 });
 

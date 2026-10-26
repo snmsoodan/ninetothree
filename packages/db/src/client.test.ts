@@ -36,6 +36,7 @@ describe("createDb", () => {
       "0006_shared",
       "0007_jobs",
       "0008_deletion",
+      "0009_billing",
     ]);
   });
 

@@ -52,6 +52,7 @@ const STORIES = [
   "app-togethercard--two-people",
   "app-togethercard--three-generations",
   "app-datacard--signed-out",
+  "app-plancard--signed-out",
   "app-joblist--nothing-yet",
   "app-joblist--one-open",
   "app-joblist--yours",

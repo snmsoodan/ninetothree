@@ -44,6 +44,10 @@ export default defineConfig({
         // Opens /api/auth/dev/link, which is how the suite gets a real magic
         // link without an inbox. Unset everywhere else.
         AUTH_TEST_MODE: "1",
+        // The webhook secret the billing spec signs its deliveries with. There
+        // is no Stripe account behind it; the point is that the route verifies
+        // a real HMAC rather than trusting whatever arrives.
+        STRIPE_WEBHOOK_SECRET: "whsec_e2e_secret",
       },
     },
     {
