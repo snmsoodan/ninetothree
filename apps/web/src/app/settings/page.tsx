@@ -18,6 +18,7 @@ import { NotificationSettings } from "@/components/NotificationSettings";
 import { ProfilePreview } from "@/components/ProfilePreview";
 import { AccountRow } from "@/components/AccountRow";
 import { HouseholdCard } from "@/components/HouseholdCard";
+import { InviteCard } from "@/components/InviteCard";
 import { ReadingSettings } from "@/components/ReadingSettings";
 import {
   resetAll,
@@ -221,6 +222,15 @@ export default function SettingsPage() {
           </p>
           <div className="mt-3">
             <HouseholdCard />
+          </div>
+        </section>
+
+        <section aria-labelledby="invite-heading" className="mt-10">
+          <h2 id="invite-heading" className="font-display text-2xl text-ink">
+            Invite someone
+          </h2>
+          <div className="mt-3">
+            <InviteCard />
           </div>
         </section>
 

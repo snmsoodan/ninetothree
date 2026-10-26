@@ -1033,3 +1033,174 @@ describe("row-level security", () => {
     expect(seen.map((r) => r.id)).toEqual(["pregnancy-w4"]);
   });
 });
+
+describe("invites", () => {
+  const TOKEN = "a-token-that-is-long-enough-to-be-real";
+
+  it("issues a link a partner can use to join", async () => {
+    const maya = await seed("maya@example.com", "Maya's household");
+    const invite = await repo.createInvite(db, maya.scope, "partner", { token: TOKEN });
+
+    expect(invite.id).toBeTruthy();
+    expect(invite.expiresAt.getTime()).toBeGreaterThan(Date.now());
+
+    const sam = await seed("sam@example.com", "Sam's household");
+    const joined = await repo.acceptInvite(db, sam.userId, TOKEN);
+    expect(joined).toEqual({ householdId: maya.householdId });
+
+    const members = await repo.listMemberDetails(db, maya.scope);
+    expect(members.map((m) => m.email).sort()).toEqual(["maya@example.com", "sam@example.com"]);
+  });
+
+  it("never stores the token itself", async () => {
+    const maya = await seed("maya@example.com", "Maya's household");
+    await repo.createInvite(db, maya.scope, "partner", { token: TOKEN });
+
+    const { rows } = await db.query<{ token_hash: string }>(
+      "select token_hash from household_invites",
+    );
+    expect(rows[0]!.token_hash).not.toBe(TOKEN);
+    expect(rows[0]!.token_hash).toMatch(/^[0-9a-f]{64}$/);
+  });
+
+  it("rejects a link that has already been used", async () => {
+    const maya = await seed("maya@example.com", "Maya's household");
+    await repo.createInvite(db, maya.scope, "partner", { token: TOKEN });
+
+    const sam = await seed("sam@example.com", "Sam's household");
+    expect(await repo.acceptInvite(db, sam.userId, TOKEN)).toBeDefined();
+
+    const priya = await seed("priya@example.com", "Priya's household");
+    expect(await repo.acceptInvite(db, priya.userId, TOKEN)).toBeUndefined();
+  });
+
+  it("rejects a link that has expired", async () => {
+    const maya = await seed("maya@example.com", "Maya's household");
+    await repo.createInvite(db, maya.scope, "partner", { token: TOKEN, ttlMs: -60_000 });
+
+    const sam = await seed("sam@example.com", "Sam's household");
+    expect(await repo.acceptInvite(db, sam.userId, TOKEN)).toBeUndefined();
+  });
+
+  it("rejects a link that has been revoked, immediately", async () => {
+    const maya = await seed("maya@example.com", "Maya's household");
+    const invite = await repo.createInvite(db, maya.scope, "partner", { token: TOKEN });
+
+    expect(await repo.revokeInvite(db, maya.scope, invite.id)).toBe(true);
+
+    const sam = await seed("sam@example.com", "Sam's household");
+    expect(await repo.acceptInvite(db, sam.userId, TOKEN)).toBeUndefined();
+  });
+
+  it("rejects a token nobody issued", async () => {
+    const sam = await seed("sam@example.com", "Sam's household");
+    expect(await repo.acceptInvite(db, sam.userId, "not-a-real-token")).toBeUndefined();
+  });
+
+  it("leaves the household you were in, and deletes it if it is now empty", async () => {
+    const maya = await seed("maya@example.com", "Maya's household");
+    await repo.createInvite(db, maya.scope, "partner", { token: TOKEN });
+
+    const sam = await seed("sam@example.com", "Sam's household");
+    const samsOldHousehold = sam.householdId;
+    await repo.acceptInvite(db, sam.userId, TOKEN);
+
+    const { rows } = await db.query<{ n: number }>(
+      "select count(*)::int as n from households where id = $1",
+      [samsOldHousehold],
+    );
+    expect(rows[0]!.n).toBe(0);
+    expect((await scopeFor(db, sam.userId)).householdId).toBe(maya.householdId);
+  });
+
+  it("keeps the old household when someone else is still in it", async () => {
+    const maya = await seed("maya@example.com", "Maya's household");
+    await repo.createInvite(db, maya.scope, "partner", { token: TOKEN });
+
+    const sam = await seed("sam@example.com", "Sam's household");
+    await join(sam.householdId, "nan@example.com", "grandparent");
+    await repo.acceptInvite(db, sam.userId, TOKEN);
+
+    const { rows } = await db.query<{ n: number }>(
+      "select count(*)::int as n from households where id = $1",
+      [sam.householdId],
+    );
+    expect(rows[0]!.n).toBe(1);
+  });
+
+  it("gives the invited person the role on the invite", async () => {
+    const maya = await seed("maya@example.com", "Maya's household");
+    await repo.createInvite(db, maya.scope, "grandparent", { token: TOKEN });
+
+    const nan = await seed("nan@example.com", "Nan's household");
+    await repo.acceptInvite(db, nan.userId, TOKEN);
+
+    expect((await scopeFor(db, nan.userId)).role).toBe("grandparent");
+  });
+
+  it("refuses to let a partner invite anyone", async () => {
+    const maya = await seed("maya@example.com", "Maya's household");
+    const sam = await join(maya.householdId, "sam@example.com", "partner");
+
+    await expect(repo.createInvite(db, sam.scope, "partner", { token: TOKEN })).rejects.toThrow(
+      repo.NotAllowedError,
+    );
+  });
+
+  it("refuses to let a partner revoke an invite", async () => {
+    const maya = await seed("maya@example.com", "Maya's household");
+    const invite = await repo.createInvite(db, maya.scope, "partner", { token: TOKEN });
+    const sam = await join(maya.householdId, "sam@example.com", "partner");
+
+    await expect(repo.revokeInvite(db, sam.scope, invite.id)).rejects.toThrow(repo.NotAllowedError);
+  });
+
+  it("lists only the invites that still work", async () => {
+    const maya = await seed("maya@example.com", "Maya's household");
+    const live = await repo.createInvite(db, maya.scope, "partner", { token: TOKEN });
+    const dead = await repo.createInvite(db, maya.scope, "partner", { token: "another-token" });
+    await repo.revokeInvite(db, maya.scope, dead.id);
+
+    const invites = await repo.listInvites(db, maya.scope);
+    expect(invites.map((i) => i.id)).toEqual([live.id]);
+  });
+
+  it("cannot revoke another household's invite", async () => {
+    const maya = await seed("maya@example.com", "Maya's household");
+    const invite = await repo.createInvite(db, maya.scope, "partner", { token: TOKEN });
+    const priya = await seed("priya@example.com", "Priya's household");
+
+    expect(await repo.revokeInvite(db, priya.scope, invite.id)).toBe(false);
+  });
+
+  it("previews an invite without being in the household", async () => {
+    const maya = await seed("maya@example.com", "Maya's household");
+    await repo.createInvite(db, maya.scope, "partner", { token: TOKEN });
+
+    expect(await repo.previewInvite(db, TOKEN)).toEqual({
+      householdName: "Maya's household",
+      inviterName: "maya@example.com",
+      role: "partner",
+    });
+  });
+
+  it("previews nothing for a link that no longer works", async () => {
+    const maya = await seed("maya@example.com", "Maya's household");
+    const invite = await repo.createInvite(db, maya.scope, "partner", { token: TOKEN });
+    await repo.revokeInvite(db, maya.scope, invite.id);
+
+    expect(await repo.previewInvite(db, TOKEN)).toBeUndefined();
+  });
+
+  it("previews nothing for a token nobody issued", async () => {
+    expect(await repo.previewInvite(db, "not-a-real-token")).toBeUndefined();
+  });
+
+  it("does not let a stranger read the household's invites", async () => {
+    const maya = await seed("maya@example.com", "Maya's household");
+    await repo.createInvite(db, maya.scope, "partner", { token: TOKEN });
+    const priya = await seed("priya@example.com", "Priya's household");
+
+    expect(await repo.listInvites(db, priya.scope)).toEqual([]);
+  });
+});

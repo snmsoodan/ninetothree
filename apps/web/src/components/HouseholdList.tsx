@@ -10,7 +10,7 @@ export interface HouseholdMember {
   isYou: boolean;
 }
 
-const ROLE_LABEL: Record<HouseholdRole, string> = {
+export const ROLE_LABEL: Record<HouseholdRole, string> = {
   parent: "Parent",
   partner: "Partner",
   grandparent: "Grandparent",

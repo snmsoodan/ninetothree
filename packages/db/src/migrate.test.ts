@@ -23,6 +23,7 @@ const TABLES = [
   "content_events",
   "content_sources",
   "feature_flags",
+  "household_invites",
   "household_members",
   "households",
   "item_state",
@@ -88,6 +89,7 @@ describe("loadMigrations", () => {
       "0002_rls",
       "0003_auth",
       "0004_household",
+      "0005_invites",
     ]);
     expect(migrations[0]?.up).toContain("create table users");
     expect(migrations[0]?.down).toContain("drop table if exists users");
@@ -120,7 +122,13 @@ describe("loadMigrations", () => {
 describe("migrateUp", () => {
   it("creates every table on a fresh database", async () => {
     const db = await fresh();
-    expect(await migrateUp(db)).toEqual(["0001_init", "0002_rls", "0003_auth", "0004_household"]);
+    expect(await migrateUp(db)).toEqual([
+      "0001_init",
+      "0002_rls",
+      "0003_auth",
+      "0004_household",
+      "0005_invites",
+    ]);
     expect(await tableNames(db)).toEqual(["_migrations", ...TABLES]);
   });
 
@@ -153,7 +161,8 @@ describe("migrateDown", () => {
   it("drops every table and leaves the ledger", async () => {
     const db = await fresh();
     await migrateUp(db);
-    expect(await migrateDown(db, undefined, 4)).toEqual([
+    expect(await migrateDown(db, undefined, 5)).toEqual([
+      "0005_invites",
       "0004_household",
       "0003_auth",
       "0002_rls",
@@ -177,7 +186,7 @@ describe("migrateDown", () => {
     for (let pass = 0; pass < 2; pass += 1) {
       await migrateUp(db);
       expect(await tableNames(db)).toEqual(["_migrations", ...TABLES]);
-      await migrateDown(db, undefined, 4);
+      await migrateDown(db, undefined, 5);
       expect(await tableNames(db)).toEqual(["_migrations"]);
     }
   });
@@ -196,8 +205,8 @@ describe("migrateDown", () => {
   it("refuses to roll back more than was applied", async () => {
     const db = await fresh();
     await migrateUp(db);
-    await expect(migrateDown(db, undefined, 5)).rejects.toThrow(
-      "cannot roll back 5: only 4 applied",
+    await expect(migrateDown(db, undefined, 6)).rejects.toThrow(
+      "cannot roll back 6: only 5 applied",
     );
   });
 
@@ -230,11 +239,11 @@ describe("migrationStatus", () => {
     const db = await fresh();
     expect(await migrationStatus(db)).toEqual({
       applied: [],
-      pending: ["0001_init", "0002_rls", "0003_auth", "0004_household"],
+      pending: ["0001_init", "0002_rls", "0003_auth", "0004_household", "0005_invites"],
     });
     await migrateUp(db);
     expect(await migrationStatus(db)).toEqual({
-      applied: ["0001_init", "0002_rls", "0003_auth", "0004_household"],
+      applied: ["0001_init", "0002_rls", "0003_auth", "0004_household", "0005_invites"],
       pending: [],
     });
   });

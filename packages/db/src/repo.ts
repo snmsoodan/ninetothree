@@ -1,3 +1,4 @@
+import { hashInviteToken, INVITE_TTL_MS } from "./invites";
 import type { SqlClient } from "./migrate";
 import { asUser, type HouseholdRole, type Scope } from "./scope";
 
@@ -822,5 +823,152 @@ export async function upsertSubscription(
       ],
     );
     return rows[0]!;
+  });
+}
+
+// Invites --------------------------------------------------------------------
+
+export interface InviteRow {
+  id: string;
+  household_id: string;
+  role: HouseholdRole;
+  created_by: string | null;
+  expires_at: Date;
+  used_at: Date | null;
+  revoked_at: Date | null;
+  created_at: Date;
+}
+
+export interface InvitePreview {
+  householdName: string | null;
+  inviterName: string | null;
+  role: HouseholdRole;
+}
+
+/**
+ * Issues an invite and returns the token, which is the only time it exists.
+ *
+ * Only a parent may invite, and only a parent may hand out the parent role —
+ * otherwise a partner could promote themselves by inviting a second account.
+ * The token is returned rather than stored, so the caller has to put it in a
+ * link immediately; there is no way to read it back later.
+ */
+export async function createInvite(
+  db: SqlClient,
+  scope: Scope,
+  role: HouseholdRole,
+  options: { token: string; ttlMs?: number; now?: Date },
+): Promise<{ id: string; expiresAt: Date }> {
+  if (scope.role !== "parent") {
+    throw new NotAllowedError("only a parent can invite someone");
+  }
+
+  const now = options.now ?? new Date();
+  const expiresAt = new Date(now.getTime() + (options.ttlMs ?? INVITE_TTL_MS));
+
+  return asUser(db, scope.userId, async () => {
+    const { rows } = await db.query<{ id: string; expires_at: Date }>(
+      `insert into household_invites (household_id, role, token_hash, created_by, expires_at)
+       values ($1, $2, $3, $4, $5)
+       returning id, expires_at`,
+      [scope.householdId, role, hashInviteToken(options.token), scope.userId, expiresAt],
+    );
+    const row = rows[0]!;
+    return { id: row.id, expiresAt: row.expires_at };
+  });
+}
+
+/**
+ * The invites this household has issued that are still usable.
+ *
+ * Used and revoked ones are left out rather than shown greyed out: a list of
+ * dead links is a list of things to worry about, and the only action on this
+ * screen is "revoke".
+ */
+export async function listInvites(db: SqlClient, scope: Scope): Promise<InviteRow[]> {
+  return asUser(db, scope.userId, async () => {
+    const { rows } = await db.query<InviteRow>(
+      `select id, household_id, role, created_by, expires_at, used_at, revoked_at, created_at
+         from household_invites
+        where household_id = $1
+          and used_at is null
+          and revoked_at is null
+          and expires_at > now()
+        order by created_at desc`,
+      [scope.householdId],
+    );
+    return rows;
+  });
+}
+
+/**
+ * Revokes an invite.
+ *
+ * Immediate, because the accept function checks `revoked_at` inside the same
+ * transaction that consumes the token. There is no window between "revoked" and
+ * "cannot be used".
+ */
+export async function revokeInvite(db: SqlClient, scope: Scope, id: string): Promise<boolean> {
+  if (scope.role !== "parent") {
+    throw new NotAllowedError("only a parent can revoke an invite");
+  }
+  return asUser(db, scope.userId, async () => {
+    const { rows } = await db.query<{ id: string }>(
+      `update household_invites set revoked_at = now()
+        where id = $1 and household_id = $2 and used_at is null and revoked_at is null
+        returning id`,
+      [id, scope.householdId],
+    );
+    return rows.length > 0;
+  });
+}
+
+/**
+ * What the join page can say before anyone has signed in.
+ *
+ * Deliberately not scoped: the person holding the link is not a member yet, so
+ * there is no scope to give. The function behind it returns nothing for an
+ * expired, used or revoked invite, which is why the page can say "this link has
+ * been used" without confirming that the household exists.
+ */
+export async function previewInvite(
+  db: SqlClient,
+  token: string,
+): Promise<InvitePreview | undefined> {
+  const { rows } = await db.query<{
+    household_name: string | null;
+    inviter_name: string | null;
+    role: HouseholdRole;
+  }>("select household_name, inviter_name, role from preview_household_invite($1)", [
+    hashInviteToken(token),
+  ]);
+  const row = rows[0];
+  if (!row) return undefined;
+  return { householdName: row.household_name, inviterName: row.inviter_name, role: row.role };
+}
+
+/**
+ * Accepts an invite, joining the household it points at.
+ *
+ * Returns `undefined` for a link that is expired, already used, or revoked —
+ * the three cases are deliberately indistinguishable, because telling someone
+ * which one it was tells them something about a household they are not in.
+ *
+ * Joining means leaving: a person is in one household at a time, and the
+ * function deletes the old membership (and the old household, if it is now
+ * empty) in the same transaction.
+ */
+export async function acceptInvite(
+  db: SqlClient,
+  userId: string,
+  token: string,
+): Promise<{ householdId: string } | undefined> {
+  return asUser(db, userId, async () => {
+    const { rows } = await db.query<{ household_id: string | null }>(
+      "select accept_household_invite($1, $2) as household_id",
+      [hashInviteToken(token), userId],
+    );
+    const householdId = rows[0]?.household_id;
+    return householdId ? { householdId } : undefined;
   });
 }
