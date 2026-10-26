@@ -2,9 +2,11 @@
 
 import Link from "next/link";
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Card, CardBody } from "@ninetothree/ui";
 
+import type { HelpItem } from "./HelpThisWeek";
+import type { JobStatus } from "./JobList";
 import { TogetherBody, type TogetherPayload } from "./TogetherBody";
 
 export type { TogetherAppointment, TogetherMember, TogetherPayload } from "./TogetherBody";
@@ -31,6 +33,7 @@ export function PartnerView({ stageId }: PartnerViewProps) {
   const { status } = useSession();
   const [data, setData] = useState<TogetherPayload | null>(null);
   const [state, setState] = useState<"loading" | "ready" | "signed-out" | "failed">("loading");
+  const [nonce, setNonce] = useState(0);
 
   useEffect(() => {
     if (status === "loading") return;
@@ -60,7 +63,45 @@ export function PartnerView({ stageId }: PartnerViewProps) {
     return () => {
       live = false;
     };
-  }, [stageId, status]);
+  }, [stageId, status, nonce]);
+
+  /**
+   * Every action re-reads rather than patching the local copy. A job is a fact
+   * two people share, and the other person may have moved it a second ago.
+   */
+  const assign = useCallback(
+    async (item: HelpItem, to: string, packId: string | null, packTitle: string | null) => {
+      await fetch("/api/household/jobs", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          itemId: item.id,
+          title: item.title,
+          packId,
+          packTitle,
+          assignedTo: to,
+        }),
+      }).catch(() => undefined);
+      setNonce((n) => n + 1);
+    },
+    [],
+  );
+
+  const setJobStatus = useCallback(async (id: string, next: JobStatus) => {
+    await fetch(`/api/household/jobs/${encodeURIComponent(id)}`, {
+      method: "PATCH",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ status: next }),
+    }).catch(() => undefined);
+    setNonce((n) => n + 1);
+  }, []);
+
+  const removeJob = useCallback(async (id: string) => {
+    await fetch(`/api/household/jobs/${encodeURIComponent(id)}`, { method: "DELETE" }).catch(
+      () => undefined,
+    );
+    setNonce((n) => n + 1);
+  }, []);
 
   if (state === "loading") {
     return <p className="text-base text-ink-muted">One moment.</p>;
@@ -96,5 +137,12 @@ export function PartnerView({ stageId }: PartnerViewProps) {
     );
   }
 
-  return <TogetherBody data={data} />;
+  return (
+    <TogetherBody
+      data={data}
+      onAssign={assign}
+      onJobStatus={setJobStatus}
+      onJobRemove={removeJob}
+    />
+  );
 }

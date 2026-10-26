@@ -1058,3 +1058,189 @@ export async function listSharedItems(db: SqlClient, scope: Scope): Promise<Shar
     }));
   });
 }
+
+export type JobStatus = "open" | "done" | "dropped";
+
+export interface JobRow {
+  id: string;
+  itemId: string;
+  title: string;
+  packTitle: string | null;
+  stagePackId: string | null;
+  assignedTo: string;
+  assignedBy: string;
+  status: JobStatus;
+  doneAt: Date | null;
+  createdAt: Date;
+}
+
+export interface AssignJobInput {
+  itemId: string;
+  title: string;
+  packTitle?: string | null;
+  stagePackId?: string | null;
+  assignedTo: string;
+}
+
+/**
+ * Hands an action to somebody else in the household.
+ *
+ * Assigning the same action twice replaces the open job rather than stacking a
+ * second one, so a double tap does not leave two identical rows on the other
+ * person's page. A job that is already done is left alone: re-assigning
+ * something finished should not silently reopen it.
+ */
+export async function assignJob(
+  db: SqlClient,
+  scope: Scope,
+  input: AssignJobInput,
+): Promise<JobRow> {
+  return asUser(db, scope.userId, async () => {
+    const { rows } = await db.query<{
+      id: string;
+      item_id: string;
+      title: string;
+      pack_title: string | null;
+      stage_pack_id: string | null;
+      assigned_to: string;
+      assigned_by: string;
+      status: JobStatus;
+      done_at: Date | null;
+      created_at: Date;
+    }>(
+      `insert into jobs (
+         household_id, item_id, stage_pack_id, title, pack_title, assigned_to, assigned_by
+       ) values ($1,$2,$3,$4,$5,$6,$7)
+       on conflict (household_id, item_id) where status = 'open'
+       do update set
+         title = excluded.title,
+         pack_title = excluded.pack_title,
+         stage_pack_id = excluded.stage_pack_id,
+         assigned_to = excluded.assigned_to,
+         assigned_by = excluded.assigned_by
+       returning id, item_id, title, pack_title, stage_pack_id,
+                 assigned_to, assigned_by, status, done_at, created_at`,
+      [
+        scope.householdId,
+        input.itemId,
+        input.stagePackId ?? null,
+        input.title,
+        input.packTitle ?? null,
+        input.assignedTo,
+        scope.userId,
+      ],
+    );
+    const row = rows[0]!;
+    return {
+      id: row.id,
+      itemId: row.item_id,
+      title: row.title,
+      packTitle: row.pack_title,
+      stagePackId: row.stage_pack_id,
+      assignedTo: row.assigned_to,
+      assignedBy: row.assigned_by,
+      status: row.status,
+      doneAt: row.done_at,
+      createdAt: row.created_at,
+    };
+  });
+}
+
+/** Every job in the household, open ones first, then the newest. */
+export async function listJobs(db: SqlClient, scope: Scope): Promise<JobRow[]> {
+  return asUser(db, scope.userId, async () => {
+    const { rows } = await db.query<{
+      id: string;
+      item_id: string;
+      title: string;
+      pack_title: string | null;
+      stage_pack_id: string | null;
+      assigned_to: string;
+      assigned_by: string;
+      status: JobStatus;
+      done_at: Date | null;
+      created_at: Date;
+    }>(
+      `select id, item_id, title, pack_title, stage_pack_id,
+              assigned_to, assigned_by, status, done_at, created_at
+         from jobs
+        where household_id = $1
+        order by (status = 'open') desc, created_at desc, id`,
+      [scope.householdId],
+    );
+    return rows.map((r) => ({
+      id: r.id,
+      itemId: r.item_id,
+      title: r.title,
+      packTitle: r.pack_title,
+      stagePackId: r.stage_pack_id,
+      assignedTo: r.assigned_to,
+      assignedBy: r.assigned_by,
+      status: r.status,
+      doneAt: r.done_at,
+      createdAt: r.created_at,
+    }));
+  });
+}
+
+/**
+ * Moves a job's status.
+ *
+ * Anyone in the household can do this, not just the person it was handed to.
+ * A job is a shared fact about who is doing what, and the person who asked is
+ * often the one who knows it is finished.
+ */
+export async function setJobStatus(
+  db: SqlClient,
+  scope: Scope,
+  jobId: string,
+  status: JobStatus,
+): Promise<JobRow | undefined> {
+  return asUser(db, scope.userId, async () => {
+    const { rows } = await db.query<{
+      id: string;
+      item_id: string;
+      title: string;
+      pack_title: string | null;
+      stage_pack_id: string | null;
+      assigned_to: string;
+      assigned_by: string;
+      status: JobStatus;
+      done_at: Date | null;
+      created_at: Date;
+    }>(
+      `update jobs
+          set status = $3,
+              done_at = case when $3 = 'done' then now() else null end
+        where household_id = $1 and id = $2
+        returning id, item_id, title, pack_title, stage_pack_id,
+                  assigned_to, assigned_by, status, done_at, created_at`,
+      [scope.householdId, jobId, status],
+    );
+    const row = rows[0];
+    if (!row) return undefined;
+    return {
+      id: row.id,
+      itemId: row.item_id,
+      title: row.title,
+      packTitle: row.pack_title,
+      stagePackId: row.stage_pack_id,
+      assignedTo: row.assigned_to,
+      assignedBy: row.assigned_by,
+      status: row.status,
+      doneAt: row.done_at,
+      createdAt: row.created_at,
+    };
+  });
+}
+
+/** Takes a job off the list entirely. Returns whether there was one. */
+export async function removeJob(db: SqlClient, scope: Scope, jobId: string): Promise<boolean> {
+  return asUser(db, scope.userId, async () => {
+    const { rows } = await db.query<{ id: string }>(
+      `delete from jobs where household_id = $1 and id = $2 returning id`,
+      [scope.householdId, jobId],
+    );
+    return rows.length > 0;
+  });
+}

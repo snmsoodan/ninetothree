@@ -10,6 +10,7 @@ const data: TogetherPayload = {
     { userId: "u1", role: "parent", email: "maya@example.com", name: "Maya", isYou: false },
     { userId: "u2", role: "partner", email: "sam@example.com", name: "Sam", isYou: true },
   ],
+  jobs: [],
   shared: [],
   appointments: [],
   week: {
@@ -67,6 +68,17 @@ describe("TogetherBody", () => {
     const section = screen.getByRole("heading", { name: "Who is here" }).closest("section")!;
     expect(section.textContent).toContain("Nan");
     expect(screen.queryByText(/from Sam/)).not.toBeInTheDocument();
+  });
+
+  it("does not claim to know who you are when the payload has no you", () => {
+    render(
+      <TogetherBody
+        data={{ ...data, members: data.members.map((m) => ({ ...m, isYou: false })) }}
+      />,
+    );
+    // Nothing to assert about the id itself; the point is that the page still
+    // renders rather than throwing on a missing member.
+    expect(screen.getByRole("heading", { name: "Who is doing what" })).toBeInTheDocument();
   });
 
   it("shows an appointment with no who and no place", () => {

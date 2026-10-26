@@ -18,6 +18,7 @@ const data: TogetherPayload = {
     { userId: "u1", role: "parent", email: "maya@example.com", name: "Maya", isYou: false },
     { userId: "u2", role: "partner", email: "sam@example.com", name: "Sam", isYou: true },
   ],
+  jobs: [],
   shared: [
     {
       itemId: "a",

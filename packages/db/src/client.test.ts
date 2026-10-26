@@ -34,6 +34,7 @@ describe("createDb", () => {
       "0004_household",
       "0005_invites",
       "0006_shared",
+      "0007_jobs",
     ]);
   });
 

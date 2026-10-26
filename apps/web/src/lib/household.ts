@@ -10,11 +10,19 @@ export interface HouseholdMember {
   isYou: boolean;
 }
 
+export interface HouseholdJob {
+  id: string;
+  title: string;
+  packTitle: string | null;
+}
+
 export interface Household {
   id: string;
   role: HouseholdMember["role"];
   members: HouseholdMember[];
   sharedItemIds: string[];
+  /** Open jobs somebody handed to you. */
+  jobsForYou: HouseholdJob[];
 }
 
 export interface ShareablePin {

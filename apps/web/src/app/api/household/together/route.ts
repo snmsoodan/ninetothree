@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { listAppointments, listMemberDetails, listSharedItems } from "@ninetothree/db";
+import { listAppointments, listJobs, listMemberDetails, listSharedItems } from "@ninetothree/db";
 import { PACKS } from "@ninetothree/content";
 
 import { getDb } from "@/lib/auth/db";
@@ -25,9 +25,10 @@ export async function GET(request: Request) {
 
   const { sql } = await getDb();
   const scope = await ensureScope(sql, userId);
-  const [members, shared, appointments] = await Promise.all([
+  const [members, shared, jobs, appointments] = await Promise.all([
     listMemberDetails(sql, scope),
     listSharedItems(sql, scope),
+    listJobs(sql, scope),
     listAppointments(sql, scope),
   ]);
 
@@ -48,6 +49,16 @@ export async function GET(request: Request) {
       stagePackId: item.stagePackId,
       sharedBy: item.sharedBy,
       isYours: item.sharedBy === userId,
+    })),
+    jobs: jobs.map((job) => ({
+      id: job.id,
+      itemId: job.itemId,
+      title: job.title,
+      packTitle: job.packTitle,
+      assignedTo: job.assignedTo,
+      assignedBy: job.assignedBy,
+      status: job.status,
+      doneAt: job.doneAt ? job.doneAt.toISOString() : null,
     })),
     appointments: appointments.map((appointment) => ({
       id: appointment.id,

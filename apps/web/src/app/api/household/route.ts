@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { listMemberDetails, listSharedItems } from "@ninetothree/db";
+import { listJobs, listMemberDetails, listSharedItems } from "@ninetothree/db";
 
 import { getDb } from "@/lib/auth/db";
 import { ensureScope } from "@/lib/auth/household";
@@ -20,9 +20,10 @@ export async function GET() {
 
   const { sql } = await getDb();
   const scope = await ensureScope(sql, userId);
-  const [members, shared] = await Promise.all([
+  const [members, shared, jobs] = await Promise.all([
     listMemberDetails(sql, scope),
     listSharedItems(sql, scope),
+    listJobs(sql, scope),
   ]);
 
   return NextResponse.json({
@@ -36,5 +37,10 @@ export async function GET() {
       isYou: member.user_id === userId,
     })),
     sharedItemIds: shared.map((item) => item.itemId),
+    // Only the open jobs handed to you. The dashboard is a short page, and a
+    // finished job is not something to act on.
+    jobsForYou: jobs
+      .filter((job) => job.status === "open" && job.assignedTo === userId)
+      .map((job) => ({ id: job.id, title: job.title, packTitle: job.packTitle })),
   });
 }

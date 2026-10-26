@@ -1337,3 +1337,180 @@ describe("shared pins", () => {
     ).rejects.toThrow(/row-level security/);
   });
 });
+
+describe("assigned jobs", () => {
+  it("shows a job to both people in the household", async () => {
+    const maya = await seed("maya@example.com", "Maya's household");
+    const sam = await join(maya.householdId, "sam@example.com", "partner");
+
+    await repo.assignJob(db, maya.scope, {
+      itemId: "pregnancy-w28-glucose-test",
+      title: "Book the glucose test",
+      packTitle: "Week 28",
+      assignedTo: sam.userId,
+    });
+
+    const asMaya = await repo.listJobs(db, maya.scope);
+    const asSam = await repo.listJobs(db, sam.scope);
+    expect(asMaya).toHaveLength(1);
+    expect(asSam).toHaveLength(1);
+    expect(asSam[0]!.assignedTo).toBe(sam.userId);
+    expect(asSam[0]!.assignedBy).toBe(maya.userId);
+    expect(asSam[0]!.status).toBe("open");
+  });
+
+  it("updates the status for both people", async () => {
+    const maya = await seed("maya@example.com", "Maya's household");
+    const sam = await join(maya.householdId, "sam@example.com", "partner");
+    const job = await repo.assignJob(db, maya.scope, {
+      itemId: "a",
+      title: "Book the glucose test",
+      assignedTo: sam.userId,
+    });
+
+    const done = await repo.setJobStatus(db, sam.scope, job.id, "done");
+    expect(done?.status).toBe("done");
+    expect(done?.doneAt).toBeInstanceOf(Date);
+
+    const asMaya = await repo.listJobs(db, maya.scope);
+    expect(asMaya[0]!.status).toBe("done");
+  });
+
+  it("clears the time when a job goes back to open", async () => {
+    const maya = await seed("maya@example.com", "Maya's household");
+    const job = await repo.assignJob(db, maya.scope, {
+      itemId: "a",
+      title: "Book the glucose test",
+      assignedTo: maya.userId,
+    });
+    await repo.setJobStatus(db, maya.scope, job.id, "done");
+
+    const reopened = await repo.setJobStatus(db, maya.scope, job.id, "open");
+    expect(reopened?.status).toBe("open");
+    expect(reopened?.doneAt).toBeNull();
+  });
+
+  it("replaces the open job rather than stacking a second one", async () => {
+    const maya = await seed("maya@example.com", "Maya's household");
+    const sam = await join(maya.householdId, "sam@example.com", "partner");
+    const priya = await join(maya.householdId, "priya@example.com", "grandparent");
+
+    const first = await repo.assignJob(db, maya.scope, {
+      itemId: "a",
+      title: "Book the glucose test",
+      assignedTo: sam.userId,
+    });
+    const second = await repo.assignJob(db, maya.scope, {
+      itemId: "a",
+      title: "Book the glucose test",
+      assignedTo: priya.userId,
+    });
+
+    expect(second.id).toBe(first.id);
+    expect(second.assignedTo).toBe(priya.userId);
+    expect(await repo.listJobs(db, maya.scope)).toHaveLength(1);
+  });
+
+  it("starts a new job when the last one is already done", async () => {
+    const maya = await seed("maya@example.com", "Maya's household");
+    const first = await repo.assignJob(db, maya.scope, {
+      itemId: "a",
+      title: "Book the glucose test",
+      assignedTo: maya.userId,
+    });
+    await repo.setJobStatus(db, maya.scope, first.id, "done");
+
+    const second = await repo.assignJob(db, maya.scope, {
+      itemId: "a",
+      title: "Book the glucose test",
+      assignedTo: maya.userId,
+    });
+
+    expect(second.id).not.toBe(first.id);
+    expect(await repo.listJobs(db, maya.scope)).toHaveLength(2);
+  });
+
+  it("puts the open jobs first", async () => {
+    const maya = await seed("maya@example.com", "Maya's household");
+    const done = await repo.assignJob(db, maya.scope, {
+      itemId: "a",
+      title: "Book the glucose test",
+      assignedTo: maya.userId,
+    });
+    await repo.setJobStatus(db, maya.scope, done.id, "done");
+    await repo.assignJob(db, maya.scope, {
+      itemId: "b",
+      title: "Pack the hospital bag",
+      assignedTo: maya.userId,
+    });
+
+    const jobs = await repo.listJobs(db, maya.scope);
+    expect(jobs.map((j) => j.status)).toEqual(["open", "done"]);
+  });
+
+  it("keeps a job out of another household", async () => {
+    const maya = await seed("maya@example.com", "Maya's household");
+    const priya = await seed("priya@example.com", "Priya's household");
+
+    await repo.assignJob(db, maya.scope, {
+      itemId: "a",
+      title: "Book the glucose test",
+      assignedTo: maya.userId,
+    });
+
+    expect(await repo.listJobs(db, priya.scope)).toEqual([]);
+  });
+
+  it("cannot move a job in another household", async () => {
+    const maya = await seed("maya@example.com", "Maya's household");
+    const priya = await seed("priya@example.com", "Priya's household");
+    const job = await repo.assignJob(db, maya.scope, {
+      itemId: "a",
+      title: "Book the glucose test",
+      assignedTo: maya.userId,
+    });
+
+    expect(await repo.setJobStatus(db, priya.scope, job.id, "done")).toBeUndefined();
+    expect(await repo.removeJob(db, priya.scope, job.id)).toBe(false);
+  });
+
+  it("removes a job and says whether there was one", async () => {
+    const maya = await seed("maya@example.com", "Maya's household");
+    const job = await repo.assignJob(db, maya.scope, {
+      itemId: "a",
+      title: "Book the glucose test",
+      assignedTo: maya.userId,
+    });
+
+    expect(await repo.removeJob(db, maya.scope, job.id)).toBe(true);
+    expect(await repo.removeJob(db, maya.scope, job.id)).toBe(false);
+    expect(await repo.listJobs(db, maya.scope)).toEqual([]);
+  });
+
+  it("refuses a job assigned under somebody else's name", async () => {
+    const maya = await seed("maya@example.com", "Maya's household");
+    const sam = await join(maya.householdId, "sam@example.com", "partner");
+    await grantAppUser();
+
+    await expect(
+      asAppUser(sam.userId, () =>
+        db.query(
+          `insert into jobs (household_id, item_id, title, assigned_to, assigned_by)
+           values ($1,'a','Book the glucose test',$2,$3)`,
+          [maya.householdId, sam.userId, maya.userId],
+        ),
+      ),
+    ).rejects.toThrow(/row-level security/);
+  });
+
+  it("refuses a done job with no time", async () => {
+    const maya = await seed("maya@example.com", "Maya's household");
+    await expect(
+      db.query(
+        `insert into jobs (household_id, item_id, title, assigned_to, assigned_by, status)
+         values ($1,'a','Book the glucose test',$2,$2,'done')`,
+        [maya.householdId, maya.userId],
+      ),
+    ).rejects.toThrow(/jobs_done_needs_time/);
+  });
+});

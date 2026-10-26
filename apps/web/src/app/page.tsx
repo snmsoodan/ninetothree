@@ -16,6 +16,7 @@ import { QuietWeek } from "@/components/QuietWeek";
 import { datedAppointments } from "@/lib/appointments";
 import { useHousehold } from "@/lib/household";
 import { TogetherCard } from "@/components/TogetherCard";
+import { YourJobsCard } from "@/components/YourJobsCard";
 import { resolvePins } from "@/lib/pins";
 import { dueReminders, localDate, reminderKey, unseen } from "@/lib/reminders";
 import { syncNotices } from "@/lib/recalls";
@@ -45,6 +46,7 @@ export default function DashboardPage() {
   const { household, share } = useHousehold();
   const sharedIds = useMemo(() => household?.sharedItemIds ?? [], [household]);
   const people = household?.members.length ?? 0;
+  const jobsForYou = useMemo(() => household?.jobsForYou ?? [], [household]);
   const together = people > 1;
 
   const pins = useMemo<PinItem[]>(
@@ -149,6 +151,7 @@ export default function DashboardPage() {
               : undefined
           }
         />
+        <YourJobsCard jobs={jobsForYou} />
         {together ? <TogetherCard people={people} /> : null}
         <AppointmentList appointments={pack.appointments} unit={pack.stageUnit} />
         <ShareCard stage={label} />
