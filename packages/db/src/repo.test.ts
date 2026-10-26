@@ -45,6 +45,34 @@ async function seed(email: string, householdName: string): Promise<Fixture> {
   return { scope: await scopeFor(db, userId), userId, householdId };
 }
 
+/** A stage pack row, so progress and item state have something to point at. */
+async function seedPack(id: string): Promise<void> {
+  await db.query(
+    `insert into stage_packs (id, kind, stage_index, title, payload)
+     values ($1, 'pregnancy', 4, 'Week 4', '{}'::jsonb)`,
+    [id],
+  );
+}
+
+/** Adds a second person to an existing household, the way an invite would. */
+async function join(
+  householdId: string,
+  email: string,
+  role: "parent" | "partner" | "grandparent" | "carer",
+): Promise<Fixture> {
+  const { rows } = await db.query<{ id: string }>(
+    "insert into users (email) values ($1) returning id",
+    [email],
+  );
+  const userId = rows[0]!.id;
+  await db.query("insert into household_members (household_id, user_id, role) values ($1,$2,$3)", [
+    householdId,
+    userId,
+    role,
+  ]);
+  return { scope: await scopeFor(db, userId), userId, householdId };
+}
+
 describe("users", () => {
   it("reads the signed-in user and nobody else", async () => {
     const a = await seed("a@example.com", "A");
@@ -98,6 +126,249 @@ describe("households", () => {
     expect(members).toHaveLength(1);
     expect(members[0]!.user_id).toBe(a.userId);
     expect(members.map((m) => m.user_id)).not.toContain(b.userId);
+  });
+
+  it("shows a partner who else is in the household", async () => {
+    const a = await seed("a@example.com", "A");
+    const b = await join(a.householdId, "b@example.com", "partner");
+
+    const members = await repo.listMembers(db, b.scope);
+
+    expect(members.map((m) => m.user_id).sort()).toEqual([a.userId, b.userId].sort());
+  });
+});
+
+describe("creating a household", () => {
+  async function newUser(email: string): Promise<string> {
+    const { rows } = await db.query<{ id: string }>(
+      "insert into users (email) values ($1) returning id",
+      [email],
+    );
+    return rows[0]!.id;
+  }
+
+  it("makes the person a parent of a new household", async () => {
+    const userId = await newUser("new@example.com");
+
+    const { id, created } = await repo.createHousehold(db, userId, "The Singhs");
+
+    expect(created).toBe(true);
+    const scope = await scopeFor(db, userId);
+    expect(scope.householdId).toBe(id);
+    expect(scope.role).toBe("parent");
+    expect((await repo.getHousehold(db, scope))?.name).toBe("The Singhs");
+  });
+
+  it("does not make a second household on a second sign-in", async () => {
+    const userId = await newUser("new@example.com");
+    const first = await repo.createHousehold(db, userId);
+
+    const second = await repo.createHousehold(db, userId);
+
+    expect(second.created).toBe(false);
+    expect(second.id).toBe(first.id);
+    const { rows } = await db.query<{ n: number }>(
+      "select count(*)::int as n from household_members where user_id = $1",
+      [userId],
+    );
+    expect(rows[0]!.n).toBe(1);
+  });
+
+  it("leaves the name null when none is given", async () => {
+    const userId = await newUser("new@example.com");
+
+    const { id } = await repo.createHousehold(db, userId);
+
+    const scope = await scopeFor(db, userId);
+    expect(scope.householdId).toBe(id);
+    expect((await repo.getHousehold(db, scope))?.name).toBeNull();
+  });
+});
+
+describe("a partner sees shared data and nothing private", () => {
+  it("sees the pregnancy and the appointments", async () => {
+    const a = await seed("a@example.com", "A");
+    const b = await join(a.householdId, "b@example.com", "partner");
+    await repo.upsertPregnancy(db, a.scope, { dueDate: "2027-04-01" });
+    await repo.createAppointment(db, a.scope, {
+      title: "Anatomy scan",
+      kind: "scan",
+      dueAt: new Date("2026-11-02T15:00:00Z"),
+    });
+
+    expect(ymd((await repo.getPregnancy(db, b.scope))?.due_date ?? null)).toBe("2027-04-01");
+    expect((await repo.listAppointments(db, b.scope)).map((x) => x.title)).toEqual([
+      "Anatomy scan",
+    ]);
+  });
+
+  it("does not see the other parent's progress or pins", async () => {
+    const a = await seed("a@example.com", "A");
+    const b = await join(a.householdId, "b@example.com", "partner");
+    await seedPack("pregnancy-w8");
+    await repo.setProgress(db, a.scope, { stagePackId: "pregnancy-w8", state: "complete" });
+    await repo.setItemState(db, a.scope, {
+      itemId: "w8-folic-acid",
+      stagePackId: "pregnancy-w8",
+      state: "done",
+      pinned: true,
+    });
+
+    expect(await repo.listProgress(db, b.scope)).toEqual([]);
+    expect(await repo.listItemState(db, b.scope)).toEqual([]);
+    expect(await repo.listPinned(db, b.scope)).toEqual([]);
+  });
+
+  it("sees who else is in the household, and their address", async () => {
+    const a = await seed("a@example.com", "A");
+    await join(a.householdId, "b@example.com", "partner");
+
+    const members = await repo.listMemberDetails(db, a.scope);
+    expect(members.map((m) => [m.email, m.role])).toEqual([
+      ["a@example.com", "parent"],
+      ["b@example.com", "partner"],
+    ]);
+  });
+
+  it("cannot read another household's members", async () => {
+    const a = await seed("a@example.com", "A");
+    await join(a.householdId, "b@example.com", "partner");
+    const c = await seed("c@example.com", "C");
+
+    expect((await repo.listMemberDetails(db, c.scope)).map((m) => m.email)).toEqual([
+      "c@example.com",
+    ]);
+  });
+
+  it("cannot read another household's pregnancy", async () => {
+    const a = await seed("a@example.com", "A");
+    const b = await seed("b@example.com", "B");
+    await repo.upsertPregnancy(db, a.scope, { dueDate: "2027-04-01" });
+
+    expect(await repo.getPregnancy(db, b.scope)).toBeUndefined();
+  });
+});
+
+describe("leaving a household", () => {
+  it("revokes access immediately", async () => {
+    const a = await seed("a@example.com", "A");
+    const b = await join(a.householdId, "b@example.com", "partner");
+    await repo.upsertPregnancy(db, a.scope, { dueDate: "2027-04-01" });
+    expect(await repo.getPregnancy(db, b.scope)).toBeDefined();
+
+    expect(await repo.leaveHousehold(db, b.scope)).toBe(true);
+
+    await expect(scopeFor(db, b.userId)).rejects.toThrow(/not a member/);
+  });
+
+  it("takes the household with the last member", async () => {
+    const a = await seed("a@example.com", "A");
+
+    expect(await repo.leaveHousehold(db, a.scope)).toBe(true);
+
+    const { rows } = await db.query<{ n: number }>(
+      "select count(*)::int as n from households where id = $1",
+      [a.householdId],
+    );
+    expect(rows[0]!.n).toBe(0);
+  });
+
+  it("leaves the household standing when someone else is still in it", async () => {
+    const a = await seed("a@example.com", "A");
+    await join(a.householdId, "b@example.com", "partner");
+
+    expect(await repo.leaveHousehold(db, a.scope)).toBe(true);
+
+    const { rows } = await db.query<{ n: number }>(
+      "select count(*)::int as n from households where id = $1",
+      [a.householdId],
+    );
+    expect(rows[0]!.n).toBe(1);
+  });
+});
+
+describe("roles", () => {
+  it("lets a parent promote a partner to parent", async () => {
+    const a = await seed("a@example.com", "A");
+    const b = await join(a.householdId, "b@example.com", "partner");
+
+    const updated = await repo.setMemberRole(db, a.scope, b.userId, "parent");
+
+    expect(updated?.role).toBe("parent");
+    expect((await scopeFor(db, b.userId)).role).toBe("parent");
+  });
+
+  it("refuses a role change from a partner", async () => {
+    const a = await seed("a@example.com", "A");
+    const b = await join(a.householdId, "b@example.com", "partner");
+
+    await expect(repo.setMemberRole(db, b.scope, a.userId, "carer")).rejects.toThrow(
+      /only a parent/,
+    );
+  });
+
+  it("refuses to demote the last parent", async () => {
+    const a = await seed("a@example.com", "A");
+
+    await expect(repo.setMemberRole(db, a.scope, a.userId, "partner")).rejects.toThrow(
+      /at least one parent/,
+    );
+  });
+
+  it("allows demoting a parent when another one remains", async () => {
+    const a = await seed("a@example.com", "A");
+    const b = await join(a.householdId, "b@example.com", "parent");
+
+    const updated = await repo.setMemberRole(db, a.scope, b.userId, "grandparent");
+
+    expect(updated?.role).toBe("grandparent");
+  });
+
+  it("returns nothing for someone who is not in the household", async () => {
+    const a = await seed("a@example.com", "A");
+    const b = await seed("b@example.com", "B");
+
+    expect(await repo.setMemberRole(db, a.scope, b.userId, "carer")).toBeUndefined();
+  });
+});
+
+describe("removing a member", () => {
+  it("lets a parent remove a partner", async () => {
+    const a = await seed("a@example.com", "A");
+    const b = await join(a.householdId, "b@example.com", "partner");
+
+    expect(await repo.removeMember(db, a.scope, b.userId)).toBe(true);
+    await expect(scopeFor(db, b.userId)).rejects.toThrow(/not a member/);
+  });
+
+  it("refuses a partner removing someone else", async () => {
+    const a = await seed("a@example.com", "A");
+    const b = await join(a.householdId, "b@example.com", "partner");
+
+    await expect(repo.removeMember(db, b.scope, a.userId)).rejects.toThrow(/only a parent/);
+  });
+
+  it("treats removing yourself as leaving", async () => {
+    const a = await seed("a@example.com", "A");
+    const b = await join(a.householdId, "b@example.com", "partner");
+
+    expect(await repo.removeMember(db, b.scope, b.userId)).toBe(true);
+    await expect(scopeFor(db, b.userId)).rejects.toThrow(/not a member/);
+  });
+
+  it("allows removing one of two parents", async () => {
+    const a = await seed("a@example.com", "A");
+    const b = await join(a.householdId, "b@example.com", "parent");
+
+    expect(await repo.removeMember(db, b.scope, a.userId)).toBe(true);
+    expect((await scopeFor(db, b.userId)).role).toBe("parent");
+  });
+
+  it("returns false for someone who is not in the household", async () => {
+    const a = await seed("a@example.com", "A");
+    const b = await seed("b@example.com", "B");
+
+    expect(await repo.removeMember(db, a.scope, b.userId)).toBe(false);
   });
 });
 
@@ -204,14 +475,6 @@ describe("children", () => {
 });
 
 describe("stage progress", () => {
-  async function seedPack(id: string): Promise<void> {
-    await db.query(
-      `insert into stage_packs (id, kind, stage_index, title, payload)
-       values ($1, 'pregnancy', 4, 'Week 4', '{}'::jsonb)`,
-      [id],
-    );
-  }
-
   it("starts empty", async () => {
     const a = await seed("a@example.com", "A");
 

@@ -83,7 +83,12 @@ describe("the inlined migrations", () => {
 describe("loadMigrations", () => {
   it("pairs every up file with its down file", () => {
     const migrations = loadMigrations();
-    expect(migrations.map((m) => m.name)).toEqual(["0001_init", "0002_rls", "0003_auth"]);
+    expect(migrations.map((m) => m.name)).toEqual([
+      "0001_init",
+      "0002_rls",
+      "0003_auth",
+      "0004_household",
+    ]);
     expect(migrations[0]?.up).toContain("create table users");
     expect(migrations[0]?.down).toContain("drop table if exists users");
   });
@@ -115,7 +120,7 @@ describe("loadMigrations", () => {
 describe("migrateUp", () => {
   it("creates every table on a fresh database", async () => {
     const db = await fresh();
-    expect(await migrateUp(db)).toEqual(["0001_init", "0002_rls", "0003_auth"]);
+    expect(await migrateUp(db)).toEqual(["0001_init", "0002_rls", "0003_auth", "0004_household"]);
     expect(await tableNames(db)).toEqual(["_migrations", ...TABLES]);
   });
 
@@ -148,7 +153,12 @@ describe("migrateDown", () => {
   it("drops every table and leaves the ledger", async () => {
     const db = await fresh();
     await migrateUp(db);
-    expect(await migrateDown(db, undefined, 3)).toEqual(["0003_auth", "0002_rls", "0001_init"]);
+    expect(await migrateDown(db, undefined, 4)).toEqual([
+      "0004_household",
+      "0003_auth",
+      "0002_rls",
+      "0001_init",
+    ]);
     expect(await tableNames(db)).toEqual(["_migrations"]);
   });
 
@@ -167,7 +177,7 @@ describe("migrateDown", () => {
     for (let pass = 0; pass < 2; pass += 1) {
       await migrateUp(db);
       expect(await tableNames(db)).toEqual(["_migrations", ...TABLES]);
-      await migrateDown(db, undefined, 3);
+      await migrateDown(db, undefined, 4);
       expect(await tableNames(db)).toEqual(["_migrations"]);
     }
   });
@@ -186,8 +196,8 @@ describe("migrateDown", () => {
   it("refuses to roll back more than was applied", async () => {
     const db = await fresh();
     await migrateUp(db);
-    await expect(migrateDown(db, undefined, 4)).rejects.toThrow(
-      "cannot roll back 4: only 3 applied",
+    await expect(migrateDown(db, undefined, 5)).rejects.toThrow(
+      "cannot roll back 5: only 4 applied",
     );
   });
 
@@ -220,11 +230,11 @@ describe("migrationStatus", () => {
     const db = await fresh();
     expect(await migrationStatus(db)).toEqual({
       applied: [],
-      pending: ["0001_init", "0002_rls", "0003_auth"],
+      pending: ["0001_init", "0002_rls", "0003_auth", "0004_household"],
     });
     await migrateUp(db);
     expect(await migrationStatus(db)).toEqual({
-      applied: ["0001_init", "0002_rls", "0003_auth"],
+      applied: ["0001_init", "0002_rls", "0003_auth", "0004_household"],
       pending: [],
     });
   });

@@ -27,7 +27,12 @@ describe("createDb", () => {
   it("runs the migrations against the in-process database", async () => {
     handle = await createDb(undefined);
 
-    expect(await migrateUp(handle.sql)).toEqual(["0001_init", "0002_rls", "0003_auth"]);
+    expect(await migrateUp(handle.sql)).toEqual([
+      "0001_init",
+      "0002_rls",
+      "0003_auth",
+      "0004_household",
+    ]);
   });
 
   it("exposes the same tables through Drizzle as through SQL", async () => {

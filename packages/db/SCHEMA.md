@@ -290,6 +290,80 @@ Four tables, added by `0003_auth`. They are the shape `@auth/drizzle-adapter` ex
 
 **`users.email` stays `citext`.** The adapter's `DefaultPostgresColumn` type does not accept a `customType`, so the table map is cast once in `apps/web/src/lib/auth/config.ts`. Rewriting a merged migration to suit a library's type would have been the wrong trade: case-insensitive email is a property of the product, not of the library.
 
+## Households
+
+`0004_household` adds the policies that make a household a shared thing rather
+than a label on one person's row.
+
+| Policy                       | Table               | Effect                                                        |
+| ---------------------------- | ------------------- | ------------------------------------------------------------- |
+| `household_members_cohorted` | `household_members` | a member can read the other memberships in their household    |
+| `users_cohorted`             | `users`             | a member can read the name and address of their co-members    |
+| `households_insert`          | `households`        | anyone can insert a household; the membership is checked next |
+
+All three are permissive and are OR'd with the existing policies, so writes stay
+exactly as they were: `household_members_self` and `users_self` are `for all`
+and still require `user_id = app_user_id()`.
+
+**`users_cohorted` is a deliberate privacy decision.** A household is a trust
+boundary: the people in it are raising the same child, and a partner who cannot
+see the other parent's name cannot be shown a member list at all. So co-members
+can read each other's `name`, `email` and `image`. They cannot read each other's
+`item_state`, `stage_progress`, `reminders` or `content_events` — those stay
+self-only, which is what makes "your own notes stay yours" true rather than
+aspirational. If a future feature needs a private field on `users`, it needs a
+column-level grant or a separate table, not a wider policy.
+
+### `app_household_ids()` is `security definer`
+
+The co-member policy on `household_members` calls `app_household_ids()`, and
+that function reads `household_members`. Postgres refuses the cycle with
+`infinite recursion detected in policy for relation "household_members"`.
+`security definer` breaks it by reading the table as the function's owner.
+
+That creates an escalation surface, so the function pins its search path:
+
+```sql
+create or replace function app_household_ids()
+returns setof uuid
+language sql
+security definer
+set search_path = public, pg_temp
+stable
+as $$ ... $$;
+```
+
+Without the pinned `search_path`, a caller could create a `household_members`
+table in a schema earlier on the path and the function would read it with the
+owner's privileges.
+
+**The owner matters in production, and no test here can prove it.** In PGlite
+the owner is `postgres`, a superuser, which bypasses RLS — so the function
+works for the wrong reason. In production the migration role must own the
+function and must not itself be subject to `force row level security` on
+`household_members`, or the recursion returns. This is a runbook item.
+
+### Creating and leaving
+
+`createHousehold` is one CTE — the household insert and the first parent's
+membership cannot come apart — and it is idempotent, returning the existing
+household with `created: false`. It is called from `events.createUser` at
+sign-up and from `ensureScope` when a signed-in user has none, so the invariant
+is that every signed-in user has a household.
+
+`leaveHousehold` deletes the household when the last member leaves, because a
+household with no members is unreachable by every policy and every query.
+Access is revoked by the delete itself: `app_household_ids()` reads
+`household_members`, so the next transaction sees nothing. There is no cache and
+no token to expire.
+
+`ensureScope` catches `NoHouseholdError`, creates a household, and re-reads, so
+leaving your last household gives you a fresh one of your own rather than a 500.
+
+`removeMember` has no "last parent" guard because reaching it means a parent is
+removing somebody else, which implies at least two parents. `setMemberRole`
+does have one, because a parent can demote themselves.
+
 ## What is deliberately not here
 
 - **Soft delete on anything but `users`.** `users.deleted_at` exists because

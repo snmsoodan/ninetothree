@@ -102,6 +102,185 @@ export async function listMembers(db: SqlClient, scope: Scope): Promise<MemberRo
   });
 }
 
+/**
+ * The members of the household, with the name and address to show for each.
+ *
+ * Separate from `listMembers` because that one is also the return type of
+ * `setMemberRole`, which comes back from `returning *` and has no join to
+ * carry. Two shapes, two jobs.
+ */
+export interface MemberDetailRow extends MemberRow {
+  email: string;
+  name: string | null;
+}
+
+export async function listMemberDetails(db: SqlClient, scope: Scope): Promise<MemberDetailRow[]> {
+  return asUser(db, scope.userId, async () => {
+    const { rows } = await db.query<MemberDetailRow>(
+      `select m.household_id, m.user_id, m.role, u.email, u.name
+         from household_members m
+         join users u on u.id = m.user_id
+        where m.household_id = $1
+        order by m.role, u.email`,
+      [scope.householdId],
+    );
+    return rows;
+  });
+}
+
+/**
+ * Creates a household and makes `userId` its first parent.
+ *
+ * This is the one function here that cannot take a `Scope`, because the scope
+ * is what it is creating. It takes a user id instead, and the two inserts run
+ * in one transaction so a failure cannot leave a household with no members —
+ * which would be a row nobody can see, delete, or ever find again.
+ *
+ * Idempotent by design: signing in twice must not produce two households. If
+ * the person already belongs to one, that one is returned untouched.
+ */
+export async function createHousehold(
+  db: SqlClient,
+  userId: string,
+  name?: string,
+): Promise<{ id: string; created: boolean }> {
+  return asUser(db, userId, async () => {
+    const existing = await db.query<{ household_id: string }>(
+      `select m.household_id
+         from household_members m
+         join households h on h.id = m.household_id
+        where m.user_id = $1
+        order by h.created_at, m.household_id
+        limit 1`,
+      [userId],
+    );
+    const found = existing.rows[0];
+    if (found) return { id: found.household_id, created: false };
+
+    // One statement, so the household and its first parent cannot come apart.
+    const inserted = await db.query<{ household_id: string }>(
+      `with h as (insert into households (name) values ($1) returning id)
+       insert into household_members (household_id, user_id, role)
+       select id, $2, 'parent' from h
+       returning household_id`,
+      [name ?? null, userId],
+    );
+    return { id: inserted.rows[0]!.household_id, created: true };
+  });
+}
+
+/**
+ * Removes the caller from their household.
+ *
+ * The last member out takes the household with them. A household with no
+ * members is unreachable — every policy resolves through membership — so
+ * leaving it behind would be leaving a row that no query can ever return and
+ * no person can ever delete.
+ *
+ * Access is revoked by the delete itself: `app_household_ids()` reads this
+ * table, so the next query in the next transaction sees nothing. There is no
+ * cache to invalidate and no token to expire.
+ */
+export async function leaveHousehold(db: SqlClient, scope: Scope): Promise<boolean> {
+  return asUser(db, scope.userId, async () => {
+    const counted = await db.query<{ n: number }>(
+      "select count(*)::int as n from household_members where household_id = $1",
+      [scope.householdId],
+    );
+    const members = counted.rows[0]!.n;
+
+    if (members <= 1) {
+      const deleted = await db.query<{ id: string }>(
+        "delete from households where id = $1 returning id",
+        [scope.householdId],
+      );
+      return deleted.rows.length > 0;
+    }
+
+    const removed = await db.query<{ user_id: string }>(
+      "delete from household_members where household_id = $1 and user_id = $2 returning user_id",
+      [scope.householdId, scope.userId],
+    );
+    return removed.rows.length > 0;
+  });
+}
+
+export class NotAllowedError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "NotAllowedError";
+  }
+}
+
+/**
+ * Changes someone's role, including your own.
+ *
+ * Only a parent may do this, and the household must keep at least one parent.
+ * Both rules are enforced here rather than in the UI, because a role is a
+ * permission and a permission that is only checked in a form is not checked.
+ */
+export async function setMemberRole(
+  db: SqlClient,
+  scope: Scope,
+  userId: string,
+  role: HouseholdRole,
+): Promise<MemberRow | undefined> {
+  if (scope.role !== "parent") {
+    throw new NotAllowedError("only a parent can change roles");
+  }
+
+  return asUser(db, scope.userId, async () => {
+    if (role !== "parent") {
+      const parents = await db.query<{ n: number }>(
+        `select count(*)::int as n from household_members
+          where household_id = $1 and role = 'parent'`,
+        [scope.householdId],
+      );
+      const target = await db.query<{ role: HouseholdRole }>(
+        "select role from household_members where household_id = $1 and user_id = $2",
+        [scope.householdId, userId],
+      );
+      const wasParent = target.rows[0]?.role === "parent";
+      if (wasParent && parents.rows[0]!.n <= 1) {
+        throw new NotAllowedError("a household needs at least one parent");
+      }
+    }
+
+    const { rows } = await db.query<MemberRow>(
+      `update household_members set role = $3
+        where household_id = $1 and user_id = $2
+        returning *`,
+      [scope.householdId, userId, role],
+    );
+    return rows[0];
+  });
+}
+
+/**
+ * Removes someone else from the household.
+ *
+ * A parent can remove anyone; anyone can remove themselves, which is what
+ * `leaveHousehold` does. Removing the last parent is refused for the same
+ * reason demoting them is.
+ */
+export async function removeMember(db: SqlClient, scope: Scope, userId: string): Promise<boolean> {
+  if (scope.role !== "parent" && userId !== scope.userId) {
+    throw new NotAllowedError("only a parent can remove someone else");
+  }
+  if (userId === scope.userId) return leaveHousehold(db, scope);
+
+  return asUser(db, scope.userId, async () => {
+    // No "last parent" guard here, unlike `setMemberRole`. Reaching this point
+    // means the caller is a parent and is removing someone else, so if the
+    // target is a parent there are at least two and one survives.
+    const { rows } = await db.query<{ user_id: string }>(
+      "delete from household_members where household_id = $1 and user_id = $2 returning user_id",
+      [scope.householdId, userId],
+    );
+    return rows.length > 0;
+  });
+}
+
 // The journey ----------------------------------------------------------------
 
 export interface PregnancyRow {

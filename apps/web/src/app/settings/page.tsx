@@ -17,6 +17,7 @@ import { InstallPrompt } from "@/components/InstallPrompt";
 import { NotificationSettings } from "@/components/NotificationSettings";
 import { ProfilePreview } from "@/components/ProfilePreview";
 import { AccountRow } from "@/components/AccountRow";
+import { HouseholdCard } from "@/components/HouseholdCard";
 import { ReadingSettings } from "@/components/ReadingSettings";
 import {
   resetAll,
@@ -207,6 +208,19 @@ export default function SettingsPage() {
           </h2>
           <div className="mt-3">
             <AccountRow />
+          </div>
+        </section>
+
+        <section aria-labelledby="household-heading" className="mt-10">
+          <h2 id="household-heading" className="font-display text-2xl text-ink">
+            Your household
+          </h2>
+          <p className="mt-2 text-sm text-ink-muted">
+            A household is the people who share the dates. It is not a subscription and it does not
+            change what you can read.
+          </p>
+          <div className="mt-3">
+            <HouseholdCard />
           </div>
         </section>
 
