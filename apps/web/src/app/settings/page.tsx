@@ -18,6 +18,7 @@ import { NotificationSettings } from "@/components/NotificationSettings";
 import { ProfilePreview } from "@/components/ProfilePreview";
 import { AccountRow } from "@/components/AccountRow";
 import { HouseholdCard } from "@/components/HouseholdCard";
+import { DataCard } from "@/components/DataCard";
 import { InviteCard } from "@/components/InviteCard";
 import { ReadingSettings } from "@/components/ReadingSettings";
 import {
@@ -237,6 +238,15 @@ export default function SettingsPage() {
         <section aria-labelledby="data-heading" className="mt-10">
           <h2 id="data-heading" className="font-display text-2xl text-ink">
             Your data
+          </h2>
+          <div className="mt-3">
+            <DataCard />
+          </div>
+        </section>
+
+        <section aria-labelledby="device-heading" className="mt-10">
+          <h2 id="device-heading" className="font-display text-2xl text-ink">
+            On this device
           </h2>
           <p className="mt-2 text-base text-ink-muted">
             It lives in this browser. Clearing it cannot be undone.

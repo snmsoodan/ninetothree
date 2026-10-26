@@ -16,6 +16,7 @@
     "db:rollback": "tsx src/cli/migrate.ts down",
     "db:status": "tsx src/cli/migrate.ts status",
     "db:seed": "tsx src/cli/seed.ts",
+    "db:purge": "tsx src/cli/purge.ts",
     "migrations:generate": "node scripts/generate-migrations.mjs",
     "migrations:check": "node scripts/generate-migrations.mjs && git diff --exit-code src/migrations.generated.ts"
   },

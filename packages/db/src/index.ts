@@ -14,3 +14,14 @@ export { hashInviteToken, INVITE_TTL_MS, mintInviteToken } from "./invites";
 export * from "./auth";
 export { createDb, type Database, type DbHandle } from "./client";
 export { syncPacks, type PackRow } from "./packs";
+export {
+  accountCsv,
+  cancelDeletion,
+  DELETION_GRACE_DAYS,
+  deletionStatus,
+  exportAccount,
+  purgeDeleted,
+  requestDeletion,
+  type AccountExport,
+  type DeletionStatus,
+} from "./account";

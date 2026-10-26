@@ -551,6 +551,49 @@ Anyone in the household can move a job's status, not just the person it was
 handed to. The person who asked is often the one who knows it is finished — they
 were there for the appointment, or they saw the bag get packed.
 
+## Deletion requests
+
+Deleting an account is a request, not an event. The row records when it was asked for, when it will happen, and whether it was taken back.
+
+| Column         | Type          | Notes                                    |
+| -------------- | ------------- | ---------------------------------------- |
+| `id`           | `uuid`        | `default gen_random_uuid()`              |
+| `user_id`      | `uuid`        | `references users(id) on delete cascade` |
+| `requested_at` | `timestamptz` | `default now()`                          |
+| `purge_after`  | `timestamptz` | not null; thirty days after the request  |
+| `cancelled_at` | `timestamptz` | null while the request is live           |
+
+`deletion_requests_grace` is `check (purge_after > requested_at)`, so a request can never be due before it was made. `deletion_requests_due_idx` is a partial index on `(purge_after) where cancelled_at is null` — the purge job only ever asks for live requests that are due, and the index is exactly that question.
+
+### The policy
+
+```sql
+create policy deletion_requests_self on deletion_requests
+  for all using (user_id = app_user_id())
+  with check (user_id = app_user_id());
+```
+
+A person can see and cancel their own request and nobody else's. The purge job does not go through this policy: `purgeDeleted` is unscoped, runs as the owner, and is the one place in `packages/db` that deletes a `users` row.
+
+### `users.deleted_at` is set on request, not on purge
+
+The account is marked the moment somebody asks, so it is visibly on its way out. Signing in again clears the mark and sets `cancelled_at` in the same transaction. Nothing is removed until the grace period ends.
+
+### Purging has to clean up households, not just users
+
+`appointments.household_id` references `households`, not `users`. So `delete from users` cascades the memberships, item state, progress, reminders, sessions, accounts and deletion requests — and leaves the household and its appointments behind. `purgeDeleted` therefore runs the user delete and this cleanup in one transaction:
+
+```sql
+delete from households h
+ where not exists (select 1 from household_members m where m.household_id = h.id)
+```
+
+There is no legitimate memberless household in this app, because `createHousehold` inserts the household and its first parent in a single statement. The rule is the same one `leaveHousehold` uses. A household that still has somebody in it is left alone, appointments and all.
+
+### The check constraint exists in two places
+
+`deletion_requests_grace` is declared in `0008_deletion.up.sql` and again on the Drizzle table in `src/schema.ts`. `schema.test.ts` compares the live database against the Drizzle definitions and fails on drift, which is the only thing that keeps two descriptions of one schema honest.
+
 ## What is deliberately not here
 
 - **Soft delete on anything but `users`.** `users.deleted_at` exists because
