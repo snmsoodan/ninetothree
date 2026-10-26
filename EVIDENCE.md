@@ -1588,6 +1588,49 @@ This is worth stating plainly: a foreign key to a table nothing populates is not
 
 **What this does not do.** `jobs` has no `updated_at`, so a status change leaves `created_at` alone and a job just marked done does not move in the list. A job can be assigned to yourself — the API does not forbid it and the tests use it, and whether the UI should offer it is undecided. `assignJob`'s `on conflict … do update` silently reassigns an open job to a different person rather than creating a second one, which is the intended reading of "one open job per action" but is a product decision rather than a technical one. And the notification is in-app only, as above.
 
-## 49. How this file is maintained
+## 49. Export and delete (issue #41)
+
+**What the issue asked for.** "JSON + CSV export; 30-day soft delete; hard delete job. **AC:** export is complete; delete removes all PII; confirmation email."
+
+**Deleting is a request, not an event.** `deletion_requests` holds `requested_at`, `purge_after` and `cancelled_at`, and `users.deleted_at` is set the moment the request is made so the account is visibly marked. Thirty days is not a legal requirement here; it is because the most common reason to delete an account is a bad afternoon, and a product that cannot be undone in the morning is a product that punishes people for being tired. Signing in again cancels it, with no email and no form.
+
+**`requestDeletion` is idempotent, and that is the point.** Asking twice returns the live request rather than pushing the date out. A version that reset the clock on every click would mean a person who keeps coming back to the page never gets deleted, which is the opposite of what they asked for.
+
+**The export has to cover both halves of the data, and they live in different places.** Personal state — pins, progress, choices, reading settings, the whole `AppState` — is in `localStorage`. Household data — the account, the household, members, pregnancy, child, progress, item state, appointments, reminders, subscription, shared pins, jobs, invites, the deletion request — is in Postgres. `DataCard` merges them: `{ ...server, onThisDevice: state }`. An export that only read the server would be a lie about a product that is local-first, and an export that only read the browser would miss everything the household shares.
+
+**The CSV is server-only, and that asymmetry is deliberate.** The JSON is the complete export and carries the device half. The CSV is a flat `section,id,title,stage,state,date,detail` table for a spreadsheet, and flattening a nested `AppState` into those seven columns would produce rows nobody could read. It is written down here rather than left for somebody to discover.
+
+**A brand-new account's spreadsheet is a header and no rows.** That is correct — there is nothing in it yet — but it made the first version of the end-to-end test prove nothing, so the test now shares a pin first and asserts the `Shared,w28-glucose,Book the glucose test,` row appears. A test that only checks a header would pass on a broken export.
+
+**`purgeDeleted` had a real bug, and the AC is exactly about it.** `appointments.household_id` references `households`, not `users`. So `delete from users` cascaded `household_members`, `item_state`, `stage_progress`, `reminders`, `sessions`, `accounts` and `deletion_requests` — and left the `households` row and its appointments behind. A cascade that looks complete and is not is the worst kind of privacy bug, because the account is gone from every screen while the data is still on disk. The fix runs the user delete and a memberless-household cleanup in one transaction:
+
+```sql
+delete from households h
+ where not exists (select 1 from household_members m where m.household_id = h.id)
+```
+
+There is no legitimate memberless household in this app — `createHousehold` always inserts a member in the same statement — so the rule is safe, and it is the same rule `leaveHousehold` already used. Two tests now prove both directions: purging the only member removes the household and its appointments, and purging one of two members leaves both alone.
+
+**`purgeDeleted` is deliberately unscoped and is not a repository function.** Every other function in `packages/db` takes a `Scope` first and runs inside `asUser`. This one is a job: it runs as the owner, it crosses households by design, and it is the one place in the package that deletes a `users` row. Giving it a scope would be a fiction.
+
+**The purge date was rendering a day early.** `DataCard`'s `day()` used `toLocaleDateString("en-US", { month, day, year })` with no `timeZone`, so a `purge_after` of `2026-03-31T00:00:00Z` showed as **March 30** on a US Pacific machine. The purge date is a day, not a moment, and formatting a day in the reader's own timezone turns "the 31st" into "the 30th" for everybody west of UTC. Fixed with `timeZone: "UTC"`. The test caught it because it asserted the literal string "March 31, 2026"; a test that only asserted "a date is shown" would have passed.
+
+**The Drizzle table was missing the check constraint the migration declared.** `schema.test.ts` compares the live database's check constraints against the Drizzle definitions, and it failed with `expected [ 'deletion_requests_grace' ] to deeply equal []`. A hand-written migration and a Drizzle table are two descriptions of one schema, and the introspection test is the only thing that keeps them honest. Fixed by adding `check("deletion_requests_grace", sql`${t.purgeAfter} > ${t.requestedAt}`)`.
+
+**`createMailer` was extracted so the confirmation email could exist.** `createSender` was hardcoded to the sign-in subject and body. The delete route needs a different message, so the Resend poster, the production refusal and the stderr fallback moved into `createMailer(env, fetchImpl)` taking `{ to, subject, text }`, and `createSender` became a thin wrapper over it. The five original `email.test.ts` assertions stayed green through the refactor, which is what made it safe to do.
+
+**A failed confirmation email does not fail the deletion.** The request is already recorded; a mail server having a bad minute is not a reason to tell somebody their deletion failed when it did not. The route catches and logs.
+
+**The existing "Your data" section on `/settings` was the local erase, not the account delete.** It calls `resetAll()` and says "It lives in this browser. Clearing it cannot be undone." That is a different promise from "your account goes in thirty days", and both have to stay. The old section is now titled **"On this device"** and the new `DataCard` took the "Your data" heading.
+
+**`DataCard` reads the session before fetching**, the same lesson as `PartnerView`: a request that is certain to be refused should not be made, because the browser logs the 401 and Lighthouse's `errors-in-console` counts it.
+
+**The last uncovered function in the repository was a "Keep it" button.** Coverage sat at 88.88% functions on `DataCard` with lines and branches at 100%. The web reporter is `lcov` only — there is no `coverage-final.json` — so the gap was found by parsing `coverage/lcov.info` for `FNDA:0,` and reading `FNDA:0,onClick`. It was the confirm dialog's footer button, which closes the dialog without deleting. A 16th test clicks it. `DataCard.tsx` is now 100% on all four metrics.
+
+**Verification.** **1,837 tests** (content 536, rules 121, ui 53, db 224, web 903), with 100% coverage on content, rules, ui and db, and `account.ts` and `DataCard.tsx` at 100% on all four metrics. `pnpm format:check`, `pnpm lint`, `pnpm typecheck`, `pnpm content:validate`, `pnpm content:registry:check`, `pnpm build` and `pnpm bundle:check` are green. The end-to-end suite is **280 tests**: 154 across chromium and no-js, and 126 Storybook stories. Lighthouse audits **ten** URLs at 1.0 for accessibility, performance and `errors-in-console`.
+
+**What this does not do.** `db:purge` is a CLI and is not scheduled anywhere — a cron or a platform scheduler has to call it, and that belongs in the runbook (issue #52). The CSV does not include the device half, as above. The confirmation email is sent through the same `createMailer` as the sign-in link, so it is unverified in production for the same reason: no `RESEND_API_KEY` in this environment. And the thirty-day window is a product decision, not a measured one.
+
+## 50. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.

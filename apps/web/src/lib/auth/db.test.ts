@@ -22,6 +22,7 @@ describe("getDb", () => {
       "0005_invites",
       "0006_shared",
       "0007_jobs",
+      "0008_deletion",
     ]);
   });
 

@@ -51,6 +51,7 @@ const STORIES = [
   "app-sharedlist--no-name-for-the-other-person",
   "app-togethercard--two-people",
   "app-togethercard--three-generations",
+  "app-datacard--signed-out",
   "app-joblist--nothing-yet",
   "app-joblist--one-open",
   "app-joblist--yours",

@@ -123,6 +123,33 @@ export const sharedItems = pgTable(
 );
 
 /**
+ * A request to be deleted, and the thirty days in which it can be undone.
+ *
+ * `users.deleted_at` says "this account is on its way out". This table says
+ * when it started, when the purge becomes allowed, and whether the person
+ * changed their mind. The purge job asks one question of it: which requests
+ * are due and still live.
+ */
+export const deletionRequests = pgTable(
+  "deletion_requests",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    requestedAt: timestamp("requested_at", { withTimezone: true, mode: "date" })
+      .notNull()
+      .defaultNow(),
+    purgeAfter: timestamp("purge_after", { withTimezone: true, mode: "date" }).notNull(),
+    cancelledAt: timestamp("cancelled_at", { withTimezone: true, mode: "date" }),
+  },
+  (t) => [
+    index("deletion_requests_due_idx").on(t.purgeAfter),
+    check("deletion_requests_grace", sql`${t.purgeAfter} > ${t.requestedAt}`),
+  ],
+);
+
+/**
  * A job is an action one person has handed to another.
  *
  * It is not a shared pin with an owner. A shared pin says "this matters to us";
@@ -546,6 +573,7 @@ export const TABLES = [
   householdInvites,
   sharedItems,
   jobs,
+  deletionRequests,
   pregnancies,
   children,
   stagePacks,
