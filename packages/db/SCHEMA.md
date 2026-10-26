@@ -475,6 +475,82 @@ share returned 500 on the foreign key. `syncPacks` takes the pack list as an
 argument rather than importing it, because `@ninetothree/content` is only a
 devDependency of this package; the seed calls the same function.
 
+## Assigned jobs
+
+`jobs` is one person in a household handing one action to another. It is not a
+shared pin with an owner: a shared pin says "this matters to us", a job says "you
+are doing this one", and it has a status that moves.
+
+| Column          | Type        | Notes                                       |
+| --------------- | ----------- | ------------------------------------------- |
+| `id`            | uuid        | pk, `gen_random_uuid()`                     |
+| `household_id`  | uuid        | → `households`, cascade                     |
+| `item_id`       | text        | the action's id from the pack               |
+| `stage_pack_id` | text        | → `stage_packs`, **set null**               |
+| `title`         | text        | the only content that travels               |
+| `pack_title`    | text        | "Week 28", for context                      |
+| `assigned_to`   | uuid        | → `users`, cascade                          |
+| `assigned_by`   | uuid        | → `users`, cascade                          |
+| `status`        | text        | `open` / `done` / `dropped`, default `open` |
+| `done_at`       | timestamptz | set exactly when `status = 'done'`          |
+| `created_at`    | timestamptz |                                             |
+
+Two indexes: `jobs_household_idx` on `household_id`, and `jobs_assigned_to_idx`
+on `(assigned_to, status)` — the dashboard asks "what is open and mine" on every
+load.
+
+### `status` is a check, not a boolean
+
+A boolean would collapse "I did it" and "we decided not to" into the same value,
+and a job somebody took back should not look like a job somebody is ignoring.
+`dropped` is the honest third state.
+
+`jobs_done_needs_time` enforces the pairing in the database:
+
+```sql
+check ((status = 'done') = (done_at is not null))
+```
+
+A done job always has a time and an open or dropped one never does, so no code
+path can produce a done job with no completion time. `setJobStatus` satisfies it
+with `done_at = case when $3 = 'done' then now() else null end`, which also means
+moving a job back to `open` clears the time rather than leaving a stale one.
+
+### The partial unique index is the upsert mechanism
+
+```sql
+create unique index jobs_one_open_per_item_idx
+  on jobs (household_id, item_id) where status = 'open';
+```
+
+Assigning the same action twice replaces the open job rather than stacking a
+second identical row, and `assignJob` gets that for free:
+
+```sql
+on conflict (household_id, item_id) where status = 'open' do update set …
+```
+
+Postgres requires the index predicate to be repeated in the conflict target for a
+partial index. A finished job is not covered by the index, so re-assigning
+something already done starts a new job instead of reopening the old one.
+
+### The policy
+
+`jobs_household` is `for all`:
+
+```sql
+using (household_id in (select app_household_ids()))
+with check (household_id in (select app_household_ids()) and assigned_by = app_user_id())
+```
+
+Everyone in the household sees every job, because an assignment nobody else can
+see is a private note with extra steps. The `with check` stops a partner forging
+`assigned_by` and attributing a job to somebody else.
+
+Anyone in the household can move a job's status, not just the person it was
+handed to. The person who asked is often the one who knows it is finished — they
+were there for the appointment, or they saw the bag get packed.
+
 ## What is deliberately not here
 
 - **Soft delete on anything but `users`.** `users.deleted_at` exists because

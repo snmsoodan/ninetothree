@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import userEvent from "@testing-library/user-event";
+import { describe, expect, it, vi } from "vitest";
 
 import { HelpThisWeek } from "./HelpThisWeek";
 
@@ -50,6 +51,13 @@ describe("HelpThisWeek", () => {
     expect(
       screen.getByText("Nothing on the list this week. Being there is the whole job."),
     ).toBeInTheDocument();
+  });
+
+  it("offers to hand a job over without naming anybody", async () => {
+    const onAssign = vi.fn();
+    render(<HelpThisWeek week={week} onAssign={onAssign} />);
+    await userEvent.click(screen.getAllByRole("button", { name: "Ask them to do this" })[0]!);
+    expect(onAssign).toHaveBeenCalledWith(week.help[0]);
   });
 
   it("shows the body alone when there is no mind line", () => {

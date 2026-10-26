@@ -16,6 +16,13 @@ export interface HelpThisWeekProps {
     mind: string | null;
     help: HelpItem[];
   } | null;
+  /**
+   * Hands one of the week's jobs to the other person. Absent when there is
+   * nobody to hand it to, so the button never offers to assign to nobody.
+   */
+  onAssign?: (item: HelpItem) => void;
+  /** The other person's name, for the button's label. */
+  assignTo?: string;
 }
 
 const VERB: Record<HelpItem["type"], string> = {
@@ -35,7 +42,7 @@ const VERB: Record<HelpItem["type"], string> = {
  * charming and nothing useful; a partner who reads "she is not sleeping and it
  * is not about you" has been handed the actual job.
  */
-export function HelpThisWeek({ week }: HelpThisWeekProps) {
+export function HelpThisWeek({ week, onAssign, assignTo }: HelpThisWeekProps) {
   if (!week) {
     return (
       <section aria-labelledby="help-heading">
@@ -87,6 +94,15 @@ export function HelpThisWeek({ week }: HelpThisWeekProps) {
                       <p className="mt-0.5 text-sm text-ink-faint tabular">
                         About {item.minutes} minutes.
                       </p>
+                    ) : null}
+                    {onAssign ? (
+                      <button
+                        type="button"
+                        onClick={() => onAssign(item)}
+                        className="mt-3 rounded-full border border-line px-3 py-1.5 text-sm text-ink hover:bg-surface focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-clay"
+                      >
+                        {assignTo ? `Ask ${assignTo} to do this` : "Ask them to do this"}
+                      </button>
                     ) : null}
                   </CardBody>
                 </Card>

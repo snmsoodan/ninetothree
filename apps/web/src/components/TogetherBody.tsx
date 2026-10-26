@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Card, CardBody } from "@ninetothree/ui";
 
 import { HelpThisWeek, type HelpItem } from "./HelpThisWeek";
+import { JobList, type Job, type JobStatus } from "./JobList";
 import { SharedList, type SharedItem } from "./SharedList";
 
 export interface TogetherMember {
@@ -26,6 +27,7 @@ export interface TogetherPayload {
   role: TogetherMember["role"];
   members: TogetherMember[];
   shared: SharedItem[];
+  jobs: Job[];
   appointments: TogetherAppointment[];
   week: {
     id: string;
@@ -56,16 +58,42 @@ function formatDay(iso: string): string {
  * without a database behind it, and so the four sections can be read in one
  * place.
  */
-export function TogetherBody({ data }: { data: TogetherPayload }) {
+export interface TogetherBodyProps {
+  data: TogetherPayload;
+  onAssign?: (item: HelpItem, to: string, packId: string | null, packTitle: string | null) => void;
+  onJobStatus?: (id: string, status: JobStatus) => void;
+  onJobRemove?: (id: string) => void;
+}
+
+export function TogetherBody({ data, onAssign, onJobStatus, onJobRemove }: TogetherBodyProps) {
   const others = data.members.filter((member) => !member.isYou);
   // Only name the other person when there is exactly one of them; with two,
   // "from Sam" would be a guess.
   const otherName = others.length === 1 ? who(others[0]!) : undefined;
   const upcoming = data.appointments.filter((appointment) => appointment.dueAt);
+  const you = data.members.find((member) => member.isYou);
+  const names = Object.fromEntries(data.members.map((member) => [member.userId, who(member)]));
 
   return (
     <div className="space-y-8">
-      <HelpThisWeek week={data.week} />
+      <HelpThisWeek
+        week={data.week}
+        onAssign={
+          otherName && onAssign
+            ? (item) =>
+                onAssign(item, others[0]!.userId, data.week?.id ?? null, data.week?.title ?? null)
+            : undefined
+        }
+        assignTo={otherName}
+      />
+
+      <JobList
+        jobs={data.jobs}
+        youId={you?.userId ?? ""}
+        names={names}
+        onStatus={onJobStatus}
+        onRemove={onJobRemove}
+      />
 
       <SharedList items={data.shared} otherName={otherName} />
 

@@ -1556,6 +1556,38 @@ This is worth stating plainly: a foreign key to a table nothing populates is not
 
 **What this does not do.** A partner's own dashboard shows their own empty progress, not the parent's — the `TogetherCard` is the only way in, and that is a real gap worth its own issue. `shared_items` has no `updated_at`, so re-sharing a pin updates the title and leaves `created_at` alone, which means the list order does not change. `useHousehold` re-fetches after every share rather than updating optimistically, so a toggle costs a round trip. And the sync runs 85 upserts on every cold start, which is correct but is a boot-time cost that a version check would remove.
 
-## 48. How this file is maintained
+## 48. Assigned jobs (issue #38)
+
+**What the issue asked for.** "Assign an action to a partner; status; notification. **AC:** assignment is visible to both; completion updates both."
+
+**The AC reading, written down.** "Notification" is the one word that could mean several things, and this build does the smallest honest version of it. There is no push infrastructure, no verified sending domain and no email template for a job, so a job does not arrive as a notification. It arrives in two places the other person already visits: a **"Who is doing what"** section on `/together`, and a **`YourJobsCard`** on the dashboard that counts the open jobs assigned to you. That is an in-app notification, and it is written down here rather than glossed as "notifications done". A push or email version is a separate issue with a separate dependency.
+
+**A job is not a shared pin with an owner.** The tempting shortcut is to add `assigned_to` to `shared_items`. It is the wrong shape. A shared pin says "this matters to us" and is a fact about the household; a job says "you are doing this one" and has a status that moves. They have different lifetimes, different permissions and different empty states, so they are different tables.
+
+**`status` is a check, not a boolean.** `('open', 'done', 'dropped')`. A boolean would collapse "I did it" and "we decided not to" into the same value, and a job somebody took back should not look like a job somebody is ignoring. `dropped` is the honest third state.
+
+**`jobs_done_needs_time` enforces the pairing in the database.** `check ((status = 'done') = (done_at is not null))`. A done job always has a time and an open or dropped one never does, so no code path can produce a done job with no completion time. `setJobStatus` satisfies it with `done_at = case when $3 = 'done' then now() else null end`, which also means moving a job back to `open` clears the time rather than leaving a stale one behind.
+
+**The partial unique index is the upsert mechanism.** `create unique index jobs_one_open_per_item_idx on jobs (household_id, item_id) where status = 'open'`. Assigning the same action twice replaces the open job rather than stacking a second identical row, and `assignJob` gets that for free with `on conflict (household_id, item_id) where status = 'open' do update set …`. Postgres requires the index predicate to be repeated in the conflict target for a partial index, which is the one non-obvious line in the function. A finished job is not covered by the index, so re-assigning something already done starts a new job instead of reopening the old one — which is what a person means when they hand the same thing over again.
+
+**Anyone in the household can move a job's status.** Not just the person it was handed to. The person who asked is often the one who knows it is finished — they were there for the appointment, or they saw the bag get packed. Restricting the transition to the assignee would mean a job could only be closed by the person least likely to be looking at it.
+
+**The policy.** `jobs_household` is `for all using (household_id in (select app_household_ids())) with check (household_id in (select app_household_ids()) and assigned_by = app_user_id())`. Everyone in the household sees every job, because an assignment nobody else can see is a private note with extra steps. The `with check` stops a partner forging `assigned_by` and attributing a job to somebody else — the same shape as `shared_items_household`, and the same reason.
+
+**`YourJobsCard` returns `null` when there are no jobs.** An empty "you have no jobs" card is a chore invented by the software. The dashboard is a short page and a card that exists only to say nothing is on it is worse than no card. `jobsForYou` is filtered server-side to `status === 'open' && assignedTo === userId`, so the dashboard never has to know about job status at all.
+
+**The three callbacks re-read rather than patching local state.** `assign`, `setJobStatus` and `removeJob` in `PartnerView` each bump a `nonce` that re-runs the fetch. A job is a fact two people share, and the other person may have moved it a second ago; patching the local copy would show a status that is already wrong. The cost is a round trip per action, which is the right trade for a two-person surface.
+
+**Two dead branches, removed rather than tested.** Coverage found both, and both were symptoms of a guard that could not fire.
+
+`PartnerView`'s `assign` looked up the other member and the pack itself, with `if (!other) return;` and `data?.week?.id ?? null`. All three were unreachable: the assign button only renders when exactly one other person and a week exist. Rather than write a test for a state the UI cannot produce, the lookup moved into `TogetherBody`, which already knows both, and `assign` now takes `(item, to, packId, packTitle)`. The guard and both optional chains are gone.
+
+`JobList`'s open-job action row was `onStatus || onRemove ? … : null` with two inner `onStatus ? … : null` guards, which left two false arms that could never be reached because `onRemove` never applies to an open job. It is now a single `onStatus ? … : null` with the two buttons inline.
+
+**Verification.** **1,787 tests** (content 536, rules 121, ui 53, web 876, db 201), with 100% coverage on content, rules, ui and db. Web coverage is 98.99% lines, 99.02% branches and 98.26% functions, and every file this issue touched — `JobList`, `YourJobsCard`, `HelpThisWeek`, `TogetherBody`, `PartnerView`, `lib/household.ts` — is at 100% on all four metrics. `pnpm format:check`, `pnpm lint`, `pnpm typecheck`, `pnpm content:validate`, `pnpm content:registry:check`, `pnpm build` and `pnpm bundle:check` are green. The end-to-end suite is **275 tests**: 150 across chromium and no-js, and 125 Storybook stories. Lighthouse audits **ten** URLs at 1.0 for accessibility, performance and `errors-in-console`.
+
+**What this does not do.** `jobs` has no `updated_at`, so a status change leaves `created_at` alone and a job just marked done does not move in the list. A job can be assigned to yourself — the API does not forbid it and the tests use it, and whether the UI should offer it is undecided. `assignJob`'s `on conflict … do update` silently reassigns an open job to a different person rather than creating a second one, which is the intended reading of "one open job per action" but is a product decision rather than a technical one. And the notification is in-app only, as above.
+
+## 49. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.

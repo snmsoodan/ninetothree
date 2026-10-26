@@ -13,6 +13,7 @@ import {
   primaryKey,
   text,
   timestamp,
+  uniqueIndex,
   uuid,
 } from "drizzle-orm/pg-core";
 
@@ -118,6 +119,46 @@ export const sharedItems = pgTable(
   (t) => [
     primaryKey({ columns: [t.householdId, t.itemId] }),
     index("shared_items_household_idx").on(t.householdId),
+  ],
+);
+
+/**
+ * A job is an action one person has handed to another.
+ *
+ * It is not a shared pin with an owner. A shared pin says "this matters to us";
+ * a job says "you are doing this one", and it has a status that only moves
+ * forward. `dropped` is separate from `open` so a job somebody took back does
+ * not look like a job somebody is ignoring.
+ */
+export const jobs = pgTable(
+  "jobs",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    householdId: uuid("household_id")
+      .notNull()
+      .references(() => households.id, { onDelete: "cascade" }),
+    itemId: text("item_id").notNull(),
+    stagePackId: text("stage_pack_id").references(() => stagePacks.id, { onDelete: "set null" }),
+    title: text("title").notNull(),
+    packTitle: text("pack_title"),
+    assignedTo: uuid("assigned_to")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    assignedBy: uuid("assigned_by")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    status: text("status").notNull().default("open"),
+    doneAt: timestamp("done_at", { withTimezone: true }),
+    createdAt,
+  },
+  (t) => [
+    index("jobs_household_idx").on(t.householdId),
+    index("jobs_assigned_to_idx").on(t.assignedTo, t.status),
+    uniqueIndex("jobs_one_open_per_item_idx")
+      .on(t.householdId, t.itemId)
+      .where(sql`${t.status} = 'open'`),
+    check("jobs_status_check", sql`${t.status} in ('open', 'done', 'dropped')`),
+    check("jobs_done_needs_time", sql`(${t.status} = 'done') = (${t.doneAt} is not null)`),
   ],
 );
 
@@ -504,6 +545,7 @@ export const TABLES = [
   householdMembers,
   householdInvites,
   sharedItems,
+  jobs,
   pregnancies,
   children,
   stagePacks,
