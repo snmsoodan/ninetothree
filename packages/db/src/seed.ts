@@ -1,5 +1,6 @@
 import { PACKS, type StagePack } from "@ninetothree/content";
 import type { SqlClient } from "./migrate";
+import { syncPacks } from "./packs";
 
 /*
  * A local database you can actually look at.
@@ -534,45 +535,7 @@ export async function seed(db: SqlClient, options: SeedOptions = {}): Promise<Se
       delete from users;
     `);
 
-    let packs = 0;
-    if (withPacks) {
-      for (const pack of packList) {
-        await db.query(
-          `insert into stage_packs (
-             id, kind, stage_index, stage_unit, locale, country, title, subtitle,
-             baby, you, payload, status, reviewed_by, reviewed_at, published_at
-           ) values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,'published',$12,$13,now())
-           on conflict (id) do update set
-             kind = excluded.kind,
-             stage_index = excluded.stage_index,
-             stage_unit = excluded.stage_unit,
-             title = excluded.title,
-             subtitle = excluded.subtitle,
-             baby = excluded.baby,
-             you = excluded.you,
-             payload = excluded.payload,
-             status = excluded.status,
-             reviewed_by = excluded.reviewed_by,
-             reviewed_at = excluded.reviewed_at`,
-          [
-            pack.id,
-            pack.kind,
-            pack.stageIndex,
-            pack.stageUnit,
-            pack.locale,
-            pack.country,
-            pack.title,
-            pack.subtitle ?? null,
-            pack.baby?.development ?? null,
-            pack.you?.body ?? null,
-            JSON.stringify(pack),
-            pack.reviewedBy,
-            pack.reviewedAt,
-          ],
-        );
-        packs += 1;
-      }
-    }
+    const packs = withPacks ? await syncPacks(db, packList) : 0;
 
     const users: ReadonlyArray<[string, string, string, string]> = [
       [SEED.users.maya, "maya@example.com", "Maya Alvarez", "America/New_York"],

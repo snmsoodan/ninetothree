@@ -127,3 +127,34 @@ describe("PinList", () => {
     expect(screen.getByRole("button", { name: "Remind me" })).toBeInTheDocument();
   });
 });
+
+describe("PinList sharing", () => {
+  const one = [
+    { id: "a", title: "Book the glucose test", packTitle: "Week 28", packId: "pregnancy-w28" },
+  ];
+
+  it("shows no share control when there is nobody to share with", () => {
+    render(<PinList pins={one} />);
+    expect(
+      screen.queryByRole("button", { name: /Share with your household/ }),
+    ).not.toBeInTheDocument();
+  });
+
+  it("shares a pin and says so", async () => {
+    const onShare = vi.fn();
+    render(<PinList pins={one} onShare={onShare} />);
+
+    await userEvent.click(screen.getByRole("button", { name: "Share with your household" }));
+    expect(onShare).toHaveBeenCalledWith("a", true);
+  });
+
+  it("unshares a pin that is already shared", async () => {
+    const onShare = vi.fn();
+    render(<PinList pins={[{ ...one[0]!, shared: true }]} onShare={onShare} />);
+
+    const button = screen.getByRole("button", { name: "Shared with your household" });
+    expect(button).toHaveAttribute("aria-pressed", "true");
+    await userEvent.click(button);
+    expect(onShare).toHaveBeenCalledWith("a", false);
+  });
+});

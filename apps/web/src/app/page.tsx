@@ -14,6 +14,8 @@ import { ShareCard } from "@/components/ShareCard";
 import { WeekSummaryCard } from "@/components/WeekSummaryCard";
 import { QuietWeek } from "@/components/QuietWeek";
 import { datedAppointments } from "@/lib/appointments";
+import { useHousehold } from "@/lib/household";
+import { TogetherCard } from "@/components/TogetherCard";
 import { resolvePins } from "@/lib/pins";
 import { dueReminders, localDate, reminderKey, unseen } from "@/lib/reminders";
 import { syncNotices } from "@/lib/recalls";
@@ -40,7 +42,19 @@ export default function DashboardPage() {
     if (ready && !state.onboarded) router.replace("/onboarding");
   }, [ready, state.onboarded, router]);
 
-  const pins = useMemo<PinItem[]>(() => resolvePins(state.pins, PACKS), [state.pins]);
+  const { household, share } = useHousehold();
+  const sharedIds = useMemo(() => household?.sharedItemIds ?? [], [household]);
+  const people = household?.members.length ?? 0;
+  const together = people > 1;
+
+  const pins = useMemo<PinItem[]>(
+    () =>
+      resolvePins(state.pins, PACKS).map((pin) => ({
+        ...pin,
+        shared: sharedIds.includes(pin.id),
+      })),
+    [state.pins, sharedIds],
+  );
   const notices = useMemo(() => visibleNotices(state), [state]);
 
   // Reminders are about a date, so they are computed from the local calendar
@@ -122,7 +136,20 @@ export default function DashboardPage() {
           />
         )}
         <RecallList notices={notices} recalls={RECALLS} onDismiss={dismissNotice} />
-        <PinList pins={pins} onUnpin={removePin} onRemind={setPinReminder} />
+        <PinList
+          pins={pins}
+          onUnpin={removePin}
+          onRemind={setPinReminder}
+          onShare={
+            together
+              ? (id, shared) => {
+                  const pin = pins.find((candidate) => candidate.id === id);
+                  if (pin) void share(pin, shared);
+                }
+              : undefined
+          }
+        />
+        {together ? <TogetherCard people={people} /> : null}
         <AppointmentList appointments={pack.appointments} unit={pack.stageUnit} />
         <ShareCard stage={label} />
         <ProgressLine weeksDone={weeksDone} actionsDone={actionsDone} />

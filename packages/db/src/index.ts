@@ -13,3 +13,4 @@ export * from "./repo";
 export { hashInviteToken, INVITE_TTL_MS, mintInviteToken } from "./invites";
 export * from "./auth";
 export { createDb, type Database, type DbHandle } from "./client";
+export { syncPacks, type PackRow } from "./packs";

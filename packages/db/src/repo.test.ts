@@ -73,6 +73,39 @@ async function join(
   return { scope: await scopeFor(db, userId), userId, householdId };
 }
 
+/**
+ * Runs a query as an ordinary role, which is the only way to prove a policy is
+ * doing anything: PGlite connects as `postgres`, and a superuser bypasses RLS
+ * even with `force row level security`.
+ */
+async function asAppUser<T>(userId: string, fn: () => Promise<T>): Promise<T> {
+  await db.exec("begin");
+  try {
+    await db.query("select set_config('app.user_id', $1, true)", [userId]);
+    await db.exec("set local role app_user");
+    const result = await fn();
+    await db.exec("commit");
+    return result;
+  } catch (error) {
+    await db.exec("rollback");
+    throw error;
+  }
+}
+
+async function grantAppUser(): Promise<void> {
+  await db.exec(`
+    do $$
+    begin
+      if not exists (select 1 from pg_roles where rolname = 'app_user') then
+        create role app_user nologin;
+      end if;
+    end
+    $$;
+    grant usage on schema public to app_user;
+    grant select, insert, update, delete on all tables in schema public to app_user;
+  `);
+}
+
 describe("users", () => {
   it("reads the signed-in user and nobody else", async () => {
     const a = await seed("a@example.com", "A");
@@ -913,34 +946,6 @@ describe("row-level security", () => {
    * with `force row level security`. So the test creates an ordinary role and
    * switches to it. Production must do the same or the policies are decorative.
    */
-  async function asAppUser<T>(userId: string, fn: () => Promise<T>): Promise<T> {
-    await db.exec("begin");
-    try {
-      await db.query("select set_config('app.user_id', $1, true)", [userId]);
-      await db.exec("set local role app_user");
-      const result = await fn();
-      await db.exec("commit");
-      return result;
-    } catch (error) {
-      await db.exec("rollback");
-      throw error;
-    }
-  }
-
-  async function grantAppUser(): Promise<void> {
-    await db.exec(`
-      do $$
-      begin
-        if not exists (select 1 from pg_roles where rolname = 'app_user') then
-          create role app_user nologin;
-        end if;
-      end
-      $$;
-      grant usage on schema public to app_user;
-      grant select, insert, update, delete on all tables in schema public to app_user;
-    `);
-  }
-
   it("hides another household's pregnancy from an unscoped select", async () => {
     const a = await seed("a@example.com", "A");
     const b = await seed("b@example.com", "B");
@@ -1202,5 +1207,133 @@ describe("invites", () => {
     const priya = await seed("priya@example.com", "Priya's household");
 
     expect(await repo.listInvites(db, priya.scope)).toEqual([]);
+  });
+});
+
+describe("shared pins", () => {
+  it("shows a shared pin to the other person in the household", async () => {
+    const maya = await seed("maya@example.com", "Maya's household");
+    const sam = await join(maya.householdId, "sam@example.com", "partner");
+
+    await repo.shareItem(db, maya.scope, {
+      itemId: "pregnancy-w28-glucose-test",
+      title: "Book the glucose test",
+      packTitle: "Week 28",
+    });
+
+    const seen = await repo.listSharedItems(db, sam.scope);
+    expect(seen).toHaveLength(1);
+    expect(seen[0]!.title).toBe("Book the glucose test");
+    expect(seen[0]!.packTitle).toBe("Week 28");
+    expect(seen[0]!.sharedBy).toBe(maya.userId);
+  });
+
+  it("keeps a shared pin out of another household", async () => {
+    const maya = await seed("maya@example.com", "Maya's household");
+    const priya = await seed("priya@example.com", "Priya's household");
+
+    await repo.shareItem(db, maya.scope, { itemId: "a", title: "Book the glucose test" });
+
+    expect(await repo.listSharedItems(db, priya.scope)).toEqual([]);
+  });
+
+  it("has nowhere to put a note", async () => {
+    const { rows } = await db.query<{ column_name: string }>(
+      `select column_name from information_schema.columns where table_name = 'shared_items'`,
+    );
+    const columns = rows.map((r) => r.column_name);
+    expect(columns).not.toContain("note");
+    expect(columns).not.toContain("epds");
+    expect(columns).not.toContain("score");
+  });
+
+  it("does not let a partner read the private row a pin came from", async () => {
+    const maya = await seed("maya@example.com", "Maya's household");
+    const sam = await join(maya.householdId, "sam@example.com", "partner");
+    await seedPack("pregnancy-w28");
+
+    await repo.setItemState(db, maya.scope, {
+      itemId: "pregnancy-w28-glucose-test",
+      stagePackId: "pregnancy-w28",
+      state: "done",
+      note: "I am frightened of the drink.",
+      pinned: true,
+      title: "Book the glucose test",
+    });
+    await repo.shareItem(db, maya.scope, {
+      itemId: "pregnancy-w28-glucose-test",
+      title: "Book the glucose test",
+      stagePackId: "pregnancy-w28",
+    });
+
+    // The shared surface has the title and nothing else.
+    const shared = await repo.listSharedItems(db, sam.scope);
+    expect(shared[0]!.title).toBe("Book the glucose test");
+    expect(JSON.stringify(shared)).not.toContain("frightened");
+
+    // And the private row is invisible to them entirely.
+    expect(await repo.listItemState(db, sam.scope)).toEqual([]);
+  });
+
+  it("lets the other person unshare, and the sharer put it back", async () => {
+    const maya = await seed("maya@example.com", "Maya's household");
+    const sam = await join(maya.householdId, "sam@example.com", "partner");
+
+    await repo.shareItem(db, maya.scope, { itemId: "a", title: "Book the glucose test" });
+    expect(await repo.unshareItem(db, sam.scope, "a")).toBe(true);
+    expect(await repo.listSharedItems(db, maya.scope)).toEqual([]);
+
+    await repo.shareItem(db, maya.scope, { itemId: "a", title: "Book the glucose test" });
+    expect(await repo.listSharedItems(db, sam.scope)).toHaveLength(1);
+  });
+
+  it("says so when there was nothing to unshare", async () => {
+    const maya = await seed("maya@example.com", "Maya's household");
+    expect(await repo.unshareItem(db, maya.scope, "never-shared")).toBe(false);
+  });
+
+  it("updates the title rather than duplicating the pin", async () => {
+    const maya = await seed("maya@example.com", "Maya's household");
+
+    await repo.shareItem(db, maya.scope, { itemId: "a", title: "Book the test" });
+    await repo.shareItem(db, maya.scope, { itemId: "a", title: "Book the glucose test" });
+
+    const shared = await repo.listSharedItems(db, maya.scope);
+    expect(shared).toHaveLength(1);
+    expect(shared[0]!.title).toBe("Book the glucose test");
+  });
+
+  it("refuses to share into a household you are not in", async () => {
+    const maya = await seed("maya@example.com", "Maya's household");
+    const priya = await seed("priya@example.com", "Priya's household");
+    await grantAppUser();
+
+    // The repository's own `where` clause is not what stops this — the policy
+    // is. So the insert is attempted with the wrong household id on purpose.
+    await expect(
+      asAppUser(priya.userId, async () => {
+        await db.query(
+          `insert into shared_items (household_id, item_id, title, shared_by)
+           values ($1, 'a', 'Book the glucose test', $2)`,
+          [maya.householdId, priya.userId],
+        );
+      }),
+    ).rejects.toThrow(/row-level security/);
+  });
+
+  it("refuses to share under somebody else's name", async () => {
+    const maya = await seed("maya@example.com", "Maya's household");
+    const sam = await join(maya.householdId, "sam@example.com", "partner");
+    await grantAppUser();
+
+    await expect(
+      asAppUser(sam.userId, async () => {
+        await db.query(
+          `insert into shared_items (household_id, item_id, title, shared_by)
+           values ($1, 'a', 'Book the glucose test', $2)`,
+          [maya.householdId, maya.userId],
+        );
+      }),
+    ).rejects.toThrow(/row-level security/);
   });
 });
