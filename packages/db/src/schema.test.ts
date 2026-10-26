@@ -196,7 +196,10 @@ describe("the schema on disk", () => {
     expect(def("pregnancies_household_idx")).toContain("(household_id)");
     expect(def("children_household_idx")).toContain("(household_id)");
     expect(def("appointments_household_idx")).toContain("(household_id)");
-    expect(def("subscriptions_household_idx")).toContain("(household_id)");
+    // A household has one subscription, so this is a unique constraint rather
+    // than a plain index — the webhook upserts on it.
+    expect(def("subscriptions_household_key")).toContain("UNIQUE");
+    expect(def("subscriptions_household_key")).toContain("(household_id)");
     expect(def("reminders_remind_at_idx")).toContain("(remind_at)");
     expect(def("reminders_remind_at_idx")).toContain("WHERE (sent_at IS NULL)");
     expect(def("item_state_pinned_idx")).toContain("WHERE pinned");

@@ -96,6 +96,7 @@ describe("loadMigrations", () => {
       "0006_shared",
       "0007_jobs",
       "0008_deletion",
+      "0009_billing",
     ]);
     expect(migrations[0]?.up).toContain("create table users");
     expect(migrations[0]?.down).toContain("drop table if exists users");
@@ -137,6 +138,7 @@ describe("migrateUp", () => {
       "0006_shared",
       "0007_jobs",
       "0008_deletion",
+      "0009_billing",
     ]);
     expect(await tableNames(db)).toEqual(["_migrations", ...TABLES]);
   });
@@ -170,7 +172,8 @@ describe("migrateDown", () => {
   it("drops every table and leaves the ledger", async () => {
     const db = await fresh();
     await migrateUp(db);
-    expect(await migrateDown(db, undefined, 8)).toEqual([
+    expect(await migrateDown(db, undefined, 9)).toEqual([
+      "0009_billing",
       "0008_deletion",
       "0007_jobs",
       "0006_shared",
@@ -198,7 +201,7 @@ describe("migrateDown", () => {
     for (let pass = 0; pass < 2; pass += 1) {
       await migrateUp(db);
       expect(await tableNames(db)).toEqual(["_migrations", ...TABLES]);
-      await migrateDown(db, undefined, 8);
+      await migrateDown(db, undefined, 9);
       expect(await tableNames(db)).toEqual(["_migrations"]);
     }
   });
@@ -217,8 +220,8 @@ describe("migrateDown", () => {
   it("refuses to roll back more than was applied", async () => {
     const db = await fresh();
     await migrateUp(db);
-    await expect(migrateDown(db, undefined, 9)).rejects.toThrow(
-      "cannot roll back 9: only 8 applied",
+    await expect(migrateDown(db, undefined, 10)).rejects.toThrow(
+      "cannot roll back 10: only 9 applied",
     );
   });
 
@@ -260,6 +263,7 @@ describe("migrationStatus", () => {
         "0006_shared",
         "0007_jobs",
         "0008_deletion",
+        "0009_billing",
       ],
     });
     await migrateUp(db);
@@ -273,6 +277,7 @@ describe("migrationStatus", () => {
         "0006_shared",
         "0007_jobs",
         "0008_deletion",
+        "0009_billing",
       ],
       pending: [],
     });

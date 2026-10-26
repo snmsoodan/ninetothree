@@ -594,6 +594,45 @@ There is no legitimate memberless household in this app, because `createHousehol
 
 `deletion_requests_grace` is declared in `0008_deletion.up.sql` and again on the Drizzle table in `src/schema.ts`. `schema.test.ts` compares the live database against the Drizzle definitions and fails on drift, which is the only thing that keeps two descriptions of one schema honest.
 
+## Subscriptions and entitlements
+
+One row per household, written by the Stripe webhook and read by the billing route.
+
+| Column                   | Type          | Notes                                                        |
+| ------------------------ | ------------- | ------------------------------------------------------------ |
+| `id`                     | `uuid`        | primary key, `gen_random_uuid()`                             |
+| `household_id`           | `uuid`        | references `households`, cascade. **Unique** — see below     |
+| `stripe_customer_id`     | `text`        | unique, nullable until a checkout completes                  |
+| `stripe_subscription_id` | `text`        | unique, nullable                                             |
+| `plan`                   | `text`        | check `('free','plus','family','b2b')`                       |
+| `status`                 | `text`        | Stripe's own status string, not a check — Stripe adds values |
+| `current_period_end`     | `timestamptz` | nullable                                                     |
+| `created_at`             | `timestamptz` | default `now()`                                              |
+
+### A household has one subscription, so `household_id` is unique
+
+`0009_billing` drops `subscriptions_household_idx` and adds `subscriptions_household_key unique (household_id)`. The reason is not tidiness. `applyStripeEvent` writes with `on conflict (household_id) do update`, and Postgres refuses that against a plain index with `there is no unique or exclusion constraint matching the ON CONFLICT specification`. Nothing had ever written a second row, so nothing had noticed — but a webhook is the first thing that writes here without a `Scope` in hand, and **Stripe retries deliveries**. Two concurrent `checkout.session.completed` events would have produced two rows, and `getSubscription` orders by `created_at desc limit 1`, so it would have picked one at random.
+
+Cancelling and resubscribing updates the row rather than adding a second one. Stripe keeps the subscription history; there is no reason for a second copy of it here.
+
+### `status` is not a check constraint
+
+`plan` is checked because it is our vocabulary — four values, and an unrecognised one falls back to free in `entitlementsFor`. `status` is Stripe's vocabulary, and Stripe adds values to it. A check constraint here would turn a new Stripe status into a failed webhook, which is a worse outcome than storing a string we do not recognise and treating it as not entitled.
+
+### Entitlements are computed, not stored
+
+`entitlementsFor({ plan, status })` in `src/entitlements.ts` is a pure function of the row. It returns `{ plan, fullTimeline, pinLimit, partner, offline, print, safety }`. Nothing writes an entitlement to a column, so there is no way for a stored entitlement to disagree with the rules.
+
+- `ENTITLED_STATUSES` is `active`, `trialing` and `past_due`. **`past_due` is entitled on purpose** — Stripe retries a failed card for about two weeks, and taking a parent's current week away because a card expired is not something this product should do. `unpaid` is the end of that road and is not entitled.
+- `pinLimit` is `5` on free and `null` (no limit) on paid. `canPin(entitlements, pinnedCount)` is the only place the number is read.
+- `safety` is typed `readonly safety: true` on every plan. It is not a field anybody can turn off, which is what makes "never gate red flags" checkable rather than aspirational.
+
+### The webhook is unscoped, and that is the third exception
+
+`applyStripeEvent` takes no `Scope`. A webhook arrives with no session, so there is no scope to give it; it runs as the owner, like `purgeDeleted` and `accept_household_invite`. It is the only writer to this table that does not go through `upsertSubscription`.
+
+The route reads `await request.text()` and never `request.json()`, because the signature is HMAC-SHA256 over `${timestamp}.${rawBody}` and re-serialising a parsed object does not reproduce the bytes Stripe signed. A bad signature is a **400**, not a 401: Stripe retries a 5xx and gives up on a 4xx, and a forged delivery should not be retried.
+
 ## What is deliberately not here
 
 - **Soft delete on anything but `users`.** `users.deleted_at` exists because
