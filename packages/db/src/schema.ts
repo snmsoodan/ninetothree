@@ -68,6 +68,31 @@ export const householdMembers = pgTable(
   ],
 );
 
+export const householdInvites = pgTable(
+  "household_invites",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    householdId: uuid("household_id")
+      .notNull()
+      .references(() => households.id, { onDelete: "cascade" }),
+    role: text("role").notNull(),
+    tokenHash: text("token_hash").notNull().unique(),
+    createdBy: uuid("created_by").references(() => users.id, { onDelete: "set null" }),
+    expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+    usedAt: timestamp("used_at", { withTimezone: true }),
+    revokedAt: timestamp("revoked_at", { withTimezone: true }),
+    createdAt,
+  },
+  (t) => [
+    index("household_invites_household_idx").on(t.householdId),
+    index("household_invites_expires_idx").on(t.expiresAt),
+    check(
+      "household_invites_role_check",
+      sql`${t.role} in ('parent', 'partner', 'grandparent', 'carer')`,
+    ),
+  ],
+);
+
 export const pregnancies = pgTable(
   "pregnancies",
   {
@@ -449,6 +474,7 @@ export const TABLES = [
   users,
   households,
   householdMembers,
+  householdInvites,
   pregnancies,
   children,
   stagePacks,

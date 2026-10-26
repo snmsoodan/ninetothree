@@ -87,6 +87,7 @@ const STORIES = [
   "app-recalllist--one",
   "app-recalllist--several",
   "settings-householdcard--signed-out",
+  "settings-invitecard--signed-out",
   "settings-householdlist--alone",
   "settings-householdlist--with-partner",
   "settings-householdlist--partner-without-a-name",

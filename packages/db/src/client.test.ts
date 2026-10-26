@@ -32,6 +32,7 @@ describe("createDb", () => {
       "0002_rls",
       "0003_auth",
       "0004_household",
+      "0005_invites",
     ]);
   });
 

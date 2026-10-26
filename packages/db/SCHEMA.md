@@ -364,6 +364,62 @@ leaving your last household gives you a fresh one of your own rather than a 500.
 removing somebody else, which implies at least two parents. `setMemberRole`
 does have one, because a parent can demote themselves.
 
+## Invites
+
+`household_invites` is the one table whose rows are created by a member and
+consumed by a stranger.
+
+| Column         | Why                                                                              |
+| -------------- | -------------------------------------------------------------------------------- |
+| `id`           | The handle the settings page revokes by.                                         |
+| `household_id` | `on delete cascade`. A household that goes takes its invites.                    |
+| `role`         | Checked against the same four values as `household_members.role`.                |
+| `token_hash`   | `unique`. The SHA-256 of the token, never the token.                             |
+| `created_by`   | `on delete set null`, so removing a parent does not remove the invite they made. |
+| `expires_at`   | Seven days.                                                                      |
+| `used_at`      | Set by the accept function, in the same transaction that reads it.               |
+| `revoked_at`   | Set by a parent. Checked by the accept function.                                 |
+
+Two indexes: `household_id` for the settings list, and `expires_at` for pruning.
+
+### The policy
+
+`household_invites_household` is `for all` scoped to `app_household_ids()`. That
+means a member can see and revoke their household's invites, and nobody can read
+an invite by its token through this policy — holding the link is not the same as
+being in the household. The two functions below are how a stranger gets in.
+
+### `preview_household_invite(p_token_hash)`
+
+`security definer`, `stable`, returns `(household_name, inviter_name, role)` and
+no row at all for an invite that is expired, used or revoked. `inviter_name` is
+`coalesce(u.name, u.email)`, because a name is optional and "Someone invited you"
+is worse than an address.
+
+### `accept_household_invite(p_token_hash, p_user_id)`
+
+`security definer` plpgsql. It selects the invite `for update` — so two people
+racing the same link cannot both win — sets `used_at`, deletes the caller's other
+memberships and any household left empty, then inserts the new membership with
+`on conflict (household_id, user_id) do update set role`. It returns the
+household id, or NULL for a dead link.
+
+Joining means leaving because a person is in one household at a time:
+`scopeFor` picks the oldest membership, so a second one would silently do
+nothing.
+
+Both functions pin `set search_path = public, pg_temp` for the same reason
+`app_household_ids()` does. The owner requirement in "The deployment requirement
+this creates" applies to these two as well.
+
+### Why the hash has no secret
+
+`hashInviteToken` is a plain SHA-256, unlike the sign-in token, which is hashed
+with `AUTH_SECRET`. A sign-in token is derived from an email address and a
+timestamp, so a secret is what makes its hash unguessable. An invite token is 256
+random bits, so there is nothing to guess, and mixing in a secret would only mean
+that rotating it invalidates every outstanding invite.
+
 ## What is deliberately not here
 
 - **Soft delete on anything but `users`.** `users.deleted_at` exists because

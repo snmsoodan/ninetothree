@@ -1492,6 +1492,36 @@ Shared First Load JS is 102 kB. The largest client chunk is now 409,674 bytes, d
 
 **What this does not do.** There is no invite flow, so the two-member household is exercised by the database tests and the component tests but not end to end — issue #36 adds the signed single-use link. The partner view (what a partner is allowed to see, and what stays private) is #37. And the `security definer` owner requirement is documented but unverified, because this environment has no non-superuser production role to test against.
 
-## 46. How this file is maintained
+## 46. Invites (issue #36)
+
+**What it is.** A parent makes a link, sends it however they like, and one person can use it once to join the household. The link runs out after a week, and a parent can revoke it before then. The acceptance criteria are "expired/replayed link rejected" and "revoke is immediate", and both are tested at the database layer and end to end.
+
+**The token is never stored.** `mintInviteToken()` returns 32 random bytes as base64url; `hashInviteToken()` is what goes in the table. A copy of the database is therefore not a set of working invites. This is the same bargain a password reset makes, and it is why the settings card says "copy this now — it is the only copy" rather than offering to look the link up later. Losing it means revoking and making another, which costs nothing.
+
+**The hash has no secret mixed in, unlike the sign-in token.** That looks inconsistent and is deliberate. A sign-in token is derived from an email address and a timestamp, so a secret is what makes its hash unguessable. An invite token is 256 random bits, so there is nothing to guess; adding a secret would only mean that rotating `AUTH_SECRET` silently invalidates every outstanding invite. The reasoning is in a comment on the function so the next person does not "fix" it.
+
+**Accepting cannot run under the caller's policies.** The person holding the link is not a member yet, so `app_household_ids()` returns nothing and every row they need to read is invisible. `accept_household_invite(p_token_hash, p_user_id)` is therefore `security definer`, with `set search_path = public, pg_temp` pinned for the same reason as `app_household_ids()`: without it a caller could shadow `household_members` and have the function read it with the owner's privileges. It locks the invite row `for update`, so two people racing the same link cannot both win.
+
+**Joining means leaving.** A person is in one household at a time — `scopeFor` picks the oldest membership — so a second membership would silently do nothing. The accept function deletes the caller's other memberships and deletes any household left empty, then inserts the new one. The join page says this in plain words before the button: "If you are already in a household of your own, joining this one leaves it. If you were the only person there, it goes with you."
+
+**Revocation is immediate because there is nothing to invalidate.** The accept function checks `revoked_at` in the same transaction that consumes the token, so there is no cache, no token list and no window. The end-to-end test revokes a link and then opens it in a fresh session, and gets the same page a used link gets.
+
+**A dead link never says which kind of dead it is.** Expired, already used, revoked and never existed all render "This link has been used" with the same body, and the accept endpoint returns 404 for all four. Telling someone which one it was tells them something about a household they are not in.
+
+**The join page is a server component.** The answer is one read and there is nothing to interact with until the button, so there is no loading state to design and no spinner to avoid. It also means the page works with JavaScript off, which matters for a link someone opens on a phone they are not signed in on. Signed out, it offers `/signin?callbackUrl=/join/<token>` rather than a dead end; the sign-in page already reads `callbackUrl` from the query string, so no new seam was needed.
+
+**The link is shown once, in the browser, from the response.** `POST /api/household/invites` returns `{ url: "/join/<token>" }` and the card prefixes `window.location.origin`. The server never stores the token, so it cannot return it again — which is the point.
+
+**Only a parent can invite or revoke.** `createInvite` and `revokeInvite` throw `NotAllowedError` before any transaction opens, and the routes turn that into a 403. Without it a partner could invite a second account of their own and promote themselves.
+
+**One dead branch was deleted rather than tested.** `createInvite` had a second guard, `role === "parent" && scope.role !== "parent"`, which could never fire because the first guard already rejects a non-parent. Coverage found it; it is gone.
+
+**A test bug worth recording.** Two of the new repository tests called `repo.scopeFor(...)`. `scopeFor` is a named import from `./scope`, not a member of the `repo` namespace, so both failed with `TypeError: scopeFor is not a function` — a test error that looks like a product error. The fix was to call the imported function.
+
+**Verification.** **1,711 tests** (content 536, rules 121, ui 53, web 820, db 181), with 100% coverage on content, rules, ui and db. `pnpm format:check`, `pnpm lint`, `pnpm typecheck`, `pnpm content:validate`, `pnpm content:registry:check`, `pnpm build` and `pnpm bundle:check` are green. The end-to-end suite is **246 tests**: 140 across chromium and no-js, and 106 Storybook stories. Lighthouse audits nine URLs at 1.0 for accessibility, performance and `errors-in-console`.
+
+**What this does not do.** There is no rate limit on accepting a link. 256 bits of entropy makes guessing hopeless, so this is a note rather than a gap. Re-accepting an invite for a household you are already in changes your role, which is intentional — a parent can promote a partner — but is not exercised as a deliberate case. And the invite email is not sent by us: the parent copies the link and sends it themselves, which is honest about what a household invite is but is not what a "send an invite" button would do.
+
+## 47. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.
