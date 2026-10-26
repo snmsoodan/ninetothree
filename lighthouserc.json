@@ -13,7 +13,8 @@
         "http://localhost:3000/choose/m6-highchair",
         "http://localhost:3000/triage",
         "http://localhost:3000/print/week/pregnancy-w28",
-        "http://localhost:3000/print/checklist/hospital-bag"
+        "http://localhost:3000/print/checklist/hospital-bag",
+        "http://localhost:3000/together"
       ],
       "numberOfRuns": 1,
       "settings": {

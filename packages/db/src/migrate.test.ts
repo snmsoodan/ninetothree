@@ -31,6 +31,7 @@ const TABLES = [
   "pregnancies",
   "reminders",
   "sessions",
+  "shared_items",
   "stage_packs",
   "stage_progress",
   "subscriptions",
@@ -90,6 +91,7 @@ describe("loadMigrations", () => {
       "0003_auth",
       "0004_household",
       "0005_invites",
+      "0006_shared",
     ]);
     expect(migrations[0]?.up).toContain("create table users");
     expect(migrations[0]?.down).toContain("drop table if exists users");
@@ -128,6 +130,7 @@ describe("migrateUp", () => {
       "0003_auth",
       "0004_household",
       "0005_invites",
+      "0006_shared",
     ]);
     expect(await tableNames(db)).toEqual(["_migrations", ...TABLES]);
   });
@@ -161,7 +164,8 @@ describe("migrateDown", () => {
   it("drops every table and leaves the ledger", async () => {
     const db = await fresh();
     await migrateUp(db);
-    expect(await migrateDown(db, undefined, 5)).toEqual([
+    expect(await migrateDown(db, undefined, 6)).toEqual([
+      "0006_shared",
       "0005_invites",
       "0004_household",
       "0003_auth",
@@ -186,7 +190,7 @@ describe("migrateDown", () => {
     for (let pass = 0; pass < 2; pass += 1) {
       await migrateUp(db);
       expect(await tableNames(db)).toEqual(["_migrations", ...TABLES]);
-      await migrateDown(db, undefined, 5);
+      await migrateDown(db, undefined, 6);
       expect(await tableNames(db)).toEqual(["_migrations"]);
     }
   });
@@ -205,8 +209,8 @@ describe("migrateDown", () => {
   it("refuses to roll back more than was applied", async () => {
     const db = await fresh();
     await migrateUp(db);
-    await expect(migrateDown(db, undefined, 6)).rejects.toThrow(
-      "cannot roll back 6: only 5 applied",
+    await expect(migrateDown(db, undefined, 7)).rejects.toThrow(
+      "cannot roll back 7: only 6 applied",
     );
   });
 
@@ -239,11 +243,25 @@ describe("migrationStatus", () => {
     const db = await fresh();
     expect(await migrationStatus(db)).toEqual({
       applied: [],
-      pending: ["0001_init", "0002_rls", "0003_auth", "0004_household", "0005_invites"],
+      pending: [
+        "0001_init",
+        "0002_rls",
+        "0003_auth",
+        "0004_household",
+        "0005_invites",
+        "0006_shared",
+      ],
     });
     await migrateUp(db);
     expect(await migrationStatus(db)).toEqual({
-      applied: ["0001_init", "0002_rls", "0003_auth", "0004_household", "0005_invites"],
+      applied: [
+        "0001_init",
+        "0002_rls",
+        "0003_auth",
+        "0004_household",
+        "0005_invites",
+        "0006_shared",
+      ],
       pending: [],
     });
   });

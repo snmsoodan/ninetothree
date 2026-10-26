@@ -420,6 +420,61 @@ timestamp, so a secret is what makes its hash unguessable. An invite token is 25
 random bits, so there is nothing to guess, and mixing in a secret would only mean
 that rotating it invalidates every outstanding invite.
 
+## Shared pins
+
+`shared_items` is what one person in a household has chosen to show the others.
+
+| Column          | Type        | Notes                         |
+| --------------- | ----------- | ----------------------------- |
+| `household_id`  | uuid        | → `households`, cascade       |
+| `item_id`       | text        | the action's id from the pack |
+| `stage_pack_id` | text        | → `stage_packs`, **set null** |
+| `title`         | text        | the only content that travels |
+| `pack_title`    | text        | "Week 28", for context        |
+| `shared_by`     | uuid        | → `users`, cascade            |
+| `created_at`    | timestamptz |                               |
+
+Primary key `(household_id, item_id)`, so re-sharing updates the title rather
+than duplicating the row. One index on `household_id`.
+
+### There is no `note` column, and that is the design
+
+The obvious way to share a pin is a `shared` boolean on `item_state`. It is the
+wrong way. `item_state` is self-only by policy, so a partner cannot read another
+person's row — and that is exactly what keeps a note private. A flag would have
+meant widening the policy so a partner could read the row, and then the note is
+one forgotten `select` away from being visible.
+
+Sharing is therefore a **copy** into a table that has nowhere to put a note. "A
+partner cannot see your notes" is true because there is nowhere for a note to be,
+not because a query filters it. A test asserts the column list, so a migration
+that adds a `note` column fails a test rather than quietly widening what a
+partner can read.
+
+### The policy
+
+`shared_items_household` is `for all`:
+
+```sql
+using (household_id in (select app_household_ids()))
+with check (household_id in (select app_household_ids()) and shared_by = app_user_id())
+```
+
+The `with check` stops a partner forging `shared_by` and attributing a pin to
+somebody else. The `using` deliberately lets them delete a pin they did not
+share: it is a shared surface, and an owner-only unshare would leave a pin stuck
+on a partner's page forever.
+
+### `stage_packs` is synced by the app
+
+`shared_items.stage_pack_id` references `stage_packs`, and so do `item_state` and
+`stage_progress`. The table is not a cache — a pack that is not in it cannot be
+referenced — so the app calls `syncPacks(sql, PACKS)` from `getDb()` after the
+migrations run. Before that, `stage_packs` was empty in dev and in e2e and every
+share returned 500 on the foreign key. `syncPacks` takes the pack list as an
+argument rather than importing it, because `@ninetothree/content` is only a
+devDependency of this package; the seed calls the same function.
+
 ## What is deliberately not here
 
 - **Soft delete on anything but `users`.** `users.deleted_at` exists because

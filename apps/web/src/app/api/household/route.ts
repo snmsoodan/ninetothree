@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { listMemberDetails } from "@ninetothree/db";
+import { listMemberDetails, listSharedItems } from "@ninetothree/db";
 
 import { getDb } from "@/lib/auth/db";
 import { ensureScope } from "@/lib/auth/household";
@@ -20,7 +20,10 @@ export async function GET() {
 
   const { sql } = await getDb();
   const scope = await ensureScope(sql, userId);
-  const members = await listMemberDetails(sql, scope);
+  const [members, shared] = await Promise.all([
+    listMemberDetails(sql, scope),
+    listSharedItems(sql, scope),
+  ]);
 
   return NextResponse.json({
     id: scope.householdId,
@@ -32,5 +35,6 @@ export async function GET() {
       name: member.name,
       isYou: member.user_id === userId,
     })),
+    sharedItemIds: shared.map((item) => item.itemId),
   });
 }

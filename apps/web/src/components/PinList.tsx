@@ -14,6 +14,8 @@ export interface PinItem {
   stale?: boolean;
   /** ISO date, YYYY-MM-DD. The day the parent asked to be reminded. */
   remindOn?: string;
+  /** Whether this pin is on the household's shared list. */
+  shared?: boolean;
 }
 
 export interface PinListProps {
@@ -22,6 +24,8 @@ export interface PinListProps {
   max?: number;
   onUnpin?: (id: string) => void;
   onRemind?: (id: string, date?: string) => void;
+  /** Absent when the household has one person in it, so no control is shown. */
+  onShare?: (id: string, shared: boolean) => void;
 }
 
 export const PIN_LIMIT = 6;
@@ -99,7 +103,7 @@ function ReminderControl({ pin, onRemind }: ReminderControlProps) {
   );
 }
 
-export function PinList({ pins, max = PIN_LIMIT, onUnpin, onRemind }: PinListProps) {
+export function PinList({ pins, max = PIN_LIMIT, onUnpin, onRemind, onShare }: PinListProps) {
   const shown = pins.slice(0, max);
   const hidden = pins.length - shown.length;
 
@@ -156,6 +160,16 @@ export function PinList({ pins, max = PIN_LIMIT, onUnpin, onRemind }: PinListPro
                       {pin.stale ? "This step has changed since you pinned it." : pin.packTitle}
                     </p>
                     {onRemind ? <ReminderControl pin={pin} onRemind={onRemind} /> : null}
+                    {onShare ? (
+                      <button
+                        type="button"
+                        onClick={() => onShare(pin.id, !pin.shared)}
+                        aria-pressed={pin.shared === true}
+                        className="mt-1 rounded-sm text-sm text-ink-faint underline underline-offset-2 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-clay"
+                      >
+                        {pin.shared ? "Shared with your household" : "Share with your household"}
+                      </button>
+                    ) : null}
                   </div>
                   {onUnpin ? (
                     <button

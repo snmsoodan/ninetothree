@@ -972,3 +972,89 @@ export async function acceptInvite(
     return householdId ? { householdId } : undefined;
   });
 }
+
+/* -------------------------------------------------------------------------- */
+/* Shared pins                                                                */
+/* -------------------------------------------------------------------------- */
+
+export interface SharedItemRow {
+  itemId: string;
+  title: string;
+  packTitle: string | null;
+  stagePackId: string | null;
+  sharedBy: string;
+  createdAt: Date;
+}
+
+export interface ShareItemInput {
+  itemId: string;
+  title: string;
+  stagePackId?: string | null;
+  packTitle?: string | null;
+}
+
+/**
+ * Sharing is a copy, not a flag.
+ *
+ * The private row stays in `item_state`, which is self-only by policy. What
+ * lands here is the title and the week it came from — never the note, because
+ * this table has no column to put one in.
+ */
+export async function shareItem(db: SqlClient, scope: Scope, item: ShareItemInput): Promise<void> {
+  await asUser(db, scope.userId, async () => {
+    await db.query(
+      `insert into shared_items (household_id, item_id, stage_pack_id, title, pack_title, shared_by)
+       values ($1, $2, $3, $4, $5, $6)
+       on conflict (household_id, item_id) do update
+         set title = excluded.title,
+             pack_title = excluded.pack_title,
+             stage_pack_id = excluded.stage_pack_id`,
+      [
+        scope.householdId,
+        item.itemId,
+        item.stagePackId ?? null,
+        item.title,
+        item.packTitle ?? null,
+        scope.userId,
+      ],
+    );
+  });
+}
+
+/** Returns whether anything was there to remove. */
+export async function unshareItem(db: SqlClient, scope: Scope, itemId: string): Promise<boolean> {
+  return asUser(db, scope.userId, async () => {
+    const { rows } = await db.query<{ item_id: string }>(
+      "delete from shared_items where household_id = $1 and item_id = $2 returning item_id",
+      [scope.householdId, itemId],
+    );
+    return rows.length > 0;
+  });
+}
+
+export async function listSharedItems(db: SqlClient, scope: Scope): Promise<SharedItemRow[]> {
+  return asUser(db, scope.userId, async () => {
+    const { rows } = await db.query<{
+      item_id: string;
+      title: string;
+      pack_title: string | null;
+      stage_pack_id: string | null;
+      shared_by: string;
+      created_at: Date;
+    }>(
+      `select item_id, title, pack_title, stage_pack_id, shared_by, created_at
+         from shared_items
+        where household_id = $1
+        order by created_at desc, item_id`,
+      [scope.householdId],
+    );
+    return rows.map((r) => ({
+      itemId: r.item_id,
+      title: r.title,
+      packTitle: r.pack_title,
+      stagePackId: r.stage_pack_id,
+      sharedBy: r.shared_by,
+      createdAt: r.created_at,
+    }));
+  });
+}

@@ -1522,6 +1522,40 @@ Shared First Load JS is 102 kB. The largest client chunk is now 409,674 bytes, d
 
 **What this does not do.** There is no rate limit on accepting a link. 256 bits of entropy makes guessing hopeless, so this is a note rather than a gap. Re-accepting an invite for a household you are already in changes your role, which is intentional — a parent can promote a partner — but is not exercised as a deliberate case. And the invite email is not sent by us: the parent copies the link and sends it themselves, which is honest about what a household invite is but is not what a "send an invite" button would do.
 
-## 47. How this file is maintained
+## 47. The partner view (issue #37)
+
+**What the issue asked for.** "This week's 'how to help', shared pins, assigned jobs, appointments. **AC:** partner cannot see private notes or EPDS results."
+
+**The AC reading, written down.** Two of those four things did not exist to build on, so this section says what was built and why rather than implying the issue was met word for word.
+
+`StagePack` has no `partner` field. The schema is `baby`, `you: { body, mind }`, `coreActions`, `profileActions`, `alsoKnow`, `redFlags`, `appointments`, `sources`. So "how to help" is **derived**, not authored: the page shows the week's `you.body` and `you.mind` — what the person carrying it is going through — plus the `coreActions` whose `type` is `do`, `book` or `buy`. Those are the errands somebody else can actually take. A `know`, `watch` or `ask` action is not a job, so it is not on the list. This is a reading of the AC, not a content change, and if the copy should be authored per pack then the schema needs a `partner` field and 85 packs need writing.
+
+EPDS does not exist anywhere in the codebase. It is named in `TASKS.md`, `CONTENT_BLUEPRINT.md` and `PRODUCT_UX.md`, and there is no assessment table, no score column and no screen. So "a partner cannot see EPDS results" is satisfied **structurally** — there is nothing to see — rather than by a feature that hides them. The test that proves it asserts `shared_items` has no `note`, `epds` or `score` column at all.
+
+Assigned jobs (#38) is not built, so `/together` has no "assigned jobs" section. The page has a seam for it — the payload is a plain object and a `jobs` key would slot in — but nothing fills it yet.
+
+**Sharing is a copy, not a flag.** The obvious design is a `shared` boolean on `item_state`. It is the wrong one. `item_state` is self-only by policy, so a partner cannot read another person's row, and that is exactly what keeps a note private. A flag would have meant widening the policy to let a partner read the row — and then the note is one forgotten `select` away from being visible. Instead, sharing writes a row into `shared_items`, which **has no note column at all**. "A partner cannot see your notes" is true because there is nowhere for a note to be, not because a query filters it. The test asserts the column list, so a future migration that adds a `note` column fails a test rather than quietly widening what a partner can read.
+
+**The policy.** `shared_items_household` is `for all using (household_id in (select app_household_ids())) with check (household_id in (select app_household_ids()) and shared_by = app_user_id())`. The `with check` stops a partner forging `shared_by` and attributing a pin to somebody else. The `using` deliberately lets them delete a pin they did not share: it is a shared surface, and "unshare" being owner-only would mean a pin could be stuck on a partner's page forever. That is a decision, not an oversight.
+
+**The week summary is computed on the server.** The stage lives in `localStorage`, and `PACKS` is 409 kB, so the client cannot look the pack up without downloading the library — the problem issue #91 fixed. So `/together` reads the stage from `localStorage`, sends `?stage=<id>`, and the route looks the pack up server-side and returns four lines: `title`, `subtitle`, `body`, `mind` and `help`. The client never sees a pack.
+
+**`TogetherBody` is split out of `PartnerView`.** `PartnerView` fetches; `TogetherBody` renders. The split exists so a story can show a real two-person household without a database behind it, and it mirrors the `HouseholdList`/`HouseholdCard` split from #15. It also means the loaded state has unit tests that do not have to stub a network.
+
+**No sixth nav tab.** The nav has five tabs and five is already tight at 320px. `/together` is reached from a `TogetherCard` on the dashboard, which only renders when the household has more than one member — a card that says "share with nobody" is not a feature. The share control on each pin follows the same rule.
+
+**A 401 is not an error.** `useHousehold` resolves a 401 to `null` rather than throwing, because the dashboard works signed out and a person with no account simply has no household to share with. `PartnerView` goes further: it reads the session **before** making the request. The first version fetched first and interpreted a 401 as "signed out", which worked but logged `Failed to load resource: 401` to the console on a page that had nothing wrong with it — and Lighthouse's `errors-in-console` caught it on `/together`, the only URL in the audit that a signed-out visitor reaches. A request that is certain to be refused should not be made.
+
+**A nameless person.** A nameless _other_ person is shown by their address, because that is the only thing that distinguishes them. A nameless _you_ is shown as "You" with no address at all — it is your own address and adds nothing. A test found this rather than a decision: the first version rendered the address twice.
+
+**The `stage_packs` foreign key was a landmine.** `shared_items.stage_pack_id` references `stage_packs`, and `getDb()` ran `migrateUp` and nothing else — so `stage_packs` was **empty** in dev and in e2e, and every share returned 500 with `shared_items_stage_pack_id_fkey` violated. It was never hit before because `shared_items` is the first _server-side_ write that references the table: `item_state` and `stage_progress` carry the same foreign key, but the local-first store never writes them server-side. The fix is `syncPacks(db, packs)` in `packages/db/src/packs.ts`, called from `getDb()` after the migrations. It takes the pack list as an argument rather than importing `PACKS`, because `@ninetothree/content` is only a devDependency of `packages/db` — the same seam `SeedOptions.packList` uses. The seed now calls it too, so there is one upsert rather than two that can drift.
+
+This is worth stating plainly: a foreign key to a table nothing populates is not a schema error, it is a runtime error waiting for the first write. The e2e suite found it because it is the only test that exercises a real share against a real database.
+
+**Verification.** **1,761 tests** (content 536, rules 121, ui 53, web 861, db 190), with 100% coverage on content, rules, ui and db. `pnpm format:check`, `pnpm lint`, `pnpm typecheck`, `pnpm content:validate`, `pnpm content:registry:check`, `pnpm build` and `pnpm bundle:check` are green. The end-to-end suite is **263 tests**: 145 across chromium and no-js, and 118 Storybook stories. Lighthouse audits **ten** URLs at 1.0 for accessibility, performance and `errors-in-console`.
+
+**What this does not do.** A partner's own dashboard shows their own empty progress, not the parent's — the `TogetherCard` is the only way in, and that is a real gap worth its own issue. `shared_items` has no `updated_at`, so re-sharing a pin updates the title and leaves `created_at` alone, which means the list order does not change. `useHousehold` re-fetches after every share rather than updating optimistically, so a toggle costs a round trip. And the sync runs 85 upserts on every cold start, which is correct but is a boot-time cost that a version check would remove.
+
+## 48. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.

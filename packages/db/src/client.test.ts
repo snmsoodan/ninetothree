@@ -33,6 +33,7 @@ describe("createDb", () => {
       "0003_auth",
       "0004_household",
       "0005_invites",
+      "0006_shared",
     ]);
   });
 

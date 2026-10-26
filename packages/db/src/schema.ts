@@ -93,6 +93,34 @@ export const householdInvites = pgTable(
   ],
 );
 
+/**
+ * A pin that has been deliberately shared with the household.
+ *
+ * There is no `note` column, and that is the point: a private note lives in
+ * `item_state`, which is self-only by policy, so a partner cannot read it
+ * because there is nowhere for it to be read from.
+ */
+export const sharedItems = pgTable(
+  "shared_items",
+  {
+    householdId: uuid("household_id")
+      .notNull()
+      .references(() => households.id, { onDelete: "cascade" }),
+    itemId: text("item_id").notNull(),
+    stagePackId: text("stage_pack_id").references(() => stagePacks.id, { onDelete: "set null" }),
+    title: text("title").notNull(),
+    packTitle: text("pack_title"),
+    sharedBy: uuid("shared_by")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    createdAt,
+  },
+  (t) => [
+    primaryKey({ columns: [t.householdId, t.itemId] }),
+    index("shared_items_household_idx").on(t.householdId),
+  ],
+);
+
 export const pregnancies = pgTable(
   "pregnancies",
   {
@@ -475,6 +503,7 @@ export const TABLES = [
   households,
   householdMembers,
   householdInvites,
+  sharedItems,
   pregnancies,
   children,
   stagePacks,
