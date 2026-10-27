@@ -1,6 +1,17 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+
+/**
+ * The week rule is tested on its own in `lib/week-gate.test.ts`. Here it is a
+ * knob, so these tests are about what the page shows on either side of it.
+ */
+const gate = vi.hoisted(() => ({ gated: false }));
+
+vi.mock("@/lib/week-gate", () => ({
+  useWeekGate: () => gate.gated,
+}));
+
 import { WeekView } from "./WeekView";
 import { TEST_PACK } from "@/test-fixtures";
 import { __resetForTests, markDone, snooze, updateProfile } from "@/lib/store";
@@ -13,6 +24,7 @@ vi.mock("next/navigation", () => ({
 beforeEach(() => {
   window.localStorage.clear();
   __resetForTests();
+  gate.gated = false;
 });
 
 describe("WeekView", () => {
@@ -296,5 +308,35 @@ describe("WeekView", () => {
     expect(screen.queryByRole("heading", { name: "The 3 things" })).not.toBeInTheDocument();
     expect(screen.queryByText("The baby")).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Done" })).not.toBeInTheDocument();
+  });
+
+  it("holds back a week that is not the parent's own", () => {
+    gate.gated = true;
+    render(<WeekView pack={TEST_PACK} />);
+
+    expect(screen.getByText("This one is part of Plus.")).toBeInTheDocument();
+    expect(screen.getByText("Week 28 is not the week you are in.")).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "The 3 things" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Done" })).not.toBeInTheDocument();
+  });
+
+  it("keeps every red flag visible on a week it is holding back", () => {
+    gate.gated = true;
+    render(<WeekView pack={TEST_PACK} />);
+
+    // The one promise the paywall must not break: a parent who lands on a week
+    // they cannot read still needs to know what would be an emergency.
+    for (const flag of TEST_PACK.redFlags) {
+      expect(screen.getByText(flag.text)).toBeInTheDocument();
+    }
+  });
+
+  it("still names the week it is holding back", () => {
+    gate.gated = true;
+    render(<WeekView pack={TEST_PACK} />);
+
+    expect(
+      screen.getByRole("heading", { level: 1, name: TEST_PACK.subtitle! }),
+    ).toBeInTheDocument();
   });
 });

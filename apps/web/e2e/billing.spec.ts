@@ -1,8 +1,8 @@
-import { createHmac, randomUUID } from "node:crypto";
+import { randomUUID } from "node:crypto";
 
 import { expect, test, type Page } from "@playwright/test";
 
-const SECRET = "whsec_e2e_secret";
+import { signed } from "./helpers";
 
 function address() {
   return `maya+${randomUUID()}@example.com`;
@@ -32,12 +32,6 @@ async function signIn(page: Page, email: string) {
   ).json()) as { url: string };
   await page.goto(url);
   await page.waitForURL((u) => u.pathname === "/");
-}
-
-function signed(body: string, secret = SECRET): string {
-  const timestamp = Math.floor(Date.now() / 1000);
-  const signature = createHmac("sha256", secret).update(`${timestamp}.${body}`).digest("hex");
-  return `t=${timestamp},v1=${signature}`;
 }
 
 test.describe("billing", () => {

@@ -1,6 +1,29 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+
+/**
+ * The plan is a knob here, not a request. Every test in this file is about one
+ * step, and the only thing the plan changes is whether the sixth pin is
+ * allowed.
+ */
+const plan = vi.hoisted(() => ({ fullTimeline: false, known: true }));
+
+vi.mock("@/lib/entitlements", () => ({
+  useEntitlements: () => ({
+    entitlements: {
+      plan: plan.fullTimeline ? "plus" : "free",
+      fullTimeline: plan.fullTimeline,
+      pinLimit: plan.fullTimeline ? null : 5,
+      partner: plan.fullTimeline,
+      offline: plan.fullTimeline,
+      print: plan.fullTimeline,
+      safety: true,
+    },
+    known: plan.known,
+  }),
+}));
+
 import { ActionItem } from "./ActionItem";
 import { TEST_PACK } from "@/test-fixtures";
 import {
@@ -11,6 +34,7 @@ import {
   isPinned,
   isSkipped,
   isSnoozed,
+  togglePin,
 } from "@/lib/store";
 
 const glucose = TEST_PACK.coreActions[0]!;
@@ -19,7 +43,21 @@ const tdap = TEST_PACK.coreActions[1]!;
 beforeEach(() => {
   window.localStorage.clear();
   __resetForTests();
+  plan.fullTimeline = false;
+  plan.known = true;
 });
+
+/** Fills the free plan's five pins with things that are not the step under test. */
+function fillPins(count = 5) {
+  for (let index = 0; index < count; index += 1) {
+    togglePin({
+      id: `filler-${index}`,
+      title: `Filler ${index}`,
+      packId: "pregnancy-w28",
+      packTitle: "Week 28",
+    });
+  }
+}
 
 describe("ActionItem", () => {
   it("shows the title, the reason, and the time cost", () => {
@@ -215,6 +253,81 @@ describe("ActionItem", () => {
     expect(isPinned(getSnapshot(), glucose.id)).toBe(true);
     await user.click(screen.getByRole("button", { name: `Unpin ${glucose.title}` }));
     expect(isPinned(getSnapshot(), glucose.id)).toBe(false);
+  });
+
+  it("pins a fifth thing on the free plan", async () => {
+    const user = userEvent.setup();
+    fillPins(4);
+    render(
+      <ActionItem action={glucose} packId="pregnancy-w28" packTitle="Week 28" today="2027-01-07" />,
+    );
+
+    await user.click(screen.getByRole("button", { name: `Pin ${glucose.title}` }));
+
+    expect(isPinned(getSnapshot(), glucose.id)).toBe(true);
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
+  it("explains the free limit instead of pinning a sixth thing", async () => {
+    const user = userEvent.setup();
+    fillPins(5);
+    render(
+      <ActionItem action={glucose} packId="pregnancy-w28" packTitle="Week 28" today="2027-01-07" />,
+    );
+
+    await user.click(screen.getByRole("button", { name: `Pin ${glucose.title}` }));
+
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
+    expect(screen.getByText("Five pins is the free limit.")).toBeInTheDocument();
+    expect(isPinned(getSnapshot(), glucose.id)).toBe(false);
+    expect(getSnapshot().pins).toHaveLength(5);
+  });
+
+  it("still lets a parent unpin at the limit", async () => {
+    const user = userEvent.setup();
+    fillPins(4);
+    render(
+      <ActionItem action={glucose} packId="pregnancy-w28" packTitle="Week 28" today="2027-01-07" />,
+    );
+
+    // The fifth pin is allowed, which puts the household at the limit.
+    await user.click(screen.getByRole("button", { name: `Pin ${glucose.title}` }));
+    expect(getSnapshot().pins).toHaveLength(5);
+
+    // Taking one back is never blocked, or the limit would be a trap.
+    await user.click(screen.getByRole("button", { name: `Unpin ${glucose.title}` }));
+    expect(isPinned(getSnapshot(), glucose.id)).toBe(false);
+    expect(getSnapshot().pins).toHaveLength(4);
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
+  it("lets Plus hold as many pins as it likes", async () => {
+    const user = userEvent.setup();
+    plan.fullTimeline = true;
+    fillPins(5);
+    render(
+      <ActionItem action={glucose} packId="pregnancy-w28" packTitle="Week 28" today="2027-01-07" />,
+    );
+
+    await user.click(screen.getByRole("button", { name: `Pin ${glucose.title}` }));
+
+    expect(isPinned(getSnapshot(), glucose.id)).toBe(true);
+    expect(getSnapshot().pins).toHaveLength(6);
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
+  it("does not stop a pin while the plan is still loading", async () => {
+    const user = userEvent.setup();
+    plan.known = false;
+    fillPins(5);
+    render(
+      <ActionItem action={glucose} packId="pregnancy-w28" packTitle="Week 28" today="2027-01-07" />,
+    );
+
+    await user.click(screen.getByRole("button", { name: `Pin ${glucose.title}` }));
+
+    expect(isPinned(getSnapshot(), glucose.id)).toBe(true);
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
   it("asks why before skipping, and lets the parent back out", async () => {

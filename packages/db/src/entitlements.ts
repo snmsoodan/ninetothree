@@ -30,7 +30,7 @@ export interface Entitlements {
   safety: true;
 }
 
-const FREE: Entitlements = {
+export const FREE: Entitlements = {
   plan: "free",
   fullTimeline: false,
   pinLimit: 5,
@@ -40,7 +40,7 @@ const FREE: Entitlements = {
   safety: true,
 };
 
-const PAID: Omit<Entitlements, "plan"> = {
+export const PAID: Omit<Entitlements, "plan"> = {
   fullTimeline: true,
   pinLimit: null,
   partner: true,

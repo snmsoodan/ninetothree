@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { canPin, entitlementsFor, PLANS } from "./entitlements";
+import { canPin, entitlementsFor, FREE, PLANS } from "./entitlements";
 
 describe("entitlementsFor", () => {
   it("gives a household with no subscription the free plan", () => {
@@ -88,5 +88,14 @@ describe("canPin", () => {
     const plus = entitlementsFor({ plan: "plus", status: "active" });
     expect(canPin(plus, 0)).toBe(true);
     expect(canPin(plus, 5_000)).toBe(true);
+  });
+});
+
+describe("the free pin limit", () => {
+  it("is still five, because the dialog spells it out in words", () => {
+    // `ActionItem` says "Five pins is the free limit." rather than
+    // interpolating the number, so that the sentence reads like a sentence.
+    // This is the guard that keeps the copy and the constant together.
+    expect(FREE.pinLimit).toBe(5);
   });
 });
