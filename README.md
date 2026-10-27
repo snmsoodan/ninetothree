@@ -64,6 +64,7 @@ The gap is **decision fatigue and fragmentation**:
 | `TASKS.md`             | Epics → issues, ordered, with acceptance criteria and the 30-day plan                                                                                                                                        |
 | `RUNBOOK.md`           | **Internal.** Deploy, migrations, backups, deletion, sign-in failures, clinical corrections, recalls, and the known gaps                                                                                     |
 | `INCIDENT_PLAN.md`     | **Internal.** Severity, the first fifteen minutes, comms, breach notification, playbooks, postmortems                                                                                                        |
+| `EVIDENCE.md`          | **The record.** What each PR built, how it was verified, and the things it could not verify — one section per issue, never edited after the fact                                                             |
 
 **Read them in this order:** `README` → `UX_CRAFT` → `CONTENT_BLUEPRINT` → `CONTENT_LIBRARY` → `PRODUCT_UX` → `ARCHITECTURE` → `TASKS`. The feeling comes before the features, because a calm product is not a feature list.
 

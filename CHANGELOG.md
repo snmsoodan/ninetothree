@@ -9,6 +9,23 @@ changelog written after the fact from memory is a changelog nobody can trust.
 
 ## Unreleased
 
+### One command that proves the whole thing (#53)
+
+- **`pnpm evidence` runs eleven checks and writes down what happened.** Prettier,
+  ESLint, `tsc`, Vitest with coverage floors, pack validation, both generated-artifact
+  checks, the build, the bundle budget, Storybook and the full Playwright suite — each
+  row with its exit code, its wall time and the tail of its output on failure, in
+  `evidence/summary.md`. Nothing is summarised into the word "passed".
+- **The two slow checks are opt-in and named.** `--links` and `--lighthouse` are
+  minutes long, so the pack's "Not run" section names each one and the flag that turns
+  it on rather than letting silence read as a pass.
+- **Cached rows say so.** Turbo replays an identical earlier run, which is real for this
+  commit but was not produced just now, so those rows read `pass (cached)`.
+- **Eleven screenshots, taken by a test.** Onboarding through `/today`, the week card,
+  the library, safety, triage, print and offline at 390×844, plus 320×640 with a
+  no-sideways-scroll assertion. Skipped unless `EVIDENCE=1`; `evidence/` is gitignored
+  and attached to the release pull request, because a committed screenshot rots.
+
 ### The policies, and the sentence that is not true yet (#52)
 
 - **Four pages are published and reachable from every screen.** `/privacy`, `/terms`,
@@ -26,9 +43,11 @@ changelog written after the fact from memory is a changelog nobody can trust.
 - **`/corrections` is empty, on purpose.** The four correction windows are published
   (could-hurt: same day; clinical fact: two weeks; broken link: two weeks; typo: next
   release) and the log says "Nothing yet." instead of showing an invented example.
-- **The footer is inside `<main>` and above the tab bar.** `AppShell` grew a
-  `showFooter` prop, off on `/safety` and `/triage` where its one sentence links to the
-  page you are on. It does not print.
+- **The footer is outside `<main>` and above the tab bar.** A `<footer>` nested in
+  `main` is not a `contentinfo` landmark, and two specs that count list items inside
+  `main` started matching the policy links — so `AppShell` wraps `main` and the footer
+  in a `div` that carries the tab-bar clearance. `showFooter` is off on `/safety` and
+  `/triage`, where its one sentence links to the page you are on. It does not print.
 - **`RUNBOOK.md` and `INCIDENT_PLAN.md`.** What to do at 3am, what runs where, deploy
   and rollback, migrations, backups and restore, deleting an account by hand, a
   clinical error, a recall; and separately severity, roles, the first fifteen minutes,

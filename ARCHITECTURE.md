@@ -78,6 +78,7 @@ ninetothree/
 │   ├── rules/               # personalisation engine
 │   ├── email/               # React Email templates
 │   └── config/              # eslint, tsconfig, tailwind preset
+├── scripts/                 # link check, bundle budget, evidence pack
 ├── docs/
 │   ├── ARCHITECTURE.md
 │   ├── CONTENT.md
@@ -631,6 +632,8 @@ What is locale data, not code: units, spelling, emergency numbers, benefit progr
 | Performance    | Lighthouse CI                    | Budgets enforced                                   |
 
 **Definition of done for every PR:** lint, typecheck, unit, component, E2E, a11y, build, link check, content validate, screenshots, changelog. No exceptions.
+
+**The definition of done is executable.** `pnpm evidence` (`scripts/evidence.mjs`) runs every check above that does not need a network, records each one's exit code, wall time and failure output into `evidence/summary.md` and `evidence/checks.json`, and fails when the screenshot directory is empty. `--links` and `--lighthouse` add the two slow checks; when they are not asked for, the pack names them as not run, because a silent omission reads as a pass. Screenshots come from `apps/web/e2e/evidence.spec.ts`, which is skipped unless `EVIDENCE=1`, so a normal end-to-end run never writes into the repository. `evidence/` is gitignored and attached to the release pull request: a file in a repository rots into a claim about a build that no longer exists.
 
 ---
 
