@@ -92,7 +92,7 @@ export function WeekView({
       <div className="measure">
         <header>
           <Link
-            href="/"
+            href="/today"
             className="text-sm text-ink-muted underline underline-offset-2 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-clay"
           >
             Back to this week

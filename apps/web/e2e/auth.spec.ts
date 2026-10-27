@@ -23,7 +23,7 @@ async function onboard(page: Page) {
     await page.getByRole("button", { name: "Continue" }).click();
   }
   await page.getByRole("button", { name: "Show me" }).click();
-  await expect(page).toHaveURL(/\/$/);
+  await expect(page).toHaveURL(/\/today$/);
 }
 
 async function csrf(page: Page) {
@@ -50,7 +50,7 @@ async function requestLink(page: Page, email: string, expire = false) {
 /** The callback redirects to `/`, on whichever host the server was reached by. */
 async function follow(page: Page, url: string) {
   await page.goto(url);
-  await page.waitForURL((u) => u.pathname === "/");
+  await page.waitForURL((u) => u.pathname === "/today");
 }
 
 async function signIn(page: Page, email: string) {
@@ -89,7 +89,7 @@ test.describe("signing in", () => {
 
     await expect(page.getByText(`Signed in as ${email}`)).toBeVisible();
     await page.getByRole("button", { name: "Sign out" }).click();
-    await page.waitForURL((u) => u.pathname === "/");
+    await page.waitForURL((u) => u.pathname === "/today");
 
     const session = await page.request.get("/api/auth/session");
     expect(await session.json()).toBeNull();

@@ -2,13 +2,14 @@ import { randomUUID } from "node:crypto";
 
 import { expect, test, type Page } from "@playwright/test";
 
-import { upgrade } from "./helpers";
+import { forgetEverything, upgrade } from "./helpers";
 
 function address() {
   return `maya+${randomUUID()}@example.com`;
 }
 
 async function onboard(page: Page) {
+  await forgetEverything(page);
   await page.goto("/onboarding");
   await page.getByRole("button", { name: /I am pregnant/ }).click();
   await page.getByRole("button", { name: /assume I am 28 weeks/ }).click();
@@ -16,7 +17,7 @@ async function onboard(page: Page) {
     await page.getByRole("button", { name: "Continue" }).click();
   }
   await page.getByRole("button", { name: "Show me" }).click();
-  await expect(page).toHaveURL(/\/$/);
+  await expect(page).toHaveURL(/\/today$/);
 }
 
 async function signIn(page: Page, email: string) {
@@ -31,7 +32,7 @@ async function signIn(page: Page, email: string) {
     await page.request.get(`/api/auth/dev/link?email=${encodeURIComponent(email)}`)
   ).json()) as { url: string };
   await page.goto(url);
-  await page.waitForURL((u) => u.pathname === "/");
+  await page.waitForURL((u) => u.pathname === "/today");
 }
 
 async function signOut(page: Page) {
@@ -68,7 +69,7 @@ async function twoPeople(page: Page): Promise<{ first: string; second: string }>
   await signIn(page, second);
   await page.goto(path);
   await page.getByRole("button", { name: "Join" }).click();
-  await expect(page).toHaveURL(/\/$/);
+  await expect(page).toHaveURL(/\/today$/);
 
   await signOut(page);
   await signIn(page, first);
@@ -130,7 +131,7 @@ test.describe("assigned jobs", () => {
 
     await signOut(page);
     await signIn(page, second);
-    await page.goto("/");
+    await page.goto("/today");
     await expect(page.getByRole("heading", { name: "One thing for you" })).toBeVisible();
   });
 
@@ -160,7 +161,7 @@ test.describe("assigned jobs", () => {
   });
 
   test("the endpoint refuses a signed-out caller", async ({ page }) => {
-    await page.goto("/");
+    await page.goto("/today");
     const response = await page.request.post("/api/household/jobs", {
       data: { itemId: "a", title: "Book the glucose test", assignedTo: "nobody" },
     });

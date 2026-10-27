@@ -28,7 +28,7 @@ describe("JoinButton", () => {
 
     await userEvent.click(screen.getByRole("button", { name: "Join this household" }));
 
-    await waitFor(() => expect(router.push).toHaveBeenCalledWith("/"));
+    await waitFor(() => expect(router.push).toHaveBeenCalledWith("/today"));
     expect(router.refresh).toHaveBeenCalled();
     expect(fetchMock).toHaveBeenCalledWith("/api/household/invites/accept", {
       method: "POST",

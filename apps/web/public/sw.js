@@ -31,7 +31,9 @@ const CACHE = "ntt-v1";
  * the shell is the same HTML for all of them.
  */
 const PRECACHE = [
-  "/",
+  // `/today`, not `/`: the root URL is a server redirect, and a cached 307 is
+  // not a page. The dashboard is the screen a parent opens with no signal.
+  "/today",
   "/week",
   "/safety",
   "/triage",

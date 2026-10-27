@@ -9,6 +9,64 @@ changelog written after the fact from memory is a changelog nobody can trust.
 
 ## Unreleased
 
+### The root URL is a signpost (#105)
+
+- **`/` is a server redirect now, not the dashboard.** It was both the front door and
+  the doorman: the redirect to `/onboarding` lived in a `useEffect`, so a first visit
+  downloaded the dashboard's whole chunk graph in order to be told it did not need it,
+  then downloaded onboarding's. `h1#q1` painted at **5,361 ms** on a phone. Now the
+  page reads one cookie and calls `redirect()` before any JavaScript — 183 bytes of
+  its own module, the shared baseline and nothing else.
+- **The dashboard moved to `/today`, unchanged.** `app/page.tsx`'s contents became
+  `components/Dashboard.tsx`; `/today` is a server wrapper that only sets the title.
+  Every in-app link that pointed at `/` — the "This week" tab, the logo, `JoinButton`,
+  the week view's back link, the completion screen, the print checklist — points at
+  `/today` directly, so a tap is one client navigation, not a hop through a redirect.
+- **The one bit the server needs is a cookie.** `ntt_onboarded` is `"1"` or `"0"` with
+  a one-year max-age, rewritten by `persist()` on every state write, in its own `try`
+  so a full localStorage still updates it. localStorage stays the source of truth; the
+  cookie is a routing hint that cannot drift by more than one page load, and it holds
+  nothing that identifies a parent.
+- **A missing cookie means onboarding, so `OnboardingFlow` gained a guard.** Clearing
+  cookies alone would otherwise re-ask all four questions of a returning parent; the
+  flow now bounces them to `/today` once hydrated.
+- **The cookie constant could not live in `store.ts`.** Importing it into a server
+  component pulled the whole local-first data layer into `/`'s client bundle — 2,555
+  gzipped bytes. A two-constant module dropped the page module to 183 bytes.
+- **A conditional hook cost 33 tests and gave a misleading error.** `useHydrated() &&
+useAppState().onboarded` broke `useSyncExternalStore` with "final argument changed
+  size between renders". Destructuring both hooks unconditionally fixed lint and every
+  test.
+- **Lighthouse cannot measure a redirected URL, so the guard is a bundle check.**
+  Adding `/` to the phone gate merged its runs into `/onboarding` and produced a
+  meaningless 2,018 ms median from six runs of two different journeys. `pnpm
+bundle:check` now holds `/page`'s own module to **1,000 bytes gzipped** — it prints
+  183 and fails the build if the page ever starts rendering again.
+- **The service worker precaches `/today` instead of `/`,** because a cached 307 is not
+  a page. The sign-in and invite pages keep `href="/"`: the person reading them may not
+  be onboarded, and the signpost is the right target for a stranger.
+- **The change uncovered a cross-origin bug the old assertions had been hiding.** The
+  first full end-to-end run was red in ~35 places, all of them a sign-in that landed on
+  `localhost:3000/onboarding`. Auth.js resolves the relative `callbackUrl` that
+  `api/auth/dev/link` returns against its own base URL — `http://localhost:3000` with
+  `AUTH_URL` unset — while the suite ran on `127.0.0.1:3000`, so the browser crossed
+  hosts and arrived with no cookies. It was invisible before because the old specs
+  waited for `pathname === "/"`, which matched the dashboard on the _other_ host before
+  its client-side bounce, while `page.request` carried the cookie and did the real
+  work. `baseURL`, the webServer URL and `AUTH_URL` are now the same origin, and
+  `.env.example` documents `AUTH_URL` because an unset one behind a proxy is a
+  production footgun too.
+- **Two harness defects fixed while getting to green.** `helpers.ts` gained
+  `forgetEverything()`, because specs that onboard a second person in the same browser
+  were being correctly bounced from `/onboarding` to `/today` by the new guard while
+  localStorage still remembered the first one. `offline.spec.ts` gained
+  `waitForThisPageCached()`, which waits for the current document _and every script it
+  loads_ to be in the service-worker cache before going offline — otherwise the test
+  could pull the plug between a chunk's fetch and its `cache.put` and then report the
+  resulting chunkless page as "a client-side exception has occurred".
+- Two end-to-end tests assert the signpost itself, including one with JavaScript
+  disabled — the point of a server redirect is that it does not need a script.
+
 ### The phone budget, and the number that was lying (#45)
 
 - **Lighthouse's `simulate` throttling was overstating LCP, and the site was mostly

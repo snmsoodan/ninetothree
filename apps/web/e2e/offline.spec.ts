@@ -20,7 +20,7 @@ async function onboard(page: Page) {
     await page.getByRole("button", { name: "Continue" }).click();
   }
   await page.getByRole("button", { name: "Show me" }).click();
-  await expect(page).toHaveURL(/\/$/);
+  await expect(page).toHaveURL(/\/today$/);
 }
 
 /**
@@ -46,6 +46,48 @@ async function waitForPrecache(page: Page) {
     .toBe(true);
 }
 
+/**
+ * Waits until the page in front of us is genuinely on the device: the
+ * document, and every script it loads.
+ *
+ * The worker caches as it goes, so pulling the plug the instant the HTML
+ * arrives can land between a chunk's fetch and its `cache.put`. The page then
+ * opens offline without that chunk and React throws — "a client-side
+ * exception has occurred" — which looks like a bug in the app rather than a
+ * race in the test. So the test waits for the copy it is about to use.
+ */
+async function waitForThisPageCached(page: Page) {
+  const wanted = await page.evaluate(() => [
+    window.location.pathname,
+    // `nomodule` scripts are never fetched by a browser this modern, so they
+    // are never cached — and are never needed offline either.
+    ...Array.from(document.querySelectorAll("script[src]"), (script) =>
+      (script as HTMLScriptElement).noModule
+        ? ""
+        : new URL((script as HTMLScriptElement).src).pathname,
+    ).filter(Boolean),
+  ]);
+
+  await expect
+    .poll(
+      () =>
+        page.evaluate(async (paths) => {
+          const names = await caches.keys();
+          if (names.length === 0) return [];
+          const cached = new Set<string>();
+          for (const name of names) {
+            const cache = await caches.open(name);
+            for (const request of await cache.keys()) {
+              cached.add(new URL(request.url).pathname);
+            }
+          }
+          return paths.filter((path) => !cached.has(path));
+        }, wanted),
+      { timeout: 30_000, intervals: [200, 500, 1000] },
+    )
+    .toEqual([]);
+}
+
 test("the manifest is served, parses, and names the app", async ({ page, request }) => {
   const response = await request.get("/manifest.webmanifest");
   expect(response.status()).toBe(200);
@@ -68,8 +110,11 @@ test("the manifest is served, parses, and names the app", async ({ page, request
   );
 });
 
-test("the service worker registers and takes control", async ({ page }) => {
+test("the service worker registers and takes control", async ({ page, baseURL }) => {
   await page.goto("/onboarding");
+  /* Not `waitForThisPageCached`: this is the very first load, so the worker is
+     not in charge of it yet and its chunks were fetched before there was a
+     worker to cache them. Nothing here goes offline. */
   await waitForPrecache(page);
 
   const controlled = await page.evaluate(async () => {
@@ -77,7 +122,8 @@ test("the service worker registers and takes control", async ({ page }) => {
     return { active: Boolean(registration?.active), scope: registration?.scope };
   });
   expect(controlled.active).toBe(true);
-  expect(controlled.scope).toContain("127.0.0.1:3000");
+  /* The scope is the origin the suite is served from — read it, don't hard-code it. */
+  expect(controlled.scope).toContain(new URL(baseURL!).host);
 });
 
 test("with no signal, the safety page still opens and still has the numbers", async ({
@@ -87,6 +133,7 @@ test("with no signal, the safety page still opens and still has the numbers", as
   await onboard(page);
   await page.goto("/safety");
   await waitForPrecache(page);
+  await waitForThisPageCached(page);
 
   await context.setOffline(true);
   await page.goto("/safety");
@@ -106,6 +153,7 @@ test("with no signal, the triage tree still walks to an answer", async ({ page, 
   await onboard(page);
   await page.goto("/triage");
   await waitForPrecache(page);
+  await waitForThisPageCached(page);
 
   await context.setOffline(true);
   await page.goto("/triage");
@@ -123,6 +171,7 @@ test("with no signal, the week a parent is on still opens", async ({ page, conte
   await onboard(page);
   await page.goto("/week");
   await waitForPrecache(page);
+  await waitForThisPageCached(page);
 
   await context.setOffline(true);
   await page.goto("/week");
@@ -140,6 +189,7 @@ test("a page that was never saved says so instead of showing the browser's error
   await onboard(page);
   await page.goto("/safety");
   await waitForPrecache(page);
+  await waitForThisPageCached(page);
 
   await context.setOffline(true);
   await page.goto("/read/glucose-test");
@@ -166,6 +216,7 @@ test("the offline note has no violations on the safety page", async ({ page, con
   await onboard(page);
   await page.goto("/safety");
   await waitForPrecache(page);
+  await waitForThisPageCached(page);
 
   await context.setOffline(true);
   await page.goto("/safety");

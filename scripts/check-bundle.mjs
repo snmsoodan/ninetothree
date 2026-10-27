@@ -142,6 +142,41 @@ for (const [route, budget] of ROUTE_BUDGETS) {
   }
 }
 
+/**
+ * Routes that must ship no client JavaScript of their own.
+ *
+ * `/` is a server redirect. It was the dashboard once, and because the
+ * redirect could not run until the dashboard had hydrated, a first visit paid
+ * for the dashboard's whole chunk graph before it could be sent to onboarding:
+ * 5.3 seconds on a throttled phone. The fix is only durable if the route
+ * cannot quietly become a page again, so this fails the build if `/` grows a
+ * client chunk of its own.
+ */
+const SIGNPOST_ROUTES = ["/page"];
+const SIGNPOST_BUDGET = 1_000;
+
+for (const route of SIGNPOST_ROUTES) {
+  // The route's own module is the `app/<name>-<hash>.js` entry. Everything
+  // else in its manifest is the App Router baseline that every route loads,
+  // so measuring it would only measure Next.
+  const own = routeOwnChunks(route).filter((file) => /\/app\/[^/]+-.*\.js$/.test(file));
+  let gzip = 0;
+  for (const file of own) {
+    try {
+      gzip += gzipSync(readFileSync(join(NEXT_DIR, file)), { level: 9 }).length;
+    } catch {
+      // Same reasoning as the other passes.
+    }
+  }
+  if (gzip > SIGNPOST_BUDGET) {
+    routeFailures += 1;
+    console.error(`  ${route} ships ${gzip} gzipped bytes of its own page module.`);
+    console.error("  It is a signpost: it should redirect on the server, not render.");
+  } else {
+    console.log(`  ${route} page module is ${gzip} gzipped bytes (ok, it is a signpost).`);
+  }
+}
+
 if (routeFailures > 0) {
   console.error("");
   console.error("A route over its budget is a route a parent waits for on 4G.");

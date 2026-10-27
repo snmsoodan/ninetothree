@@ -9,6 +9,8 @@ import {
   completeOnboarding,
   readDraft,
   saveDraft,
+  useAppState,
+  useHydrated,
   type OnboardingStep,
 } from "@/lib/store";
 import { countryName, detectCountry, isCovered } from "@/lib/country";
@@ -94,6 +96,17 @@ export function OnboardingFlow() {
     setLoaded(true);
   }, []);
 
+  // `/` sends anyone without the routing cookie here, and that includes a
+  // returning parent whose cookie jar was cleared. Their answers are still in
+  // storage, so the flow hands them straight back to the dashboard rather than
+  // asking the four questions again.
+  const hydrated = useHydrated();
+  const { onboarded: alreadyOnboarded } = useAppState();
+  const onboarded = hydrated && alreadyOnboarded;
+  useEffect(() => {
+    if (onboarded) router.replace("/today");
+  }, [onboarded, router]);
+
   useEffect(() => {
     if (!loaded) return;
     saveDraft({
@@ -127,7 +140,7 @@ export function OnboardingFlow() {
       ...(status === "pregnant" ? { dueDate: date } : { birthDate: date }),
       profile,
     });
-    router.push("/");
+    router.push("/today");
   }
 
   const position = ONBOARDING_STEPS.indexOf(step);

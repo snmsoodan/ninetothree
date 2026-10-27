@@ -14,7 +14,7 @@ async function onboard(page: Page) {
     await page.getByRole("button", { name: "Continue" }).click();
   }
   await page.getByRole("button", { name: "Show me" }).click();
-  await expect(page).toHaveURL(/\/$/);
+  await expect(page).toHaveURL(/\/today$/);
 }
 
 async function signIn(page: Page, email: string) {
@@ -29,7 +29,7 @@ async function signIn(page: Page, email: string) {
     await page.request.get(`/api/auth/dev/link?email=${encodeURIComponent(email)}`)
   ).json()) as { url: string };
   await page.goto(url);
-  await page.waitForURL((u) => u.pathname === "/");
+  await page.waitForURL((u) => u.pathname === "/today");
 }
 
 test.describe("the household", () => {

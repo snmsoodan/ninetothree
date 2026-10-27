@@ -8,7 +8,7 @@ export default defineConfig({
   workers: process.env.CI ? 2 : undefined,
   reporter: process.env.CI ? [["github"], ["html", { open: "never" }]] : [["list"]],
   use: {
-    baseURL: "http://127.0.0.1:3000",
+    baseURL: "http://localhost:3000",
     trace: "on-first-retry",
   },
   projects: [
@@ -34,13 +34,24 @@ export default defineConfig({
   webServer: [
     {
       command: "pnpm build && pnpm start --port 3000",
-      url: "http://127.0.0.1:3000",
+      url: "http://localhost:3000",
       reuseExistingServer: !process.env.CI,
       timeout: 180_000,
       env: {
         // A fixed secret so a session cookie survives a restart mid-run. It is
         // a test value and is not a secret anywhere else.
         AUTH_SECRET: "e2e-not-a-secret-0000000000000000",
+        // `baseURL` and this must be the same origin. Auth.js resolves a
+        // relative callback URL against `AUTH_URL`, and when it is unset the
+        // redirect lands on `http://localhost:3000` — a *different host* from
+        // `127.0.0.1`, where the suite's cookies live. Every magic-link sign-in
+        // then arrived with no session cookie and no `ntt_onboarded` cookie, so
+        // `/` sent a freshly signed-in parent back to onboarding. It went
+        // unnoticed while `/` was the dashboard: `waitForURL(pathname === "/")`
+        // matched the redirect target before the client-side bounce, so the
+        // suite kept talking to the API on one host while the page sat on
+        // another. One origin, named twice, so the two cannot drift.
+        AUTH_URL: "http://localhost:3000",
         // Opens /api/auth/dev/link, which is how the suite gets a real magic
         // link without an inbox. Unset everywhere else.
         AUTH_TEST_MODE: "1",

@@ -25,7 +25,7 @@ export function JoinButton({ token }: { token: string }) {
       body: JSON.stringify({ token }),
     });
     if (response.ok) {
-      router.push("/");
+      router.push("/today");
       router.refresh();
       return;
     }
