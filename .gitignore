@@ -21,3 +21,6 @@ storybook-static/
 
 # TypeScript incremental build cache
 *.tsbuildinfo
+
+# The evidence pack: generated, attached to a release PR, never committed
+evidence/
