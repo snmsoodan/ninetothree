@@ -54,7 +54,7 @@ describe("WeekCompletion", () => {
     expect(screen.getByText("That’s this week.")).toBeInTheDocument();
     expect(screen.getByText("Nothing else to do until Monday.")).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Look ahead" })).toHaveAttribute("href", "/week/next");
-    expect(screen.getByRole("link", { name: "Go to dashboard" })).toHaveAttribute("href", "/");
+    expect(screen.getByRole("link", { name: "Go to dashboard" })).toHaveAttribute("href", "/today");
   });
 
   it("offers no look ahead on the last week of the guide", () => {

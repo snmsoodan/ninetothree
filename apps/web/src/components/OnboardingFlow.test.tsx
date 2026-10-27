@@ -194,7 +194,7 @@ describe("OnboardingFlow", () => {
     expect(state.status).toBe("pregnant");
     expect(state.dueDate).toBe("2026-12-01");
     expect(state.profile).toEqual({ country: "US", feeding: "formula", firstBaby: false });
-    expect(push).toHaveBeenCalledWith("/");
+    expect(push).toHaveBeenCalledWith("/today");
   });
 
   it("does not write an answer that was skipped", async () => {

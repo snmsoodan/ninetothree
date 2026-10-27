@@ -49,7 +49,7 @@ test("onboarding takes under ninety seconds, and every answer is recorded", asyn
 
   await expect(page.getByText("That is everything we need.")).toBeVisible();
   await page.getByRole("button", { name: "Show me" }).click();
-  await expect(page).toHaveURL(/\/$/);
+  await expect(page).toHaveURL(/\/today$/);
 
   const elapsed = Date.now() - started;
   expect(elapsed, `onboarding took ${elapsed}ms`).toBeLessThan(90_000);
@@ -88,7 +88,7 @@ test("a new parent can get from the front door to a finished step", async ({ pag
   await onboardAsPregnant(page);
 
   // Onboarding lands on the dashboard, which is the product: one card, one tap.
-  await expect(page).toHaveURL(/\/$/);
+  await expect(page).toHaveURL(/\/today$/);
   await expect(page.getByRole("heading", { level: 1, name: "Week 28" })).toBeVisible();
   await page.getByRole("link", { name: "Open this week" }).click();
   await expect(page).toHaveURL(/\/week\/pregnancy-w28$/);
@@ -202,7 +202,7 @@ test("the dashboard is one card, and a pin survives the round trip", async ({ pa
   await pin.click();
 
   await page.getByRole("link", { name: "This week", exact: true }).click();
-  await expect(page).toHaveURL(/\/$/);
+  await expect(page).toHaveURL(/\/today$/);
   await expect(page.getByRole("link", { name: pinnedName })).toBeVisible();
   await expect(page.getByText("Nothing pinned yet.")).not.toBeVisible();
 
@@ -391,7 +391,7 @@ test("every route is reachable with the keyboard alone", async ({ page }) => {
     ["Library", /\/library$/],
     ["Safety", /\/safety$/],
     ["Settings", /\/settings$/],
-    ["This week", /\/$/],
+    ["This week", /\/today$/],
   ] as const) {
     // Scope to the nav: the library page has outbound links whose names
     // contain "Safety", and a bare role query would match those too.
@@ -505,7 +505,7 @@ test("changing a setting re-personalizes the week without a reload", async ({ pa
     .getByRole("navigation", { name: "Main" })
     .getByRole("link", { name: "This week", exact: true })
     .click();
-  await expect(page).toHaveURL(/\/$/);
+  await expect(page).toHaveURL(/\/today$/);
   await page.getByRole("link", { name: "Open this week" }).click();
   await expect(page).toHaveURL(/\/week\/pregnancy-w28$/);
   // Every week is written now, so 28 to 36 is eight hops, all client-side.
@@ -575,7 +575,7 @@ test("a loss pauses the weekly guide, and nothing is deleted", async ({ page }) 
     .getByRole("navigation", { name: "Main" })
     .getByRole("link", { name: "This week", exact: true })
     .click();
-  await expect(page).toHaveURL(/\/$/);
+  await expect(page).toHaveURL(/\/today$/);
   await expect(page.getByText("The weekly guide is paused.")).toBeVisible();
   await expect(page.getByRole("link", { name: "Open this week" })).toHaveCount(0);
 
@@ -894,4 +894,19 @@ test("a two-year-old gets a toddler month, not the last baby month", async ({ pa
     page.getByRole("heading", { level: 1, name: /thirty-month visit is next month/ }),
   ).toBeVisible();
   await expect(page.getByRole("article", { name: "Book the thirty-month visit" })).toBeVisible();
+});
+
+test("the root URL is a signpost, and it picks the right door", async ({ page }) => {
+  // `/` used to be the dashboard, so a first visit had to download and hydrate
+  // the whole dashboard before the redirect to onboarding could run. It is now
+  // a signpost with almost no JavaScript, which is why this test cares that
+  // both destinations are reached without the parent doing anything.
+  await page.goto("/");
+  await expect(page).toHaveURL(/\/onboarding$/);
+
+  await onboardAsPregnant(page);
+  await expect(page).toHaveURL(/\/today$/);
+
+  await page.goto("/");
+  await expect(page).toHaveURL(/\/today$/);
 });

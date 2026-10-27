@@ -14,7 +14,7 @@ function SignInForm() {
   const [busy, setBusy] = useState(false);
   const [problem, setProblem] = useState<string | null>(null);
 
-  const callbackUrl = params.get("callbackUrl") ?? "/";
+  const callbackUrl = params.get("callbackUrl") ?? "/today";
 
   async function submit(event: React.FormEvent) {
     event.preventDefault();

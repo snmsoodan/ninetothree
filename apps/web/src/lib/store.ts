@@ -15,6 +15,7 @@ import {
   type NotificationPrefs,
 } from "./notifications";
 import { DEFAULT_READING, migrateReading, type ReadingPrefs } from "./reading";
+import { ONBOARDED_COOKIE, ONBOARDED_COOKIE_MAX_AGE } from "./onboarded-cookie";
 
 /**
  * Local-first state.
@@ -260,6 +261,21 @@ function persist(): void {
   } catch {
     // Storage can be full or blocked. The app keeps working in memory;
     // losing a pin is not worth an error dialog.
+  }
+  writeOnboardedCookie(state.onboarded);
+}
+
+/**
+ * Kept separate from `persist` so a storage failure still updates the cookie:
+ * the two are independent, and a parent whose localStorage is full should not
+ * also be stranded on the wrong door at `/`.
+ */
+function writeOnboardedCookie(onboarded: boolean): void {
+  try {
+    document.cookie = `${ONBOARDED_COOKIE}=${onboarded ? "1" : "0"}; Path=/; Max-Age=${ONBOARDED_COOKIE_MAX_AGE}; SameSite=Lax`;
+  } catch {
+    // A blocked cookie jar means `/` falls back to asking on the client,
+    // which is slower but still correct.
   }
 }
 

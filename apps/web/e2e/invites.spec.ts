@@ -2,13 +2,14 @@ import { randomUUID } from "node:crypto";
 
 import { expect, test, type Page } from "@playwright/test";
 
-import { upgrade } from "./helpers";
+import { forgetEverything, upgrade } from "./helpers";
 
 function address() {
   return `maya+${randomUUID()}@example.com`;
 }
 
 async function onboard(page: Page) {
+  await forgetEverything(page);
   await page.goto("/onboarding");
   await page.getByRole("button", { name: /I am pregnant/ }).click();
   await page.getByRole("button", { name: /assume I am 28 weeks/ }).click();
@@ -16,7 +17,7 @@ async function onboard(page: Page) {
     await page.getByRole("button", { name: "Continue" }).click();
   }
   await page.getByRole("button", { name: "Show me" }).click();
-  await expect(page).toHaveURL(/\/$/);
+  await expect(page).toHaveURL(/\/today$/);
 }
 
 async function signIn(page: Page, email: string) {
@@ -31,7 +32,7 @@ async function signIn(page: Page, email: string) {
     await page.request.get(`/api/auth/dev/link?email=${encodeURIComponent(email)}`)
   ).json()) as { url: string };
   await page.goto(url);
-  await page.waitForURL((u) => u.pathname === "/");
+  await page.waitForURL((u) => u.pathname === "/today");
 }
 
 async function signOut(page: Page) {
@@ -64,7 +65,7 @@ test.describe("inviting someone", () => {
 
     await expect(page.getByRole("heading", { name: /Join .*\?/ })).toBeVisible();
     await page.getByRole("button", { name: "Join this household" }).click();
-    await page.waitForURL((u) => u.pathname === "/");
+    await page.waitForURL((u) => u.pathname === "/today");
 
     await page.goto("/settings");
     const section = page.getByRole("region", { name: "Your household" });
@@ -83,7 +84,7 @@ test.describe("inviting someone", () => {
     await signIn(page, address());
     await page.goto(path);
     await page.getByRole("button", { name: "Join this household" }).click();
-    await page.waitForURL((u) => u.pathname === "/");
+    await page.waitForURL((u) => u.pathname === "/today");
 
     await signOut(page);
     await signIn(page, address());

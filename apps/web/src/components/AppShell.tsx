@@ -10,7 +10,7 @@ import { OfflineNote } from "./OfflineNote";
 
 const NAV = [
   // The week view is a detail page of "This week", so it keeps the tab lit.
-  { href: "/", label: "This week", also: ["/week"] },
+  { href: "/today", label: "This week", also: ["/week"] },
   { href: "/shelf", label: "Shelf", also: [] },
   { href: "/library", label: "Library", also: [] },
   { href: "/safety", label: "Safety", also: [] },
@@ -52,7 +52,7 @@ export function AppShell({ children, stage, flags, safetyContent = false }: AppS
       <header className="no-print sticky top-0 z-30 border-b border-line bg-paper/95 backdrop-blur-sm">
         <div className="mx-auto flex h-14 max-w-2xl items-center justify-between px-5">
           <Link
-            href="/"
+            href="/today"
             className="font-display text-lg text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-clay"
           >
             Nine to Three

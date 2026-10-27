@@ -1,5 +1,6 @@
 import { renderHook } from "@testing-library/react";
 import { writeField } from "@ninetothree/rules";
+import { ONBOARDED_COOKIE } from "./onboarded-cookie";
 import type { RecallMatch } from "@ninetothree/content";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
@@ -69,6 +70,37 @@ describe("the initial state", () => {
 
   it("serves the empty state on the server so hydration matches", () => {
     expect(getServerSnapshot()).toBe(EMPTY_STATE);
+  });
+});
+
+describe("the onboarded cookie", () => {
+  // `/` reads this cookie on the server, so it has to be right after every
+  // write — including the erase — or a parent lands on the wrong door.
+  function cookieValue(): string | undefined {
+    return document.cookie
+      .split("; ")
+      .find((entry) => entry.startsWith(`${ONBOARDED_COOKIE}=`))
+      ?.split("=")[1];
+  }
+
+  it("is absent before anything has been answered", () => {
+    expect(cookieValue()).toBeUndefined();
+  });
+
+  it("says yes once onboarding is finished", () => {
+    completeOnboarding({ status: "pregnant", dueDate: "2026-12-01", profile: {} });
+    expect(cookieValue()).toBe("1");
+  });
+
+  it("says no again after everything is erased", () => {
+    completeOnboarding({ status: "pregnant", dueDate: "2026-12-01", profile: {} });
+    resetAll();
+    expect(cookieValue()).toBe("0");
+  });
+
+  it("carries nothing that could identify a parent", () => {
+    completeOnboarding({ status: "pregnant", dueDate: "2026-12-01", profile: {} });
+    expect(cookieValue()).toMatch(/^[01]$/);
   });
 });
 

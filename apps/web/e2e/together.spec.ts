@@ -2,13 +2,14 @@ import { randomUUID } from "node:crypto";
 
 import { expect, test, type Page } from "@playwright/test";
 
-import { gotoWeek, upgrade } from "./helpers";
+import { forgetEverything, gotoWeek, upgrade } from "./helpers";
 
 function address() {
   return `maya+${randomUUID()}@example.com`;
 }
 
 async function onboard(page: Page) {
+  await forgetEverything(page);
   await page.goto("/onboarding");
   await page.getByRole("button", { name: /I am pregnant/ }).click();
   await page.getByRole("button", { name: /assume I am 28 weeks/ }).click();
@@ -16,7 +17,7 @@ async function onboard(page: Page) {
     await page.getByRole("button", { name: "Continue" }).click();
   }
   await page.getByRole("button", { name: "Show me" }).click();
-  await expect(page).toHaveURL(/\/$/);
+  await expect(page).toHaveURL(/\/today$/);
 }
 
 async function signIn(page: Page, email: string) {
@@ -31,7 +32,7 @@ async function signIn(page: Page, email: string) {
     await page.request.get(`/api/auth/dev/link?email=${encodeURIComponent(email)}`)
   ).json()) as { url: string };
   await page.goto(url);
-  await page.waitForURL((u) => u.pathname === "/");
+  await page.waitForURL((u) => u.pathname === "/today");
 }
 
 async function signOut(page: Page) {
@@ -55,7 +56,7 @@ async function makeLink(page: Page): Promise<string> {
 async function shareAPin(page: Page) {
   await gotoWeek(page);
   await page.getByRole("button", { name: /^Pin/ }).first().click();
-  await page.goto("/");
+  await page.goto("/today");
   await page.getByRole("button", { name: "Share with your household" }).first().click();
   await expect(
     page.getByRole("button", { name: "Shared with your household" }).first(),
@@ -79,7 +80,7 @@ async function twoPeopleWithASharedPin(page: Page) {
   await signIn(page, second);
   await page.goto(path);
   await page.getByRole("button", { name: "Join" }).click();
-  await expect(page).toHaveURL(/\/$/);
+  await expect(page).toHaveURL(/\/today$/);
 
   await signOut(page);
   await signIn(page, first);
@@ -128,7 +129,7 @@ test.describe("the partner view", () => {
     await signIn(page, address());
     await gotoWeek(page);
     await page.getByRole("button", { name: /^Pin/ }).first().click();
-    await page.goto("/");
+    await page.goto("/today");
 
     await expect(page.getByRole("button", { name: /Share with your household/ })).toHaveCount(0);
     await expect(page.getByRole("link", { name: "Open Together" })).toHaveCount(0);

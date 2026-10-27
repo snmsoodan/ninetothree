@@ -37,7 +37,7 @@ export default async function PrintChecklistPage({ params }: { params: Promise<{
 
   return (
     <>
-      <PrintToolbar backHref="/" backLabel="Back to this week" />
+      <PrintToolbar backHref="/today" backLabel="Back to this week" />
       <HospitalBag checklist={checklist} />
     </>
   );

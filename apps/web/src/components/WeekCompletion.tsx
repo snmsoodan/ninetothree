@@ -40,7 +40,7 @@ export function WeekCompletion({ packId, progress, nextHref }: WeekCompletionPro
               Look ahead
             </ButtonLink>
           ) : null}
-          <ButtonLink href="/" variant="quiet" size="sm">
+          <ButtonLink href="/today" variant="quiet" size="sm">
             Go to dashboard
           </ButtonLink>
           {progress.reopenable ? (

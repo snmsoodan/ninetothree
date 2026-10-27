@@ -86,4 +86,11 @@ test.describe("help with JavaScript disabled", () => {
       "/safety",
     );
   });
+
+  test("the root URL still offers a way forward", async ({ page }) => {
+    // `/` is a server redirect, so a parent with JavaScript off still lands on
+    // a real page rather than a signpost that cannot decide.
+    await page.goto("/");
+    await expect(page).toHaveURL(/\/onboarding$/);
+  });
 });

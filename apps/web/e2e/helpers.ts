@@ -47,8 +47,28 @@ export function address(): string {
   return `maya+${randomUUID()}@example.com`;
 }
 
+/**
+ * Puts the browser back to "a parent who has never been here".
+ *
+ * The store lives in localStorage and outlives a sign-out, so a spec that
+ * onboards a second person in the same browser has to forget the first one:
+ * `/onboarding` sends an already-onboarded parent to `/today` on purpose, so
+ * without this the flow never renders and the first click waits forever.
+ * Cookies go too — the session and the `ntt_onboarded` mirror both describe
+ * the person being replaced.
+ */
+export async function forgetEverything(page: Page): Promise<void> {
+  await page.context().clearCookies();
+  await page.goto("/signin");
+  await page.evaluate(() => {
+    window.localStorage.clear();
+    window.sessionStorage.clear();
+  });
+}
+
 /** Walks onboarding, which leaves the parent at week 28 with no account. */
 export async function onboard(page: Page): Promise<void> {
+  await forgetEverything(page);
   await page.goto("/onboarding");
   await page.getByRole("button", { name: /I am pregnant/ }).click();
   await page.getByRole("button", { name: /assume I am 28 weeks/ }).click();
@@ -56,7 +76,7 @@ export async function onboard(page: Page): Promise<void> {
     await page.getByRole("button", { name: "Continue" }).click();
   }
   await page.getByRole("button", { name: "Show me" }).click();
-  await expect(page).toHaveURL(/\/$/);
+  await expect(page).toHaveURL(/\/today$/);
 }
 
 /** Onboards, then signs in through the dev link the auth tests use. */
@@ -72,7 +92,7 @@ export async function signIn(page: Page, email: string): Promise<void> {
     await page.request.get(`/api/auth/dev/link?email=${encodeURIComponent(email)}`)
   ).json()) as { url: string };
   await page.goto(url);
-  await page.waitForURL((u) => u.pathname === "/");
+  await page.waitForURL((u) => u.pathname === "/today");
 }
 
 /**
