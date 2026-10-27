@@ -19,6 +19,11 @@ changelog written after the fact from memory is a changelog nobody can trust.
   `/api/household` before checking whether anyone was signed in, so a signed-out parent
   got a 401 in the console on a page with nothing wrong with it. It now reads
   `SessionContext` first, as `entitlements.ts` already did.
+- **A quiet host no longer fails a pull request.** The `Links` job failed twice on this
+  change because one charity's site timed out; `check-links.mjs` treated "did not answer"
+  the same as "404". A timeout is now `unchecked` — printed with its reason, not failed on
+  a pull request — while `ENOTFOUND` and a refused connection still fail. The weekly run
+  passes `--strict`, so a site that stays down for a week still reaches a person.
 - **The bug bash that found them is written down.** Four throwaway specs crawled every
   route at 390 and 320 px, walked the keyboard, and tried to break the browser with
   corrupt `localStorage` and hostile search input. Two real findings, both fixed; the
