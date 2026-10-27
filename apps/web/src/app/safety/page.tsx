@@ -1,6 +1,7 @@
 "use client";
 
-import { ESCALATION_COPY, PACKS } from "@ninetothree/content";
+import { ESCALATION_COPY } from "@ninetothree/content";
+import { PACKS } from "@ninetothree/content/registry";
 import { Card, CardBody, TextLink } from "@ninetothree/ui";
 import { AppShell } from "@/components/AppShell";
 import { ButtonLink } from "@/components/ButtonLink";

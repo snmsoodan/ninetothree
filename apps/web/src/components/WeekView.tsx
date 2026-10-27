@@ -2,16 +2,10 @@
 
 import Link from "next/link";
 import { useMemo } from "react";
-import {
-  ARTICLES,
-  PACKS,
-  articleHref,
-  articlesForAction,
-  type StagePack,
-} from "@ninetothree/content";
+import type { StagePack } from "@ninetothree/content";
 import { Badge, Card, CardBody, ProgressRing } from "@ninetothree/ui";
 import { ButtonLink } from "@/components/ButtonLink";
-import { catchUp, personalizePack } from "@ninetothree/rules";
+import { pickCatchUp, personalizePack, type CatchUpCandidate } from "@ninetothree/rules";
 import { ActionItem } from "./ActionItem";
 import { CatchUp } from "./CatchUp";
 import { Paywall } from "./Paywall";
@@ -24,19 +18,31 @@ import { weekProgress } from "@/lib/week";
 import { WeekCompletion } from "./WeekCompletion";
 import { QuietWeek } from "./QuietWeek";
 
+export interface ReadMoreLink {
+  href: string;
+  title: string;
+}
+
 export interface WeekViewProps {
   pack: StagePack;
   nextId?: string;
   previousId?: string;
+  /**
+   * The last three stages, flattened. Built on the server so this page does
+   * not have to carry the whole guide to work out five things.
+   */
+  catchUpCandidates?: CatchUpCandidate[];
+  /** The long read that explains a step, by action id. */
+  readMore?: Record<string, ReadMoreLink>;
 }
 
-/** The long read that explains a step, if one exists. */
-function readMoreFor(actionId: string): { href: string; title: string } | undefined {
-  const [article] = articlesForAction(ARTICLES, actionId);
-  return article ? { href: articleHref(article), title: article.title } : undefined;
-}
-
-export function WeekView({ pack, nextId, previousId }: WeekViewProps) {
+export function WeekView({
+  pack,
+  nextId,
+  previousId,
+  catchUpCandidates = [],
+  readMore = {},
+}: WeekViewProps) {
   const state = useAppState();
   const today = new Date().toISOString().slice(0, 10);
 
@@ -61,7 +67,10 @@ export function WeekView({ pack, nextId, previousId }: WeekViewProps) {
     [state.progress],
   );
 
-  const catchUpResult = useMemo(() => catchUp(PACKS, pack, doneEverywhere), [pack, doneEverywhere]);
+  const catchUpResult = useMemo(
+    () => pickCatchUp(catchUpCandidates, doneEverywhere),
+    [catchUpCandidates, doneEverywhere],
+  );
 
   const gated = useWeekGate(pack.id, today);
 
@@ -151,7 +160,7 @@ export function WeekView({ pack, nextId, previousId }: WeekViewProps) {
                     packId={pack.id}
                     packTitle={pack.title}
                     today={today}
-                    readMore={readMoreFor(action.id)}
+                    readMore={readMore[action.id]}
                     chooseHref={action.chooser ? `/choose/${action.id}` : undefined}
                   />
                 ))}

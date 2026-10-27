@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { PACKS } from "@ninetothree/content";
+import { PACKS } from "@ninetothree/content/registry";
 import { AppShell } from "@/components/AppShell";
 import { EmailPreview } from "@/components/EmailPreview";
 import { buildWeeklyEmail, nextSendAt, weeklyEmailReason } from "@/lib/email";

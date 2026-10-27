@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { PACKS } from "@ninetothree/content";
+import { PACKS } from "@ninetothree/content/registry";
 import { Badge, Card, CardBody, TextLink } from "@ninetothree/ui";
 import { AppShell } from "@/components/AppShell";
 import { resolvePins } from "@/lib/pins";

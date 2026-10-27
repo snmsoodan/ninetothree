@@ -52,6 +52,9 @@ jobs:
       - name: Every pack is registered
         run: pnpm content:registry:check
 
+      - name: The generated indexes are current
+        run: pnpm content:indexes:check
+
       - name: Test
         run: pnpm test
 

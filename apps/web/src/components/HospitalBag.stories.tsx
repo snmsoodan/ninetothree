@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { CHECKLISTS } from "@ninetothree/content";
+import { CHECKLISTS } from "@ninetothree/content/checklist-registry";
 import { HospitalBag } from "./HospitalBag";
 
 const meta: Meta<typeof HospitalBag> = {

@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ARTICLES, PACKS, findAction, getArticle } from "@ninetothree/content";
+import { findAction } from "@ninetothree/content";
+import { ARTICLES, getArticle } from "@ninetothree/content/article-registry";
+import { PACKS } from "@ninetothree/content/registry";
 import { AppShell } from "@/components/AppShell";
 import { ArticleBody } from "@/components/ArticleBody";
 import { CrisisFooter } from "@/components/CrisisFooter";

@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { PACKS } from "@ninetothree/content";
+import { PACKS } from "@ninetothree/content/registry";
 import {
   PROFILE_FIELDS,
   PROFILE_GROUPS,

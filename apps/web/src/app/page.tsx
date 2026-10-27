@@ -2,7 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { PACKS, RECALLS, findPackForStage, nextPack } from "@ninetothree/content";
+import { RECALLS, findPackForStage, nextPack } from "@ninetothree/content";
+import { PACKS } from "@ninetothree/content/registry";
 import { computeStage, stageLabel } from "@ninetothree/rules";
 import { AppShell } from "@/components/AppShell";
 import { AppointmentList } from "@/components/AppointmentList";

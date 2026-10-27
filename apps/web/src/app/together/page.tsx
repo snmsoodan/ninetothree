@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo } from "react";
-import { PACKS, findPackForStage } from "@ninetothree/content";
+import { findPackForStage } from "@ninetothree/content";
+import { PACKS } from "@ninetothree/content/registry";
 import { computeStage } from "@ninetothree/rules";
 import { AppShell } from "@/components/AppShell";
 import { PartnerView } from "@/components/PartnerView";

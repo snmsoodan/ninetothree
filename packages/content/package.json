@@ -5,7 +5,15 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./core": "./src/core.ts"
+    "./core": "./src/core.ts",
+    "./pack-index": "./src/pack-index.ts",
+    "./stage-index": "./src/stage-index.ts",
+    "./action-index": "./src/action-index.ts",
+    "./rule-index": "./src/rule-index.ts",
+    "./registry": "./src/registry.ts",
+    "./link-registry": "./src/link-registry.ts",
+    "./article-registry": "./src/article-registry.ts",
+    "./checklist-registry": "./src/checklist-registry.ts"
   },
   "scripts": {
     "lint": "eslint src --max-warnings 0",
@@ -13,7 +21,9 @@
     "test": "vitest run --coverage",
     "validate": "tsx src/cli/validate.ts",
     "registry": "node ../../scripts/gen-registry.mjs",
-    "registry:check": "node ../../scripts/gen-registry.mjs --check"
+    "registry:check": "node ../../scripts/gen-registry.mjs --check",
+    "indexes": "node ../../scripts/gen-indexes.mjs",
+    "indexes:check": "node ../../scripts/gen-indexes.mjs --check"
   },
   "dependencies": {
     "zod": "^3.24.1"

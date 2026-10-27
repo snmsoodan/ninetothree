@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { PACKS, type StagePack } from "@ninetothree/content";
+import { type StagePack } from "@ninetothree/content";
+import { PACKS } from "@ninetothree/content/registry";
 import {
   EMAIL_ACTIONS,
   EMAIL_HOUR,

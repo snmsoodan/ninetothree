@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { PACKS } from "@ninetothree/content";
+import { PACKS } from "@ninetothree/content/registry";
 import { AppShell } from "@/components/AppShell";
 import { ExportButtons } from "@/components/ExportButtons";
 import { HistoryList } from "@/components/HistoryList";

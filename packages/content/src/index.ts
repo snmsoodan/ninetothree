@@ -10,7 +10,6 @@ export {
   type LoadResult,
   type PackIssue,
 } from "./loader";
-export { PACKS, PACKS_BY_ID, getPack } from "./registry";
 export {
   LINK_TYPES,
   LinkType,
@@ -28,7 +27,6 @@ export {
   type LinkIssue,
   type LinkLoadResult,
 } from "./links";
-export { LINKS, LINKS_BY_ID, getLink } from "./link-registry";
 export {
   MAX_GRADE,
   readingGrade,
@@ -55,7 +53,6 @@ export {
   type ArticleIssue,
   type ArticleLoadResult,
 } from "./articles";
-export { ARTICLES, ARTICLES_BY_ID, getArticle } from "./article-registry";
 export {
   Checklist,
   ChecklistItem,
@@ -69,7 +66,6 @@ export {
   type ChecklistIssue,
   type ChecklistLoadResult,
 } from "./checklists";
-export { CHECKLISTS, CHECKLISTS_BY_ID, getChecklist } from "./checklist-registry";
 
 export {
   SCHEDULES,

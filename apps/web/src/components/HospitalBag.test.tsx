@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { HospitalBag } from "./HospitalBag";
-import { CHECKLISTS } from "@ninetothree/content";
+import { CHECKLISTS } from "@ninetothree/content/checklist-registry";
 
 const checklist = CHECKLISTS[0]!;
 

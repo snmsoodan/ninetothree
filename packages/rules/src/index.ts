@@ -43,11 +43,17 @@ export {
   type Housing,
   type Loss,
 } from "./personalize";
+export { ruleEffects, type RuleChange, type RuleEffects } from "./rule-effects";
 export {
   catchUp,
+  catchUpCandidates,
+  pickCatchUp,
   CATCH_UP_WINDOW,
   CATCH_UP_LIMIT,
+  type CatchUpCandidate,
+  type CatchUpCandidates,
   type CatchUpItem,
   type CatchUpResult,
+  type CatchUpWindow,
   type CatchUpOptions,
 } from "./catchup";

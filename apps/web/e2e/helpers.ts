@@ -74,3 +74,15 @@ export async function signIn(page: Page, email: string): Promise<void> {
   await page.goto(url);
   await page.waitForURL((u) => u.pathname === "/");
 }
+
+/**
+ * Opens the week the parent is on.
+ *
+ * `/week` is a signpost that redirects to `/week/<id>`, so anything that reads
+ * the page synchronously has to wait for the address to settle first.
+ */
+export async function gotoWeek(page: Page): Promise<string> {
+  await page.goto("/week");
+  await expect(page).toHaveURL(/\/week\/[a-z0-9-]+$/);
+  return page.url();
+}

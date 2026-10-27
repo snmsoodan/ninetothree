@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { PACKS } from "@ninetothree/content";
+import { PACKS } from "@ninetothree/content/registry";
 import { PrintGate } from "@/components/PrintGate";
 import { PrintToolbar } from "@/components/PrintToolbar";
 import { PrintWeek } from "@/components/PrintWeek";

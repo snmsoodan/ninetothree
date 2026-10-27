@@ -3,7 +3,6 @@
 import { useMemo, useState } from "react";
 import {
   DOMAINS,
-  LINKS,
   groupByType,
   linksForDomain,
   searchLinks,
@@ -11,6 +10,7 @@ import {
   type LinkEntry,
   type LinkType,
 } from "@ninetothree/content";
+import { LINKS } from "@ninetothree/content/link-registry";
 import { AppShell } from "@/components/AppShell";
 import { LinkCard } from "@/components/LinkCard";
 

@@ -1,7 +1,9 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { LINKS, PACKS, buildIndex, search } from "@ninetothree/content";
+import { buildIndex, search } from "@ninetothree/content";
+import { LINKS } from "@ninetothree/content/link-registry";
+import { PACKS } from "@ninetothree/content/registry";
 import { AppShell } from "@/components/AppShell";
 import { SearchResults } from "@/components/SearchResults";
 
