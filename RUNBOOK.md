@@ -92,6 +92,12 @@ pnpm lighthouse:mobile          # the phone budget
 that block non-browser clients. Those are expected to be 403s, **not** expected to be ignored: open
 them by hand. The list is currently four hosts, named in the check output.
 
+A host that never answers is a third list — "could not be checked from here" — and it does not fail
+a pull request, because a site having a bad afternoon is not a link we broke. `pnpm links:check --
+--strict` fails on it too, and the Monday schedule is the only run that passes `--strict`. So if a
+link sits in that list on the weekly run, somebody opens it and either replaces the entry or
+confirms the host is simply blocking us. Nothing in that list is ever a 404.
+
 If a link moved, replace it with the same document, not a similar-sounding one. If the document is
 gone, the claim that cited it goes too — see [§11](#11-a-clinical-error).
 

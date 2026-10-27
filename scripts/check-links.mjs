@@ -8,6 +8,14 @@
  * anything that is not a browser. A 403 is not a dead link, so it is reported
  * as "verify manually" and does not fail the build. A 404 or 410 does.
  *
+ * A host that never answers is a third case, and it is not a dead link either.
+ * nationaldiaperbanknetwork.org went quiet for a fortnight; the pull requests
+ * that happened to land in that fortnight failed on it, which taught everyone
+ * to re-run the job rather than to read it. So a timeout is reported as
+ * "could not be checked" and does not fail a pull request — but `--strict`
+ * does fail on it, and the weekly schedule passes `--strict`, because a site
+ * that stays down for a week is a link that needs a person.
+ *
  * Runs on every pull request and weekly on a schedule, because a link that
  * worked when it was written can rot without anyone touching the repo.
  */
@@ -191,7 +199,13 @@ async function probeOnce(url) {
     }
     return result;
   } catch (error) {
-    return { status: 0, error: error instanceof Error ? error.message : String(error) };
+    const name = error instanceof Error ? error.name : "";
+    const message = error instanceof Error ? error.message : String(error);
+    // An abort is our own timer, or the CDN giving up. A refused connection
+    // or a missing name is the domain being gone, which is a real dead link.
+    const silent =
+      name === "AbortError" || /abort|timed?\s?out|eai_again|econnreset/i.test(message);
+    return { status: 0, error: message, silent };
   } finally {
     clearTimeout(timer);
   }
@@ -261,7 +275,7 @@ function movedTo(url, finalUrl) {
 }
 
 function classify(url, result) {
-  if (result.status === 0) return "unreachable";
+  if (result.status === 0) return result.silent ? "unchecked" : "unreachable";
   if (result.parked) return "parked";
   if (isChallenge(result.finalUrl)) return "bot-protected";
   if (result.status >= 200 && result.status < 400) return "ok";
@@ -291,23 +305,42 @@ for (let i = 0; i < entries.length; i += CONCURRENCY) {
   );
 }
 
+const strict = process.argv.includes("--strict");
 const broken = results.filter(
   (r) => r.verdict === "broken" || r.verdict === "unreachable" || r.verdict === "parked",
 );
 const manual = results.filter((r) => r.verdict === "bot-protected");
+const unchecked = results.filter((r) => r.verdict === "unchecked");
 const moved = results.filter((r) => r.verdict === "ok" && r.moved);
 
 for (const r of results) {
   const mark =
-    r.verdict === "ok" ? "ok  " : r.verdict === "bot-protected" ? "403 " : r.verdict === "parked" ? "PARK" : "FAIL";
+    r.verdict === "ok"
+      ? "ok  "
+      : r.verdict === "bot-protected"
+        ? "403 "
+        : r.verdict === "unchecked"
+          ? "TMO "
+          : r.verdict === "parked"
+            ? "PARK"
+            : "FAIL";
   console.log(`${mark} ${r.result.status || "---"} ${r.url}`);
 }
 
 if (manual.length > 0) {
-  console.log(
-    `\n${manual.length} link(s) block non-browser clients and must be verified by hand:`,
-  );
+  console.log(`\n${manual.length} link(s) block non-browser clients and must be verified by hand:`);
   for (const r of manual) console.log(`  ${r.url}  (${r.packs.join(", ")})`);
+}
+
+if (unchecked.length > 0) {
+  const heading = strict ? "must be checked by hand" : "could not be checked from here";
+  console.log(`\n${unchecked.length} link(s) ${heading}, and none of them is a 404:`);
+  for (const r of unchecked) console.log(`  ${r.url}  ${r.result.error}  (${r.packs.join(", ")})`);
+  if (strict) {
+    console.log(
+      "\nThis is the weekly run: a host that has not answered for a week is a link somebody has to look at.",
+    );
+  }
 }
 
 if (moved.length > 0) {
@@ -316,7 +349,9 @@ if (moved.length > 0) {
     console.error(`  ${r.url}  (${r.packs.join(", ")})`);
     console.error(`    -> ${r.result.finalUrl}  [${r.moved}]`);
   }
-  console.error("\nPoint the entry at the destination, or confirm the destination is still the right place.");
+  console.error(
+    "\nPoint the entry at the destination, or confirm the destination is still the right place.",
+  );
 }
 
 if (broken.length > 0) {
@@ -327,6 +362,9 @@ if (broken.length > 0) {
   }
 }
 
-if (broken.length > 0 || moved.length > 0) process.exit(1);
+if (broken.length > 0 || moved.length > 0 || (strict && unchecked.length > 0)) process.exit(1);
 
-console.log(`\n${results.length} links checked, none broken, none moved.`);
+console.log(
+  `\n${results.length} links checked, none broken, none moved` +
+    `${unchecked.length > 0 ? `, ${unchecked.length} unanswered` : ""}.`,
+);

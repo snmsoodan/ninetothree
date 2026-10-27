@@ -173,9 +173,11 @@ jobs:
       # A dead citation is worse than no citation: it tells a parent at 3am
       # that the product is not maintained. Covers both the sources a pack
       # cites and every entry in the link catalogue. 403s from bot-protected
-      # hosts are reported for manual review, not failed.
+      # hosts are reported for manual review, not failed. A host that times
+      # out is also not failed on a pull request — but the weekly run is
+      # strict, so a site that stays quiet for a week still reaches a person.
       - name: Check every cited source and catalogue link resolves
-        run: pnpm links:check
+        run: pnpm links:check ${{ github.event_name == 'schedule' && '-- --strict' || '' }}
 
   lighthouse:
     name: Lighthouse budget
