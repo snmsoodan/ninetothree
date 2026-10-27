@@ -113,3 +113,43 @@ export function findStageIndex(
 ): StageIndexEntry | undefined {
   return index.find((entry) => entry.kind === kind && entry.stageIndex === stageIndex);
 }
+
+/**
+ * The last pack at or before a stage.
+ *
+ * This is what "which week am I in?" means: a parent at 37 weeks in a guide
+ * that stops at 36 is in the week 36 pack, not in nothing.
+ */
+export function findStageAtOrBefore(
+  kind: StageKind,
+  stageIndex: number,
+  index: readonly StageIndexEntry[] = STAGE_INDEX,
+): StageIndexEntry | undefined {
+  let found: StageIndexEntry | undefined;
+  for (const entry of index) {
+    if (entry.kind !== kind) continue;
+    if (entry.stageIndex > stageIndex) break;
+    found = entry;
+  }
+  return found;
+}
+
+/** The next pack of the same kind, for "next week". */
+export function nextStage(
+  current: StageIndexEntry,
+  index: readonly StageIndexEntry[] = STAGE_INDEX,
+): StageIndexEntry | undefined {
+  const sameKind = index.filter((entry) => entry.kind === current.kind);
+  const at = sameKind.findIndex((entry) => entry.id === current.id);
+  return at === -1 ? undefined : sameKind[at + 1];
+}
+
+/** The previous pack of the same kind, for "last week". */
+export function previousStage(
+  current: StageIndexEntry,
+  index: readonly StageIndexEntry[] = STAGE_INDEX,
+): StageIndexEntry | undefined {
+  const sameKind = index.filter((entry) => entry.kind === current.kind);
+  const at = sameKind.findIndex((entry) => entry.id === current.id);
+  return at <= 0 ? undefined : sameKind[at - 1];
+}

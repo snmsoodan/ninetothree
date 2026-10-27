@@ -7,8 +7,14 @@
  * the job that eventually exists has nothing left to decide.
  */
 
-import { ESCALATION_COPY, findPackForStage, type StagePack } from "@ninetothree/content";
-import { computeStage, personalizePack, stageLabel, suppressesEmail } from "@ninetothree/rules";
+import { ESCALATION_COPY } from "@ninetothree/content";
+import { findRulePackAtOrBefore, type RuleIndexPack } from "@ninetothree/content/rule-index";
+import {
+  computeStage,
+  personalizeIndexedPack,
+  stageLabel,
+  suppressesEmail,
+} from "@ninetothree/rules";
 import { localDate } from "./reminders";
 import { shouldSend, type NotificationPrefs, type SendReason } from "./notifications";
 import { stageInput, type AppState } from "./store";
@@ -51,7 +57,12 @@ export interface WeeklyEmail {
 
 export interface BuildEmailOptions {
   state: AppState;
-  packs: StagePack[];
+  /**
+   * The weekly email needs three steps, their one-line reasons, and the week's
+   * subtitle and first red flag — never the prose. So it reads the rule index
+   * rather than the guide, which is what keeps 400 kB off this route.
+   */
+  packs: readonly RuleIndexPack[];
   now: Date;
   baseUrl: string;
 }
@@ -90,7 +101,7 @@ export const EMAIL_REASON_COPY: Record<EmailReason, string> = {
 type Resolved =
   | {
       reason: "ok";
-      pack: StagePack;
+      pack: RuleIndexPack;
       lead: EmailAction;
       actions: EmailAction[];
       today: string;
@@ -107,7 +118,7 @@ function resolve({ state, packs, now, baseUrl }: BuildEmailOptions): Resolved {
 
   const today = localDate(now);
   const stage = computeStage(input, today);
-  const pack = findPackForStage(packs, stage.kind, stage.index);
+  const pack = findRulePackAtOrBefore(stage.kind, stage.index, packs);
   if (!pack) return { reason: "no-pack" };
 
   const reason = shouldSend(state.notifications, {
@@ -120,8 +131,8 @@ function resolve({ state, packs, now, baseUrl }: BuildEmailOptions): Resolved {
   if (reason !== "ok") return { reason };
 
   const done = settled(state);
-  const { pack: personal } = personalizePack(pack, state.profile);
-  const actions = personal.coreActions
+  const personal = personalizeIndexedPack(pack, state.profile);
+  const actions = personal.actions
     .filter((action) => !done.has(action.id))
     .slice(0, EMAIL_ACTIONS)
     .map<EmailAction>((action) => ({

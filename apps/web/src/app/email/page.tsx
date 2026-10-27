@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { PACKS } from "@ninetothree/content/registry";
+import { RULE_INDEX } from "@ninetothree/content/rule-index";
 import { AppShell } from "@/components/AppShell";
 import { EmailPreview } from "@/components/EmailPreview";
 import { buildWeeklyEmail, nextSendAt, weeklyEmailReason } from "@/lib/email";
@@ -27,7 +27,7 @@ export default function EmailPreviewPage() {
   }, [ready, state.onboarded, router]);
 
   const options = useMemo(
-    () => ({ state, packs: PACKS, now, baseUrl: "https://ninetothree.com" }),
+    () => ({ state, packs: RULE_INDEX, now, baseUrl: "https://ninetothree.com" }),
     [state, now],
   );
   const email = useMemo(() => buildWeeklyEmail(options), [options]);

@@ -1,4 +1,4 @@
-import { findAction, type StagePack } from "@ninetothree/content";
+import { findIndexedAction, type ActionIndexEntry } from "@ninetothree/content/action-index";
 import type { Pin } from "./store";
 
 export interface ResolvedPin {
@@ -24,16 +24,16 @@ export interface ResolvedPin {
  * rename or a retirement. A legacy pin with no snapshot and no action is
  * dropped: there is nothing left to show.
  */
-export function resolvePins(pins: Pin[], packs: StagePack[]): ResolvedPin[] {
+export function resolvePins(pins: Pin[], index: Record<string, ActionIndexEntry>): ResolvedPin[] {
   const resolved: ResolvedPin[] = [];
   for (const pin of pins) {
-    const hit = findAction(packs, pin.id);
+    const hit = findIndexedAction(pin.id, index);
     if (hit) {
       resolved.push({
         id: pin.id,
-        title: hit.action.title,
-        packId: hit.pack.id,
-        packTitle: hit.pack.title,
+        title: hit.title,
+        packId: hit.packId,
+        packTitle: hit.packTitle,
         stale: false,
         ...(pin.remindOn ? { remindOn: pin.remindOn } : {}),
       });

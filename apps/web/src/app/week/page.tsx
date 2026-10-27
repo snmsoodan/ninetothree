@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { findStageIndex } from "@ninetothree/content/stage-index";
+import { findStageAtOrBefore } from "@ninetothree/content/stage-index";
 import { computeStage } from "@ninetothree/rules";
 import { stageInput, useAppState, useHydrated } from "@/lib/store";
 
@@ -21,7 +21,7 @@ export default function CurrentWeekPage() {
   const input = stageInput(state);
 
   const stage = input ? computeStage(input, new Date().toISOString().slice(0, 10)) : null;
-  const pack = stage ? findStageIndex(stage.kind, stage.index) : undefined;
+  const pack = stage ? findStageAtOrBefore(stage.kind, stage.index) : undefined;
 
   useEffect(() => {
     if (!ready) return;

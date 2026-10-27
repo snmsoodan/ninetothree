@@ -52,7 +52,10 @@ export function WeekView({
     quiet,
   } = useMemo(() => personalizePack(pack, state.profile), [pack, state.profile]);
 
-  const progress = weekProgress(personalized, state);
+  const progress = weekProgress(
+    { id: personalized.id, coreActionIds: personalized.coreActions.map((a) => a.id) },
+    state,
+  );
 
   // A snoozed step is not done and not skipped, so it still counts against
   // completion — it is coming back. It just is not in the way today.

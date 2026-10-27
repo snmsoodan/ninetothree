@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { findStageIndex } from "@ninetothree/content/stage-index";
+import { findStageAtOrBefore } from "@ninetothree/content/stage-index";
 import { computeStage } from "@ninetothree/rules";
 
 import { useEntitlements } from "./entitlements";
@@ -33,7 +33,7 @@ export function useWeekGate(packId: string, today: string): boolean {
     const input = stageInput(state);
     if (!input) return undefined;
     const stage = computeStage(input, today);
-    return findStageIndex(stage.kind, stage.index)?.id;
+    return findStageAtOrBefore(stage.kind, stage.index)?.id;
   }, [state, today]);
 
   if (!known || entitlements.fullTimeline) return false;

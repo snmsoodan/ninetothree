@@ -43,7 +43,13 @@ export {
   type Housing,
   type Loss,
 } from "./personalize";
-export { ruleEffects, type RuleChange, type RuleEffects } from "./rule-effects";
+export {
+  ruleEffects,
+  personalizeIndexedPack,
+  type RuleChange,
+  type RuleEffects,
+  type IndexedPersonalization,
+} from "./rule-effects";
 export {
   catchUp,
   catchUpCandidates,

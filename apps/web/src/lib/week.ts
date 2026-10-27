@@ -1,5 +1,15 @@
-import type { StagePack } from "@ninetothree/content";
 import type { AppState } from "./store";
+
+/**
+ * The least a week has to be to be measured.
+ *
+ * A pack and a pack-index entry both fit, which is what lets the dashboard
+ * count a week's progress without shipping the week's prose to do it.
+ */
+export interface WeekRef {
+  id: string;
+  coreActionIds: string[];
+}
 
 /**
  * A step is settled when it is done or skipped. Skipping is a decision, not a
@@ -7,13 +17,11 @@ import type { AppState } from "./store";
  * with it. Counting only `done` left a week at 0% forever for someone who
  * skipped all three, which is the opposite of what the product promises.
  */
-export function settledIds(pack: StagePack, state: AppState): string[] {
-  return pack.coreActions
-    .filter((action) => {
-      const status = state.progress[action.id]?.status;
-      return status === "done" || status === "skipped";
-    })
-    .map((action) => action.id);
+export function settledIds(pack: WeekRef, state: AppState): string[] {
+  return pack.coreActionIds.filter((id) => {
+    const status = state.progress[id]?.status;
+    return status === "done" || status === "skipped";
+  });
 }
 
 export type WeekStatus = "open" | "settled" | "closed";
@@ -34,8 +42,8 @@ export interface WeekProgress {
   reopenable: boolean;
 }
 
-export function weekProgress(pack: StagePack, state: AppState): WeekProgress {
-  const total = pack.coreActions.length;
+export function weekProgress(pack: WeekRef, state: AppState): WeekProgress {
+  const total = pack.coreActionIds.length;
   const settled = settledIds(pack, state).length;
   const allSettled = total > 0 && settled === total;
   const closed = Boolean(state.completed[pack.id]);

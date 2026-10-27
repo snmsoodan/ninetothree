@@ -1,4 +1,6 @@
 import type { StagePack } from "@ninetothree/content";
+import type { ActionIndexEntry } from "@ninetothree/content/action-index";
+import type { PackIndexEntry } from "@ninetothree/content/pack-index";
 import type { WeekProgress } from "@/lib/week";
 
 /** A small, valid pack for component tests. Not shipped content. */
@@ -110,3 +112,42 @@ export function progressOf(
     ...extra,
   };
 }
+
+/**
+ * `TEST_PACK` in the two shapes the app actually ships.
+ *
+ * The pages read generated projections rather than packs, so their tests have
+ * to be given projections too — otherwise a test would pass on a shape no route
+ * can produce.
+ */
+export const TEST_ACTION_INDEX: Record<string, ActionIndexEntry> = Object.fromEntries(
+  TEST_PACK.coreActions.map((action) => [
+    action.id,
+    {
+      id: action.id,
+      title: action.title,
+      packId: TEST_PACK.id,
+      packTitle: TEST_PACK.title,
+      why: action.why,
+      options: action.options.map((option) => ({
+        id: option.id,
+        label: option.label,
+        ...(option.url ? { url: option.url } : {}),
+      })),
+    },
+  ]),
+);
+
+export const TEST_PACK_INDEX: PackIndexEntry[] = [
+  {
+    id: TEST_PACK.id,
+    kind: TEST_PACK.kind,
+    stageIndex: TEST_PACK.stageIndex,
+    stageUnit: TEST_PACK.stageUnit,
+    title: TEST_PACK.title,
+    ...(TEST_PACK.subtitle ? { subtitle: TEST_PACK.subtitle } : {}),
+    coreActionIds: TEST_PACK.coreActions.map((action) => action.id),
+    redFlags: TEST_PACK.redFlags,
+    appointments: TEST_PACK.appointments,
+  },
+];

@@ -1,14 +1,16 @@
 import type { Action, Option } from "@ninetothree/content";
-import type { RuleIndexPack } from "@ninetothree/content/rule-index";
+import type { RuleIndexAction, RuleIndexPack } from "@ninetothree/content/rule-index";
 import { HIDE_RULES, OPTION_RULES, type Profile } from "./personalize";
 
 /**
- * "Why am I not seeing this?", answered from the index.
+ * The rule table, applied to the index.
  *
- * The settings page asks this across the whole guide, which means it needs
- * every step's rule-bearing fields — but not a word of their prose. This walks
- * the same two rule lists as `personalizePack`, over the generated projection,
- * and reports the same reasons. One rule engine, two shapes of input.
+ * `personalizePack` needs a whole `StagePack` because it returns one, with the
+ * sources, the red flags and the prose. Two screens need the rules without the
+ * prose: the settings page asks "why am I not seeing this?" across the whole
+ * guide, and the weekly email picks the three steps a parent has not done. This
+ * walks the same two rule lists over the generated projection, so there is one
+ * rule engine and two shapes of input — and a test that proves they agree.
  */
 export interface RuleChange {
   ruleId: string;
@@ -25,6 +27,14 @@ export interface RuleEffects {
   quiet: boolean;
 }
 
+export interface IndexedPersonalization {
+  /** The steps that stay, in the order the week page would show them. */
+  actions: RuleIndexAction[];
+  hidden: { actionId: string; ruleId: string; reason: string }[];
+  trimmed: { actionId: string; optionId: string; ruleId: string; reason: string }[];
+  quiet: boolean;
+}
+
 function add(into: Map<string, RuleChange>, ruleId: string, reason: string, item: string): void {
   const existing = into.get(ruleId);
   if (existing) existing.items.push(item);
@@ -36,6 +46,56 @@ function add(into: Map<string, RuleChange>, ruleId: string, reason: string, item
  * `label` and `detail` — which is exactly what `RuleIndexAction` carries, so
  * the cast is a statement about the projection, not a shortcut around it.
  */
+export function personalizeIndexedPack(
+  pack: RuleIndexPack,
+  profile: Profile,
+): IndexedPersonalization {
+  if (profile.loss) return { actions: [], hidden: [], trimmed: [], quiet: true };
+
+  const actions = pack.actions as unknown as Action[];
+
+  const hidden: IndexedPersonalization["hidden"] = [];
+  const kept = actions.filter((action) => {
+    const rule = HIDE_RULES.find((candidate) => candidate.hides(action, profile));
+    if (!rule) return true;
+    hidden.push({ actionId: action.id, ruleId: rule.id, reason: rule.reason });
+    return false;
+  });
+
+  // Same fallback as `personalizePack`: a pack never ends up empty, because
+  // then the rule was wrong, not the parent.
+  const shown = kept.length > 0 ? kept : actions;
+  const trimmed: IndexedPersonalization["trimmed"] = [];
+  const withOptions = shown.map((action) => {
+    if (action.options.length === 0) return action;
+    const removed: IndexedPersonalization["trimmed"] = [];
+    const options = action.options.filter((option) => {
+      const rule = OPTION_RULES.find((candidate) => candidate.trims(action, option, profile));
+      if (!rule) return true;
+      removed.push({
+        actionId: action.id,
+        optionId: option.id,
+        ruleId: rule.id,
+        reason: rule.reason,
+      });
+      return false;
+    });
+    // Never leave an action with no way to do it. If every option was
+    // trimmed, the rule was wrong — show them all, and report nothing.
+    if (options.length === 0) return action;
+    trimmed.push(...removed);
+    return { ...action, options };
+  });
+
+  return {
+    actions: withOptions as unknown as RuleIndexAction[],
+    hidden: kept.length > 0 ? hidden : [],
+    trimmed: kept.length > 0 ? trimmed : [],
+    quiet: false,
+  };
+}
+
+/** The same rules, grouped into the sentences the settings page shows. */
 export function ruleEffects(packs: readonly RuleIndexPack[], profile: Profile): RuleEffects {
   if (profile.loss) return { steps: [], options: [], quiet: true };
 
@@ -43,31 +103,20 @@ export function ruleEffects(packs: readonly RuleIndexPack[], profile: Profile): 
   const options = new Map<string, RuleChange>();
 
   for (const pack of packs) {
-    const actions = pack.actions as unknown as Action[];
-
-    const kept = actions.filter((action) => {
-      const rule = HIDE_RULES.find((candidate) => candidate.hides(action, profile));
-      if (!rule) return true;
-      add(steps, rule.id, rule.reason, `${action.title} (${pack.title})`);
-      return false;
-    });
-
-    // Same fallback as `personalizePack`: a pack never ends up empty, because
-    // then the rule was wrong, not the parent.
-    const shown = kept.length > 0 ? kept : actions;
-    for (const action of shown) {
-      if (action.options.length === 0) continue;
-      // Collected first, then reported: if every option of an action was
-      // trimmed, the rule was wrong and the parent should see them all.
-      const trimmed: { rule: { id: string; reason: string }; option: Option }[] = [];
-      for (const option of action.options) {
-        const rule = OPTION_RULES.find((candidate) => candidate.trims(action, option, profile));
-        if (rule) trimmed.push({ rule, option });
-      }
-      if (trimmed.length === action.options.length) continue;
-      for (const { rule, option } of trimmed) {
-        add(options, rule.id, rule.reason, `${option.label} in ${action.title} (${pack.title})`);
-      }
+    const result = personalizeIndexedPack(pack, profile);
+    for (const entry of result.hidden) {
+      const action = pack.actions.find((a) => a.id === entry.actionId) as RuleIndexAction;
+      add(steps, entry.ruleId, entry.reason, `${action.title} (${pack.title})`);
+    }
+    for (const entry of result.trimmed) {
+      const action = pack.actions.find((a) => a.id === entry.actionId) as RuleIndexAction;
+      const option = action.options.find((o) => o.id === entry.optionId) as Option;
+      add(
+        options,
+        entry.ruleId,
+        entry.reason,
+        `${option.label} in ${action.title} (${pack.title})`,
+      );
     }
   }
 

@@ -1,14 +1,14 @@
 "use client";
 
 import { ESCALATION_COPY } from "@ninetothree/content";
-import { PACKS } from "@ninetothree/content/registry";
+import { PACK_INDEX } from "@ninetothree/content/pack-index";
 import { Card, CardBody, TextLink } from "@ninetothree/ui";
 import { AppShell } from "@/components/AppShell";
 import { ButtonLink } from "@/components/ButtonLink";
 import { HELP_NUMBERS } from "@/lib/help";
 
 export default function SafetyPage() {
-  const flags = PACKS.flatMap((pack) =>
+  const flags = PACK_INDEX.flatMap((pack) =>
     pack.redFlags.map((flag) => ({ ...flag, packTitle: pack.title, packId: pack.id })),
   );
 

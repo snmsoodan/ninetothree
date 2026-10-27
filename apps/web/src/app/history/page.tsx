@@ -2,7 +2,8 @@
 
 import { useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { PACKS } from "@ninetothree/content/registry";
+import { ACTION_INDEX } from "@ninetothree/content/action-index";
+import { PACK_INDEX } from "@ninetothree/content/pack-index";
 import { AppShell } from "@/components/AppShell";
 import { ExportButtons } from "@/components/ExportButtons";
 import { HistoryList } from "@/components/HistoryList";
@@ -18,7 +19,7 @@ export default function HistoryPage() {
     if (hydrated && !state.onboarded) router.replace("/onboarding");
   }, [hydrated, state.onboarded, router]);
 
-  const history = useMemo(() => buildHistory(state, PACKS), [state]);
+  const history = useMemo(() => buildHistory(state, ACTION_INDEX, PACK_INDEX), [state]);
 
   if (!hydrated || !state.onboarded) return null;
 

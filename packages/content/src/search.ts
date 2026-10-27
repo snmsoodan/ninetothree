@@ -4,10 +4,11 @@ import type { StagePack } from "./schema";
 /**
  * Search over the whole guide, in the browser.
  *
- * There is no Postgres here and there does not need to be: nine packs and
- * eighty-nine catalogue entries are a few hundred kilobytes of text, and a
- * parent searching at 3am should not wait for a round trip. The index is
- * built once at module load and searched in memory.
+ * There is no Postgres here and there does not need to be: the whole guide
+ * is a few hundred kilobytes of text, and a parent searching at 3am should
+ * not wait for a round trip. `scripts/gen-indexes.mjs` writes the index to
+ * `apps/web/public/search-index.json` at build time; the search page fetches
+ * it once and searches it in memory.
  */
 
 export type SearchKind = "step" | "week" | "link";

@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { PACKS } from "@ninetothree/content/registry";
-import { RULE_INDEX, type RuleIndexPack } from "@ninetothree/content/rule-index";
+import { RULE_INDEX, findRulePack, type RuleIndexPack } from "@ninetothree/content/rule-index";
 import { personalizePack, type Profile } from "./personalize";
-import { ruleEffects, type RuleChange } from "./rule-effects";
+import { personalizeIndexedPack, ruleEffects, type RuleChange } from "./rule-effects";
 
 /** What ProfilePreview used to build by hand, kept here as the oracle. */
 function fromFullPacks(profile: Profile): { steps: RuleChange[]; options: RuleChange[] } {
@@ -93,11 +93,13 @@ describe("ruleEffects", () => {
     } as RuleIndexPack;
   }
 
-  it("still reports the step when a rule would have emptied the whole pack", () => {
+  it("says nothing when a rule would have emptied the whole pack", () => {
+    // The step is still shown, because a pack must never end up empty. There
+    // is nothing to explain, so the settings page must not claim there is.
     const { steps, options } = ruleEffects([packOf("childcare", "Find a daycare", ["$"])], {
       work: "staying-home",
     });
-    expect(steps.map((s) => s.ruleId)).toEqual(["staying-home"]);
+    expect(steps).toEqual([]);
     expect(options).toEqual([]);
   });
 
@@ -113,6 +115,26 @@ describe("ruleEffects", () => {
       budget: "tight",
     });
     expect(options.map((o) => o.ruleId)).toEqual(["tight-budget"]);
+  });
+
+  it("gives personalizeIndexedPack the same answers as personalizePack", () => {
+    // The two functions are one rule engine over two shapes of input. This is
+    // the check that keeps them that way: every pack, every profile.
+    const profiles: Profile[] = [EVERYTHING, {}, { ...EVERYTHING, loss: "baby" }];
+    for (const profile of profiles) {
+      for (const pack of PACKS) {
+        const indexed = findRulePack(pack.id);
+        expect(indexed).toBeDefined();
+        const fromIndex = personalizeIndexedPack(indexed as RuleIndexPack, profile);
+        const fromPack = personalizePack(pack, profile);
+        expect(fromIndex.actions.map((a) => a.id)).toEqual(
+          fromPack.pack.coreActions.map((a) => a.id),
+        );
+        expect(fromIndex.hidden).toEqual(fromPack.hidden);
+        expect(fromIndex.trimmed).toEqual(fromPack.trimmed);
+        expect(fromIndex.quiet).toBe(fromPack.quiet);
+      }
+    }
   });
 
   it("covers every rule that can fire, so no rule can go unreported", () => {

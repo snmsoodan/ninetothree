@@ -1,4 +1,5 @@
-import { findAction, type StagePack } from "@ninetothree/content";
+import { findIndexedAction, type ActionIndexEntry } from "@ninetothree/content/action-index";
+import type { PackIndexEntry } from "@ninetothree/content/pack-index";
 import type { AppState, Pin, ProgressStatus } from "./store";
 
 /**
@@ -59,15 +60,15 @@ function resolve(
     packId?: string;
     packTitle?: string;
   },
-  packs: StagePack[],
+  index: Record<string, ActionIndexEntry>,
 ): HistoryAction {
-  const found = findAction(packs, id);
+  const found = findIndexedAction(id, index);
   if (found) {
     return {
       id,
-      title: found.action.title,
-      packId: found.pack.id,
-      packTitle: found.pack.title,
+      title: found.title,
+      packId: found.packId,
+      packTitle: found.packTitle,
       status: entry.status,
       at: entry.at,
       ...(entry.reason ? { reason: entry.reason } : {}),
@@ -95,9 +96,13 @@ function byNewest(a: HistoryAction, b: HistoryAction): number {
   return a.id < b.id ? -1 : 1;
 }
 
-export function buildHistory(state: AppState, packs: StagePack[]): History {
+export function buildHistory(
+  state: AppState,
+  index: Record<string, ActionIndexEntry>,
+  packs: readonly PackIndexEntry[],
+): History {
   const actions = Object.entries(state.progress)
-    .map(([id, entry]) => resolve(id, entry, packs))
+    .map(([id, entry]) => resolve(id, entry, index))
     .sort(byNewest);
 
   const groups = new Map<string, HistoryAction[]>();
@@ -112,9 +117,7 @@ export function buildHistory(state: AppState, packs: StagePack[]): History {
   for (const group of groups.values()) {
     const first = group[0] as HistoryAction;
     const pack = packs.find((candidate) => candidate.id === first.packId);
-    const complete = pack
-      ? pack.coreActions.every((action) => Boolean(state.progress[action.id]))
-      : false;
+    const complete = pack ? pack.coreActionIds.every((id) => Boolean(state.progress[id])) : false;
     weeks.push({
       packId: first.packId,
       packTitle: first.packTitle,

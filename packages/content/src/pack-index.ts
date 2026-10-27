@@ -111,3 +111,52 @@ export const PACK_INDEX: PackIndexEntry[] = [
   {"id":"toddler-month-35","kind":"toddler","stageIndex":35,"stageUnit":"month","title":"Month 35","subtitle":"One month left in this guide. The three-year visit is next month.","coreActionIds":["t35-visit","t35-empathy","t35-independence"],"redFlags":[{"id":"t35-flag-choking","text":"Choking — cannot breathe, cough, or make a sound","escalation":"call-911"},{"id":"t35-flag-fever","text":"A fever over 100.4°F with unusual sleepiness or a rash","escalation":"call-pediatrician"},{"id":"t35-flag-fall","text":"A fall from a height, or a head injury with vomiting or unusual sleepiness","escalation":"call-911"}],"appointments":[]},
   {"id":"toddler-month-36","kind":"toddler","stageIndex":36,"stageUnit":"month","title":"Month 36","subtitle":"Three years. This is the last month in this guide, and the first month of the rest of it.","coreActionIds":["t36-visit","t36-look-back","t36-next"],"redFlags":[{"id":"t36-flag-choking","text":"Choking — cannot breathe, cough, or make a sound","escalation":"call-911"},{"id":"t36-flag-fever","text":"A fever over 100.4°F with unusual sleepiness or a rash","escalation":"call-pediatrician"},{"id":"t36-flag-mood","text":"Feeling hopeless, or thoughts of harming yourself or the child","escalation":"call-988","phone":"988"}],"appointments":[{"id":"t36-appt-three-year","label":"Three-year visit","from":1092,"to":1106,"who":"Pediatrician"}]},
 ];
+
+/** The pack for an id, or nothing when it has been retired. */
+export function findPackIndex(
+  id: string,
+  index: readonly PackIndexEntry[] = PACK_INDEX,
+): PackIndexEntry | undefined {
+  return index.find((entry) => entry.id === id);
+}
+
+/**
+ * The last pack at or before a stage.
+ *
+ * This is what "which week am I in?" means: a parent at 37 weeks in a guide
+ * that stops at 36 is in the week 36 pack, not in nothing. The index is sorted
+ * by kind and then by stage, so the first pack past the stage ends the search.
+ */
+export function findPackAtOrBefore(
+  kind: StageKind,
+  stageIndex: number,
+  index: readonly PackIndexEntry[] = PACK_INDEX,
+): PackIndexEntry | undefined {
+  let found: PackIndexEntry | undefined;
+  for (const entry of index) {
+    if (entry.kind !== kind) continue;
+    if (entry.stageIndex > stageIndex) break;
+    found = entry;
+  }
+  return found;
+}
+
+/** The next pack of the same kind, for "look ahead". */
+export function nextPackIndex(
+  current: PackIndexEntry,
+  index: readonly PackIndexEntry[] = PACK_INDEX,
+): PackIndexEntry | undefined {
+  const sameKind = index.filter((entry) => entry.kind === current.kind);
+  const at = sameKind.findIndex((entry) => entry.id === current.id);
+  return at === -1 ? undefined : sameKind[at + 1];
+}
+
+/** The previous pack of the same kind, for "last week". */
+export function previousPackIndex(
+  current: PackIndexEntry,
+  index: readonly PackIndexEntry[] = PACK_INDEX,
+): PackIndexEntry | undefined {
+  const sameKind = index.filter((entry) => entry.kind === current.kind);
+  const at = sameKind.findIndex((entry) => entry.id === current.id);
+  return at <= 0 ? undefined : sameKind[at - 1];
+}

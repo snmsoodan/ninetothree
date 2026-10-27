@@ -1,18 +1,13 @@
 "use client";
 
 import { useMemo } from "react";
-import type { Action, Option, StagePack } from "@ninetothree/content";
-import { personalizePack, type Profile } from "@ninetothree/rules";
+import type { RuleIndexPack } from "@ninetothree/content/rule-index";
+import { ruleEffects, type Profile } from "@ninetothree/rules";
 
 export interface ProfilePreviewProps {
-  packs: StagePack[];
+  /** The rule projection of the guide — every step's rule-bearing fields, no prose. */
+  index: readonly RuleIndexPack[];
   profile: Profile;
-}
-
-interface Change {
-  ruleId: string;
-  reason: string;
-  items: string[];
 }
 
 /**
@@ -23,42 +18,10 @@ interface Change {
  * have no car is changing week 36, and telling them "nothing is hidden" because
  * they happen to be on week 28 would be a lie.
  */
-export function ProfilePreview({ packs, profile }: ProfilePreviewProps) {
-  const { steps, options } = useMemo(() => {
-    const steps = new Map<string, Change>();
-    const options = new Map<string, Change>();
-
-    const add = (into: Map<string, Change>, ruleId: string, reason: string, item: string) => {
-      const existing = into.get(ruleId);
-      if (existing) existing.items.push(item);
-      else into.set(ruleId, { ruleId, reason, items: [item] });
-    };
-
-    for (const pack of packs) {
-      const result = personalizePack(pack, profile);
-      // A rule can only report an action or option it was given, so these
-      // lookups always hit. The casts say so without a dead branch.
-      for (const hidden of result.hidden) {
-        const action = pack.coreActions.find((a) => a.id === hidden.actionId) as Action;
-        add(steps, hidden.ruleId, hidden.reason, `${action.title} (${pack.title})`);
-      }
-      for (const trimmed of result.trimmed) {
-        const action = pack.coreActions.find((a) => a.id === trimmed.actionId) as Action;
-        const option = action.options.find((o) => o.id === trimmed.optionId) as Option;
-        add(
-          options,
-          trimmed.ruleId,
-          trimmed.reason,
-          `${option.label} in ${action.title} (${pack.title})`,
-        );
-      }
-    }
-
-    return { steps: [...steps.values()], options: [...options.values()] };
-  }, [packs, profile]);
+export function ProfilePreview({ index, profile }: ProfilePreviewProps) {
+  const { steps, options, quiet } = useMemo(() => ruleEffects(index, profile), [index, profile]);
 
   const empty = steps.length === 0 && options.length === 0;
-  const quiet = profile.loss !== undefined;
 
   return (
     <section aria-labelledby="preview-heading" className="mt-8">

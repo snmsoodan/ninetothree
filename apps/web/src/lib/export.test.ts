@@ -1,10 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { TEST_PACK } from "@/test-fixtures";
+import { TEST_ACTION_INDEX, TEST_PACK_INDEX } from "@/test-fixtures";
 import { buildHistory } from "./history";
 import { CSV_HEADER, buildExport, csvCell, toCsv, toJson } from "./export";
 import { EMPTY_STATE, type AppState, type ProgressEntry } from "./store";
 
-const packs = [TEST_PACK];
+const index = TEST_ACTION_INDEX;
+const packs = TEST_PACK_INDEX;
 const AT = "2026-10-20T12:00:00.000Z";
 
 function stateWith(progress: Record<string, ProgressEntry>, overrides: Partial<AppState> = {}) {
@@ -42,19 +43,19 @@ const sample = stateWith(
 
 describe("buildExport", () => {
   it("is a versioned document that names the app", () => {
-    const doc = buildExport(sample, buildHistory(sample, packs), AT);
+    const doc = buildExport(sample, buildHistory(sample, index, packs), AT);
     expect(doc.app).toBe("ninetothree");
     expect(doc.version).toBe(1);
     expect(doc.exportedAt).toBe(AT);
   });
 
   it("records the dates the parent gave", () => {
-    const doc = buildExport(sample, buildHistory(sample, packs), AT);
+    const doc = buildExport(sample, buildHistory(sample, index, packs), AT);
     expect(doc.profile).toEqual({ status: "pregnant", dueDate: "2027-04-01", birthDate: null });
   });
 
   it("counts what happened", () => {
-    const doc = buildExport(sample, buildHistory(sample, packs), AT);
+    const doc = buildExport(sample, buildHistory(sample, index, packs), AT);
     expect(doc.summary).toEqual({
       steps: 2,
       done: 1,
@@ -66,7 +67,7 @@ describe("buildExport", () => {
   });
 
   it("nests steps under their week", () => {
-    const doc = buildExport(sample, buildHistory(sample, packs), AT);
+    const doc = buildExport(sample, buildHistory(sample, index, packs), AT);
     expect(doc.weeks[0]?.week).toBe("Week 28");
     expect(doc.weeks[0]?.steps.map((step) => step.title)).toEqual([
       "Get your Tdap shot",
@@ -78,12 +79,12 @@ describe("buildExport", () => {
     const state = stateWith({
       "retired-action": done("2026-10-01T10:00:00.000Z", { title: "Gone", packTitle: "Week 20" }),
     });
-    const doc = buildExport(state, buildHistory(state, packs), AT);
+    const doc = buildExport(state, buildHistory(state, index, packs), AT);
     expect(doc.weeks[0]?.steps[0]?.retired).toBe(true);
   });
 
   it("omits the reason key when there is none", () => {
-    const doc = buildExport(sample, buildHistory(sample, packs), AT);
+    const doc = buildExport(sample, buildHistory(sample, index, packs), AT);
     const glucose = doc.weeks[0]?.steps.find(
       (step) => step.title === "Book your glucose screening",
     );
@@ -91,7 +92,7 @@ describe("buildExport", () => {
   });
 
   it("carries pins and appointments", () => {
-    const doc = buildExport(sample, buildHistory(sample, packs), AT);
+    const doc = buildExport(sample, buildHistory(sample, index, packs), AT);
     expect(doc.pins).toEqual([{ title: "Get your Tdap shot", week: "Week 28", at: AT }]);
     expect(doc.appointments).toEqual([
       { label: "Dentist", date: "2026-11-02", who: "Me", note: "Morning" },
@@ -105,7 +106,7 @@ describe("buildExport", () => {
         appointments: [{ id: "own-1", label: "Dentist", date: "2026-11-02", at: AT }],
       },
     );
-    const doc = buildExport(state, buildHistory(state, packs), AT);
+    const doc = buildExport(state, buildHistory(state, index, packs), AT);
     expect(doc.appointments[0]).toEqual({
       label: "Dentist",
       date: "2026-11-02",
@@ -117,12 +118,12 @@ describe("buildExport", () => {
 
 describe("toJson", () => {
   it("is valid JSON that round-trips", () => {
-    const json = toJson(sample, buildHistory(sample, packs), AT);
-    expect(JSON.parse(json)).toEqual(buildExport(sample, buildHistory(sample, packs), AT));
+    const json = toJson(sample, buildHistory(sample, index, packs), AT);
+    expect(JSON.parse(json)).toEqual(buildExport(sample, buildHistory(sample, index, packs), AT));
   });
 
   it("ends with a newline so it is a well-formed text file", () => {
-    expect(toJson(sample, buildHistory(sample, packs), AT).endsWith("}\n")).toBe(true);
+    expect(toJson(sample, buildHistory(sample, index, packs), AT).endsWith("}\n")).toBe(true);
   });
 });
 
@@ -165,18 +166,18 @@ describe("csvCell", () => {
 
 describe("toCsv", () => {
   it("starts with the header", () => {
-    const csv = toCsv(sample, buildHistory(sample, packs));
+    const csv = toCsv(sample, buildHistory(sample, index, packs));
     expect(csv.split("\r\n")[0]).toBe(CSV_HEADER.join(","));
   });
 
   it("uses CRLF line endings and ends with one", () => {
-    const csv = toCsv(sample, buildHistory(sample, packs));
+    const csv = toCsv(sample, buildHistory(sample, index, packs));
     expect(csv.endsWith("\r\n")).toBe(true);
     expect(csv.split("\r\n").length).toBeGreaterThan(1);
   });
 
   it("writes one row per action, pin and appointment", () => {
-    const csv = toCsv(sample, buildHistory(sample, packs));
+    const csv = toCsv(sample, buildHistory(sample, index, packs));
     const rows = csv.trimEnd().split("\r\n").slice(1);
     expect(rows).toHaveLength(4);
     expect(rows.filter((row) => row.startsWith("action,"))).toHaveLength(2);
@@ -185,14 +186,14 @@ describe("toCsv", () => {
   });
 
   it("writes the skip reason in the note column", () => {
-    const csv = toCsv(sample, buildHistory(sample, packs));
+    const csv = toCsv(sample, buildHistory(sample, index, packs));
     expect(csv).toContain(
       "action,Week 28,Get your Tdap shot,skipped,2026-10-02T10:00:00.000Z,not-now",
     );
   });
 
   it("joins who and note for an appointment", () => {
-    const csv = toCsv(sample, buildHistory(sample, packs));
+    const csv = toCsv(sample, buildHistory(sample, index, packs));
     expect(csv).toContain("appointment,,Dentist,yours,2026-11-02,Me — Morning");
   });
 
@@ -203,12 +204,12 @@ describe("toCsv", () => {
         appointments: [{ id: "own-1", label: "Dentist", date: "2026-11-02", at: AT }],
       },
     );
-    const csv = toCsv(state, buildHistory(state, packs));
+    const csv = toCsv(state, buildHistory(state, index, packs));
     expect(csv).toContain("appointment,,Dentist,yours,2026-11-02,\r\n");
   });
 
   it("is a header alone when nothing has happened", () => {
-    const csv = toCsv(EMPTY_STATE, buildHistory(EMPTY_STATE, packs));
+    const csv = toCsv(EMPTY_STATE, buildHistory(EMPTY_STATE, index, packs));
     expect(csv).toBe(`${CSV_HEADER.join(",")}\r\n`);
   });
 });

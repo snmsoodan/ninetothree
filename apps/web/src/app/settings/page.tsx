@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { PACKS } from "@ninetothree/content/registry";
+import { RULE_INDEX } from "@ninetothree/content/rule-index";
 import {
   PROFILE_FIELDS,
   PROFILE_GROUPS,
@@ -203,7 +203,7 @@ export default function SettingsPage() {
           </Card>
         </section>
 
-        <ProfilePreview packs={PACKS} profile={state.profile} />
+        <ProfilePreview index={RULE_INDEX} profile={state.profile} />
 
         <section aria-labelledby="account-heading" className="mt-10">
           <h2 id="account-heading" className="font-display text-2xl text-ink">
