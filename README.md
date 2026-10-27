@@ -62,6 +62,8 @@ The gap is **decision fatigue and fragmentation**:
 | `UX_CRAFT.md`          | **The design system and the feeling.** Ten calm principles, tone of voice, the first 90 seconds, the annotated Week Card, motion, color, type, microcopy, the never-build list, and the seven tests for calm |
 | `ARCHITECTURE.md`      | Stack, data model, content pipeline, security, accessibility, i18n, testing, deployment, V1 definition of done                                                                                               |
 | `TASKS.md`             | Epics → issues, ordered, with acceptance criteria and the 30-day plan                                                                                                                                        |
+| `RUNBOOK.md`           | **Internal.** Deploy, migrations, backups, deletion, sign-in failures, clinical corrections, recalls, and the known gaps                                                                                     |
+| `INCIDENT_PLAN.md`     | **Internal.** Severity, the first fifteen minutes, comms, breach notification, playbooks, postmortems                                                                                                        |
 
 **Read them in this order:** `README` → `UX_CRAFT` → `CONTENT_BLUEPRINT` → `CONTENT_LIBRARY` → `PRODUCT_UX` → `ARCHITECTURE` → `TASKS`. The feeling comes before the features, because a calm product is not a feature list.
 

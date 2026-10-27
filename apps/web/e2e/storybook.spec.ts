@@ -141,6 +141,10 @@ const STORIES = [
   "app-printweek--month-pack",
   "app-hospitalbag--default",
   "app-printtoolbar--default",
+  "app-sitefooter--default",
+  "app-sitefooter--narrow",
+  "app-policypage--short",
+  "app-policypage--long",
 ];
 
 /**

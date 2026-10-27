@@ -42,6 +42,25 @@ test.describe("with JavaScript disabled", () => {
     await expect(redFlags.getByRole("listitem").first()).toBeVisible();
   });
 
+  test("every policy renders in full without a script", async ({ page }) => {
+    /* The pages somebody reads when they are looking for the way out cannot
+       depend on hydration. They are plain server-rendered prose for exactly
+       this reason. */
+    for (const [path, heading] of [
+      ["/privacy", "Privacy"],
+      ["/terms", "Terms"],
+      ["/editorial", "How we write"],
+      ["/corrections", "Corrections"],
+    ] as const) {
+      await page.goto(path);
+      await expect(page.getByRole("heading", { level: 1, name: heading })).toBeVisible();
+      await expect(page.getByRole("navigation", { name: "Policies" })).toBeVisible();
+    }
+
+    await page.goto("/corrections");
+    await expect(page.getByText("Nothing yet.")).toBeVisible();
+  });
+
   test("the library and the safety page render too", async ({ page }) => {
     await page.goto("/library");
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();

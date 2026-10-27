@@ -287,6 +287,13 @@ test("the safety page has no violations", async ({ page }) => {
   expect(await audit(page)).toEqual([]);
 });
 
+for (const path of ["/privacy", "/terms", "/editorial", "/corrections"]) {
+  test(`${path} has no violations`, async ({ page }) => {
+    await page.goto(path);
+    expect(await audit(page)).toEqual([]);
+  });
+}
+
 test("settings has no violations", async ({ page }) => {
   await onboard(page);
   await page.goto("/settings");

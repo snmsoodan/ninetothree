@@ -57,6 +57,16 @@ async function waitForPrecache(page: Page) {
  * race in the test. So the test waits for the copy it is about to use.
  */
 async function waitForThisPageCached(page: Page) {
+  /*
+   * The first load of a page can happen before the worker takes control of
+   * it, and every script fetched in that window lands in the browser's HTTP
+   * cache instead of the worker's — so the page is not really on the device,
+   * it only looks like it. One reload puts the document and all of its
+   * subresources through the worker, which is what "saved" is supposed to
+   * mean.
+   */
+  await page.reload();
+
   const wanted = await page.evaluate(() => [
     window.location.pathname,
     // `nomodule` scripts are never fetched by a browser this modern, so they
