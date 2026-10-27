@@ -6,7 +6,8 @@
   "exports": {
     ".": "./src/index.ts",
     "./schema": "./src/schema.ts",
-    "./auth": "./src/auth/index.ts"
+    "./auth": "./src/auth/index.ts",
+    "./entitlements": "./src/entitlements.ts"
   },
   "scripts": {
     "lint": "eslint src --max-warnings 0",

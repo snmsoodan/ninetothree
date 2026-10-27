@@ -28,6 +28,8 @@ export {
 export {
   canPin,
   entitlementsFor,
+  FREE,
+  PAID,
   PLANS,
   type Entitlements,
   type Plan,

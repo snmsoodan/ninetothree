@@ -4,6 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import type { Action } from "@ninetothree/content";
 import { Badge, Button, Dialog, RadioGroup, TextLink, cn } from "@ninetothree/ui";
+import { canPin } from "@ninetothree/db/entitlements";
+import { useEntitlements } from "@/lib/entitlements";
 import {
   chosenOption,
   clearProgress,
@@ -77,6 +79,13 @@ export function ActionItem({
   const [laterOpen, setLaterOpen] = useState(false);
   const [reason, setReason] = useState("not-now");
   const [later, setLater] = useState("7");
+  const [limitOpen, setLimitOpen] = useState(false);
+
+  const { entitlements, known } = useEntitlements();
+  // Nothing is limited while the plan is still loading. A free reader who pins
+  // a sixth thing for a moment is a smaller mistake than telling somebody who
+  // paid that they have run out.
+  const atLimit = known && !canPin(entitlements, state.pins.length);
 
   const priorityLabel = PRIORITY_LABEL[action.priority];
 
@@ -108,7 +117,13 @@ export function ActionItem({
         </div>
         <button
           type="button"
-          onClick={() => togglePin({ id: action.id, title: action.title, packId, packTitle })}
+          onClick={() => {
+            if (atLimit && !pinned) {
+              setLimitOpen(true);
+              return;
+            }
+            togglePin({ id: action.id, title: action.title, packId, packTitle });
+          }}
           aria-pressed={pinned}
           aria-label={pinned ? `Unpin ${action.title}` : `Pin ${action.title}`}
           className={cn(
@@ -318,6 +333,26 @@ export function ActionItem({
           options={LATER_OPTIONS}
         />
       </Dialog>
+
+      {/*
+        The free plan's limit is a product constant, so the sentence is written
+        out rather than interpolated — "5 pins" reads like a counter. A test
+        asserts `FREE.pinLimit` is still five, so the copy cannot drift.
+      */}
+      <Dialog
+        open={limitOpen}
+        onOpenChange={setLimitOpen}
+        title="Five pins is the free limit."
+        description="Unpin one to make room, or let Plus hold as many as you like."
+        footer={
+          <>
+            <Button variant="quiet" onClick={() => setLimitOpen(false)}>
+              Not now
+            </Button>
+            <TextLink href="/settings#plan">See what Plus is</TextLink>
+          </>
+        }
+      />
 
       <span className="sr-only">{packTitle}</span>
     </article>

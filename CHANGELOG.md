@@ -9,6 +9,37 @@ changelog written after the fact from memory is a changelog nobody can trust.
 
 ## Unreleased
 
+### The paywall, in four places and nowhere else (#40)
+
+- Four gates, decided one at a time: **the week you are not in**, **printing a
+  week**, **a sixth pin**, and **inviting a partner**. The week you are in is
+  always free. The rule lives in `useWeekGate` and nowhere else.
+- **Red flags are never behind the wall.** A locked week still shows "Call now if"
+  below the card — the test opens week 20 as a free household and asserts the
+  heading is visible while the steps are not.
+- **Nothing is gated while the plan is loading.** Every gate reads
+  `!known || entitled`, so a parent who paid never sees a wall for their own week
+  on a slow connection. A free parent sees content for a moment instead; that
+  error is invisible and self-correcting.
+- The sixth pin is refused with a sentence — "Five pins is the free limit." — and a
+  **Not now**, not an error. Unpinning still works at the limit, because a parent
+  must always be able to free a slot. `entitlements.test.ts` now asserts
+  `FREE.pinLimit === 5` so the spelled-out copy cannot drift from the rule.
+- A free household loses the invite _form_ and keeps every partner link it already
+  had. Access a family already has is not something a downgrade takes away.
+- **The wall is rendered, not enforced.** Packs ship in the client bundle and the
+  print route is static, so the paywall is a product boundary. With JavaScript off
+  the print page prints what the static HTML holds. That is the trade for a week
+  that works offline and prints without scripts, and it is written down in
+  `EVIDENCE.md` §51 rather than left to be discovered.
+- Two journey tests now run on Plus (`changing a setting re-personalizes the week`,
+  `search finds a step`), because they open weeks a free household cannot. A third
+  e2e assertion was wrong in a way worth keeping: it looked for a "Red flags"
+  heading that does not exist — the heading is "Call now if".
+- 100% coverage on `week-gate.ts`, `entitlements.ts`, `Paywall.tsx` and
+  `PrintGate.tsx`; three new `Paywall` stories; the e2e helpers (`signed`,
+  `upgrade`, `address`, `onboard`, `signIn`) are now in one file instead of five.
+
 ### Accessibility: the settings that were already written now do something (#44)
 
 - `tokens.css` had `:root[data-contrast="more"]` and `:root[data-motion="reduced"]`

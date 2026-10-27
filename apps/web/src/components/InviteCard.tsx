@@ -4,6 +4,8 @@ import { useCallback, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { Button, TextLink } from "@ninetothree/ui";
 
+import { useEntitlements } from "@/lib/entitlements";
+import { Paywall } from "./Paywall";
 import { ROLE_LABEL, type HouseholdRole } from "./HouseholdList";
 
 interface Invite {
@@ -31,6 +33,11 @@ function when(iso: string): string {
  */
 export function InviteCard() {
   const { status } = useSession();
+  const { entitlements, known } = useEntitlements();
+  // Nothing is gated while the plan is still loading, and a household that
+  // already has a second adult keeps its links: taking a shared calendar away
+  // from a family that relies on it is not a thing this product does.
+  const canInvite = !known || entitlements.partner;
   const [role, setRole] = useState<HouseholdRole>("partner");
   const [invites, setInvites] = useState<Invite[] | null>(null);
   const [link, setLink] = useState<string | null>(null);
@@ -87,34 +94,44 @@ export function InviteCard() {
 
   return (
     <>
-      <p className="text-base text-ink-muted">
-        A link lets one person join this household, once. It runs out after a week, and you can
-        revoke it before then.
-      </p>
+      {canInvite ? (
+        <>
+          <p className="text-base text-ink-muted">
+            A link lets one person join this household, once. It runs out after a week, and you can
+            revoke it before then.
+          </p>
 
-      <div className="mt-4">
-        <label htmlFor="invite-role" className="text-sm font-medium text-ink-muted">
-          They join as
-        </label>
-        <select
-          id="invite-role"
-          value={role}
-          onChange={(event) => setRole(event.target.value as HouseholdRole)}
-          className={SELECT}
-        >
-          {INVITABLE.map((value) => (
-            <option key={value} value={value}>
-              {ROLE_LABEL[value]}
-            </option>
-          ))}
-        </select>
-      </div>
+          <div className="mt-4">
+            <label htmlFor="invite-role" className="text-sm font-medium text-ink-muted">
+              They join as
+            </label>
+            <select
+              id="invite-role"
+              value={role}
+              onChange={(event) => setRole(event.target.value as HouseholdRole)}
+              className={SELECT}
+            >
+              {INVITABLE.map((value) => (
+                <option key={value} value={value}>
+                  {ROLE_LABEL[value]}
+                </option>
+              ))}
+            </select>
+          </div>
 
-      <div className="mt-4">
-        <Button variant="primary" size="sm" disabled={busy} onClick={create}>
-          {busy ? "Making a link" : "Make a link"}
-        </Button>
-      </div>
+          <div className="mt-4">
+            <Button variant="primary" size="sm" disabled={busy} onClick={create}>
+              {busy ? "Making a link" : "Make a link"}
+            </Button>
+          </div>
+        </>
+      ) : (
+        <Paywall
+          title="Inviting someone is part of Plus."
+          body="A second adult can see the week's jobs and the things you choose to share."
+          free="Your own notes, your own progress and everything about safety stay yours either way."
+        />
+      )}
 
       {problem ? (
         <p role="alert" className="mt-3 text-sm text-clay-strong">
