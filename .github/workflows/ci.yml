@@ -180,7 +180,7 @@ jobs:
   lighthouse:
     name: Lighthouse budget
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
 
@@ -212,10 +212,19 @@ jobs:
       - name: Assert the budget
         run: pnpm lighthouse
 
+      # The desktop run above is about the whole site on a laptop. This one is
+      # the phone: a parent holding a baby, on 4G, reading one week. It is a
+      # second step rather than more URLs in the first because the throttling
+      # model is different — see EVIDENCE.md §53.
+      - name: Assert the phone budget
+        run: pnpm lighthouse:mobile
+
       - name: Upload report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: lighthouse
-          path: .lighthouseci
+          path: |
+            .lighthouseci
+            .lighthouseci-mobile
           retention-days: 7

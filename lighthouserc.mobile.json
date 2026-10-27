@@ -1,0 +1,48 @@
+{
+  "ci": {
+    "collect": {
+      "startServerCommand": "AUTH_SECRET=lighthouse-not-a-secret-0000000000 pnpm --filter @ninetothree/web start",
+      "startServerReadyPattern": "Ready in",
+      "startServerReadyTimeout": 60000,
+      "url": [
+        "http://localhost:3000/week/pregnancy-w28",
+        "http://localhost:3000/onboarding",
+        "http://localhost:3000/search"
+      ],
+      "numberOfRuns": 3,
+      "settings": {
+        "formFactor": "mobile",
+        "throttlingMethod": "devtools",
+        "throttling": {
+          "rttMs": 150,
+          "throughputKbps": 1638.4,
+          "cpuSlowdownMultiplier": 4
+        },
+        "skipAudits": ["canonical", "is-crawlable", "robots-txt"]
+      }
+    },
+    "assert": {
+      "assertions": {
+        "largest-contentful-paint": [
+          "error",
+          {
+            "maxNumericValue": 2000,
+            "aggregationMethod": "median"
+          }
+        ],
+        "cumulative-layout-shift": [
+          "error",
+          {
+            "maxNumericValue": 0.05,
+            "aggregationMethod": "median"
+          }
+        ],
+        "errors-in-console": "error"
+      }
+    },
+    "upload": {
+      "target": "filesystem",
+      "outputDir": ".lighthouseci-mobile"
+    }
+  }
+}

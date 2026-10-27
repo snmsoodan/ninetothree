@@ -20,19 +20,36 @@ const inter = localFont({
   variable: "--font-inter",
   display: "swap",
   weight: "100 900",
+  // Inter is the body face, so the fallback is a system sans and the swap is
+  // small. The metrics are matched so the paragraph does not reflow.
+  adjustFontFallback: "Arial",
 });
 
+/*
+ * Newsreader is the display face, and on most pages it is also the largest
+ * thing painted. `adjustFontFallback` gives the fallback Times' metrics, so
+ * the swap does not move the heading it replaces: without it, the serif
+ * fallback and Newsreader disagree about line height by a few pixels and the
+ * page shifts. `swap` stays on because the heading is the page — a visit that
+ * never gets the real face is a visit that never sees the design, and with the
+ * metrics matched the swap costs no layout. See EVIDENCE.md §53.
+ */
 const newsreader = localFont({
   src: "./fonts/newsreader-latin.woff2",
   variable: "--font-newsreader",
   display: "swap",
   weight: "400 500",
+  adjustFontFallback: "Times New Roman",
 });
 
 /*
  * Atkinson Hyperlegible, by the Braille Institute, under the SIL Open Font
  * License. It is the second typeface a parent can choose, not a bigger one:
  * it separates I l 1 and O 0, which is the part a size setting cannot fix.
+ *
+ * `preload: false` on purpose: it is used only when a parent has turned on
+ * "Easier to tell apart", so preloading it put 22 kB of a font most people
+ * never see on the critical path of every page.
  */
 const atkinson = localFont({
   src: [
@@ -41,6 +58,7 @@ const atkinson = localFont({
   ],
   variable: "--font-atkinson",
   display: "swap",
+  preload: false,
 });
 
 export const metadata: Metadata = {
@@ -57,12 +75,16 @@ export const metadata: Metadata = {
    * `icon.svg` is picked up from the app directory automatically and stays the
    * favicon. The PNGs are for the two places that will not take an SVG: an
    * Android launcher and an iOS home screen.
+   *
+   * The 512 PNG is in the manifest and not in this list. A browser that reads
+   * `<link rel="icon">` and cannot take the SVG only needs something square;
+   * the launcher reads the manifest, which is where the size that gets cropped
+   * to a circle is chosen.
    */
   icons: {
     icon: [
       { url: "/icon.svg", type: "image/svg+xml" },
       { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
-      { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
     ],
     apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }],
   },

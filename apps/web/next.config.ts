@@ -27,6 +27,43 @@ const config: NextConfig = {
           },
         ],
       },
+      /*
+       * Files in `public/` are served with `Cache-Control: public, max-age=0`,
+       * which means a parent on a train re-downloads the icon and the offline
+       * page on every visit. `_next/static` is already immutable; these are the
+       * rest. Each one is listed rather than globbed, because the right answer
+       * differs: an icon can be a day stale, the service worker cannot be.
+       */
+      {
+        source: "/:icon(icon-192|icon-512|maskable-512|apple-touch-icon).png",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=86400, stale-while-revalidate=604800" },
+        ],
+      },
+      {
+        // The browser re-checks it every load; a day-stale worker is a day
+        // without a fix. `no-cache` still allows a 304, so it is cheap.
+        source: "/sw.js",
+        headers: [
+          { key: "Cache-Control", value: "no-cache" },
+          { key: "Service-Worker-Allowed", value: "/" },
+        ],
+      },
+      {
+        // Precached by the worker and shown when the network is gone; it must
+        // never be the reason a fix does not arrive.
+        source: "/offline.html",
+        headers: [{ key: "Cache-Control", value: "no-cache" }],
+      },
+      {
+        // 400 kB of text that changes only when the guide does. An hour of
+        // reuse makes a search box feel instant on the second visit, and the
+        // revalidation keeps it current.
+        source: "/search-index.json",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=3600, stale-while-revalidate=86400" },
+        ],
+      },
     ];
   },
 };

@@ -22,6 +22,7 @@
     "links:check": "node scripts/check-links.mjs",
     "bundle:check": "node scripts/check-bundle.mjs",
     "lighthouse": "lhci autorun",
+    "lighthouse:mobile": "lhci autorun --config=lighthouserc.mobile.json",
     "storybook": "pnpm --filter @ninetothree/web storybook",
     "build:storybook": "pnpm --filter @ninetothree/web build-storybook"
   },
