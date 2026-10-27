@@ -1,6 +1,8 @@
 import type { LinkEntry } from "@ninetothree/content";
 import { Badge, Card, CardBody, TextLink } from "@ninetothree/ui";
 
+import { formatDate } from "@/lib/i18n";
+
 export interface LinkCardProps {
   link: LinkEntry;
 }
@@ -31,15 +33,11 @@ const PLATFORM_LABEL: Record<NonNullable<LinkEntry["platforms"]>[number], string
   web: "Web",
 };
 
-const CHECKED = new Intl.DateTimeFormat("en-US", {
-  day: "numeric",
-  month: "long",
-  year: "numeric",
-});
+const CHECKED = { day: "numeric", month: "long", year: "numeric" } as const;
 
 /** Noon, so a timezone west of UTC cannot show yesterday's date. */
 function checkedOn(iso: string): string {
-  return CHECKED.format(new Date(`${iso}T12:00:00`));
+  return formatDate(iso, CHECKED);
 }
 
 /**

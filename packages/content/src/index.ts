@@ -68,6 +68,15 @@ export {
 } from "./checklists";
 
 export {
+  LOCALES,
+  DEFAULT_LOCALE,
+  localeData,
+  dirFor,
+  intlFor,
+  type Locale as LocaleCode,
+  type LocaleData,
+} from "./locales";
+export {
   SCHEDULES,
   ENABLED_LOCALES,
   US_SCHEDULE,

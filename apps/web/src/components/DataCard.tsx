@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { Button, Card, CardBody, Dialog } from "@ninetothree/ui";
 
+import { formatDate } from "@/lib/i18n";
 import { useAppState } from "@/lib/store";
 
 interface Deletion {
@@ -20,7 +21,7 @@ type State =
 // The purge date is a day, not a moment. Formatting it in the reader's own
 // timezone turns "the 31st" into "the 30th" for anybody west of UTC.
 const day = (iso: string): string =>
-  new Date(iso).toLocaleDateString("en-US", {
+  formatDate(iso, {
     month: "long",
     day: "numeric",
     year: "numeric",

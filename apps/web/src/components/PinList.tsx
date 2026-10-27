@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useId, useState } from "react";
 import { Card, CardBody } from "@ninetothree/ui";
 
+import { formatDate } from "@/lib/i18n";
+
 export interface PinItem {
   id: string;
   title: string;
@@ -36,10 +38,7 @@ export const PIN_LIMIT = 6;
  * worse than a pin that is one tap away.
  */
 function formatDay(date: string): string {
-  return new Date(`${date}T12:00:00`).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-  });
+  return formatDate(date, { month: "short", day: "numeric" });
 }
 
 interface ReminderControlProps {

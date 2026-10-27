@@ -109,8 +109,24 @@ describe("the UK schedule", () => {
 });
 
 describe("scheduleFor", () => {
-  it("falls back to the US schedule for an unknown locale", () => {
-    expect(scheduleFor("fr-FR" as never)).toBe(US_SCHEDULE);
+  it("gives every locale a parent can reach its own schedule", () => {
+    for (const locale of ENABLED_LOCALES) {
+      const schedule = scheduleFor(locale);
+      /* Not `toBe(US_SCHEDULE)`: a schedule that is the right answer for the
+         wrong market is exactly the bug this asserts against. */
+      expect(schedule.locale).toBe(locale);
+    }
+  });
+
+  it("refuses a locale nobody has written a schedule for", () => {
+    /* The old behaviour was to hand back the US schedule. For a UK parent
+       that is ACOG's cadence presented as NICE's, which is a clinical claim
+       nobody made. A throw is the honest answer. */
+    expect(() => scheduleFor("ar-EG")).toThrow(/No reviewed appointment schedule for ar-EG/);
+  });
+
+  it("refuses a locale that is not in the table at all", () => {
+    expect(() => scheduleFor("fr-FR" as never)).toThrow(/No reviewed appointment schedule/);
   });
 });
 

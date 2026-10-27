@@ -3,6 +3,8 @@
 import { Badge, Card, CardBody, TextLink } from "@ninetothree/ui";
 import type { RecallBecause, RecallSeverity } from "@ninetothree/content";
 
+import { formatDate } from "@/lib/i18n";
+
 export interface RecallNoticeItem {
   /** `${recallId}:${matchedOn}`. */
   id: string;
@@ -49,10 +51,10 @@ const BECAUSE_COPY: Record<RecallBecause, string> = {
   keyword: "You pinned a step about this.",
 };
 
-function formatDate(iso: string): string {
+function announcedOn(iso: string): string {
   const [year, month, day] = iso.split("-").map(Number);
   if (!year || !month || !day) return iso;
-  return new Date(Date.UTC(year, month - 1, day)).toLocaleDateString("en-US", {
+  return formatDate(new Date(Date.UTC(year, month - 1, day)), {
     month: "long",
     day: "numeric",
     year: "numeric",
@@ -88,7 +90,7 @@ export function RecallNotice({ notice, onDismiss }: RecallNoticeProps) {
             {notice.source.publisher}
           </TextLink>
           <span className="text-sm text-ink-faint tabular">
-            Announced {formatDate(notice.publishedAt)}
+            Announced {announcedOn(notice.publishedAt)}
           </span>
         </div>
 

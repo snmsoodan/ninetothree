@@ -80,6 +80,7 @@ export {
   type ChecklistIssue,
   type ChecklistLoadResult,
 } from "./checklists";
+export { LOCALES, DEFAULT_LOCALE, localeData, dirFor, intlFor, type LocaleData } from "./locales";
 export {
   SCHEDULES,
   ENABLED_LOCALES,
