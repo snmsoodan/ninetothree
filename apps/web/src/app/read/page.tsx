@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ARTICLES, articleHref } from "@ninetothree/content";
+import { articleHref } from "@ninetothree/content";
+import { ARTICLES } from "@ninetothree/content/article-registry";
 import { AppShell } from "@/components/AppShell";
 
 export const metadata: Metadata = {

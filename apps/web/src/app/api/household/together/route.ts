@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { listAppointments, listJobs, listMemberDetails, listSharedItems } from "@ninetothree/db";
-import { PACKS } from "@ninetothree/content";
+import { PACKS } from "@ninetothree/content/registry";
 
 import { getDb } from "@/lib/auth/db";
 import { ensureScope } from "@/lib/auth/household";

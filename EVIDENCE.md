@@ -1691,6 +1691,61 @@ There is no legitimate memberless household in this app — `createHousehold` al
 
 **What this does not do.** Nothing here has been tested against a real Stripe checkout, because there is no Stripe account behind this repository — see section 50. The wall is rendered, not enforced, as above. There is no free-trial state distinct from `trialing`, no grace period beyond `past_due`, and no per-region pricing. Two journey tests had to be given a Plus household to keep testing what they were written to test (`changing a setting re-personalizes the week`, `search finds a step`), because they open weeks a free household cannot.
 
-## 52. How this file is maintained
+## 52. The guide, split into indexes (issue #96)
+
+**The 660 kB chunk from section 44 was a symptom; the barrel was the disease.** `@ninetothree/content` re-exported `PACKS`, `LINKS`, `ARTICLES`, `CHECKLISTS`, `TRIAGE` and `RECALLS` from the same module as every helper, so `import { recallKey }` pulled 85 stage packs into the graph. `@ninetothree/content/core` stopped the worst of it, but it left a single 409 kB chunk that eight routes still loaded, and it answered the question "who imports the barrel" rather than "what does each page actually need". A dashboard needs to know which pack is current and how much of it is done. That is 85 short records, not 409 kB of steps.
+
+**The fix is generated data, not a smaller library.** `scripts/gen-indexes.mjs` reads the raw pack JSON and writes four narrow indexes — one record per line, so a diff shows the pack that changed:
+
+| Index          | One record per | Answers                                             | Size   |
+| -------------- | -------------- | --------------------------------------------------- | ------ |
+| `pack-index`   | stage pack     | which pack is at or before this stage; the next one | 67 kB  |
+| `stage-index`  | stage pack     | the week's title and subtitle                       | 7 kB   |
+| `action-index` | step           | this step's title, week and red flags               | 90 kB  |
+| `rule-index`   | stage pack     | this pack's rules, for "why am I not seeing this?"  | 146 kB |
+
+`pnpm content:indexes` regenerates all four plus the search index, and `pnpm content:indexes:check` fails CI when the files on disk have drifted — the same shape as the pack registry, and for the same reason: a generated file that nobody regenerates is a second source of truth. The check is in the Verify job, before the tests.
+
+**The generator reads JSON, so it could disagree with the parsed registry, and a test says it does not.** Zod fills in `options: []` and `alsoKnow: []` for packs that omit them; a generator that reads the file bypasses that and would emit `undefined`, which `JSON.stringify` drops — a silently different shape from `PACKS`. `stage-index.test.ts` and `search-index.test.ts` compare the generated artifacts against the parsed registries field by field. The search one is a full deep-equal against `buildIndex(PACKS, LINKS)`; it passed on the first run, which is the only reason to trust the generator at all.
+
+**The generator imports a TypeScript module, and that sets a floor on Node.** `scripts/gen-indexes.mjs` imports `packages/content/src/search.ts` directly so the index it writes is built by the same function the page searches with. Node 22.18 strips types natively; `engines.node` is now `>=22.18` for that reason. Before that floor the generator would fail on CI with a syntax error on the first `import type`.
+
+**`catchUp` split in two rather than being optimised.** It answered two questions at once: "which steps have I not finished in the pack I am on" (needs the guide) and "which finished steps have I not ticked off since" (needs only what is done). `catchUpCandidates` takes the packs and runs on the server; `pickCatchUp` and `catchUp` take the done-set and run in the browser. `catchup.test.ts` holds both halves to the same answers.
+
+**`/week` became a signpost to `/week/<id>`, and that is a product change, not a bundle change.** The week a parent is on was a page whose content depended on `localStorage`, which meant the server could not know which pack to send and the page had to ship all of them. With the id in the URL the server sends one pack. The side effect is worth more than the bytes: the current week is now a URL a parent can bookmark, print, or text to a partner. `week-gate.ts` reads `STAGE_INDEX` to decide whether the week in the URL is the week they are in.
+
+**`ruleEffects` had to learn to answer from the index, and its first answer was wrong.** `personalizeIndexedPack` is a second implementation of `personalizePack` over index records, and the two must not drift. The equivalence test loops three profiles over all 85 packs and compares action ids, `hidden`, `trimmed` and `quiet`. Writing it found a real inconsistency: `personalizePack` returns nothing reported when a rule would empty a pack — everything is shown, so there is nothing to explain — while `ruleEffects` reported the hidden steps anyway. The old test encoded the wrong behaviour, so it was rewritten rather than preserved. A second implementation is a cost; a second implementation with an oracle is a cost worth paying.
+
+**The search index is 412 kB, so it is fetched rather than imported.** It is the one index that cannot be a module: at 94 kB gzipped it would blow the per-chunk budget on its own, and it is only useful to a parent who is searching. `apps/web/public/search-index.json` is written by the generator, fetched by `loadSearchIndex()` when `/search` opens, and never downloaded by anyone else. The honest cost is that a searching parent waits one round trip: about 245 kB gzipped for the page plus the index, against 270 kB before. The page says "Opening the guide…" rather than showing an empty result list, because an empty list is a wrong answer and a wait is not.
+
+**The budget ratcheted from 450,000 to 150,000 bytes, and the exclusion had to change with it.** The old exclusion was a regex for `framework-*`, `polyfills-*` and `main-*`; Next's actual runtime chunks are hashed (`9fed7798-*.js`, `6699-*.js`) and the regex never matched, so the check was silently counting 174 kB of React against our budget. It now excludes `buildManifest.rootMainFiles` by name, which is the same list Next uses to decide what every page loads. Our largest own chunk is 140,027 bytes — the rule index, loaded only by `/email` and `/settings` — leaving 10 kB of headroom.
+
+**Measured before and after, on fresh builds, first-load for the whole route including the runtime.** Raw bytes and gzip:
+
+| Route           | Before raw | After raw | Before gz | After gz |
+| --------------- | ---------: | --------: | --------: | -------: |
+| `/`             |    966,634 |   705,393 |   261,268 |  197,234 |
+| `/search`       |  1,050,093 |   513,254 |   269,825 |  150,397 |
+| `/shelf`        |    933,408 |   610,376 |   251,203 |  176,588 |
+| `/history`      |    934,324 |   671,937 |   251,942 |  187,694 |
+| `/safety`       |    917,430 |   571,534 |   246,177 |  159,850 |
+| `/email`        |    942,293 |   673,895 |   254,874 |  191,099 |
+| `/settings`     |    973,553 |   704,643 |   263,216 |  199,258 |
+| `/together`     |    955,272 |   610,530 |   258,334 |  172,228 |
+| `/week`         |    442,058 |   443,244 |   126,445 |  126,683 |
+| `/library`      |    643,765 |   643,454 |   173,084 |  172,982 |
+| `/onboarding`   |    541,587 |   542,749 |   159,994 |  160,222 |
+| `/appointments` |    534,934 |   534,927 |   157,367 |  157,363 |
+| `/triage`       |    508,387 |   508,380 |   148,737 |  148,733 |
+
+The 409 kB shared chunk is gone. Every route that used to load it dropped 60–120 kB gzipped, and the three routes that never loaded it are unchanged to within a few hundred bytes — which is the check that the change did what it claims and nothing else. `/email` and `/settings` are now the heaviest routes at 191 and 199 kB gzipped, because between them they load the rule index.
+
+**The bottom nav's prefetch now costs bytes, and that is the one number that got worse.** Lighthouse's `total-byte-weight` on `/search` was 496,678 before and 562,887 after, over the 500,000 warning threshold. The page's own JavaScript halved; what grew is Next prefetching the four other tabs, whose chunks used to be inside the one bundle that was already loaded. Those chunks are the pages the parent is one tap from opening, the prefetch is low priority and happens after load, and turning it off would make every tab switch a round trip. It is a `warn` in `lighthouserc.json` and not an `error`, the performance score is still above 0.9, and the trade is deliberate. `/together`'s own `total-byte-weight` warning is gone.
+
+**Verification.** **1,961 tests** (content 550, rules 136, ui 53, db 263, web 959), with the workspace coverage thresholds met. `pnpm format:check`, `pnpm lint`, `pnpm typecheck`, `pnpm content:validate`, `pnpm content:registry:check`, `pnpm content:indexes:check` (85 packs, 804 search documents), `pnpm build` and `pnpm bundle:check` are green — 57 client chunks against a 150,000 byte budget. The end-to-end suite is **298 tests**: 168 across chromium and no-js, and 130 Storybook stories, all passing on the built app. Lighthouse audits ten URLs at 1.0 for accessibility, performance and `errors-in-console`, with the two warnings recorded above (`total-byte-weight` on `/search`, and `/triage`'s intentional `noindex` SEO score).
+
+**What this does not do.** `/library` still imports `LINKS` whole, and it is the second-largest own chunk at 138,621 bytes; the catalogue is a list a parent scrolls, so it has no natural subset, but a search-and-filter page could fetch it the way `/search` fetches its index. Zod still reaches the browser: `store.ts` imports from `/core`, which re-exports `schema.ts`, so about 57 kB of `/onboarding` is a validator the page does not run. `week/[id]`, `choose/[actionId]`, `read/[slug]`, the print routes, `api/household/together` and `lib/auth/db` still import `PACKS` server-side, which costs a build and no visitor anything.
+
+## 53. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.

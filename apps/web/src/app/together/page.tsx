@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { PACKS, findPackForStage } from "@ninetothree/content";
+import { findPackAtOrBefore } from "@ninetothree/content/pack-index";
 import { computeStage } from "@ninetothree/rules";
 import { AppShell } from "@/components/AppShell";
 import { PartnerView } from "@/components/PartnerView";
@@ -10,7 +10,7 @@ import { stageInput, useAppState } from "@/lib/store";
 /**
  * The stage lives in localStorage, so the page reads it here and hands the id
  * to the API. The pack itself is looked up on the server, which keeps the
- * 409 kB library out of this route.
+ * guide out of this route.
  */
 export default function TogetherPage() {
   const state = useAppState();
@@ -19,7 +19,7 @@ export default function TogetherPage() {
   const stageId = useMemo(() => {
     if (!input) return undefined;
     const stage = computeStage(input, new Date().toISOString().slice(0, 10));
-    return findPackForStage(PACKS, stage.kind, stage.index)?.id;
+    return findPackAtOrBefore(stage.kind, stage.index)?.id;
   }, [input]);
 
   return (

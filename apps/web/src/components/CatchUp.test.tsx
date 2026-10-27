@@ -10,7 +10,15 @@ const glucose = TEST_PACK.coreActions[0]!;
 const tdap = TEST_PACK.coreActions[1]!;
 
 function item(action: typeof glucose, stageLabel = "Week 20"): CatchUpItem {
-  return { action, packId: "pregnancy-w20", packTitle: "Week 20", stageLabel };
+  return {
+    actionId: action.id,
+    title: action.title,
+    why: action.why,
+    priority: action.priority === "essential" ? "essential" : "recommended",
+    packId: "pregnancy-w20",
+    packTitle: "Week 20",
+    stageLabel,
+  };
 }
 
 beforeEach(() => {

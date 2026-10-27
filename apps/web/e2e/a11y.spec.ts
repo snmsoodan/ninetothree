@@ -1,6 +1,8 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test, type Page } from "@playwright/test";
 
+import { gotoWeek } from "./helpers";
+
 /**
  * Accessibility is a product promise, not a checkbox. Every surface a parent
  * can reach must pass WCAG 2.2 AA with zero violations.
@@ -32,7 +34,7 @@ async function onboard(page: Page) {
 /** Onboarding lands on the dashboard; the week is one tap further in. */
 async function onboardToWeek(page: Page) {
   await onboard(page);
-  await page.goto("/week");
+  await gotoWeek(page);
 }
 
 /**

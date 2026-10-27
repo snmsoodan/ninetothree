@@ -1,31 +1,22 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import type { CatchUpItem } from "@ninetothree/rules";
 import { CatchUp } from "./CatchUp";
 
-const items = [
+const items: CatchUpItem[] = [
   {
-    action: {
-      id: "a1",
-      type: "do" as const,
-      priority: "essential" as const,
-      domain: "health-parent" as const,
-      title: "Book your glucose test",
-      why: "It has to happen between 24 and 28 weeks.",
-      options: [],
-    },
+    actionId: "a1",
+    title: "Book your glucose test",
+    why: "It has to happen between 24 and 28 weeks.",
+    priority: "essential",
     packId: "pregnancy-w26",
     packTitle: "Week 26",
     stageLabel: "Week 26",
   },
   {
-    action: {
-      id: "a2",
-      type: "know" as const,
-      priority: "recommended" as const,
-      domain: "health-baby" as const,
-      title: "Learn the movement count",
-      why: "Ten movements in two hours is the usual rule.",
-      options: [],
-    },
+    actionId: "a2",
+    title: "Learn the movement count",
+    why: "Ten movements in two hours is the usual rule.",
+    priority: "recommended",
     packId: "pregnancy-w27",
     packTitle: "Week 27",
     stageLabel: "Week 27",

@@ -1,6 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 
-import { address, signIn, upgrade } from "./helpers";
+import { address, gotoWeek, signIn, upgrade } from "./helpers";
 
 /**
  * The path a brand-new parent takes: land, answer three questions, get a week,
@@ -26,7 +26,7 @@ async function onboardAsPregnant(page: Page) {
 /** Onboarding lands on the dashboard; the week is one tap further in. */
 async function onboardToWeek(page: Page) {
   await onboardAsPregnant(page);
-  await page.goto("/week");
+  await gotoWeek(page);
 }
 
 test("onboarding takes under ninety seconds, and every answer is recorded", async ({ page }) => {
@@ -354,8 +354,10 @@ test("a late joiner gets a short catch-up, not a backlog", async ({ page }) => {
 test("a keyboard user can skip the nav and never loses focus", async ({ page }) => {
   await onboardAsPregnant(page);
 
-  // Land on the page fresh so focus starts at the top of the document.
-  await page.goto("/week");
+  // Land on the page fresh so focus starts at the top of the document. The
+  // concrete URL, not `/week`, because the signpost redirects and the redirect
+  // is a route change — it would move focus to the heading before the first Tab.
+  await page.goto(await gotoWeek(page));
 
   // The skip link is the first thing Tab reaches.
   await page.keyboard.press("Tab");
@@ -719,7 +721,7 @@ test("a step that is a purchase can be narrowed to one answer, and the answer st
   }
   await page.getByRole("button", { name: "Show me" }).click();
 
-  await page.goto("/week");
+  await gotoWeek(page);
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
 
   // The step offers the chooser, because a list of three chairs is not advice.
@@ -886,7 +888,7 @@ test("a two-year-old gets a toddler month, not the last baby month", async ({ pa
   }
   await page.getByRole("button", { name: "Show me" }).click();
 
-  await page.goto("/week");
+  await gotoWeek(page);
   await expect(page.getByRole("banner").getByText("Month 26", { exact: true })).toBeVisible();
   await expect(
     page.getByRole("heading", { level: 1, name: /thirty-month visit is next month/ }),

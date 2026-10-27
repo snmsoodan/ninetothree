@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { CHECKLISTS, getChecklist } from "@ninetothree/content";
+import { CHECKLISTS, getChecklist } from "@ninetothree/content/checklist-registry";
 import { HospitalBag } from "@/components/HospitalBag";
 import { PrintToolbar } from "@/components/PrintToolbar";
 

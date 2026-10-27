@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import type { StagePack } from "@ninetothree/content";
+import type { RuleIndexPack } from "@ninetothree/content/rule-index";
 import { ProfilePreview } from "./ProfilePreview";
 
 const pack = {
@@ -7,7 +7,7 @@ const pack = {
   kind: "pregnancy",
   stageIndex: 36,
   title: "Week 36",
-  coreActions: [
+  actions: [
     {
       id: "w36-gbs",
       type: "do",
@@ -30,22 +30,13 @@ const pack = {
       ],
     },
   ],
-  alsoKnow: [],
-  appointments: [],
-  redFlags: [{ id: "rf", text: "Something is wrong.", escalation: "call-911" }],
-  sources: [],
-  reviewedBy: "Test",
-  reviewedAt: "2026-01-01",
-  stageUnit: "week",
-  locale: "en-US",
-  country: "US",
-  updatedAt: "2026-01-01",
-} as unknown as StagePack;
+  redFlags: [],
+} as unknown as RuleIndexPack;
 
 const meta: Meta<typeof ProfilePreview> = {
   title: "App/ProfilePreview",
   component: ProfilePreview,
-  args: { packs: [pack] },
+  args: { index: [pack] },
 };
 
 export default meta;

@@ -1,7 +1,8 @@
 import { notFound } from "next/navigation";
 import { AppShell } from "@/components/AppShell";
 import { Chooser } from "@/components/Chooser";
-import { findAction, PACKS } from "@ninetothree/content";
+import { findAction } from "@ninetothree/content";
+import { PACKS } from "@ninetothree/content/registry";
 
 export function generateStaticParams() {
   return PACKS.flatMap((pack) =>

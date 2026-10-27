@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { PACKS } from "@ninetothree/content";
+import { ACTION_INDEX, findIndexedAction } from "@ninetothree/content/action-index";
 import { Badge, Card, CardBody, TextLink } from "@ninetothree/ui";
 import { AppShell } from "@/components/AppShell";
 import { resolvePins } from "@/lib/pins";
@@ -12,7 +12,7 @@ export default function ShelfPage() {
   const state = useAppState();
   const [query, setQuery] = useState("");
 
-  const pins = useMemo(() => resolvePins(state.pins, PACKS), [state.pins]);
+  const pins = useMemo(() => resolvePins(state.pins, ACTION_INDEX), [state.pins]);
 
   const filtered = useMemo(() => {
     const needle = query.trim().toLowerCase();
@@ -98,9 +98,7 @@ export default function ShelfPage() {
                 <ul className="mt-3 space-y-3">
                   {filtered.map((pin) => {
                     const index = pins.findIndex((candidate) => candidate.id === pin.id);
-                    const action = PACKS.flatMap((pack) => pack.coreActions).find(
-                      (candidate) => candidate.id === pin.id,
-                    );
+                    const action = findIndexedAction(pin.id, ACTION_INDEX);
                     return (
                       <li key={pin.id}>
                         <Card>

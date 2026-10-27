@@ -13,7 +13,7 @@ const state: AppState = {
   },
 };
 
-const history = buildHistory(state, []);
+const history = buildHistory(state, {}, []);
 
 let downloaded: { name: string; body: string; type: string }[] = [];
 

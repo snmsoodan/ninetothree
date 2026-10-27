@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { PACKS } from "@ninetothree/content";
+import { PACKS } from "@ninetothree/content/registry";
 import type { Action, StagePack } from "@ninetothree/content";
 import {
   completion,

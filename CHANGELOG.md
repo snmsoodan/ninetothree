@@ -9,6 +9,46 @@ changelog written after the fact from memory is a changelog nobody can trust.
 
 ## Unreleased
 
+### The guide, split into indexes (#96)
+
+- The 409 kB chunk that eight routes still loaded is **gone**. `catchUp` split in
+  two — a server half that reads the packs, a client half that reads only what is
+  done — and `scripts/gen-indexes.mjs` now writes four narrow indexes instead: pack,
+  stage, action and rule. One record per line, so a diff shows the pack that changed.
+- **`pnpm content:indexes:check`** fails CI when the generated files have drifted,
+  the same way the pack registry already works. The generator reads raw JSON, so it
+  bypasses Zod's defaults; a test deep-equals every artifact against the parsed
+  registry, which is the only reason to trust it.
+- **`/week` is a signpost to `/week/<id>`.** The current week is now a URL a parent
+  can bookmark, print, or text to a partner — and the server can send one pack
+  instead of all of them. This is a product change that happens to save 140 kB.
+- **Search is fetched, not imported.** The index is 412 kB raw and 94 kB gzipped, so
+  it is written to `apps/web/public/search-index.json` and downloaded only when a
+  parent opens `/search`. They wait one round trip; nobody else pays anything. The
+  page says "Opening the guide…" rather than showing an empty result list, because
+  an empty list is a wrong answer and a wait is not.
+- **`ruleEffects` answers from the index now, and the equivalence test found a real
+  inconsistency.** `personalizePack` reports nothing when a rule would empty a pack —
+  everything is shown, so there is nothing to explain — while `ruleEffects` reported
+  the hidden steps anyway. The old test encoded the wrong behaviour and was rewritten
+  rather than preserved.
+- **The bundle budget ratcheted from 450 kB to 150 kB**, and the exclusion had to
+  change with it: the old `framework-*` pattern never matched Next's hashed runtime
+  chunks, so the check had been counting 174 kB of React against our own budget. It
+  now excludes `buildManifest.rootMainFiles` by name. Largest own chunk: 140,027 B.
+- Measured on fresh builds: `/` 261 → 197 kB gzipped, `/search` 270 → 150, `/shelf`
+  251 → 177, `/history` 252 → 188, `/safety` 246 → 160, `/email` 255 → 191,
+  `/settings` 263 → 199, `/together` 258 → 172. `/week`, `/library`, `/onboarding`,
+  `/appointments` and `/triage` moved by less than 500 bytes, which is the check that
+  nothing else changed.
+- One number got worse and it is written down: Lighthouse's `total-byte-weight` on
+  `/search` went 497 → 563 kB, over the 500 kB warning, because Next now prefetches
+  the four other tabs whose chunks used to be inside the bundle that was already
+  loaded. It is a warning, the performance score is still above 0.9, and turning
+  prefetch off would make every tab switch a round trip.
+- `engines.node` is now `>=22.18`, because the generator imports a `.ts` module and
+  that is the first Node that strips types without a flag.
+
 ### The paywall, in four places and nowhere else (#40)
 
 - Four gates, decided one at a time: **the week you are not in**, **printing a

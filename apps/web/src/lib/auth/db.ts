@@ -1,4 +1,4 @@
-import { PACKS } from "@ninetothree/content";
+import { PACKS } from "@ninetothree/content/registry";
 import { createDb, migrateUp, syncPacks, type DbHandle } from "@ninetothree/db";
 
 let handle: Promise<DbHandle> | undefined;

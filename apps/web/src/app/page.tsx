@@ -2,7 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { PACKS, RECALLS, findPackForStage, nextPack } from "@ninetothree/content";
+import { RECALLS } from "@ninetothree/content";
+import { ACTION_INDEX } from "@ninetothree/content/action-index";
+import { PACK_INDEX, findPackAtOrBefore, nextPackIndex } from "@ninetothree/content/pack-index";
 import { computeStage, stageLabel } from "@ninetothree/rules";
 import { AppShell } from "@/components/AppShell";
 import { AppointmentList } from "@/components/AppointmentList";
@@ -51,7 +53,7 @@ export default function DashboardPage() {
 
   const pins = useMemo<PinItem[]>(
     () =>
-      resolvePins(state.pins, PACKS).map((pin) => ({
+      resolvePins(state.pins, ACTION_INDEX).map((pin) => ({
         ...pin,
         shared: sharedIds.includes(pin.id),
       })),
@@ -85,8 +87,8 @@ export default function DashboardPage() {
         .filter(([, entry]) => entry.status === "done" || entry.status === "skipped")
         .map(([id]) => id),
     );
-    const weeks = PACKS.filter(
-      (pack) => pack.coreActions.length > 0 && pack.coreActions.every((a) => settled.has(a.id)),
+    const weeks = PACK_INDEX.filter(
+      (pack) => pack.coreActionIds.length > 0 && pack.coreActionIds.every((id) => settled.has(id)),
     ).length;
     return { weeksDone: weeks, actionsDone: settled.size };
   }, [state.progress]);
@@ -100,7 +102,7 @@ export default function DashboardPage() {
   }
 
   const stage = computeStage(input, new Date().toISOString().slice(0, 10));
-  const pack = findPackForStage(PACKS, stage.kind, stage.index);
+  const pack = findPackAtOrBefore(stage.kind, stage.index);
   const label = stageLabel(stage);
 
   if (!pack) {
@@ -115,7 +117,7 @@ export default function DashboardPage() {
   }
 
   const progress = weekProgress(pack, state);
-  const ahead = nextPack(PACKS, pack);
+  const ahead = nextPackIndex(pack);
   const quiet = state.profile.loss !== undefined;
 
   return (

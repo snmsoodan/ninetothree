@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 
 import { expect, test, type Page } from "@playwright/test";
 
-import { upgrade } from "./helpers";
+import { gotoWeek, upgrade } from "./helpers";
 
 function address() {
   return `maya+${randomUUID()}@example.com`;
@@ -53,7 +53,7 @@ async function makeLink(page: Page): Promise<string> {
 
 /** Pins the first action on the current week and shares it. */
 async function shareAPin(page: Page) {
-  await page.goto("/week");
+  await gotoWeek(page);
   await page.getByRole("button", { name: /^Pin/ }).first().click();
   await page.goto("/");
   await page.getByRole("button", { name: "Share with your household" }).first().click();
@@ -126,7 +126,7 @@ test.describe("the partner view", () => {
     page,
   }) => {
     await signIn(page, address());
-    await page.goto("/week");
+    await gotoWeek(page);
     await page.getByRole("button", { name: /^Pin/ }).first().click();
     await page.goto("/");
 

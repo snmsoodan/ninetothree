@@ -15,7 +15,7 @@ import { join } from "node:path";
 
 const NEXT_DIR = "apps/web/.next";
 // Overridable so the check itself can be tested. CI does not set it.
-const BUDGET_BYTES = Number(process.env.BUNDLE_BUDGET_BYTES ?? 450_000);
+const BUDGET_BYTES = Number(process.env.BUNDLE_BUDGET_BYTES ?? 150_000);
 
 function readJson(path) {
   try {
@@ -33,6 +33,13 @@ if (!appManifest && !buildManifest) {
   process.exit(1);
 }
 
+/**
+ * React and Next's own runtime. It is in every route's first load, it is not
+ * ours to shrink, and it is over any budget worth having — so it is measured
+ * by Lighthouse, not here.
+ */
+const runtime = new Set(buildManifest?.rootMainFiles ?? []);
+
 /** Every chunk file the build produced, keyed by its path under .next/. */
 const chunks = new Map();
 
@@ -40,7 +47,7 @@ function collect(files) {
   for (const file of files ?? []) {
     if (!file.endsWith(".js")) continue;
     if (!file.startsWith("static/")) continue;
-    // React and Next's own runtime. Not ours to shrink, and never small.
+    if (runtime.has(file)) continue;
     if (/\/(framework|polyfills|main)-/.test(file)) continue;
     if (chunks.has(file)) continue;
     try {

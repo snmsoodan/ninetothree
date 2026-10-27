@@ -1,19 +1,40 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { LINKS, PACKS, buildIndex, search } from "@ninetothree/content";
+import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
+import { search, type SearchDoc } from "@ninetothree/content";
 import { AppShell } from "@/components/AppShell";
 import { SearchResults } from "@/components/SearchResults";
+import { loadSearchIndex } from "@/lib/search-index";
 
 /**
- * One box over the whole guide. The index is built once at module load, so
- * typing does not wait for anything.
+ * One box over the whole guide.
+ *
+ * The index is fetched when the page opens rather than bundled, so a parent
+ * who is not searching never downloads the corpus. Until it arrives the box
+ * works; it just cannot answer yet, and says so.
  */
-const INDEX = buildIndex(PACKS, LINKS);
-
 export default function SearchPage() {
   const [query, setQuery] = useState("");
-  const hits = useMemo(() => search(INDEX, query, 20), [query]);
+  const [docs, setDocs] = useState<SearchDoc[] | null>(null);
+  const [failed, setFailed] = useState(false);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    loadSearchIndex(controller.signal)
+      .then((loaded) => {
+        setDocs(loaded);
+      })
+      .catch(() => {
+        if (controller.signal.aborted) return;
+        setFailed(true);
+      });
+    return () => {
+      controller.abort();
+    };
+  }, []);
+
+  const hits = useMemo(() => (docs ? search(docs, query, 20) : []), [docs, query]);
 
   return (
     <AppShell>
@@ -37,7 +58,29 @@ export default function SearchPage() {
         />
       </div>
 
-      <SearchResults hits={hits} query={query} />
+      {failed ? (
+        <div className="mt-8">
+          <p className="text-lg text-ink">Search is not loading right now.</p>
+          <p className="mt-2 text-ink-muted">
+            Nothing is lost — everything we link to is in the library, and every step is still on
+            your week.
+          </p>
+          <p className="mt-4">
+            <Link
+              href="/library"
+              className="text-clay underline decoration-1 underline-offset-2 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-clay"
+            >
+              Open the library
+            </Link>
+          </p>
+        </div>
+      ) : docs === null ? (
+        <p className="mt-8 text-ink-muted" role="status">
+          {query.trim() === "" ? "Opening the guide…" : "One moment — still opening the guide."}
+        </p>
+      ) : (
+        <SearchResults hits={hits} query={query} />
+      )}
     </AppShell>
   );
 }

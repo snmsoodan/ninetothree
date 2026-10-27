@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { TEST_PACK } from "@/test-fixtures";
+import { TEST_ACTION_INDEX } from "@/test-fixtures";
 import { resolvePins } from "./pins";
 import type { Pin } from "./store";
 
-const packs = [TEST_PACK];
+const packs = TEST_ACTION_INDEX;
 
 const pin = (overrides: Partial<Pin> = {}): Pin => ({
   id: "t-glucose",

@@ -1,4 +1,5 @@
-import { PACKS, type StagePack } from "@ninetothree/content";
+import type { StagePack } from "@ninetothree/content";
+import { PACKS } from "@ninetothree/content/registry";
 import type { SqlClient } from "./migrate";
 import { syncPacks } from "./packs";
 

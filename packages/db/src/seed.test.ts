@@ -1,4 +1,4 @@
-import { PACKS } from "@ninetothree/content";
+import { PACKS } from "@ninetothree/content/registry";
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { migrateUp } from "./migrate";
 import { listAppointments, listItemState, listPinned, listProgress, getPregnancy } from "./repo";

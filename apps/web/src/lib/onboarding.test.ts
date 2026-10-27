@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { PACKS, appointmentsFor, findPackForStage } from "@ninetothree/content";
+import { appointmentsFor, findPackForStage } from "@ninetothree/content";
+import { PACKS } from "@ninetothree/content/registry";
 import { personalizePack, type Profile } from "@ninetothree/rules";
 
 /**

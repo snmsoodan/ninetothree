@@ -1,12 +1,20 @@
 "use client";
 
 import Link from "next/link";
-import type { StagePack } from "@ninetothree/content";
 import { Badge, ProgressRing } from "@ninetothree/ui";
 import type { WeekProgress } from "@/lib/week";
 
+/**
+ * The card needs two fields of a week, not the week. Typing it this way is what
+ * lets the dashboard render it from the pack index.
+ */
+export interface WeekSummary {
+  title: string;
+  subtitle?: string;
+}
+
 export interface WeekSummaryCardProps {
-  pack: StagePack;
+  pack: WeekSummary;
   progress: WeekProgress;
   /** The stage label, e.g. "Week 28". */
   stage: string;

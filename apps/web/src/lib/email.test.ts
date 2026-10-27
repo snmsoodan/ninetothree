@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { PACKS, type StagePack } from "@ninetothree/content";
+import { RULE_INDEX, type RuleIndexPack } from "@ninetothree/content/rule-index";
 import {
   EMAIL_ACTIONS,
   EMAIL_HOUR,
@@ -33,7 +33,7 @@ function state(overrides: Partial<AppState> = {}): AppState {
 const NOW = new Date(2026, 9, 20, 9, 0);
 
 function build(overrides: Partial<AppState> = {}, now = NOW) {
-  return buildWeeklyEmail({ state: state(overrides), packs: PACKS, now, baseUrl: BASE });
+  return buildWeeklyEmail({ state: state(overrides), packs: RULE_INDEX, now, baseUrl: BASE });
 }
 
 describe("buildWeeklyEmail", () => {
@@ -100,7 +100,7 @@ describe("buildWeeklyEmail", () => {
             "w28-kick-counts": { status: "skipped", at: "2026-10-19T10:00:00.000Z" },
           },
         }),
-        packs: PACKS,
+        packs: RULE_INDEX,
         now: NOW,
         baseUrl: BASE,
       }),
@@ -125,8 +125,8 @@ describe("buildWeeklyEmail", () => {
   });
 
   it("falls back to the lead action's reason when a pack has no subtitle", () => {
-    const bare = PACKS.map((pack) =>
-      pack.id === "pregnancy-w28" ? ({ ...pack, subtitle: undefined } as StagePack) : pack,
+    const bare = RULE_INDEX.map((pack) =>
+      pack.id === "pregnancy-w28" ? ({ ...pack, subtitle: undefined } as RuleIndexPack) : pack,
     );
     const email = buildWeeklyEmail({ state: state(), packs: bare, now: NOW, baseUrl: BASE });
     expect(email?.preheader).toBe(email?.actions[0]?.why);
@@ -139,8 +139,8 @@ describe("buildWeeklyEmail", () => {
   it("still sends when a pack somehow has no red flag", () => {
     // The schema requires at least one, so this cannot happen through the
     // loader. The email does not depend on that being true.
-    const bare = PACKS.map((pack) =>
-      pack.id === "pregnancy-w28" ? ({ ...pack, redFlags: [] } as StagePack) : pack,
+    const bare = RULE_INDEX.map((pack) =>
+      pack.id === "pregnancy-w28" ? ({ ...pack, redFlags: [] } as RuleIndexPack) : pack,
     );
     const email = buildWeeklyEmail({ state: state(), packs: bare, now: NOW, baseUrl: BASE });
     expect(email).not.toBeNull();
@@ -164,21 +164,25 @@ describe("buildWeeklyEmail — the gate", () => {
     it(`sends nothing when ${name}`, () => {
       expect(build(overrides)).toBeNull();
       expect(
-        weeklyEmailReason({ state: state(overrides), packs: PACKS, now: NOW, baseUrl: BASE }),
+        weeklyEmailReason({ state: state(overrides), packs: RULE_INDEX, now: NOW, baseUrl: BASE }),
       ).toBe(reason);
     });
   }
 
   it("sends nothing after a loss, even with the email switched on", () => {
     const lossy = state({ profile: { loss: "baby" } });
-    expect(buildWeeklyEmail({ state: lossy, packs: PACKS, now: NOW, baseUrl: BASE })).toBeNull();
-    expect(weeklyEmailReason({ state: lossy, packs: PACKS, now: NOW, baseUrl: BASE })).toBe("loss");
+    expect(
+      buildWeeklyEmail({ state: lossy, packs: RULE_INDEX, now: NOW, baseUrl: BASE }),
+    ).toBeNull();
+    expect(weeklyEmailReason({ state: lossy, packs: RULE_INDEX, now: NOW, baseUrl: BASE })).toBe(
+      "loss",
+    );
   });
 
   it("sends nothing when there is no pack for the stage at all", () => {
     // Every stage from pregnancy week 4 to toddler month 36 has a pack now, so
     // the only way to reach this guard is an empty corpus. It is a real guard:
-    // `findPackForStage` returns undefined for an empty list, and a build with
+    // `findRulePackAtOrBefore` returns undefined for an empty list, and a build with
     // no content should send nothing rather than crash.
     const parent = state({ status: "parent", dueDate: undefined, birthDate: "2025-04-20" });
     expect(buildWeeklyEmail({ state: parent, packs: [], now: NOW, baseUrl: BASE })).toBeNull();
@@ -201,7 +205,7 @@ describe("buildWeeklyEmail — no re-engagement", () => {
     // there is no such branch.
     const away = state();
     const later = new Date(2027, 0, 5, 9, 0);
-    const email = buildWeeklyEmail({ state: away, packs: PACKS, now: later, baseUrl: BASE });
+    const email = buildWeeklyEmail({ state: away, packs: RULE_INDEX, now: later, baseUrl: BASE });
     expect(email?.weekLabel).not.toBe("Week 28");
     expect(email?.key.startsWith("pregnancy-w28")).toBe(false);
   });

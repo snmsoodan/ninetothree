@@ -5,7 +5,7 @@ import type { Appointment } from "@ninetothree/content";
 import { Card, CardBody } from "@ninetothree/ui";
 
 export interface AppointmentListProps {
-  appointments: Appointment[];
+  appointments: readonly Appointment[];
   /** "week" or "month", so the window reads correctly. */
   unit: "week" | "month" | "day";
 }

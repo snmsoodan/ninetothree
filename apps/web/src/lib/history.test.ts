@@ -1,9 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { TEST_PACK } from "@/test-fixtures";
+import { TEST_ACTION_INDEX, TEST_PACK_INDEX } from "@/test-fixtures";
 import { UNKNOWN_TITLE, UNKNOWN_WEEK, buildHistory } from "./history";
 import { EMPTY_STATE, type AppState, type ProgressEntry } from "./store";
 
-const packs = [TEST_PACK];
+const index = TEST_ACTION_INDEX;
+const packs = TEST_PACK_INDEX;
 
 function stateWith(progress: Record<string, ProgressEntry>, overrides: Partial<AppState> = {}) {
   return { ...EMPTY_STATE, onboarded: true, progress, ...overrides };
@@ -17,7 +18,7 @@ const done = (at: string, extra: Partial<ProgressEntry> = {}): ProgressEntry => 
 
 describe("buildHistory", () => {
   it("is empty when nothing has been recorded", () => {
-    const history = buildHistory(EMPTY_STATE, packs);
+    const history = buildHistory(EMPTY_STATE, index, packs);
     expect(history).toEqual({ weeks: [], actions: [], pins: [], total: 0 });
   });
 
@@ -30,6 +31,7 @@ describe("buildHistory", () => {
           packTitle: "Week 28",
         }),
       }),
+      index,
       packs,
     );
     expect(history.actions[0]).toMatchObject({
@@ -49,6 +51,7 @@ describe("buildHistory", () => {
           packTitle: "Week 20",
         }),
       }),
+      index,
       packs,
     );
     expect(history.actions[0]).toMatchObject({
@@ -62,6 +65,7 @@ describe("buildHistory", () => {
   it("keeps the date of a legacy entry whose action is gone", () => {
     const history = buildHistory(
       stateWith({ "retired-action": done("2026-10-01T10:00:00.000Z") }),
+      index,
       packs,
     );
     expect(history.actions[0]).toMatchObject({
@@ -78,6 +82,7 @@ describe("buildHistory", () => {
         "t-glucose": done("2026-10-01T10:00:00.000Z"),
         "t-tdap": done("2026-10-05T10:00:00.000Z"),
       }),
+      index,
       packs,
     );
     expect(history.actions.map((action) => action.id)).toEqual(["t-tdap", "t-glucose"]);
@@ -90,6 +95,7 @@ describe("buildHistory", () => {
         "t-tdap": done("2026-10-09T10:00:00.000Z"),
         "t-car-seat": done("2026-10-05T10:00:00.000Z"),
       }),
+      index,
       packs,
     );
     expect(history.actions.map((action) => action.id)).toEqual([
@@ -103,6 +109,7 @@ describe("buildHistory", () => {
     const at = "2026-10-01T10:00:00.000Z";
     const history = buildHistory(
       stateWith({ "t-tdap": done(at), "t-glucose": done(at), "t-car-seat": done(at) }),
+      index,
       packs,
     );
     expect(history.actions.map((action) => action.id)).toEqual([
@@ -116,6 +123,7 @@ describe("buildHistory", () => {
     const at = "2026-10-01T10:00:00.000Z";
     const history = buildHistory(
       stateWith({ "t-car-seat": done(at), "t-glucose": done(at), "t-tdap": done(at) }),
+      index,
       packs,
     );
     expect(history.actions.map((action) => action.id)).toEqual([
@@ -136,6 +144,7 @@ describe("buildHistory", () => {
           packTitle: "Week 20",
         },
       }),
+      index,
       packs,
     );
     expect(history.actions[0]?.reason).toBe("not-for-me");
@@ -143,7 +152,11 @@ describe("buildHistory", () => {
 
   it("breaks a timestamp tie on id so the order is stable", () => {
     const at = "2026-10-01T10:00:00.000Z";
-    const history = buildHistory(stateWith({ "t-tdap": done(at), "t-glucose": done(at) }), packs);
+    const history = buildHistory(
+      stateWith({ "t-tdap": done(at), "t-glucose": done(at) }),
+      index,
+      packs,
+    );
     expect(history.actions.map((action) => action.id)).toEqual(["t-glucose", "t-tdap"]);
   });
 
@@ -153,6 +166,7 @@ describe("buildHistory", () => {
         "t-glucose": done("2026-10-01T10:00:00.000Z"),
         "t-tdap": { status: "skipped", at: "2026-10-02T10:00:00.000Z", reason: "not-now" },
       }),
+      index,
       packs,
     );
     expect(history.weeks).toHaveLength(1);
@@ -172,6 +186,7 @@ describe("buildHistory", () => {
         "t-tdap": done("2026-10-02T10:00:00.000Z"),
         "t-car-seat": { status: "skipped", at: "2026-10-03T10:00:00.000Z" },
       }),
+      index,
       packs,
     );
     expect(history.weeks[0]?.complete).toBe(true);
@@ -186,6 +201,7 @@ describe("buildHistory", () => {
           packTitle: "Week 20",
         }),
       }),
+      index,
       packs,
     );
     expect(history.weeks[0]?.complete).toBe(false);
@@ -196,13 +212,18 @@ describe("buildHistory", () => {
       stateWith({
         "t-tdap": { status: "skipped", at: "2026-10-02T10:00:00.000Z", reason: "not-for-me" },
       }),
+      index,
       packs,
     );
     expect(history.actions[0]?.reason).toBe("not-for-me");
   });
 
   it("omits the reason key entirely when there is none", () => {
-    const history = buildHistory(stateWith({ "t-tdap": done("2026-10-02T10:00:00.000Z") }), packs);
+    const history = buildHistory(
+      stateWith({ "t-tdap": done("2026-10-02T10:00:00.000Z") }),
+      index,
+      packs,
+    );
     expect(history.actions[0]).not.toHaveProperty("reason");
   });
 
@@ -216,7 +237,7 @@ describe("buildHistory", () => {
         at: "",
       },
     ];
-    const history = buildHistory(stateWith({}, { pins }), packs);
+    const history = buildHistory(stateWith({}, { pins }), index, packs);
     expect(history.pins).toEqual(pins);
   });
 
@@ -226,6 +247,7 @@ describe("buildHistory", () => {
         "t-glucose": done("2026-10-01T10:00:00.000Z"),
         "t-tdap": { status: "skipped", at: "2026-10-02T10:00:00.000Z" },
       }),
+      index,
       packs,
     );
     expect(history.total).toBe(2);
@@ -234,6 +256,7 @@ describe("buildHistory", () => {
   it("groups a retired entry with no pack id under its own week", () => {
     const history = buildHistory(
       stateWith({ "retired-action": done("2026-10-01T10:00:00.000Z") }),
+      index,
       packs,
     );
     expect(history.weeks).toHaveLength(1);

@@ -44,10 +44,22 @@ export {
   type Loss,
 } from "./personalize";
 export {
+  ruleEffects,
+  personalizeIndexedPack,
+  type RuleChange,
+  type RuleEffects,
+  type IndexedPersonalization,
+} from "./rule-effects";
+export {
   catchUp,
+  catchUpCandidates,
+  pickCatchUp,
   CATCH_UP_WINDOW,
   CATCH_UP_LIMIT,
+  type CatchUpCandidate,
+  type CatchUpCandidates,
   type CatchUpItem,
   type CatchUpResult,
+  type CatchUpWindow,
   type CatchUpOptions,
 } from "./catchup";

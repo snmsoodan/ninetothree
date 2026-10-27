@@ -1,6 +1,12 @@
 import { describe, expect, it } from "vitest";
 import type { Action, StageKind, StagePack, StageUnit } from "@ninetothree/content";
-import { CATCH_UP_LIMIT, CATCH_UP_WINDOW, catchUp } from "./catchup";
+import {
+  CATCH_UP_LIMIT,
+  CATCH_UP_WINDOW,
+  catchUp,
+  catchUpCandidates,
+  pickCatchUp,
+} from "./catchup";
 
 function action(overrides: Partial<Action> & { id: string }): Action {
   return {
@@ -88,7 +94,7 @@ describe("catchUp", () => {
 
   it("looks back exactly the window, not to the beginning", () => {
     const result = catchUp(ALL, w36, []);
-    const ids = result.items.map((i) => i.action.id);
+    const ids = result.items.map((i) => i.actionId);
     expect(ids).not.toContain("w8-essential");
     expect(ids).not.toContain("w12-essential");
     expect(ids).toContain("w20-essential");
@@ -101,24 +107,24 @@ describe("catchUp", () => {
       action({ id: "w29-recommended", priority: "recommended", title: "Buy a pillow" }),
     ]);
     const result = catchUp([...ALL, withRecommended], w30, []);
-    expect(result.items[0]?.action.id).toBe("w28-essential");
-    expect(result.items.map((i) => i.action.id)).toContain("w29-recommended");
+    expect(result.items[0]?.actionId).toBe("w28-essential");
+    expect(result.items.map((i) => i.actionId)).toContain("w29-recommended");
   });
 
   it("orders the rest most recent first", () => {
     const result = catchUp(ALL, w36, []);
-    const ids = result.items.map((i) => i.action.id);
+    const ids = result.items.map((i) => i.actionId);
     expect(ids).toEqual(["w30-essential", "w28-essential", "w20-essential"]);
   });
 
   it("leaves out optional steps, because they are not a catch-up", () => {
     const result = catchUp(ALL, w12, []);
-    expect(result.items.map((i) => i.action.id)).toEqual(["w8-essential"]);
+    expect(result.items.map((i) => i.actionId)).toEqual(["w8-essential"]);
   });
 
   it("leaves out anything already done", () => {
     const result = catchUp(ALL, w36, ["w28-essential"]);
-    expect(result.items.map((i) => i.action.id)).not.toContain("w28-essential");
+    expect(result.items.map((i) => i.actionId)).not.toContain("w28-essential");
   });
 
   it("is empty when everything in the window is done", () => {
@@ -130,7 +136,7 @@ describe("catchUp", () => {
 
   it("carries the pack it came from, so the UI can say where it is from", () => {
     const result = catchUp(ALL, w36, []);
-    const item = result.items.find((i) => i.action.id === "w28-essential");
+    const item = result.items.find((i) => i.actionId === "w28-essential");
     expect(item?.packId).toBe("pregnancy-w28");
     expect(item?.packTitle).toBe("pregnancy 28");
     expect(item?.stageLabel).toBe("Week 28");
@@ -177,13 +183,13 @@ describe("catchUp", () => {
       "day",
     );
     const result = catchUp([...ALL, event], w36, []);
-    expect(result.items.map((i) => i.action.id)).not.toContain("event-essential");
+    expect(result.items.map((i) => i.actionId)).not.toContain("event-essential");
   });
 
   it("sorts an unordered pack list before looking back", () => {
     const shuffled = [w36, w8, w30, w12, w28, w20];
     const result = catchUp(shuffled, w36, []);
-    expect(result.items.map((i) => i.action.id)).toEqual([
+    expect(result.items.map((i) => i.actionId)).toEqual([
       "w30-essential",
       "w28-essential",
       "w20-essential",
@@ -209,5 +215,61 @@ describe("catchUp", () => {
     const result = catchUp(ALL, w36, [], { limit: 0 });
     expect(result.items).toEqual([]);
     expect(result.empty).toBe(true);
+  });
+});
+
+describe("catchUpCandidates", () => {
+  it("flattens the window into plain data, most recent stage first", () => {
+    const { candidates, lookedBack } = catchUpCandidates(ALL, w36);
+    expect(lookedBack).toBe(3);
+    expect(candidates.map((c) => c.actionId)).toEqual([
+      "w30-essential",
+      "w28-essential",
+      "w20-essential",
+    ]);
+    expect(candidates[0]).toEqual({
+      actionId: "w30-essential",
+      title: "Count the movements",
+      why: "Because it matters.",
+      priority: "essential",
+      packId: "pregnancy-w30",
+      packTitle: "pregnancy 30",
+      stageLabel: "Week 30",
+    });
+  });
+
+  it("does not know or care what is done, so the client can filter", () => {
+    const { candidates } = catchUpCandidates(ALL, w36);
+    expect(candidates).toHaveLength(3);
+    const picked = pickCatchUp(candidates, ["w30-essential"]);
+    expect(picked.items.map((i) => i.actionId)).toEqual(["w28-essential", "w20-essential"]);
+  });
+
+  it("returns nothing at the first stage of the guide", () => {
+    expect(catchUpCandidates(ALL, w8)).toEqual({ candidates: [], lookedBack: 0 });
+  });
+
+  it("honours a custom window", () => {
+    expect(catchUpCandidates(ALL, w36, { window: 1 }).candidates.map((c) => c.actionId)).toEqual([
+      "w30-essential",
+    ]);
+  });
+});
+
+describe("pickCatchUp", () => {
+  const { candidates } = catchUpCandidates(ALL, w36);
+
+  it("takes at most the limit", () => {
+    expect(pickCatchUp(candidates, [], 2).items).toHaveLength(2);
+    expect(pickCatchUp(candidates, [], CATCH_UP_LIMIT).items).toHaveLength(3);
+  });
+
+  it("treats a skip exactly like a done step", () => {
+    const all = ["w30-essential", "w28-essential", "w20-essential"];
+    expect(pickCatchUp(candidates, all)).toEqual({ items: [], empty: true });
+  });
+
+  it("treats a zero limit as nothing to show rather than everything", () => {
+    expect(pickCatchUp(candidates, [], 0)).toEqual({ items: [], empty: true });
   });
 });

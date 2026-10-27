@@ -49,18 +49,18 @@ export function CatchUp({ items, stageLabel }: CatchUpProps) {
       {open ? (
         <ul id="catchup-list" className="mt-3 space-y-3">
           {items.map((item) => (
-            <li key={item.action.id} className="rounded-lg border border-line bg-paper-raised p-4">
+            <li key={item.actionId} className="rounded-lg border border-line bg-paper-raised p-4">
               <p className="text-xs text-ink-faint">{item.stageLabel}</p>
-              <h3 className="mt-1 font-display text-lg text-ink">{item.action.title}</h3>
-              <p className="mt-1 text-base text-ink-muted">{item.action.why}</p>
+              <h3 className="mt-1 font-display text-lg text-ink">{item.title}</h3>
+              <p className="mt-1 text-base text-ink-muted">{item.why}</p>
               <div className="mt-3 flex flex-wrap items-center gap-3">
                 <Button
                   size="sm"
                   variant="quiet"
                   onClick={() =>
                     markDone({
-                      id: item.action.id,
-                      title: item.action.title,
+                      id: item.actionId,
+                      title: item.title,
                       packId: item.packId,
                       packTitle: item.packTitle,
                     })

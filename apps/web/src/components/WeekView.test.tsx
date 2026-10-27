@@ -41,10 +41,67 @@ describe("WeekView", () => {
       ...TEST_PACK,
       coreActions: [{ ...TEST_PACK.coreActions[0]!, id: "w28-glucose" }],
     };
-    render(<WeekView pack={pack} />);
+    render(
+      <WeekView
+        pack={pack}
+        readMore={{
+          "w28-glucose": {
+            href: "/read/glucose-test",
+            title: "What the glucose test actually measures",
+          },
+        }}
+      />,
+    );
     expect(
       screen.getByRole("link", { name: /What the glucose test actually measures/ }),
     ).toHaveAttribute("href", "/read/glucose-test");
+  });
+
+  it("shows catch-up from the list the server sent, not from the guide", () => {
+    render(
+      <WeekView
+        pack={TEST_PACK}
+        catchUpCandidates={[
+          {
+            actionId: "w26-glucose",
+            title: "Book the glucose test",
+            why: "It has to happen between 24 and 28 weeks.",
+            priority: "essential",
+            packId: "pregnancy-w26",
+            packTitle: "Week 26",
+            stageLabel: "Week 26",
+          },
+        ]}
+      />,
+    );
+    expect(screen.getByRole("button", { name: "Show the 1 thing" })).toBeInTheDocument();
+  });
+
+  it("hides a catch-up step the parent already did", async () => {
+    const { markDone } = await import("@/lib/store");
+    markDone({
+      id: "w26-glucose",
+      title: "Book the glucose test",
+      packId: "pregnancy-w26",
+      packTitle: "Week 26",
+    });
+    render(
+      <WeekView
+        pack={TEST_PACK}
+        catchUpCandidates={[
+          {
+            actionId: "w26-glucose",
+            title: "Book the glucose test",
+            why: "It has to happen between 24 and 28 weeks.",
+            priority: "essential",
+            packId: "pregnancy-w26",
+            packTitle: "Week 26",
+            stageLabel: "Week 26",
+          },
+        ]}
+      />,
+    );
+    expect(screen.queryByRole("button", { name: /Show the 1 thing/ })).not.toBeInTheDocument();
   });
 
   it("offers the chooser on a step that has one", () => {

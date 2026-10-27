@@ -3,7 +3,7 @@
   "private": true,
   "packageManager": "pnpm@12.3.4",
   "engines": {
-    "node": ">=22"
+    "node": ">=22.18"
   },
   "scripts": {
     "dev": "turbo run dev",
@@ -15,6 +15,8 @@
     "content:validate": "pnpm --filter @ninetothree/content validate",
     "content:registry": "pnpm --filter @ninetothree/content registry",
     "content:registry:check": "pnpm --filter @ninetothree/content registry:check",
+    "content:indexes": "pnpm --filter @ninetothree/content indexes",
+    "content:indexes:check": "pnpm --filter @ninetothree/content indexes:check",
     "format": "prettier --write \"**/*.{ts,tsx,md,json,css}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,md,json,css}\"",
     "links:check": "node scripts/check-links.mjs",
