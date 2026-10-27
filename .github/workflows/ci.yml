@@ -224,6 +224,11 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: lighthouse
+          # `include-hidden-files` is required: both output directories start
+          # with a dot, and upload-artifact skips dot-paths by default. Without
+          # it the step says "No files were found" and a failed run leaves no
+          # report to read — which is exactly when you need one.
+          include-hidden-files: true
           path: |
             .lighthouseci
             .lighthouseci-mobile
