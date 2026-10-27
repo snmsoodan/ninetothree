@@ -81,6 +81,8 @@ export {
   type ChecklistLoadResult,
 } from "./checklists";
 export { LOCALES, DEFAULT_LOCALE, localeData, dirFor, intlFor, type LocaleData } from "./locales";
+export { POLICIES, POLICIES_EFFECTIVE, CORRECTIONS, CORRECTION_WINDOWS } from "./policies";
+export type { PolicyLink, Correction } from "./policies";
 export {
   SCHEDULES,
   ENABLED_LOCALES,

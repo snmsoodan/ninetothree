@@ -7,6 +7,7 @@ import type { RedFlag } from "@ninetothree/content";
 import { cn } from "@ninetothree/ui";
 import { HelpNow } from "./HelpNow";
 import { OfflineNote } from "./OfflineNote";
+import { SiteFooter } from "./SiteFooter";
 
 const NAV = [
   // The week view is a detail page of "This week", so it keeps the tab lit.
@@ -29,9 +30,21 @@ export interface AppShellProps {
    * phone numbers are always right and the list of warning signs may not be.
    */
   safetyContent?: boolean;
+  /**
+   * The policies footer. Off on the safety and triage pages, where the footer's
+   * "if something is wrong right now" link would point at the page you are
+   * already on.
+   */
+  showFooter?: boolean;
 }
 
-export function AppShell({ children, stage, flags, safetyContent = false }: AppShellProps) {
+export function AppShell({
+  children,
+  stage,
+  flags,
+  safetyContent = false,
+  showFooter = true,
+}: AppShellProps) {
   const pathname = usePathname();
 
   // A soft settle, not a transition. Transform only — dimming the text
@@ -74,19 +87,26 @@ export function AppShell({ children, stage, flags, safetyContent = false }: AppS
         </div>
       </header>
 
-      <main
-        id="main"
-        tabIndex={-1}
-        data-settle=""
-        className={cn(
-          "mx-auto max-w-2xl px-5 pb-28 pt-6",
-          "transition-transform duration-[var(--duration-base)] ease-[var(--ease-calm)]",
-          settling ? "translate-y-1" : "translate-y-0",
-        )}
-      >
-        <OfflineNote safety={safetyContent} />
-        {children}
-      </main>
+      {/* The bottom padding lives on this wrapper, not on `main`, so that the
+          footer can sit outside `main` — a `<footer>` inside `main` is not
+          exposed as the `contentinfo` landmark — while still ending above the
+          fixed tab bar. */}
+      <div className="mx-auto max-w-2xl px-5 pb-28">
+        <main
+          id="main"
+          tabIndex={-1}
+          data-settle=""
+          className={cn(
+            "pt-6",
+            "transition-transform duration-[var(--duration-base)] ease-[var(--ease-calm)]",
+            settling ? "translate-y-1" : "translate-y-0",
+          )}
+        >
+          <OfflineNote safety={safetyContent} />
+          {children}
+        </main>
+        {showFooter ? <SiteFooter /> : null}
+      </div>
 
       <nav
         aria-label="Main"

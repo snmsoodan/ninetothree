@@ -9,6 +9,33 @@ changelog written after the fact from memory is a changelog nobody can trust.
 
 ## Unreleased
 
+### The policies, and the sentence that is not true yet (#52)
+
+- **Four pages are published and reachable from every screen.** `/privacy`, `/terms`,
+  `/editorial` and `/corrections` live in `packages/content/src/policies.ts` as a list,
+  so the footer, the pages and the tests read the same four hrefs and a policy cannot
+  exist in one place and not the other.
+- **Every one of them opens with a draft notice.** The issue's third acceptance
+  criterion is "reviewed by counsel"; there is no counsel, so the notice says so in the
+  same words and a component test fails if it is removed. It is the only thing standing
+  between a launch and a document nobody qualified has read.
+- **`/editorial` says the awkward parts.** No clinician has read any of the 85 packs.
+  The prose was drafted with AI assistance. The site takes no ads, no affiliate links,
+  no formula advertising and runs no third-party tracking. Those are commitments, so
+  they are on a page a parent can quote back.
+- **`/corrections` is empty, on purpose.** The four correction windows are published
+  (could-hurt: same day; clinical fact: two weeks; broken link: two weeks; typo: next
+  release) and the log says "Nothing yet." instead of showing an invented example.
+- **The footer is inside `<main>` and above the tab bar.** `AppShell` grew a
+  `showFooter` prop, off on `/safety` and `/triage` where its one sentence links to the
+  page you are on. It does not print.
+- **`RUNBOOK.md` and `INCIDENT_PLAN.md`.** What to do at 3am, what runs where, deploy
+  and rollback, migrations, backups and restore, deleting an account by hand, a
+  clinical error, a recall; and separately severity, roles, the first fifteen minutes,
+  breach notification with its US state-law caveat, playbooks and a twice-yearly drill.
+- **`/api/health`** opens the real database, returns `200` or `503`, and puts nothing
+  else in the body.
+
 ### Adding a locale is a data change (#46)
 
 - **The locale set is a table, not a type.** `packages/content/src/locales.ts` holds one

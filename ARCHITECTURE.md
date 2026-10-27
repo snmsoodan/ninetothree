@@ -647,7 +647,7 @@ What is locale data, not code: units, spelling, emergency numbers, benefit progr
 - **Rollback:** Vercel instant rollback; DB migrations are additive for one release.
 - **Feature flags:** DB-backed, per-user and percentage rollout.
 - **Observability:** Sentry (errors), PostHog (product), Vercel logs, uptime check on `/api/health`.
-- **Runbook:** `docs/RUNBOOK.md` — incident, rollback, data deletion, content correction, recall response.
+- **Runbook:** `RUNBOOK.md` — deploy, migrations, backup/restore, data deletion, sign-in failures, content correction, recall response. `INCIDENT_PLAN.md` is the same thing for when it is already broken. Both are internal; the public promises live in `/privacy`, `/terms`, `/editorial` and `/corrections`.
 
 ---
 
