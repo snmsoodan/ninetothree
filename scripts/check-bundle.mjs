@@ -11,11 +11,26 @@
 // raise it to make a build pass.
 
 import { readFileSync, statSync } from "node:fs";
+import { gzipSync } from "node:zlib";
 import { join } from "node:path";
 
 const NEXT_DIR = "apps/web/.next";
 // Overridable so the check itself can be tested. CI does not set it.
 const BUDGET_BYTES = Number(process.env.BUNDLE_BUDGET_BYTES ?? 150_000);
+
+/**
+ * Per-route budgets, on the JavaScript that route loads for itself.
+ *
+ * A single-chunk budget cannot see a page that is heavy because it loads
+ * twelve reasonable chunks, and #45's promise is about one page in
+ * particular: the week a parent is reading. This measures that page's own
+ * first load — everything in its manifest entry except React and Next's
+ * runtime, which no page can avoid and which is measured by Lighthouse.
+ *
+ * Gzipped, because that is what crosses the wire; raw size is printed
+ * beside it so a regression is legible either way.
+ */
+const ROUTE_BUDGETS = new Map([["/week/[id]/page", { gzip: 90_000 }]]);
 
 function readJson(path) {
   try {
@@ -82,5 +97,54 @@ if (oversized.length > 0) {
   console.error("");
   console.error("A chunk this large is parsed on every route that loads it.");
   console.error("Find what pulls it in before raising the budget.");
+  process.exit(1);
+}
+
+/** Everything a route loads for itself: its manifest entry, minus runtime. */
+function routeOwnChunks(route) {
+  const files = appManifest?.pages?.[route] ?? [];
+  return files
+    .filter((file) => file.endsWith(".js"))
+    .filter((file) => file.startsWith("static/"))
+    .filter((file) => !runtime.has(file));
+}
+
+let routeFailures = 0;
+for (const [route, budget] of ROUTE_BUDGETS) {
+  const files = routeOwnChunks(route);
+  if (files.length === 0) {
+    console.error(`  ${route} has no client chunks in the build manifest.`);
+    routeFailures += 1;
+    continue;
+  }
+  let raw = 0;
+  let gzip = 0;
+  for (const file of files) {
+    try {
+      const bytes = readFileSync(join(NEXT_DIR, file));
+      raw += bytes.length;
+      gzip += gzipSync(bytes, { level: 9 }).length;
+    } catch {
+      // Same reasoning as above: a manifest naming a file the build did not
+      // emit is a different problem, and the per-chunk pass already reports
+      // chunks it can measure.
+    }
+  }
+  const verdict = gzip <= budget.gzip ? "ok" : "OVER";
+  console.log(
+    `  ${route} loads ${files.length} chunks: ${gzip} gzipped, ${raw} raw (${verdict}, budget ${budget.gzip} gzipped).`,
+  );
+  if (gzip > budget.gzip) {
+    routeFailures += 1;
+    console.error(
+      `  ${route} ships ${gzip} gzipped bytes of its own JavaScript, over the ${budget.gzip} byte budget.`,
+    );
+  }
+}
+
+if (routeFailures > 0) {
+  console.error("");
+  console.error("A route over its budget is a route a parent waits for on 4G.");
+  console.error("Split what it imports before raising the budget.");
   process.exit(1);
 }

@@ -9,6 +9,51 @@ changelog written after the fact from memory is a changelog nobody can trust.
 
 ## Unreleased
 
+### The phone budget, and the number that was lying (#45)
+
+- **Lighthouse's `simulate` throttling was overstating LCP, and the site was mostly
+  fine.** Under `simulate`, LCP is the midpoint of an optimistic and a pessimistic
+  graph, and the pessimistic one marks every request as render-blocking and returns
+  the **slowest request's finish time**. On a page whose largest element is a heading,
+  that is the font, not the paint — 2,862 ms reported for a page that painted at
+  1,525 ms. A `--save-assets` trace showed one LCP candidate at exactly the same
+  microsecond as FCP, which is what settled it.
+- **A new phone gate that throttles for real.** `pnpm lighthouse:mobile` audits three
+  routes with `throttlingMethod: "devtools"` on a 150 ms / 1638.4 kbps / 4× CPU
+  profile, three runs each, asserting **LCP ≤ 2,000 ms** and **CLS ≤ 0.05** by
+  **median**. Medians: week card 1,530, onboarding 1,535, search 1,514; CLS 0.000
+  everywhere. The desktop config keeps `simulate` — its job is auditing ten URLs, not
+  timing one.
+- **The font theory was wrong and the fix built on it was reverted.** `display:
+"optional"` moved LCP by 223 ms on a theory that predicted a second and a half.
+  Newsreader is back on `swap`; with `adjustFontFallback` matched, the swap no longer
+  moves any layout, and a first visit that never shows the design face is worse than a
+  late swap.
+- **Two font files stopped being preloaded** — 52 kB a phone no longer fetches before
+  it can paint. Atkinson Hyperlegible is only used with "Easier to tell apart" turned
+  on, so its two files are `preload: false`. Four preloads (107 kB) became two.
+- **Subsetting was measured and rejected.** Every character the site uses plus the
+  usual punctuation took Inter 48,432 → 38,496 and Newsreader 58,152 → 55,332 — 13 kB,
+  because the axis data dominates a variable font. Only fifteen non-ASCII characters
+  appear anywhere.
+- **The week card has its own route budget.** `pnpm bundle:check` now also sums a
+  route's own chunks minus `rootMainFiles` and holds `/week/[id]/page` to **90 kB
+  gzipped**. It reports 9 chunks, 62,814 gzipped and 212,942 raw.
+- **Four static assets were being served with no cache policy.** Icons get a day,
+  `/search-index.json` an hour, and `/sw.js` and `/offline.html` `no-cache` — a stale
+  service worker is how a fix fails to reach someone. Verified with `curl -I`, not by
+  reading the config.
+- **`icon-512.png` left the `<head>`.** `manifest.ts` already lists it for the Android
+  launcher, which is the only consumer that wants that size.
+- **No content images, so nothing to optimise:** four icons, 62,072 bytes, and no
+  `<img>` outside a test. Re-encoding rejected with the number recorded rather than
+  guessed.
+- **`/` is still slow and this does not fix it.** The client-rendered dashboard cannot
+  redirect to `/onboarding` until it has hydrated, so the RSC request starts at
+  3,767 ms and the heading paints at 5,361 ms. `router.prefetch` was tried, did nothing
+  (the bottleneck is upstream), and was reverted rather than left in as a placebo.
+  Filed as its own issue with the measured chain.
+
 ### The guide, split into indexes (#96)
 
 - The 409 kB chunk that eight routes still loaded is **gone**. `catchUp` split in

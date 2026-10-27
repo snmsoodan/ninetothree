@@ -16,7 +16,7 @@
         "http://localhost:3000/print/checklist/hospital-bag",
         "http://localhost:3000/together"
       ],
-      "numberOfRuns": 1,
+      "numberOfRuns": 3,
       "settings": {
         "preset": "desktop",
         "skipAudits": ["canonical", "is-crawlable", "robots-txt"]
@@ -27,7 +27,8 @@
         "categories:performance": [
           "error",
           {
-            "minScore": 0.9
+            "minScore": 0.9,
+            "aggregationMethod": "median"
           }
         ],
         "categories:accessibility": [

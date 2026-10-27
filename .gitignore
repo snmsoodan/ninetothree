@@ -17,6 +17,7 @@ storybook-static/
 
 # Lighthouse reports
 .lighthouseci/
+.lighthouseci-mobile/
 
 # TypeScript incremental build cache
 *.tsbuildinfo
