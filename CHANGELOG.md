@@ -9,6 +9,21 @@ changelog written after the fact from memory is a changelog nobody can trust.
 
 ## Unreleased
 
+### A page that is not here, and a request that was not made (bug bash)
+
+- **A dead address is now our page, not Next's.** A mistyped URL, a truncated
+  invite link, and a bad week, article, chooser or print id all land on
+  `src/app/not-found.tsx`: the shell, one plain sentence, and three ways back —
+  this week, search, the library. It is a real 404, marked `noindex`.
+- **`/today` no longer asks for a household it cannot have.** `useHousehold()` fetched
+  `/api/household` before checking whether anyone was signed in, so a signed-out parent
+  got a 401 in the console on a page with nothing wrong with it. It now reads
+  `SessionContext` first, as `entitlements.ts` already did.
+- **The bug bash that found them is written down.** Four throwaway specs crawled every
+  route at 390 and 320 px, walked the keyboard, and tried to break the browser with
+  corrupt `localStorage` and hostile search input. Two real findings, both fixed; the
+  rest of the report is in [`EVIDENCE.md`](EVIDENCE.md) §58.
+
 ### One command that proves the whole thing (#53)
 
 - **`pnpm evidence` runs eleven checks and writes down what happened.** Prettier,
