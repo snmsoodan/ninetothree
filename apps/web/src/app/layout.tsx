@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import { ToastProvider } from "@ninetothree/ui";
 import { AuthProvider } from "@/components/AuthProvider";
+import { DIR, LANG } from "@/lib/i18n";
 import { ReadingAttributes } from "@/components/ReadingAttributes";
 import { RouteFocus } from "@/components/RouteFocus";
 import { ServiceWorker } from "@/components/ServiceWorker";
@@ -106,7 +107,11 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en-US" className={`${inter.variable} ${newsreader.variable} ${atkinson.variable}`}>
+    <html
+      lang={LANG}
+      dir={DIR}
+      className={`${inter.variable} ${newsreader.variable} ${atkinson.variable}`}
+    >
       <body>
         {/* First in the body so it runs before anything below it paints. */}
         <ReadingAttributes />

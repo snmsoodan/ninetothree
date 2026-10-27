@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Card, CardBody } from "@ninetothree/ui";
 
+import { formatDate } from "@/lib/i18n";
 import { HelpThisWeek, type HelpItem } from "./HelpThisWeek";
 import { JobList, type Job, type JobStatus } from "./JobList";
 import { SharedList, type SharedItem } from "./SharedList";
@@ -44,11 +45,7 @@ function who(member: TogetherMember): string {
 }
 
 function formatDay(iso: string): string {
-  return new Date(iso).toLocaleDateString("en-US", {
-    weekday: "short",
-    month: "short",
-    day: "numeric",
-  });
+  return formatDate(iso, { weekday: "short", month: "short", day: "numeric" });
 }
 
 /**

@@ -60,6 +60,24 @@ async function overflowsSideways(page: Page) {
   );
 }
 
+test("the document declares its language and direction", async ({ page }) => {
+  /* Screen readers pick a voice from `<html lang>`, and a wrong or missing one
+     is the difference between a page being read aloud and being read out
+     letter by letter. `dir` is the same declaration for layout. Both come from
+     the locale table now, so this is the test that says the table is wired to
+     the document and not just to the formatters. */
+  await page.goto("/onboarding");
+  const html = page.locator("html");
+  await expect(html).toHaveAttribute("lang", "en-US");
+  await expect(html).toHaveAttribute("dir", "ltr");
+
+  const manifest = await page.evaluate(async () => {
+    const link = document.querySelector<HTMLLinkElement>('link[rel="manifest"]');
+    return link ? ((await (await fetch(link.href)).json()) as { lang?: string }) : null;
+  });
+  expect(manifest?.lang).toBe("en-US");
+});
+
 test("onboarding has no violations", async ({ page }) => {
   await page.goto("/onboarding");
   expect(await audit(page)).toEqual([]);

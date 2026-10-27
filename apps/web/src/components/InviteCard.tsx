@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import { Button, TextLink } from "@ninetothree/ui";
 
 import { useEntitlements } from "@/lib/entitlements";
+import { formatDate } from "@/lib/i18n";
 import { Paywall } from "./Paywall";
 import { ROLE_LABEL, type HouseholdRole } from "./HouseholdList";
 
@@ -20,8 +21,7 @@ const SELECT =
   "mt-2 w-full rounded-md border border-line-strong bg-paper-raised px-4 py-3 text-base text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-clay";
 
 function when(iso: string): string {
-  const date = new Date(iso);
-  return date.toLocaleDateString("en-US", { month: "long", day: "numeric" });
+  return formatDate(iso, { month: "long", day: "numeric" });
 }
 
 /**

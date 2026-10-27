@@ -9,6 +9,33 @@ changelog written after the fact from memory is a changelog nobody can trust.
 
 ## Unreleased
 
+### Adding a locale is a data change (#46)
+
+- **The locale set is a table, not a type.** `packages/content/src/locales.ts` holds one
+  row per locale — label, direction, BCP 47 tag, market, clinical status, enabled — and
+  `Locale` is `keyof typeof LOCALES`, so a new row _is_ the new type and anything that
+  has to know about every locale fails to compile until it does.
+- **No clinical fallback.** `scheduleFor()` used to return the US schedule for any
+  locale it did not recognise, which would have handed a UK parent ACOG's appointment
+  cadence as though NICE had said it. It now throws, naming the locale and the fix.
+  `SCHEDULES` is a `Partial<Record<...>>` so that is representable; the invariant "every
+  _enabled_ locale has a reviewed schedule" lives in `locales.test.ts` instead of in a
+  comment.
+- **`isCovered()` reads the table.** The country gate derived its own US→en-US,
+  GB→en-GB map; it now asks which enabled locales serve the country, so the gate and
+  the content cannot disagree about what exists.
+- **Seven components stopped typing `"en-US"`.** `apps/web/src/lib/i18n.ts` exports one
+  `LOCALE`, `LANG`, `DIR` and a memoised `dateFormat()`; every date in the app goes
+  through it, `<html lang>`/`dir` and the web manifest come from the same place, and a
+  test scans `src/` for a hard-coded tag and fails. `formatDate()` also reads a
+  date-only string at noon — `new Date("2026-11-20")` is UTC midnight, which shows a
+  parent in California the day before.
+- **RTL is plumbed, not promised.** `ar-EG` exists as a disabled, `rtl` row so `dir`
+  has something to exercise; it is not shipped content.
+- **Deliberately not done:** `next-intl` and `/en-US/...` URL routing. With one shipped
+  language they would put a path segment in every link, test and bookmark in exchange
+  for nothing. The reasoning and the trigger for revisiting are in `ARCHITECTURE.md` §13.
+
 ### The root URL is a signpost (#105)
 
 - **`/` is a server redirect now, not the dashboard.** It was both the front door and

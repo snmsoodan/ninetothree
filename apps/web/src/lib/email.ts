@@ -201,6 +201,9 @@ interface ZonedParts {
 }
 
 function zonedParts(date: Date, timeZone: string): ZonedParts {
+  /* Pinned to en-US on purpose, and not through `LANG`: these parts are parsed
+     with `Number()`, so a locale with non-ASCII digits would turn every send
+     time into NaN. This is arithmetic on a clock, not a date shown to a parent. */
   const parts = new Intl.DateTimeFormat("en-US", {
     timeZone,
     hour12: false,

@@ -1,4 +1,4 @@
-import { ENABLED_LOCALES } from "@ninetothree/content";
+import { ENABLED_LOCALES, localeData } from "@ninetothree/content";
 import type { Country } from "@ninetothree/rules";
 
 /**
@@ -98,5 +98,8 @@ export function countryName(country: Country): string {
  */
 export function isCovered(country: Country | undefined): boolean {
   if (!country) return false;
-  return ENABLED_LOCALES.includes(country === "US" ? "en-US" : "en-GB");
+  /* Read from the locale table rather than from a second hand-written map, so
+     adding a market is one row in `LOCALES` and the country gate, the copy and
+     the formatting all learn about it together. */
+  return ENABLED_LOCALES.some((locale) => localeData(locale).market === country);
 }

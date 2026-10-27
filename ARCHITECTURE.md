@@ -595,11 +595,23 @@ things zoom cannot do.
 
 ## 13. Internationalisation
 
-- `next-intl` with locale-prefixed routes (`/en-US/...`).
-- Content is per-locale and per-country; a missing locale falls back to `en-US` **only for non-clinical content**. Clinical content never falls back silently.
-- Dates, numbers, currency via `Intl`.
-- RTL support in the design system from day one (`dir` attribute, logical properties).
-- Vaccine schedules, benefits, emergency numbers and car-seat law are **locale data**, not code.
+The acceptance criterion is that **adding a locale is a data change, not a code change**. So the locale set is a table, not a type:
+
+| Where                     | What it holds                                                                                |
+| ------------------------- | -------------------------------------------------------------------------------------------- |
+| `content/src/locales.ts`  | One row per locale: `label`, `dir`, `intl` (the BCP 47 tag), `market`, `clinical`, `enabled` |
+| `Locale`                  | `keyof typeof LOCALES` — a new row **is** the new type                                       |
+| `ENABLED_LOCALES`         | Derived by filter, never hand-listed                                                         |
+| `content/src/schedule.ts` | `SCHEDULES: Partial<Record<Locale, Schedule>>` — deliberately not a `Record`                 |
+
+- **No clinical fallback.** `scheduleFor()` throws for a locale whose appointment cadence no clinician has reviewed. The old behaviour — hand back the US schedule — would present ACOG's cadence as NICE's, which is a claim nobody made. A throw is loud and lands in a test, not in front of a parent.
+- **The country gate keeps the throw unreachable.** `isCovered()` reads the same table (`market`), so an unreviewed locale cannot be selected in the first place.
+- **Every enablement is checked by a test**, not by review: `locales.test.ts` asserts that an enabled locale is `clinical: "reviewed"` and has a row in `SCHEDULES`.
+- **Dates, numbers and currency go through `apps/web/src/lib/i18n.ts`.** One `LOCALE`, one `LANG`, one `DIR`, and a memoised `dateFormat()`. A literal `"en-US"` in a component is a component that cannot be translated; a test scans `src/` and fails on one.
+- **RTL is plumbed, not promised.** `dirFor()` feeds `<html dir>` and the web manifest, and `ar-EG` exists as a disabled row so the plumbing has something to exercise.
+- **No URL routing yet.** With one shipped language, `/en-US/...` prefixes would add a segment to every link, test and bookmark in exchange for nothing. When a second _language_ ships, the locale moves into the URL and `i18n.ts` is where that decision is made. `next-intl` was in the original plan for the same reason, and is deferred with it.
+
+What is locale data, not code: units, spelling, emergency numbers, benefit programs, vaccine schedule, car-seat standard and appointment cadence.
 
 ---
 

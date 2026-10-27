@@ -288,6 +288,8 @@ The same action has different links, different law, and different units by count
 
 We do not translate. We rewrite.
 
+**Adding a locale, concretely.** One row in `packages/content/src/locales.ts` (label, direction, BCP 47 tag, market, clinical status, enabled) plus one `SCHEDULES` entry for its appointment cadence. Nothing else in the app knows the difference: formatting reads the tag, `<html lang>`/`dir` read the row, and the country gate reads the market. Two things stop a locale from shipping half-done, both enforced by `locales.test.ts` rather than by review — a locale cannot be `enabled` unless it is `clinical: "reviewed"`, and it cannot be enabled without a reviewed appointment schedule. `scheduleFor()` throws rather than lend a parent the wrong country's cadence.
+
 ---
 
 ## 7. Link health and content freshness

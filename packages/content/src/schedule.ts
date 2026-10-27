@@ -1,3 +1,4 @@
+import { DEFAULT_LOCALE, type Locale } from "./locales";
 import type { Source } from "./schema";
 
 /**
@@ -11,7 +12,7 @@ import type { Source } from "./schema";
  * for a second pregnancy, which is a real difference and not a translation.
  */
 
-export type Locale = "en-US" | "en-GB";
+export type { Locale } from "./locales";
 
 export interface ScheduleEntry {
   id: string;
@@ -265,16 +266,41 @@ export const UK_SCHEDULE: Schedule = {
   sources: [NICE],
 };
 
-export const SCHEDULES: Record<Locale, Schedule> = {
+/**
+ * A locale with no reviewed schedule is absent, not approximated.
+ *
+ * `Partial` rather than `Record` on purpose: a `Record` would force a schedule
+ * for every row in the locale table, including the ones nobody has reviewed,
+ * and the cheapest way to satisfy it is to copy the US one. The invariant that
+ * actually matters — every *enabled* locale has a schedule — is a unit test,
+ * because it is a claim about the data rather than about the types.
+ */
+export const SCHEDULES: Partial<Record<Locale, Schedule>> = {
   "en-US": US_SCHEDULE,
   "en-GB": UK_SCHEDULE,
 };
 
-/** UK is behind a flag until the content is reviewed for that market. */
-export const ENABLED_LOCALES: Locale[] = ["en-US"];
+export { ENABLED_LOCALES } from "./locales";
 
+/**
+ * The appointment schedule for a locale, or an error.
+ *
+ * There is no fallback, and that is the point. Handing a UK parent ACOG's
+ * cadence would be a clinical claim nobody made, in a product whose whole
+ * promise is that a number here is one a midwife would give. A locale reaches
+ * this function only through the country gate, which refuses a locale that is
+ * not enabled — so a throw here means a caller skipped the gate, which is a
+ * bug worth failing loudly for.
+ */
 export function scheduleFor(locale: Locale): Schedule {
-  return SCHEDULES[locale] ?? US_SCHEDULE;
+  const schedule = SCHEDULES[locale];
+  if (!schedule) {
+    throw new Error(
+      `No reviewed appointment schedule for ${locale}. Add one to SCHEDULES in ` +
+        `packages/content/src/schedule.ts, or keep the locale disabled in LOCALES.`,
+    );
+  }
+  return schedule;
 }
 
 export interface AppointmentsOptions {
@@ -292,7 +318,7 @@ export interface AppointmentsOptions {
 export function appointmentsFor({
   dueDate,
   today,
-  locale = "en-US",
+  locale = DEFAULT_LOCALE,
   firstBaby = true,
 }: AppointmentsOptions): DatedAppointment[] {
   const schedule = scheduleFor(locale);

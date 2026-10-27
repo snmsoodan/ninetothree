@@ -1,5 +1,7 @@
 import type { MetadataRoute } from "next";
 
+import { DIR, LANG } from "@/lib/i18n";
+
 /**
  * The install prompt is the only place a parent sees the app as an app, so the
  * manifest is written to be read: a name that fits under an icon, a start URL
@@ -21,8 +23,8 @@ export default function manifest(): MetadataRoute.Manifest {
     orientation: "portrait",
     background_color: "#FBF9F6",
     theme_color: "#FBF9F6",
-    lang: "en-US",
-    dir: "ltr",
+    lang: LANG,
+    dir: DIR,
     categories: ["health", "lifestyle", "parenting"],
     icons: [
       {
