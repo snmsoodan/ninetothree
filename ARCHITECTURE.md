@@ -425,6 +425,12 @@ const rules: Rule[] = [
 
 **Tests:** every rule has a fixture profile and an expected pack diff. 100% branch coverage on `packages/rules`.
 
+### Who is reading (V2)
+
+`Profile` is about the baby and the parent's circumstances, and it is what the rules engine hides content with. **A persona is not part of it.** Who is holding the phone changes the lens on a week, never what is true: red flags, triage, sources and review dates are identical for every reader, and a persona must never reach a hide rule.
+
+Personas live in `packages/content/src/persona.ts` as a view preference, and the whole design — four roles, the three layers, the fallback bands, the joke rules and the non-goals — is in [`PERSONAS.md`](./PERSONAS.md).
+
 ---
 
 ## 7. Rendering and performance
