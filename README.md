@@ -1,7 +1,7 @@
 # Nine to Three — one week at a time, from bump to third birthday
 
 **Name:** **Nine to Three** — `ninetothree.com` verified unregistered at standard price. See [Naming](#naming).
-**Status:** V1 built — 85 stage packs, 251 vetted links, five CI jobs green. Beta (#51) not yet run.
+**Status:** V1 built — 85 stage packs, 251 vetted links, five CI jobs green. V2 personas shipped — four readers, 24 authored views, 18 fallback tracks. Beta (#51) not yet run.
 **Scope of this document set:** pregnancy week 4 → child's 3rd birthday
 **Market:** **United States first** (en-US). UK is V2, then Canada and Australia. Every locale is data, not code.
 
@@ -31,7 +31,14 @@ The two screens that matter most at 3am:
 | ![The safety page: "If something is wrong", a button to work out who to call, and the phone numbers underneath](docs/screenshots/07-safety.png) | ![Triage asking "Who is this about?", with four answers: you while pregnant, you after birth, the baby, or an older child](docs/screenshots/08-triage.png) |
 | **Always there, always free, never behind a sign-in.** Who to call, in the order you should call them.                                          | **Never reassuring by default.** A few questions and one answer — and it works without a signal.                                                           |
 
-The rest are in [`docs/screenshots/`](docs/screenshots): the due-date question with its "assume I am 28 weeks" shortcut, the confirmation step, the printable week pack, the offline page, and the same dashboard at **320 px** — the narrowest phone supported, where a test asserts nothing scrolls sideways.
+The same week, read by someone who is not the parent. The questions are in their words, the jobs are ones they can actually do, and switching back is one tap in settings — no account, no second profile, nothing to keep in sync:
+
+| A grandparent's dashboard                                                                                                                                                          | The same week, in their words                                                                                                       | "Reading as", in settings                                                                                                                                                                                                   |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ![A grandparent's dashboard: the week written for someone helping, the jobs they can do this week, and a "Read this week in full" link](docs/screenshots/13-today-grandparent.png) | ![Week 28 read as a grandparent: the same week, with what they can do and what to notice](docs/screenshots/14-week-grandparent.png) | ![Settings with a "Reading as" section: four readers — the parent, their partner, a grandparent, a wider family member — and a switch for whether the light line may be funny](docs/screenshots/15-settings-reading-as.png) |
+| **Written for the person holding the phone.** A view preference, never a second baby.                                                                                              | **Same week, their verbs.** What they can do, and what to notice. Warnings are never personalised.                                  | **One tap to change.** The choice is stored next to the reading preferences and is not part of the baby's profile.                                                                                                          |
+
+The rest are in [`docs/screenshots/`](docs/screenshots): the due-date question with its "assume I am 28 weeks" shortcut, the persona question that opens onboarding, the confirmation step, the printable week pack, the offline page, and the same dashboard at **320 px** — the narrowest phone supported, where a test asserts nothing scrolls sideways.
 
 ---
 
@@ -228,8 +235,8 @@ A parent in the US can:
 9. Export or delete all their data.
 
 **V1 content:** pregnancy W4–W42 + months 0–36, **US-first, en-US**. 85 stage packs shipped, ~250 actions, 251 vetted links. The blueprint's ~120 packs and ~250 links are the target, not the current state.
-**V2:** 12–36 months, **UK locale**, partner app, baby log, registry.
-**V3:** personalization engine, local classes marketplace, employer/insurer B2B.
+**V2 shipped:** four readers — the parent, their partner, a grandparent, a wider family member — reading the same week through a different lens. 24 authored views across 10 packs, 18 fallback tracks for every other week, and a "Reading as" switch in settings. See [`PERSONAS.md`](PERSONAS.md).
+**V2 next:** 12–36 months content depth, **UK locale**, baby log, registry.
 
 **Why the US first.** It is the largest English-language market, the highest willingness to pay for parenting content, and the market where the system is hardest to navigate — which is exactly where a calm guide is worth money. The UK is the natural second locale: same language, different system, and the architecture is built for it from day one.
 

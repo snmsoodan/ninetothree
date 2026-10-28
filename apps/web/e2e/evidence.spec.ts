@@ -66,6 +66,33 @@ test("the walkthrough: onboarding to the third trimester", async ({ page }) => {
   await shot(page, "10-offline");
 });
 
+test("a grandparent reading over the parent's shoulder", async ({ page }) => {
+  await page.goto("/onboarding");
+  await page.getByRole("button", { name: /^I am a grandparent/ }).click();
+  await shot(page, "12-onboarding-persona");
+
+  await page.getByRole("button", { name: /^My grandchild is on the way/ }).click();
+  await page.getByRole("button", { name: /assume I am 28 weeks/ }).click();
+  // A grandparent is not asked about feeding or first babies: two steps, not four.
+  for (let i = 0; i < 2; i += 1) await page.getByRole("button", { name: "Continue" }).click();
+  await page.getByRole("button", { name: "Show me" }).click();
+  await expect(page).toHaveURL(/\/today$/);
+  // The lens is the page for this reader, so the picture starts at it rather
+  // than at whatever reminder card happens to be above it today.
+  await page.getByRole("heading", { level: 1 }).scrollIntoViewIfNeeded();
+  await shot(page, "13-today-grandparent");
+
+  await page.getByRole("link", { name: "Read this week in full" }).click();
+  await expect(page).toHaveURL(/\/week\/[a-z0-9-]+$/);
+  await page.getByRole("heading", { level: 1 }).scrollIntoViewIfNeeded();
+  await shot(page, "14-week-grandparent");
+
+  await page.goto("/settings");
+  // "Reading as" is the second section, below the dates on a phone.
+  await page.getByRole("heading", { name: "Reading as" }).scrollIntoViewIfNeeded();
+  await shot(page, "15-settings-reading-as");
+});
+
 test("the narrowest phone we support, with nothing sideways", async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 640 });
   await onboard(page);

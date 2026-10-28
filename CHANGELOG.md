@@ -29,6 +29,11 @@ changelog written after the fact from memory is a changelog nobody can trust.
 - **The safety layer did not move.** Red flags, phone numbers and everything
   hidden for a loss or a NICU stay read the same four personas deep, because
   they were never personal to begin with.
+- **A sweep of four readers across six hard states found two pages with no
+  `h1`** — the lens dashboard, where the card that carried the heading was
+  replaced by one that did not, and loss mode, where it never had one. Both
+  fixed, and the dashboard now asserts exactly one `h1` per reader. The report
+  is in [`EVIDENCE.md`](EVIDENCE.md) §59.
 
 ### A page that is not here, and a request that was not made (bug bash)
 
