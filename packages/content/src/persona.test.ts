@@ -207,6 +207,10 @@ describe("lensFor", () => {
     expect(lensFor(stage, "partner", { enabled: false }).light).toBeNull();
     expect(lensFor(stage, "grandparent", { enabled: false }).light).toBeNull();
   });
+
+  it("silences a written line too, not only the rotating one", () => {
+    expect(lensFor(stage, "partner", { view: view(), enabled: false }).light).toBeNull();
+  });
 });
 
 describe("a pack's persona views", () => {

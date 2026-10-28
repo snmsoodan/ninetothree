@@ -698,7 +698,10 @@ export function lensFor(
     };
   }
 
-  const light = view?.light ?? lightFor(persona, stage, options);
+  // An authored line is still a light line: turning humour off has to silence
+  // it too, or the setting would only work on weeks nobody wrote for.
+  const light =
+    options.enabled === false ? null : (view?.light ?? lightFor(persona, stage, options));
   if (view) {
     return {
       persona,
