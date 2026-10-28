@@ -21,6 +21,7 @@
     "format:check": "prettier --check \"**/*.{ts,tsx,md,json,css}\"",
     "links:check": "node scripts/check-links.mjs",
     "evidence": "node scripts/evidence.mjs",
+    "screenshots": "EVIDENCE=1 EVIDENCE_DIR=../../docs/screenshots pnpm --filter @ninetothree/web test:e2e evidence.spec.ts",
     "bundle:check": "node scripts/check-bundle.mjs",
     "lighthouse": "lhci autorun",
     "lighthouse:mobile": "lhci autorun --config=lighthouserc.mobile.json",
