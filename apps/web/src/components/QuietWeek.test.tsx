@@ -11,7 +11,7 @@ describe("QuietWeek", () => {
   it("says what changed, without sympathy or advice", () => {
     render(<QuietWeek />);
     expect(
-      screen.getByRole("heading", { name: "The weekly guide is paused." }),
+      screen.getByRole("heading", { level: 1, name: "The weekly guide is paused." }),
     ).toBeInTheDocument();
     expect(screen.getByText(/We have stopped showing the week/)).toBeInTheDocument();
     expect(screen.queryByText(/sorry/i)).not.toBeInTheDocument();

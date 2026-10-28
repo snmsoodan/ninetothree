@@ -53,6 +53,33 @@ describe("Dashboard", () => {
     expect(screen.queryByRole("link", { name: /Read this week in full/ })).not.toBeInTheDocument();
   });
 
+  it("gives every reader exactly one h1, whatever card they get", () => {
+    // The parent's week card carried the `h1`. The lens replaces that card, so
+    // the lens has to carry it — otherwise the page built for this reader is
+    // the only one with no top-level heading.
+    for (const persona of ["parent", "partner", "grandparent", "extended"] as const) {
+      window.localStorage.clear();
+      __resetForTests();
+      subscribe(() => {});
+      onboard({ persona });
+      const { unmount } = render(<Dashboard />);
+      expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
+      unmount();
+    }
+  });
+
+  it("keeps one h1 after a loss, for every reader", () => {
+    for (const persona of ["parent", "partner", "grandparent", "extended"] as const) {
+      window.localStorage.clear();
+      __resetForTests();
+      subscribe(() => {});
+      onboard({ persona, loss: true });
+      const { unmount } = render(<Dashboard />);
+      expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
+      unmount();
+    }
+  });
+
   it("gives a grandparent a lens instead of the parent's week", () => {
     onboard({ persona: "grandparent" });
     render(<Dashboard />);

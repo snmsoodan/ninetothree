@@ -13,7 +13,11 @@ export function QuietWeek() {
   return (
     <Card tone="sunken">
       <CardBody className="space-y-4 pt-5">
-        <h2 className="font-display text-2xl text-ink">The weekly guide is paused.</h2>
+        {/* The `h1` in both places it appears: the dashboard renders this
+            *instead of* the week card, and the week page renders it instead of
+            the week. A loss is the one state where a page with no top-level
+            heading is least survivable. */}
+        <h1 className="font-display text-2xl text-ink">The weekly guide is paused.</h1>
         <p className="text-base text-ink">
           You told us about a loss. We have stopped showing the week, and we have stopped sending
           the weekly email.

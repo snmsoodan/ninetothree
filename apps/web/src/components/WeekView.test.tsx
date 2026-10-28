@@ -369,6 +369,10 @@ describe("WeekView", () => {
     updateProfile({ loss: "pregnancy" });
     render(<WeekView pack={TEST_PACK} />);
     expect(screen.getByText("The weekly guide is paused.")).toBeInTheDocument();
+    // The quiet page replaces the week, so its heading is the page's `h1`.
+    expect(
+      screen.getByRole("heading", { level: 1, name: "The weekly guide is paused." }),
+    ).toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "The 3 things" })).not.toBeInTheDocument();
     expect(screen.queryByText("The baby")).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Done" })).not.toBeInTheDocument();

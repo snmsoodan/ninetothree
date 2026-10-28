@@ -14,6 +14,13 @@ export interface PersonaLensCardProps {
   today: string;
   /** The week page, when the lens is shown on the dashboard. */
   href?: string;
+  /**
+   * Which heading the headline is. On `/week/[id]` the week's own title is the
+   * `h1` and this is a section under it. On `/today` the lens *is* the page —
+   * it replaces the parent's week card — so it has to be the `h1`, or the one
+   * page written for this reader has no top-level heading at all.
+   */
+  level?: 1 | 2;
 }
 
 /**
@@ -28,14 +35,22 @@ export interface PersonaLensCardProps {
  * The light line is last, in the same quiet type as everything else. It is
  * already suppressed by the caller for a loss or with humour off.
  */
-export function PersonaLensCard({ lens, packId, packTitle, today, href }: PersonaLensCardProps) {
+export function PersonaLensCard({
+  lens,
+  packId,
+  packTitle,
+  today,
+  href,
+  level = 2,
+}: PersonaLensCardProps) {
+  const Heading = level === 1 ? "h1" : "h2";
   return (
     <Card>
       <CardBody className="pt-5">
         {lens.source === "track" ? (
           <p className="text-sm text-ink-faint">{lens.bandLabel}</p>
         ) : null}
-        <h2 className="mt-1 font-display text-2xl text-ink">{lens.headline}</h2>
+        <Heading className="mt-1 font-display text-2xl text-ink">{lens.headline}</Heading>
         <p className="mt-2 text-base text-ink-muted">{lens.body}</p>
 
         {lens.actions.length > 0 ? (
