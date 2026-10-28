@@ -1909,6 +1909,32 @@ A first visit is one page load with a 307 at the top of it, not two chunk waterf
 
 **The limit of a crawl.** It proves a page renders, has one heading, and does not overflow at two widths. It does not prove the page is right. The things that are still unproven are the same ones §57 lists: a clinician, a real parent, WebKit, and a restored backup.
 
-## 59. How this file is maintained
+## 59. Four readers, seven hard states, two headings that were not there (issue #117)
+
+**The persona sweep is a spec that reports rather than asserts, and it was deleted before the commit.** It seeded `localStorage` directly — a stored `AppState` with a persona, a due date and a profile — then visited twelve routes at 390×844 and at 320×640 and recorded the status, the number of `h1`s and `main`s, horizontal overflow, console and page errors, any control with no accessible name, and any page that rendered `undefined`, `NaN`, `[object Object]` or "The 0 things". Six states × four readers × twelve routes × two widths is 576 page loads.
+
+The six states are the ones where a view preference is most likely to be wrong: **the default** (28 weeks, everything unset), **a loss** (`profile.loss`), **born early** (a 20-day-old baby with `preterm`), **formula feeding** (60-day-old), **humour off** (`humour: false`), and **a pre-V2 stored profile** — a state written by the shipped V1, with no `persona` and no `humour` key at all.
+
+**What came back clean, and is worth saying plainly.** No page overflowed at either width. Every page had exactly one `main`. No page rendered `undefined`, `NaN`, `[object Object]` or "The 0 things" — the fallback bands produced real sentences on every week that has no authored view, which is the thing most likely to have been empty. Nothing threw, in any state, for any reader. A pre-V2 profile with no `persona` hydrated and read as the parent rather than crashing or asking again.
+
+**Two findings were the harness.**
+
+- **53 "unnamed" controls on `/settings`.** These are the persona and reading radios, whose name comes from `aria-labelledby`; the check only looked at `aria-label` and text content. A probe that resolves `aria-labelledby` to the label element found **zero** unnamed controls. This is the same class of false positive §58 hit, found the same way: by dumping the element and its computed name instead of reading the code and deciding it was probably fine.
+- **A 404 in the console on every run.** The URL was `/account` — a route the sweep invented. The app has never had one; the account lives in `/settings`. A crawl is only as honest as its route list.
+
+**Two findings were real, and they were the same mistake in two places.**
+
+- **The lens dashboard had no `h1`.** `/today` as the parent renders `WeekSummaryCard`, whose headline is the page's `h1`. Every other reader renders `PersonaLensCard` instead, and that card's headline was an `h2` — correct on `/week/[id]`, where it sits under the week's own title. Replacing one card with another therefore removed the only top-level heading from the page written for that reader, for 16 of the 24 persona/state combinations. `PersonaLensCard` now takes `level?: 1 | 2`; the dashboard passes `1` and the week page keeps `2`.
+- **Loss mode had no `h1` at all.** `QuietWeek`'s heading was an `h2`, and it is rendered _instead of_ the week card on `/today` and _as the whole page_ on `/week/[id]`. This predates the persona work — it is a V1 bug the persona sweep found because it was the first pass that looked at loss mode across four readers. Its heading is now an `h1`, because it is the top heading in both places it appears.
+
+Both were fixed in [#121](https://github.com/snmsoodan/ninetothree/issues/121) / [#122](https://github.com/snmsoodan/ninetothree/pull/122), and the sweep was re-run on the fix branch: **zero findings**. `Dashboard.test.tsx` now asserts exactly one `h1` per reader, with and without a loss, so the next card swap cannot take the heading with it.
+
+**The keyboard pass found nothing, and that is not a coincidence.** `e2e/a11y.spec.ts` already drives the persona step from the keyboard: the skip link is the first Tab stop, the four persona radios are reachable and announced, and the journey reaches `/today` without a mouse. The sweep's own Tab loop reported focus rings on 39 of 40 stops and the fortieth was a visually-hidden radio whose ring is drawn by its label — which is the harness not knowing how the control is built, not a missing ring.
+
+**One flake, in a test this work did not touch.** Two of five full end-to-end runs failed `offline.spec.ts:181` — _with no signal, the week a parent is on still opens_ — with `getByRole("heading", { level: 1 })` not found within five seconds after `setOffline(true)`. It passes on its own, passes on the run after each failure, and fails identically on `main`, where no line of this feature exists. It is filed as [#123](https://github.com/snmsoodan/ninetothree/issues/123) rather than fixed here, because a docs change is the wrong place to touch a service-worker wait: the honest version of that test asserts the cached document is the one being served before it goes offline, and that needs a reproduction first. Recorded so the next person does not read a green suite as proof the offline path is settled.
+
+**What the sweep proves and what it does not.** It proves every persona can load every page in every hard state, at both supported widths, with one heading, one `main`, no overflow and no error. It does not prove the page is right for that reader: whether the grandparent's two jobs are the right two jobs is a content judgement, and the evidence for that is the 24 authored views in `CONTENT_LIBRARY.md` §18 and the four journeys in `e2e/persona.spec.ts`, not a crawl. The unproven things are still the ones §57 lists — a clinician, a real parent, WebKit, and a restored backup — plus one this feature adds: **nobody has been a grandparent using this.** The copy was written from interviews and reading, not from watching someone do it.
+
+## 60. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.

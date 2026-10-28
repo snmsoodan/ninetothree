@@ -431,6 +431,8 @@ const rules: Rule[] = [
 
 Personas live in `packages/content/src/persona.ts` as a view preference, and the whole design — four roles, the three layers, the fallback bands, the joke rules and the non-goals — is in [`PERSONAS.md`](./PERSONAS.md).
 
+**A client component reads a projection, not the registry.** The dashboard renders the lens, and the first version imported `getPack` from `@ninetothree/content/registry` to get it. That pulls every pack into the bundle: CI measured `/today` at 454 kB against a 150 kB budget, and the check failed on the pull request rather than in somebody's hand. `scripts/gen-indexes.mjs` now writes `persona-index.ts` — the 24 authored views and nothing else, 17 kB — and the client reads `findPersonaViews(pack.id)`. The rule generalises: if a browser needs something from the corpus, it gets a generated projection with a drift test, not an import of the corpus.
+
 ---
 
 ## 7. Rendering and performance

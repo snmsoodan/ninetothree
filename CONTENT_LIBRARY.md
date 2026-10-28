@@ -704,3 +704,21 @@ A recall is the one kind of content we do not write. It is an agency record, and
 **The checklist has no on-screen home yet.** `checklistHref` points at `/print/checklist/[id]`, which is a print route with a toolbar and no navigation. That is enough for the one checklist that exists, and it is not enough for a library of them. A `/checklist/[id]` screen route — the full list, readable at length, with the ticks persisted — is the obvious follow-up, and it is not in this issue.
 
 **One checklist is a seed, not a library.** The hospital bag is the one every parent needs and the one with the clearest deadline. The next candidates are the safe-sleep setup, the first-week homecoming, and the daycare-start list, in that order.
+
+## 18. The persona layer
+
+**A persona is a lens on a week, not a second week.** The parent who is pregnant gets the pack as written. The partner, the grandparent and the wider family read the same week through a view that changes the headline, the two or three things it asks of them, and one light line — and changes nothing else. The red flags, the triage tree, the sources and the review dates are byte-identical for every reader, because they are not part of the view at all. The design is in [`PERSONAS.md`](./PERSONAS.md); this section is only about the content.
+
+**Three layers, in this order.**
+
+1. **Safety, never personalised.** Red flags, triage, `/safety`, `/print/week/[id]`. A persona cannot reach them: `lensFor` reads a `PersonaView` and the pack's `redFlags` are not an input.
+2. **An authored view, when one exists.** 10 packs carry 24 views — `pregnancy-w8`, `-w20`, `-w28`, `-w37`, `postpartum-week-1`, `-6`, `infant-month-6`, and the toddler months that a grandparent or a partner is most often in the room for. A view is two actions, a headline and a body, written for one reader.
+3. **A band fallback, for every other week.** Six bands — the first trimester, the middle months, the last weeks, the first three months, the first year, the toddler years — times three non-parent personas is 18 read-only tracks. They say what that reader can do in a stage, not what is happening in it, because the fallback does not know the week.
+
+**A view is content and is linted like content.** `lintPack` walks `personas[].headline`, `.body`, `.light`, and every action's `title`, `why`, `detail`, `skipIf`, and every option's `label`, `detail` and `note` through the same six rules and the same grade-8 ceiling as the parent's prose. A persona view that says "just relax" or "you've got this" fails the build the same way a parent's card would.
+
+**The light line is suppressed, not just the parent's.** `enabled: false` in the reading preferences means "no jokes", and that has to include a line an author wrote by hand — an authored `view.light` that ignored the switch would be the one place humour could not be turned off. `lensFor` returns `null` for the light when the preference is off, whether the line came from a pack or from the pool.
+
+**`persona-index.ts` exists because of a 454 kB chunk.** The dashboard is a client component, and importing `getPack` from `@ninetothree/content/registry` pulled the whole corpus into the `/today` chunk. CI's budget check caught it at 454 kB against a 150 kB budget. The fix is a generated projection — `PERSONA_VIEWS`, one record of the 24 views — that the client can read without the registry. It is written by `scripts/gen-indexes.mjs`, checked by `content:indexes:check`, covered by a drift test, and it is the pattern for anything else a client component needs from a pack.
+
+**What this layer does not have.** No persona-specific email, no persona-specific push, no persona in the database, and no persona in `Profile`. The choice is stored next to the reading preferences as a view preference, which is why switching it in settings takes one tap and touches nothing about the baby.
