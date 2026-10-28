@@ -1931,10 +1931,28 @@ Both were fixed in [#121](https://github.com/snmsoodan/ninetothree/issues/121) /
 
 **The keyboard pass found nothing, and that is not a coincidence.** `e2e/a11y.spec.ts` already drives the persona step from the keyboard: the skip link is the first Tab stop, the four persona radios are reachable and announced, and the journey reaches `/today` without a mouse. The sweep's own Tab loop reported focus rings on 39 of 40 stops and the fortieth was a visually-hidden radio whose ring is drawn by its label — which is the harness not knowing how the control is built, not a missing ring.
 
-**One flake, in a test this work did not touch.** Two of five full end-to-end runs failed `offline.spec.ts:181` — _with no signal, the week a parent is on still opens_ — with `getByRole("heading", { level: 1 })` not found within five seconds after `setOffline(true)`. It passes on its own, passes on the run after each failure, and fails identically on `main`, where no line of this feature exists. It is filed as [#123](https://github.com/snmsoodan/ninetothree/issues/123) rather than fixed here, because a docs change is the wrong place to touch a service-worker wait: the honest version of that test asserts the cached document is the one being served before it goes offline, and that needs a reproduction first. Recorded so the next person does not read a green suite as proof the offline path is settled.
+**One flake, in a test this work did not touch.** Two of five full end-to-end runs failed `offline.spec.ts:181` — _with no signal, the week a parent is on still opens_ — with `getByRole("heading", { level: 1 })` not found within five seconds after `setOffline(true)`. It passes on its own, passes on the run after each failure, and fails identically on `main`, where no line of this feature exists. It was filed as [#123](https://github.com/snmsoodan/ninetothree/issues/123) rather than fixed here, because a docs change is the wrong place to touch a service-worker wait: the honest version of that test asserts the cached document is the one being served before it goes offline, and that needs a reproduction first. The reproduction and the fix are in §60.
 
 **What the sweep proves and what it does not.** It proves every persona can load every page in every hard state, at both supported widths, with one heading, one `main`, no overflow and no error. It does not prove the page is right for that reader: whether the grandparent's two jobs are the right two jobs is a content judgement, and the evidence for that is the 24 authored views in `CONTENT_LIBRARY.md` §18 and the four journeys in `e2e/persona.spec.ts`, not a crawl. The unproven things are still the ones §57 lists — a clinician, a real parent, WebKit, and a restored backup — plus one this feature adds: **nobody has been a grandparent using this.** The copy was written from interviews and reading, not from watching someone do it.
 
-## 60. How this file is maintained
+## 60. The flake was a test that lied about what "saved" meant (issue #123)
+
+**Reproduced in three runs, not by luck.** The test that failed one run in three passes on its own, so the first job was a recipe: `offline.spec.ts --repeat-each=4`, which opens the same week page four times in a worker and loads it the way a slow full suite does. Two of the next three runs failed. With `pageerror`, `requestfailed`, `console` and the service-worker state captured, the failure named itself:
+
+```
+requestfailed  /_next/static/chunks/app/week/%5Bid%5D/page-5f8a1331f8b409e9.js  net::ERR_FAILED
+pageerror      Loading chunk 6627 failed
+document       <html id="__next_error__">   (was: the week)
+```
+
+**The test's readiness check was wrong, not the app.** `waitForThisPageCached` reloaded the page online and then collected the `<script src>` tags from the document. That is most of what a page needs and not all of it: the App Router fetches the route's own chunk _during hydration_, as a dynamically appended script, so the one file the week cannot open without was never in the set the test waited on. Pulling the network in that window left the worker with the document and the parent with React's error page — which the assertion then reported as "no `h1`", three layers away from the cause.
+
+**What the fix asserts instead.** "Saved" now means everything the page actually asked for. The reload is watched with `page.on("request")`: every same-origin `GET` the page makes — minus `/api/`, which is allowed to fail offline — joins the set, alongside the document tags as before. The check has to be both complete _and settled_: nothing missing from the caches, and nothing new requested since the previous pass, because hydration keeps adding to the set after the first check would have passed. When it fails it now says `this page is not on the device after 30 s: <the missing path>`, so the next person reads the missing file instead of guessing.
+
+**A second, separate flake hid behind the first.** Once the chunk was reliably cached, the week page sometimes rendered its `h1` and no offline line. The `h1` is server-rendered; the line is client-only — `OfflineNote` starts online and corrects on mount, so the line exists only after hydration. Under ten workers, hydrating a document out of the cache can take longer than the five-second default. That assertion now has its own documented wait rather than a longer default for everything.
+
+**The counts.** Before: two failures in three `--repeat-each=4` runs, and roughly one full-suite failure in three to five. After: five consecutive `--repeat-each=4` runs, 180 week-page opens, zero failures, and three consecutive full suites at 329 passed. The product was not changed; `public/sw.js` already caches what the page requests. The test was measuring a smaller thing than it claimed.
+
+## 61. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.
