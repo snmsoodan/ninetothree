@@ -166,6 +166,7 @@ export function Dashboard() {
             packTitle={pack.title}
             today={today}
             href={`/week/${pack.id}`}
+            level={1}
           />
         )}
         <RecallList notices={notices} recalls={RECALLS} onDismiss={dismissNotice} />
