@@ -353,6 +353,11 @@ PR #17 Beta release + evidence pack
 - Screenshots, walkthrough video, test output, a11y report, Lighthouse, link report.
 - **AC:** attached to the release PR; reproducible.
 
+**#113 — Screenshots on the README**
+
+- Six screenshots on the README, the rest in `docs/screenshots/`, re-taken by a command.
+- **AC:** the repo's front page shows the product; every image is taken from the shipped build by a test; one command regenerates the committed set.
+
 ---
 
 ## 3. Dependency order
