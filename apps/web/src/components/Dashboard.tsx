@@ -3,10 +3,10 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { RECALLS } from "@ninetothree/content";
-import { getPack } from "@ninetothree/content/registry";
 import { lensFor } from "@ninetothree/content/core";
 import { ACTION_INDEX } from "@ninetothree/content/action-index";
 import { PACK_INDEX, findPackAtOrBefore, nextPackIndex } from "@ninetothree/content/pack-index";
+import { findPersonaViews } from "@ninetothree/content/persona-index";
 import { computeStage, stageLabel } from "@ninetothree/rules";
 import { AppShell } from "@/components/AppShell";
 import { AppointmentList } from "@/components/AppointmentList";
@@ -133,11 +133,13 @@ export function Dashboard() {
   const ahead = nextPackIndex(pack);
   const quiet = state.profile.loss !== undefined;
 
-  // The lens needs the pack's prose, which the index deliberately does not
-  // carry. A loss has no light line and no cheerful lens: the quiet week
-  // stands in for every reader.
-  const full = getPack(pack.id);
-  const lens = full ? lensFor(full, state.persona, { enabled: state.humour && !quiet }) : null;
+  // The lens needs the week's prose for this reader, which the pack index
+  // deliberately does not carry — and which the full registry would charge the
+  // dashboard 400 kB to parse. `persona-index.ts` is that one paragraph and its
+  // two steps, for the ten weeks that were written for someone else.
+  const lens = lensFor({ ...pack, personas: findPersonaViews(pack.id) }, state.persona, {
+    enabled: state.humour && !quiet,
+  });
 
   return (
     <AppShell stage={label}>
@@ -157,7 +159,7 @@ export function Dashboard() {
             href={`/week/${pack.id}`}
             nextHref={ahead ? `/week/${ahead.id}` : undefined}
           />
-        ) : lens ? (
+        ) : (
           <PersonaLensCard
             lens={lens}
             packId={pack.id}
@@ -165,7 +167,7 @@ export function Dashboard() {
             today={today}
             href={`/week/${pack.id}`}
           />
-        ) : null}
+        )}
         <RecallList notices={notices} recalls={RECALLS} onDismiss={dismissNotice} />
         <PinList
           pins={pins}

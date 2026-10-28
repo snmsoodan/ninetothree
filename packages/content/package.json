@@ -13,7 +13,8 @@
     "./registry": "./src/registry.ts",
     "./link-registry": "./src/link-registry.ts",
     "./article-registry": "./src/article-registry.ts",
-    "./checklist-registry": "./src/checklist-registry.ts"
+    "./checklist-registry": "./src/checklist-registry.ts",
+    "./persona-index": "./src/persona-index.ts"
   },
   "scripts": {
     "lint": "eslint src --max-warnings 0",
