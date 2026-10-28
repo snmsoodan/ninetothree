@@ -80,16 +80,19 @@ test("a grandparent reading over the parent's shoulder", async ({ page }) => {
   // The lens is the page for this reader, so the picture starts at it rather
   // than at whatever reminder card happens to be above it today.
   await page.getByRole("heading", { level: 1 }).scrollIntoViewIfNeeded();
+  await expect(page.getByRole("heading", { level: 1 })).toBeInViewport();
   await shot(page, "13-today-grandparent");
 
   await page.getByRole("link", { name: "Read this week in full" }).click();
   await expect(page).toHaveURL(/\/week\/[a-z0-9-]+$/);
   await page.getByRole("heading", { level: 1 }).scrollIntoViewIfNeeded();
+  await expect(page.getByRole("heading", { level: 1 })).toBeInViewport();
   await shot(page, "14-week-grandparent");
 
   await page.goto("/settings");
   // "Reading as" is the second section, below the dates on a phone.
   await page.getByRole("heading", { name: "Reading as" }).scrollIntoViewIfNeeded();
+  await expect(page.getByRole("heading", { name: "Reading as" })).toBeInViewport();
   await shot(page, "15-settings-reading-as");
 });
 
