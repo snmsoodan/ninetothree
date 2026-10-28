@@ -97,6 +97,58 @@
       "keywords": ["rest", "tired", "sleep", "energy"]
     }
   ],
+  "personas": [
+    {
+      "persona": "partner",
+      "headline": "You are on call now",
+      "body": "From 37 weeks the answer to \"is this it?\" can be yes. Know the route, the bag, and who is driving.",
+      "actions": [
+        {
+          "id": "w37-partner-bag-car",
+          "type": "do",
+          "priority": "recommended",
+          "domain": "home",
+          "title": "Put the bag in the car",
+          "why": "The bag by the door is a plan. The bag in the car is a decision already made.",
+          "minutes": 15
+        },
+        {
+          "id": "w37-partner-triage",
+          "type": "know",
+          "priority": "recommended",
+          "domain": "health-parent",
+          "title": "Save the triage number",
+          "why": "It is on the fridge in this week's pack. Put it in your phone too, because you will be the one dialling.",
+          "minutes": 5
+        }
+      ]
+    },
+    {
+      "persona": "grandparent",
+      "headline": "The phone stays on",
+      "body": "The call may come at three in the morning. That is the whole job this month.",
+      "actions": [
+        {
+          "id": "w37-grandparent-phone",
+          "type": "do",
+          "priority": "recommended",
+          "domain": "home",
+          "title": "Keep the phone on at night",
+          "why": "A silenced phone at 3am is a missed birth. Turn the ringer on and put it by the bed.",
+          "minutes": 2
+        },
+        {
+          "id": "w37-grandparent-food",
+          "type": "do",
+          "priority": "recommended",
+          "domain": "nutrition",
+          "title": "Cook one meal they can reheat",
+          "why": "Not a feast. One thing, in portions, that goes in the oven from frozen.",
+          "minutes": 60
+        }
+      ]
+    }
+  ],
   "alsoKnow": [
     {
       "id": "w37-early-term",

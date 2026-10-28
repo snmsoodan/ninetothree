@@ -50,6 +50,58 @@
       "keywords": ["tantrum", "feelings", "behaviour"]
     }
   ],
+  "personas": [
+    {
+      "persona": "partner",
+      "headline": "The first birthday is a milestone for you too",
+      "body": "You have kept a person alive for a year. The next year is less about keeping them alive and more about keeping up.",
+      "actions": [
+        {
+          "id": "m12-partner-review",
+          "type": "ask",
+          "priority": "recommended",
+          "domain": "mind",
+          "title": "Ask what the last year cost her",
+          "why": "Not the money. The sleep, the body, the job, the friends. Saying it out loud is the point.",
+          "minutes": 30
+        },
+        {
+          "id": "m12-partner-proof",
+          "type": "do",
+          "priority": "recommended",
+          "domain": "safety",
+          "title": "Do the childproofing pass",
+          "why": "At twelve months everything is reachable. Walk the room at their height and move what is not.",
+          "minutes": 45
+        }
+      ]
+    },
+    {
+      "persona": "grandparent",
+      "headline": "You made it through the first year too",
+      "body": "Whatever you got wrong this year, the baby is one and your child is still speaking to you. That is a good year.",
+      "actions": [
+        {
+          "id": "m12-grandparent-regular",
+          "type": "do",
+          "priority": "recommended",
+          "domain": "home",
+          "title": "Be the regular, not the event",
+          "why": "A Tuesday every week beats a party once a year. Children remember who was always there.",
+          "minutes": 60
+        },
+        {
+          "id": "m12-grandparent-listen",
+          "type": "know",
+          "priority": "recommended",
+          "domain": "mind",
+          "title": "Let them set the birthday rules",
+          "why": "Who is invited, what is eaten, whether there is a nap. It is their party now.",
+          "minutes": 5
+        }
+      ]
+    }
+  ],
   "alsoKnow": [
     {
       "id": "m12-toddler",

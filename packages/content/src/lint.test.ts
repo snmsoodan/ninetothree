@@ -92,6 +92,51 @@ describe("proseFields", () => {
     expect(paths.some((p) => p.startsWith("alsoKnow["))).toBe(true);
     expect(paths.some((p) => p.startsWith("appointments["))).toBe(true);
   });
+
+  it("lints the persona layer like everything else, down to the options", () => {
+    const withPersona: StagePack = {
+      ...base,
+      personas: [
+        {
+          persona: "partner",
+          headline: "You are on call now",
+          body: "From 37 weeks the answer can be yes.",
+          light: "You will own opinions about a pram.",
+          actions: [
+            {
+              id: "persona-bag",
+              type: "buy",
+              priority: "recommended",
+              domain: "gear",
+              title: "Buy a bag",
+              why: "The bag in the car is a decision already made.",
+              detail: "Any bag with a zip will do.",
+              skipIf: "The hospital provides one.",
+              minutes: 15,
+              options: [
+                {
+                  id: "option-a",
+                  label: "A holdall",
+                  detail: "Cheap and large.",
+                  note: "Runs small.",
+                },
+              ],
+              noChooser: "There is one bag that fits the car boot.",
+            },
+          ],
+        },
+      ],
+    };
+
+    const paths = proseFields(withPersona).map((f) => f.path);
+    expect(paths).toContain("personas[0].headline");
+    expect(paths).toContain("personas[0].body");
+    expect(paths).toContain("personas[0].light");
+    expect(paths).toContain("personas[0].actions[0].detail");
+    expect(paths).toContain("personas[0].actions[0].skipIf");
+    expect(paths).toContain("personas[0].actions[0].options[0].note");
+    expect(lintPack(withPersona)).toEqual([]);
+  });
 });
 
 describe("absolute claims", () => {

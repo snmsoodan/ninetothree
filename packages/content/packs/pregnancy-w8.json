@@ -116,6 +116,58 @@
       "keywords": ["coverage", "deductible", "cost"]
     }
   ],
+  "personas": [
+    {
+      "persona": "partner",
+      "headline": "The first trimester is quiet work",
+      "body": "She may be exhausted and not look pregnant at all. The tiredness is the pregnancy, not a lack of interest in you.",
+      "actions": [
+        {
+          "id": "w8-partner-shift",
+          "type": "do",
+          "priority": "recommended",
+          "domain": "home",
+          "title": "Take the evening shift",
+          "why": "Cook, wash up, walk the dog. The hour she does not spend standing is the hour she gets back.",
+          "minutes": 45
+        },
+        {
+          "id": "w8-partner-appt",
+          "type": "do",
+          "priority": "recommended",
+          "domain": "health-parent",
+          "title": "Go to the first appointment",
+          "why": "The first visit is a long wait and a lot of questions. Two sets of ears remember more.",
+          "minutes": 90
+        }
+      ]
+    },
+    {
+      "persona": "grandparent",
+      "headline": "You know a lot. Some of it has changed.",
+      "body": "The advice you were given was good advice then. A short list of things has genuinely changed, and the cot is on it.",
+      "actions": [
+        {
+          "id": "w8-grandparent-sleep",
+          "type": "know",
+          "priority": "recommended",
+          "domain": "safety",
+          "title": "Learn the sleep rules before you babysit",
+          "why": "On the back, on a firm surface, nothing in the cot. This is the one where old advice is now dangerous.",
+          "minutes": 10
+        },
+        {
+          "id": "w8-grandparent-ask",
+          "type": "ask",
+          "priority": "recommended",
+          "domain": "mind",
+          "title": "Ask before you tell",
+          "why": "A question opens a door and a sentence closes one. \"How are you feeling?\" gets an answer.",
+          "minutes": 5
+        }
+      ]
+    }
+  ],
   "alsoKnow": [
     {
       "id": "w8-nausea",

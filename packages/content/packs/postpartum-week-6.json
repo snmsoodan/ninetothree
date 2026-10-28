@@ -50,6 +50,58 @@
       "keywords": ["contraception", "birth control", "iud"]
     }
   ],
+  "personas": [
+    {
+      "persona": "partner",
+      "headline": "Week six is when it gets quiet",
+      "body": "The visitors have gone, the adrenaline has gone, and the work is still here. This is the week to check on her, not the baby.",
+      "actions": [
+        {
+          "id": "pp6-partner-mood",
+          "type": "ask",
+          "priority": "recommended",
+          "domain": "mind",
+          "title": "Ask how she is, and wait",
+          "why": "Postpartum depression is common and quiet. \"How are you, really?\" asked twice is a different question.",
+          "minutes": 10
+        },
+        {
+          "id": "pp6-partner-hour",
+          "type": "do",
+          "priority": "recommended",
+          "domain": "mind",
+          "title": "Take the baby for an hour, awake",
+          "why": "Not so she can sleep. So she can be a person who is not on duty.",
+          "minutes": 60
+        }
+      ]
+    },
+    {
+      "persona": "grandparent",
+      "headline": "The quiet week",
+      "body": "By now the help has thinned out and the tiredness has not. A standing offer is worth more than a visit.",
+      "actions": [
+        {
+          "id": "pp6-grandparent-regular",
+          "type": "do",
+          "priority": "recommended",
+          "domain": "home",
+          "title": "Set a weekly time and keep it",
+          "why": "A Tuesday morning every week beats a big visit once. Predictable help is easier to accept.",
+          "minutes": 60
+        },
+        {
+          "id": "pp6-grandparent-signs",
+          "type": "know",
+          "priority": "recommended",
+          "domain": "mind",
+          "title": "Know the signs to watch for",
+          "why": "If she is not sleeping when the baby sleeps, or says she feels nothing, that is worth a call to her doctor.",
+          "minutes": 10
+        }
+      ]
+    }
+  ],
   "alsoKnow": [
     {
       "id": "pp6-exercise",

@@ -84,6 +84,58 @@
       "keywords": ["kick counts", "movement", "fetal movement"]
     }
   ],
+  "personas": [
+    {
+      "persona": "partner",
+      "headline": "The third trimester starts with a list",
+      "body": "From here the appointments are every two weeks, then every week. Somebody has to drive, and somebody has to remember what was said.",
+      "actions": [
+        {
+          "id": "w28-partner-drive",
+          "type": "do",
+          "priority": "recommended",
+          "domain": "health-parent",
+          "title": "Take the appointments off her plate",
+          "why": "The glucose test, the growth checks, the weekly visits. Book the time off now, before the calendar fills.",
+          "minutes": 60
+        },
+        {
+          "id": "w28-partner-bag",
+          "type": "do",
+          "priority": "recommended",
+          "domain": "home",
+          "title": "Start the hospital bag",
+          "why": "A bag packed at 36 weeks is calm. A bag packed at 3am in labour is a shopping trip.",
+          "minutes": 30
+        }
+      ]
+    },
+    {
+      "persona": "grandparent",
+      "headline": "Be reachable, not resident",
+      "body": "The last months are a waiting room. Being available at 2am is worth more than being in the kitchen at 2pm.",
+      "actions": [
+        {
+          "id": "w28-grandparent-dog",
+          "type": "do",
+          "priority": "recommended",
+          "domain": "home",
+          "title": "Agree what happens to the dog",
+          "why": "The plan nobody made is the one that goes wrong on the night.",
+          "minutes": 15
+        },
+        {
+          "id": "w28-grandparent-freezer",
+          "type": "do",
+          "priority": "recommended",
+          "domain": "nutrition",
+          "title": "Fill the freezer",
+          "why": "The first week at home has no cooking in it. Lasagne in portions is love with a date on it.",
+          "minutes": 90
+        }
+      ]
+    }
+  ],
   "alsoKnow": [
     {
       "id": "w28-rhogam",
