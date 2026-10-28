@@ -295,6 +295,46 @@ export function findIndexedAction(
 }
 `;
 
+// --- persona-index.ts ----------------------------------------------------
+// What a partner, a grandparent or a friend reads for a week. The lens is a
+// fraction of the pack — a headline, a paragraph, two steps and a line — but
+// it lives inside the pack, so a screen that renders it would otherwise pull
+// every word of the guide into the browser to show one paragraph of it.
+const personaIndex = {};
+for (const pack of packs) {
+  if (!pack.personas?.length) continue;
+  // The JSON on disk leaves `options` off a step with no choices, the way the
+  // schema's defaults do. Fill it in so the projection matches the parsed pack.
+  personaIndex[pack.id] = pack.personas.map((view) => ({
+    ...view,
+    actions: view.actions.map((action) => ({ ...action, options: action.options ?? [] })),
+  }));
+}
+
+const personaFile = `${HEADER}
+import type { PersonaView } from "./schema";
+
+/**
+ * The weeks that were written for someone other than the parent.
+ *
+ * A week that is absent was not written for anyone in particular, and the
+ * lens falls back to the band rather than inventing a family.
+ */
+export const PERSONA_VIEWS: Record<string, PersonaView[]> = {
+${Object.entries(personaIndex)
+  .map(([id, views]) => `  ${JSON.stringify(id)}: ${record(views)},`)
+  .join("\n")}
+};
+
+/** The views a week was written for, or nothing when it was written for the parent. */
+export function findPersonaViews(
+  id: string,
+  index: Record<string, PersonaView[]> = PERSONA_VIEWS,
+): PersonaView[] | undefined {
+  return index[id];
+}
+`;
+
 // --- rule-index.ts -------------------------------------------------------
 // The settings page answers "why am I not seeing this?" across the whole
 // guide, so it needs exactly the fields the rules read — and no others.
@@ -440,6 +480,7 @@ const outputs = [
   [srcDir, "stage-index.ts", stageFile],
   [srcDir, "action-index.ts", actionFile],
   [srcDir, "rule-index.ts", ruleFile],
+  [srcDir, "persona-index.ts", personaFile],
   [publicDir, "search-index.json", searchJson],
 ];
 

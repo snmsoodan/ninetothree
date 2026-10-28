@@ -3,8 +3,10 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { RECALLS } from "@ninetothree/content";
+import { lensFor } from "@ninetothree/content/core";
 import { ACTION_INDEX } from "@ninetothree/content/action-index";
 import { PACK_INDEX, findPackAtOrBefore, nextPackIndex } from "@ninetothree/content/pack-index";
+import { findPersonaViews } from "@ninetothree/content/persona-index";
 import { computeStage, stageLabel } from "@ninetothree/rules";
 import { AppShell } from "@/components/AppShell";
 import { AppointmentList } from "@/components/AppointmentList";
@@ -14,6 +16,7 @@ import { ReminderCard } from "@/components/ReminderCard";
 import { ProgressLine } from "@/components/ProgressLine";
 import { ShareCard } from "@/components/ShareCard";
 import { WeekSummaryCard } from "@/components/WeekSummaryCard";
+import { PersonaLensCard } from "@/components/PersonaLensCard";
 import { QuietWeek } from "@/components/QuietWeek";
 import { datedAppointments } from "@/lib/appointments";
 import { useHousehold } from "@/lib/household";
@@ -110,7 +113,8 @@ export function Dashboard() {
     );
   }
 
-  const stage = computeStage(input, new Date().toISOString().slice(0, 10));
+  const today = new Date().toISOString().slice(0, 10);
+  const stage = computeStage(input, today);
   const pack = findPackAtOrBefore(stage.kind, stage.index);
   const label = stageLabel(stage);
 
@@ -129,6 +133,14 @@ export function Dashboard() {
   const ahead = nextPackIndex(pack);
   const quiet = state.profile.loss !== undefined;
 
+  // The lens needs the week's prose for this reader, which the pack index
+  // deliberately does not carry — and which the full registry would charge the
+  // dashboard 400 kB to parse. `persona-index.ts` is that one paragraph and its
+  // two steps, for the ten weeks that were written for someone else.
+  const lens = lensFor({ ...pack, personas: findPersonaViews(pack.id) }, state.persona, {
+    enabled: state.humour && !quiet,
+  });
+
   return (
     <AppShell stage={label}>
       <div className="space-y-10">
@@ -139,13 +151,21 @@ export function Dashboard() {
         />
         {quiet ? (
           <QuietWeek />
-        ) : (
+        ) : state.persona === "parent" ? (
           <WeekSummaryCard
             pack={pack}
             progress={progress}
             stage={label}
             href={`/week/${pack.id}`}
             nextHref={ahead ? `/week/${ahead.id}` : undefined}
+          />
+        ) : (
+          <PersonaLensCard
+            lens={lens}
+            packId={pack.id}
+            packTitle={pack.title}
+            today={today}
+            href={`/week/${pack.id}`}
           />
         )}
         <RecallList notices={notices} recalls={RECALLS} onDismiss={dismissNotice} />

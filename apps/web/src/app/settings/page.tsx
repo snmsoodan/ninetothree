@@ -22,13 +22,16 @@ import { DataCard } from "@/components/DataCard";
 import { PlanCard } from "@/components/PlanCard";
 import { InviteCard } from "@/components/InviteCard";
 import { ReadingSettings } from "@/components/ReadingSettings";
+import { PersonaSettings } from "@/components/PersonaSettings";
 import {
   resetAll,
   stageInput,
   updateDates,
   setNotifications,
+  setPersona,
   setProfile,
   setReading,
+  setHumour,
   useAppState,
   useHydrated,
 } from "@/lib/store";
@@ -109,6 +112,26 @@ export default function SettingsPage() {
                   className="mt-2 w-full rounded-md border border-line-strong bg-paper-raised px-4 py-3 text-base text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-clay"
                 />
               </div>
+            </CardBody>
+          </Card>
+        </section>
+
+        <section aria-labelledby="persona-heading" className="mt-8">
+          <h2 id="persona-heading" className="font-display text-2xl text-ink">
+            Reading as
+          </h2>
+          <p className="mt-2 text-sm text-ink-muted">
+            This changes what the week asks of you. It never changes a warning, a phone number or
+            anything we hide for the baby.
+          </p>
+          <Card className="mt-3">
+            <CardBody className="pt-5">
+              <PersonaSettings
+                persona={state.persona}
+                humour={state.humour}
+                onPersona={setPersona}
+                onHumour={setHumour}
+              />
             </CardBody>
           </Card>
         </section>

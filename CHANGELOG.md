@@ -9,6 +9,27 @@ changelog written after the fact from memory is a changelog nobody can trust.
 
 ## Unreleased
 
+### A page that reads for whoever is holding the phone (E15)
+
+- **Onboarding starts by asking who is reading.** Four answers — the parent, a
+  partner, a grandparent, someone else who loves them — and the flow then asks
+  what that person can actually answer. A grandparent gets five screens instead
+  of seven: no feeding question, no first-baby question, and a due date offered
+  as "when is the baby due" rather than "when are you due". A parent's flow is
+  the one it was before.
+- **Everyone who is not the parent gets the lens.** `/today` and `/week/<id>`
+  stop showing a grandparent the parent's list of jobs and show them the week
+  written for their seat: what this week asks of _them_, what it is like to be
+  them this week, and the week in full one tap away. Ten weeks are authored for
+  the other three roles; the rest fall back to a band, which is a sentence and a
+  suggestion rather than a fiction that we wrote about their family.
+- **Settings can change the reader in one tap.** A "Reading as" group and a
+  humour switch that silences the light line — including the lines we wrote by
+  hand, which is the bug the tests caught.
+- **The safety layer did not move.** Red flags, phone numbers and everything
+  hidden for a loss or a NICU stay read the same four personas deep, because
+  they were never personal to begin with.
+
 ### A page that is not here, and a request that was not made (bug bash)
 
 - **A dead address is now our page, not Next's.** A mistyped URL, a truncated

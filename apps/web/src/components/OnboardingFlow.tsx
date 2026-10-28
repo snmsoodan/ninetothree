@@ -4,15 +4,17 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button, Card, CardBody, RadioGroup, cn } from "@ninetothree/ui";
 import { computeStage, type Country, type Profile } from "@ninetothree/rules";
+import { PERSONA_META, type Persona } from "@ninetothree/content/core";
 import {
-  ONBOARDING_STEPS,
   completeOnboarding,
   readDraft,
   saveDraft,
+  stepsFor,
   useAppState,
   useHydrated,
   type OnboardingStep,
 } from "@/lib/store";
+import { PERSONA_NOTE, PERSONA_ORDER, dateQuestion, statusOptions } from "@/lib/persona";
 import { countryName, detectCountry, isCovered } from "@/lib/country";
 import { localDate } from "@/lib/reminders";
 import { HelpNow } from "./HelpNow";
@@ -65,7 +67,8 @@ function StartingAt({ status, date }: { status: "pregnant" | "parent"; date: str
 
 export function OnboardingFlow() {
   const router = useRouter();
-  const [step, setStep] = useState<OnboardingStep>("status");
+  const [step, setStep] = useState<OnboardingStep>("persona");
+  const [persona, setPersona] = useState<Persona>("parent");
   const [status, setStatus] = useState<"pregnant" | "parent">("pregnant");
   const [date, setDate] = useState("");
   const [country, setCountry] = useState("");
@@ -83,6 +86,7 @@ export function OnboardingFlow() {
     const draft = readDraft();
     if (draft) {
       setStep(draft.step);
+      setPersona(draft.persona);
       setStatus(draft.status);
       setDate(draft.date);
       setCountry(draft.country);
@@ -99,7 +103,7 @@ export function OnboardingFlow() {
   // `/` sends anyone without the routing cookie here, and that includes a
   // returning parent whose cookie jar was cleared. Their answers are still in
   // storage, so the flow hands them straight back to the dashboard rather than
-  // asking the four questions again.
+  // asking the questions again.
   const hydrated = useHydrated();
   const { onboarded: alreadyOnboarded } = useAppState();
   const onboarded = hydrated && alreadyOnboarded;
@@ -111,6 +115,7 @@ export function OnboardingFlow() {
     if (!loaded) return;
     saveDraft({
       step,
+      persona,
       status,
       date,
       country,
@@ -118,15 +123,17 @@ export function OnboardingFlow() {
       firstBaby,
       at: new Date().toISOString(),
     });
-  }, [loaded, step, status, date, country, feeding, firstBaby]);
+  }, [loaded, step, persona, status, date, country, feeding, firstBaby]);
 
-  const dateLabel = status === "pregnant" ? "When is your due date?" : "When was the baby born?";
-  const dateHint =
-    status === "pregnant"
-      ? "An estimate is fine. You can change it later."
-      : "The date on the birth certificate.";
+  const { label: dateLabel, hint: dateHint } = dateQuestion(persona, status);
+  const statusAnswers = statusOptions(persona);
 
-  const skipped = [country, feeding, firstBaby].filter((answer) => answer === "").length;
+  // Feeding and first-baby are the parent's business, so they are not in a
+  // grandparent's flow and are not counted as skipped for them either.
+  const skipped =
+    persona === "parent"
+      ? [country, feeding, firstBaby].filter((answer) => answer === "").length
+      : [country].filter((answer) => answer === "").length;
   const covered = country === "US" || country === "UK" ? isCovered(country) : false;
 
   function finish() {
@@ -137,39 +144,73 @@ export function OnboardingFlow() {
     };
     completeOnboarding({
       status,
+      persona,
       ...(status === "pregnant" ? { dueDate: date } : { birthDate: date }),
       profile,
     });
     router.push("/today");
   }
 
-  const position = ONBOARDING_STEPS.indexOf(step);
+  const steps = stepsFor(persona);
+  const position = steps.indexOf(step);
 
   return (
     <div className="mx-auto flex min-h-dvh max-w-lg flex-col justify-center px-5 py-10">
       <div className="mb-8">
         {/* Onboarding has no shell, so the way out lives here. A parent can
             arrive at this screen from a search result while something is
-            wrong, and must not have to finish six questions first. */}
+            wrong, and must not have to finish every question first. */}
         <div className="flex items-center justify-between gap-3">
           <p className="font-display text-lg text-ink">Nine to Three</p>
           <HelpNow />
         </div>
         <div className="mt-3 flex gap-1.5" aria-hidden="true">
-          {ONBOARDING_STEPS.map((s) => (
+          {steps.map((s) => (
             <span
               key={s}
               className={cn(
                 "h-1 flex-1 rounded-full transition-colors duration-[var(--duration-base)]",
-                position >= ONBOARDING_STEPS.indexOf(s) ? "bg-ink" : "bg-line",
+                position >= steps.indexOf(s) ? "bg-ink" : "bg-line",
               )}
             />
           ))}
         </div>
         <p className="sr-only" aria-live="polite">
-          Step {position + 1} of {ONBOARDING_STEPS.length}
+          Step {position + 1} of {steps.length}
         </p>
       </div>
+
+      {step === "persona" ? (
+        <section aria-labelledby="q0">
+          <h1 id="q0" className="font-display text-3xl text-ink">
+            Who is reading?
+          </h1>
+          <p className="mt-2 text-base text-ink-muted">{PERSONA_NOTE}</p>
+          <div className="mt-6 space-y-3">
+            {PERSONA_ORDER.map((value) => {
+              const meta = PERSONA_META[value];
+              return (
+                <button
+                  key={value}
+                  type="button"
+                  onClick={() => {
+                    setPersona(value);
+                    // The status answer is the parent's wording. Carrying it
+                    // across a change of reader would put "I am pregnant" on a
+                    // grandparent's screen.
+                    if (value !== persona) setStatus("pregnant");
+                    setStep("status");
+                  }}
+                  className="w-full rounded-lg border border-line bg-paper-raised p-5 text-left transition-colors hover:border-line-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-clay"
+                >
+                  <span className="block font-display text-xl text-ink">{meta.label}</span>
+                  <span className="mt-1 block text-sm text-ink-muted">{meta.hint}</span>
+                </button>
+              );
+            })}
+          </div>
+        </section>
+      ) : null}
 
       {step === "status" ? (
         <section aria-labelledby="q1">
@@ -180,32 +221,29 @@ export function OnboardingFlow() {
             This decides what we show you first. You can change it any time.
           </p>
           <div className="mt-6 space-y-3">
-            <button
-              type="button"
-              onClick={() => {
-                setStatus("pregnant");
-                setStep("date");
-              }}
-              className="w-full rounded-lg border border-line bg-paper-raised p-5 text-left transition-colors hover:border-line-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-clay"
-            >
-              <span className="block font-display text-xl text-ink">I am pregnant</span>
-              <span className="mt-1 block text-sm text-ink-muted">
-                We will start with this week of pregnancy.
-              </span>
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setStatus("parent");
-                setStep("date");
-              }}
-              className="w-full rounded-lg border border-line bg-paper-raised p-5 text-left transition-colors hover:border-line-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-clay"
-            >
-              <span className="block font-display text-xl text-ink">My baby is here</span>
-              <span className="mt-1 block text-sm text-ink-muted">
-                We will start with the week they were born.
-              </span>
-            </button>
+            {statusAnswers.map((answer) => (
+              <button
+                key={answer.value}
+                type="button"
+                onClick={() => {
+                  setStatus(answer.value);
+                  setStep("date");
+                }}
+                className="w-full rounded-lg border border-line bg-paper-raised p-5 text-left transition-colors hover:border-line-strong focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-clay"
+              >
+                <span className="block font-display text-xl text-ink">{answer.label}</span>
+                <span className="mt-1 block text-sm text-ink-muted">
+                  {answer.value === "pregnant"
+                    ? "We will start with this week of pregnancy."
+                    : "We will start with the week they were born."}
+                </span>
+              </button>
+            ))}
+          </div>
+          <div className="mt-8 flex gap-2">
+            <Button variant="quiet" onClick={() => setStep("persona")}>
+              Back
+            </Button>
           </div>
         </section>
       ) : null}
@@ -281,7 +319,9 @@ export function OnboardingFlow() {
             <Button variant="quiet" onClick={() => setStep("date")}>
               Back
             </Button>
-            <Button onClick={() => setStep("feeding")}>Continue</Button>
+            <Button onClick={() => setStep(persona === "parent" ? "feeding" : "ready")}>
+              Continue
+            </Button>
           </div>
         </section>
       ) : null}
@@ -352,9 +392,15 @@ export function OnboardingFlow() {
           </p>
           <Card tone="sunken" className="mt-6">
             <CardBody className="pt-5">
-              <p className="text-sm text-ink-muted">You are starting at</p>
+              <p className="text-sm text-ink-muted">
+                {persona === "parent" ? "You are starting at" : "They are at"}
+              </p>
               <p className="mt-1 font-display text-2xl text-ink">
                 <StartingAt status={status} date={date} />
+              </p>
+              <p className="mt-3 text-sm text-ink-muted">
+                Reading as {PERSONA_META[persona].label.toLowerCase().replace(/^i am /, "")}. Change
+                that in settings whenever you like.
               </p>
             </CardBody>
           </Card>
@@ -370,7 +416,10 @@ export function OnboardingFlow() {
             </p>
           ) : null}
           <div className="mt-8 flex gap-2">
-            <Button variant="quiet" onClick={() => setStep("first")}>
+            <Button
+              variant="quiet"
+              onClick={() => setStep(persona === "parent" ? "first" : "country")}
+            >
               Back
             </Button>
             <Button size="lg" onClick={finish}>

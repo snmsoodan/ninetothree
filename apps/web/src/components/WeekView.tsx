@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useMemo } from "react";
 import type { StagePack } from "@ninetothree/content";
+import { lensFor } from "@ninetothree/content/core";
 import { Badge, Card, CardBody, ProgressRing } from "@ninetothree/ui";
 import { ButtonLink } from "@/components/ButtonLink";
 import { pickCatchUp, personalizePack, type CatchUpCandidate } from "@ninetothree/rules";
@@ -17,6 +18,7 @@ import { isSnoozed, unsnooze, useAppState } from "@/lib/store";
 import { weekProgress } from "@/lib/week";
 import { WeekCompletion } from "./WeekCompletion";
 import { QuietWeek } from "./QuietWeek";
+import { PersonaLensCard } from "./PersonaLensCard";
 
 export interface ReadMoreLink {
   href: string;
@@ -77,6 +79,11 @@ export function WeekView({
 
   const gated = useWeekGate(pack.id, today);
 
+  // A lens for everyone. For the parent it carries only the light line, which
+  // is why the card itself is rendered for the others and only the line here.
+  const lens = lensFor(pack, state.persona, { enabled: state.humour });
+  const isParent = state.persona === "parent";
+
   if (quiet) {
     return (
       <AppShell stage={pack.title}>
@@ -112,18 +119,20 @@ export function WeekView({
           </Paywall>
         ) : (
           <>
-            <div className="mt-5 flex items-center gap-3">
-              <ProgressRing
-                value={progress.percent}
-                label={`${progress.settled} of ${progress.total} steps done or skipped`}
-                size={44}
-              />
-              <span className="text-sm text-ink-muted tabular">
-                {progress.settled} of {progress.total}
-              </span>
-            </div>
+            {isParent ? (
+              <div className="mt-5 flex items-center gap-3">
+                <ProgressRing
+                  value={progress.percent}
+                  label={`${progress.settled} of ${progress.total} steps done or skipped`}
+                  size={44}
+                />
+                <span className="text-sm text-ink-muted tabular">
+                  {progress.settled} of {progress.total}
+                </span>
+              </div>
+            ) : null}
 
-            {pack.baby || pack.you ? (
+            {isParent && (pack.baby || pack.you) ? (
               <Card tone="sunken" className="mt-6">
                 <CardBody className="space-y-4 pt-5">
                   {pack.baby ? (
@@ -148,56 +157,75 @@ export function WeekView({
               </Card>
             ) : null}
 
-            <section aria-labelledby="actions-heading" className="mt-8">
-              <h2 id="actions-heading" className="font-display text-2xl text-ink">
-                {visible.length === 1 ? "The one thing" : `The ${visible.length} things`}
-              </h2>
-              <p className="mt-1 text-sm text-ink-muted">
-                That is the whole week. Everything else can wait.
-              </p>
-              <div className="mt-4 space-y-3">
-                {visible.map((action) => (
-                  <ActionItem
-                    key={action.id}
-                    action={action}
-                    packId={pack.id}
-                    packTitle={pack.title}
-                    today={today}
-                    readMore={readMore[action.id]}
-                    chooseHref={action.chooser ? `/choose/${action.id}` : undefined}
-                  />
-                ))}
+            {isParent ? (
+              <>
+                <section aria-labelledby="actions-heading" className="mt-8">
+                  <h2 id="actions-heading" className="font-display text-2xl text-ink">
+                    {visible.length === 1 ? "The one thing" : `The ${visible.length} things`}
+                  </h2>
+                  <p className="mt-1 text-sm text-ink-muted">
+                    That is the whole week. Everything else can wait.
+                  </p>
+                  <div className="mt-4 space-y-3">
+                    {visible.map((action) => (
+                      <ActionItem
+                        key={action.id}
+                        action={action}
+                        packId={pack.id}
+                        packTitle={pack.title}
+                        today={today}
+                        readMore={readMore[action.id]}
+                        chooseHref={action.chooser ? `/choose/${action.id}` : undefined}
+                      />
+                    ))}
+                  </div>
+                  {setAside.length > 0 ? (
+                    <p className="mt-3 text-sm text-ink-faint">
+                      {setAside.length} step{setAside.length === 1 ? "" : "s"} set aside for now.{" "}
+                      <button
+                        type="button"
+                        onClick={() => setAside.forEach((action) => unsnooze(action.id))}
+                        className="underline underline-offset-2 hover:text-ink"
+                      >
+                        Show {setAside.length === 1 ? "it" : "them"} now
+                      </button>
+                    </p>
+                  ) : null}
+                  {hidden.length > 0 ? (
+                    <p className="mt-3 text-sm text-ink-faint">
+                      {hidden.length} step{hidden.length === 1 ? "" : "s"} hidden because of what
+                      you told us.{" "}
+                      <Link href="/settings" className="underline underline-offset-2">
+                        Change that
+                      </Link>
+                    </p>
+                  ) : null}
+                </section>
+
+                {lens.light ? <p className="mt-6 text-sm text-ink-faint">{lens.light}</p> : null}
+              </>
+            ) : (
+              <div className="mt-8">
+                <PersonaLensCard
+                  lens={lens}
+                  packId={pack.id}
+                  packTitle={pack.title}
+                  today={today}
+                />
               </div>
-              {setAside.length > 0 ? (
-                <p className="mt-3 text-sm text-ink-faint">
-                  {setAside.length} step{setAside.length === 1 ? "" : "s"} set aside for now.{" "}
-                  <button
-                    type="button"
-                    onClick={() => setAside.forEach((action) => unsnooze(action.id))}
-                    className="underline underline-offset-2 hover:text-ink"
-                  >
-                    Show {setAside.length === 1 ? "it" : "them"} now
-                  </button>
-                </p>
-              ) : null}
-              {hidden.length > 0 ? (
-                <p className="mt-3 text-sm text-ink-faint">
-                  {hidden.length} step{hidden.length === 1 ? "" : "s"} hidden because of what you
-                  told us.{" "}
-                  <Link href="/settings" className="underline underline-offset-2">
-                    Change that
-                  </Link>
-                </p>
-              ) : null}
-            </section>
+            )}
 
-            <WeekCompletion
-              packId={pack.id}
-              progress={progress}
-              nextHref={nextId ? `/week/${nextId}` : undefined}
-            />
+            {isParent ? (
+              <>
+                <WeekCompletion
+                  packId={pack.id}
+                  progress={progress}
+                  nextHref={nextId ? `/week/${nextId}` : undefined}
+                />
 
-            <CatchUp items={catchUpResult.items} stageLabel={pack.title} />
+                <CatchUp items={catchUpResult.items} stageLabel={pack.title} />
+              </>
+            ) : null}
 
             {pack.alsoKnow.length > 0 ? (
               <section aria-labelledby="also-heading" className="mt-8">
