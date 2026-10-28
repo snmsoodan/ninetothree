@@ -37,22 +37,23 @@ PR #17 Beta release + evidence pack
 
 ## 1. Epics
 
-| Epic    | Name           | Outcome                                                  |
-| ------- | -------------- | -------------------------------------------------------- |
-| **E1**  | Foundation     | Monorepo, CI, design tokens, Storybook, deploy preview   |
-| **E2**  | Content system | Schema, validation, seed, 5 sample packs, link catalogue |
-| **E3**  | Data           | Postgres schema, migrations, repositories, seed          |
-| **E4**  | Identity       | Auth, household, onboarding, profile                     |
-| **E5**  | The week       | Week card, actions, done/skip, completion, next week     |
-| **E6**  | The shelf      | Dashboard, pins, appointments, progress                  |
-| **E7**  | Find           | Search, cited results, content pages                     |
-| **E8**  | Safety         | Triage, red flags, crisis numbers, offline cache         |
-| **E9**  | Ritual         | Weekly email, reminders, notification preferences        |
-| **E10** | Together       | Partner invite, shared pins, assigned jobs               |
-| **E11** | Business       | Stripe, entitlements, paywall, export/delete             |
-| **E12** | Craft          | PWA, offline, print, a11y, performance, i18n scaffold    |
-| **E13** | Content        | Pregnancy W4–W42, 0–12 months, link validation           |
-| **E14** | Launch         | Beta, evidence pack, runbook, policies                   |
+| Epic    | Name           | Outcome                                                                   |
+| ------- | -------------- | ------------------------------------------------------------------------- |
+| **E1**  | Foundation     | Monorepo, CI, design tokens, Storybook, deploy preview                    |
+| **E2**  | Content system | Schema, validation, seed, 5 sample packs, link catalogue                  |
+| **E3**  | Data           | Postgres schema, migrations, repositories, seed                           |
+| **E4**  | Identity       | Auth, household, onboarding, profile                                      |
+| **E5**  | The week       | Week card, actions, done/skip, completion, next week                      |
+| **E6**  | The shelf      | Dashboard, pins, appointments, progress                                   |
+| **E7**  | Find           | Search, cited results, content pages                                      |
+| **E8**  | Safety         | Triage, red flags, crisis numbers, offline cache                          |
+| **E9**  | Ritual         | Weekly email, reminders, notification preferences                         |
+| **E10** | Together       | Partner invite, shared pins, assigned jobs                                |
+| **E11** | Business       | Stripe, entitlements, paywall, export/delete                              |
+| **E12** | Craft          | PWA, offline, print, a11y, performance, i18n scaffold                     |
+| **E13** | Content        | Pregnancy W4–W42, 0–12 months, link validation                            |
+| **E14** | Launch         | Beta, evidence pack, runbook, policies                                    |
+| **E15** | Personas       | The app reads differently for the partner, the grandparent and the friend |
 
 ---
 
@@ -360,6 +361,30 @@ PR #17 Beta release + evidence pack
 
 ---
 
+### E15 — Personas
+
+**#114 — Personas: the design and the architecture**
+
+- `PERSONAS.md`: four roles, three layers, six bands, the joke rules, the state model, the non-goals.
+- **AC:** what changes, what must never change, and how much content we are willing to write are decided before any code.
+
+**#115 — The persona content model**
+
+- `personas[]` on a pack with schema constraints; 18 fallback tracks; 4 light pools; 10 authored packs.
+- **AC:** persona prose is linted like everything else; a bad persona edit fails the build; every other week falls back honestly.
+
+**#116 — Reading as a persona in the app**
+
+- Onboarding asks who is reading; `/today` and `/week/[id]` show the lens; settings switches it back.
+- **AC:** a grandparent finishes onboarding in five taps, sees what the week asks of them, checks a task, pins it, and returns to the parent view in one tap.
+
+**#117 — Persona evidence, docs and the bug bash**
+
+- Four personas × seven hard states, evidence section, changelog, screenshots, docs.
+- **AC:** every persona completes the loop the parent can, and the evidence pack proves it.
+
+---
+
 ## 3. Dependency order
 
 ```
@@ -377,6 +402,7 @@ PR #17 Beta release + evidence pack
 #42 → #43 → #44 → #45 → #46
 #47 → #48 → #49 → #50
 #51 → #52 → #53
+#114 → #115 → #116 → #117
 ```
 
 **Parallelisable:** E2 and E3 can run together after #2. E13 content can start as soon as #6 lands. E12 craft can start after #5.
