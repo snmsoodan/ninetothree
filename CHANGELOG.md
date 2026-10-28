@@ -35,6 +35,21 @@ changelog written after the fact from memory is a changelog nobody can trust.
   fixed, and the dashboard now asserts exactly one `h1` per reader. The report
   is in [`EVIDENCE.md`](EVIDENCE.md) §59.
 
+### The offline test now waits for the file it was missing (#123)
+
+- **A flake that was a lie in the test, not a bug in the app.** `offline.spec.ts` proved the
+  week was saved by reading the `<script src>` tags in the document — but the router fetches
+  the week's own chunk while hydrating, so the one file the page cannot open without was
+  never waited for. Going offline in that window left the parent on React's error page. The
+  check now watches the reload and waits until every same-origin request the page made is in
+  a cache, and it names the missing path when it is not.
+- **The offline line gets its own wait.** It is client-only, so it appears after hydration,
+  which can take longer than the default five seconds on a loaded machine. The heading is
+  server-rendered and was there first; the line is the promise, so it is worth waiting for.
+- **Reproduced before it was fixed:** two of three `--repeat-each=4` runs failed before,
+  zero of five after (180 week-page opens), plus three clean full suites. The report is in
+  [`EVIDENCE.md`](EVIDENCE.md) §60.
+
 ### A page that is not here, and a request that was not made (bug bash)
 
 - **A dead address is now our page, not Next's.** A mistyped URL, a truncated

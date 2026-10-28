@@ -65,26 +65,64 @@ async function waitForThisPageCached(page: Page) {
    * it only looks like it. One reload puts the document and all of its
    * subresources through the worker, which is what "saved" is supposed to
    * mean.
+   *
+   * "All of its subresources" has to mean what the page *asked for*, not what
+   * is in the document's `<script>` tags. The router fetches a route's own
+   * chunk while it hydrates, and that chunk is not in the first HTML — so the
+   * older version of this helper declared a page saved while the one file it
+   * could not open offline was still in flight. When the network was pulled
+   * in that window the week opened to React's error page instead of the week.
+   * So the reload is watched: every same-origin GET the page makes is a file
+   * the page needs, and every one of them has to be in the cache before the
+   * test is allowed to go offline.
    */
-  await page.reload();
+  const origin = new URL(page.url()).origin;
+  const requested = new Set<string>();
 
-  const wanted = await page.evaluate(() => [
-    window.location.pathname,
-    // `nomodule` scripts are never fetched by a browser this modern, so they
-    // are never cached — and are never needed offline either.
-    ...Array.from(document.querySelectorAll("script[src]"), (script) =>
-      (script as HTMLScriptElement).noModule
-        ? ""
-        : new URL((script as HTMLScriptElement).src).pathname,
-    ).filter(Boolean),
-  ]);
+  const watch = (request: Request) => {
+    const url = new URL(request.url());
+    if (url.origin !== origin || request.method() !== "GET") return;
+    /* An API call is not a file: it is allowed to fail offline. */
+    if (url.pathname.startsWith("/api/")) return;
+    requested.add(url.pathname);
+  };
 
-  await expect
-    .poll(
-      () =>
-        page.evaluate(async (paths) => {
+  page.on("request", watch);
+
+  try {
+    await page.reload();
+    await page.waitForLoadState("load");
+
+    /*
+     * The set grows while the page hydrates, so a check that passed a moment
+     * ago can be stale. Require it to be both complete and *settled*: nothing
+     * missing, and nothing new asked for since the previous pass.
+     */
+    const deadline = Date.now() + 30_000;
+    let seen = -1;
+    let missing: string[] = [];
+
+    for (;;) {
+      const wanted = [
+        new URL(page.url()).pathname,
+        // `nomodule` scripts are never fetched by a browser this modern, so
+        // they are never cached — and are never needed offline either.
+        ...Array.from(
+          await page.evaluate(() =>
+            Array.from(document.querySelectorAll("script[src]"), (script) =>
+              (script as HTMLScriptElement).noModule
+                ? ""
+                : new URL((script as HTMLScriptElement).src).pathname,
+            ),
+          ),
+        ).filter(Boolean),
+        ...requested,
+      ];
+
+      missing = await page.evaluate(
+        async (paths) => {
           const names = await caches.keys();
-          if (names.length === 0) return [];
+          if (names.length === 0) return paths;
           const cached = new Set<string>();
           for (const name of names) {
             const cache = await caches.open(name);
@@ -93,10 +131,22 @@ async function waitForThisPageCached(page: Page) {
             }
           }
           return paths.filter((path) => !cached.has(path));
-        }, wanted),
-      { timeout: 30_000, intervals: [200, 500, 1000] },
-    )
-    .toEqual([]);
+        },
+        [...new Set(wanted)],
+      );
+
+      if (missing.length === 0 && wanted.length === seen) break;
+      if (Date.now() > deadline) {
+        throw new Error(
+          `this page is not on the device after 30 s: ${missing.join(", ") || "still being fetched"}`,
+        );
+      }
+      seen = wanted.length;
+      await page.waitForTimeout(250);
+    }
+  } finally {
+    page.off("request", watch);
+  }
 }
 
 test("the manifest is served, parses, and names the app", async ({ page, request }) => {
@@ -187,8 +237,18 @@ test("with no signal, the week a parent is on still opens", async ({ page, conte
   await context.setOffline(true);
   await page.goto("/week");
 
-  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
-  await expect(page.getByRole("status")).toContainText("This is the copy saved on your device.");
+  /*
+   * The heading is rendered on the server, so it is on screen before the page
+   * has hydrated. The offline line is not: it only exists once React has run
+   * and read `navigator.onLine`. Under a full parallel run, hydrating a
+   * document out of the cache can take longer than the default five seconds,
+   * and the line is worth waiting for — it is the promise that what is on
+   * screen is a copy.
+   */
+  await expect(page.getByRole("heading", { level: 1 })).toBeVisible({ timeout: 15_000 });
+  await expect(page.getByRole("status")).toContainText("This is the copy saved on your device.", {
+    timeout: 15_000,
+  });
 
   await context.setOffline(false);
 });
