@@ -112,7 +112,7 @@ describe("applyStripeEvent", () => {
     return { userId, householdId: created.id, scope };
   }
 
-  it("turns a completed checkout into an active subscription", async () => {
+  it("turns a completed one-time checkout into an active purchase", async () => {
     const { householdId, scope } = await household();
     const applied = await applyStripeEvent(db, {
       id: "evt_1",
@@ -126,7 +126,7 @@ describe("applyStripeEvent", () => {
         },
       },
     });
-    expect(applied).toEqual({ action: "subscribed", householdId });
+    expect(applied).toEqual({ action: "purchased", householdId });
     const row = await getSubscription(db, scope);
     expect(row?.plan).toBe("plus");
     expect(row?.status).toBe("active");
@@ -155,6 +155,162 @@ describe("applyStripeEvent", () => {
     expect(row?.status).toBe("active");
     expect(row?.stripe_customer_id).toBeNull();
     expect(row?.stripe_subscription_id).toBeNull();
+  });
+
+  it("records a one-time purchase with no subscription on it", async () => {
+    const { householdId, scope } = await household();
+    const applied = await applyStripeEvent(db, {
+      id: "evt_1",
+      type: "checkout.session.completed",
+      data: {
+        object: {
+          client_reference_id: householdId,
+          customer: "cus_once",
+          subscription: null,
+          payment_status: "paid",
+          metadata: { plan: "plus" },
+        },
+      },
+    });
+    expect(applied).toEqual({ action: "purchased", householdId });
+    const row = await getSubscription(db, scope);
+    expect(row?.plan).toBe("plus");
+    expect(row?.status).toBe("active");
+    expect(row?.stripe_customer_id).toBe("cus_once");
+    // A one-time payment has no subscription id, and inventing one would make
+    // a later `customer.subscription.deleted` look like it applied to this row.
+    expect(row?.stripe_subscription_id).toBeNull();
+  });
+
+  it("does not grant on a checkout whose money has not arrived", async () => {
+    const { householdId, scope } = await household();
+    const applied = await applyStripeEvent(db, {
+      id: "evt_1",
+      type: "checkout.session.completed",
+      data: {
+        object: {
+          client_reference_id: householdId,
+          customer: "cus_late",
+          payment_status: "unpaid",
+          metadata: { plan: "plus" },
+        },
+      },
+    });
+    expect(applied).toEqual({ action: "ignored", householdId });
+    expect(await getSubscription(db, scope)).toBeUndefined();
+  });
+
+  it("grants when the delayed payment finally succeeds", async () => {
+    const { householdId, scope } = await household();
+    const applied = await applyStripeEvent(db, {
+      id: "evt_2",
+      type: "checkout.session.async_payment_succeeded",
+      data: {
+        object: {
+          client_reference_id: householdId,
+          customer: "cus_late",
+          payment_status: "paid",
+          metadata: { plan: "plus" },
+        },
+      },
+    });
+    expect(applied).toEqual({ action: "purchased", householdId });
+    expect((await getSubscription(db, scope))?.status).toBe("active");
+  });
+
+  it("grants on a checkout Stripe decided was free", async () => {
+    const { householdId, scope } = await household();
+    await applyStripeEvent(db, {
+      id: "evt_1",
+      type: "checkout.session.completed",
+      data: {
+        object: {
+          client_reference_id: householdId,
+          customer: "cus_free",
+          payment_status: "no_payment_required",
+        },
+      },
+    });
+    expect((await getSubscription(db, scope))?.status).toBe("active");
+  });
+
+  it("takes the guide back when the payment is refunded in full", async () => {
+    const { householdId, scope } = await household();
+    await applyStripeEvent(db, {
+      id: "evt_1",
+      type: "checkout.session.completed",
+      data: {
+        object: {
+          client_reference_id: householdId,
+          customer: "cus_refund",
+          payment_status: "paid",
+          metadata: { plan: "plus" },
+        },
+      },
+    });
+
+    const applied = await applyStripeEvent(db, {
+      id: "evt_2",
+      type: "charge.refunded",
+      data: {
+        object: { customer: "cus_refund", amount: 500, amount_refunded: 500 },
+      },
+    });
+    expect(applied).toEqual({ action: "refunded", householdId });
+    expect((await getSubscription(db, scope))?.status).toBe("refunded");
+  });
+
+  it("leaves a partial refund alone", async () => {
+    const { householdId, scope } = await household();
+    await applyStripeEvent(db, {
+      id: "evt_1",
+      type: "checkout.session.completed",
+      data: {
+        object: {
+          client_reference_id: householdId,
+          customer: "cus_partial",
+          payment_status: "paid",
+          metadata: { plan: "plus" },
+        },
+      },
+    });
+
+    const applied = await applyStripeEvent(db, {
+      id: "evt_2",
+      type: "charge.refunded",
+      data: {
+        object: { customer: "cus_partial", amount: 500, amount_refunded: 100 },
+      },
+    });
+    expect(applied).toEqual({ action: "ignored", householdId });
+    expect((await getSubscription(db, scope))?.status).toBe("active");
+  });
+
+  it("revokes when a refund arrives with no amounts on it", async () => {
+    const { householdId, scope } = await household();
+    await applyStripeEvent(db, {
+      id: "evt_1",
+      type: "checkout.session.completed",
+      data: {
+        object: {
+          client_reference_id: householdId,
+          customer: "cus_noamount",
+          payment_status: "paid",
+          metadata: { plan: "plus" },
+        },
+      },
+    });
+
+    // Stripe always sends both amounts, so a charge without them is either a
+    // shape we do not understand or a fixture. The money came back; the guide
+    // goes back with it.
+    const applied = await applyStripeEvent(db, {
+      id: "evt_2",
+      type: "charge.refunded",
+      data: { object: { customer: "cus_noamount" } },
+    });
+    expect(applied).toEqual({ action: "refunded", householdId });
+    expect((await getSubscription(db, scope))?.status).toBe("refunded");
   });
 
   it("ignores a checkout with no household on it", async () => {

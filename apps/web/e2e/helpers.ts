@@ -19,6 +19,9 @@ export function signed(body: string, secret = SECRET): string {
  * being exercised is the one Stripe drives in production. A customer id is
  * unique per call because a Stripe customer belongs to one household and the
  * e2e database is shared by every test in the run.
+ *
+ * The event is a one-time purchase — `payment_status` paid, no subscription —
+ * because that is what the checkout now creates.
  */
 export async function upgrade(page: Page): Promise<void> {
   const household = (await (await page.request.get("/api/household")).json()) as { id: string };
@@ -29,7 +32,8 @@ export async function upgrade(page: Page): Promise<void> {
       object: {
         client_reference_id: household.id,
         customer: `cus_${randomUUID()}`,
-        subscription: `sub_${randomUUID()}`,
+        subscription: null,
+        payment_status: "paid",
         metadata: { plan: "plus" },
       },
     },

@@ -78,24 +78,41 @@ describe("PlanCard", () => {
     ).toBeInTheDocument();
   });
 
-  it("offers an upgrade on the free plan", async () => {
+  it("offers to buy Plus once, at the price on the button", async () => {
     render(<PlanCard />);
-    expect(await screen.findByRole("button", { name: "See what Plus costs" })).toBeInTheDocument();
+    expect(await screen.findByRole("button", { name: "Pay $5, once" })).toBeInTheDocument();
+    expect(screen.getByText("One payment. It does not renew.")).toBeInTheDocument();
   });
 
-  it("offers the portal on a paid plan", async () => {
+  it("has nothing to manage on a paid plan", async () => {
     fetchMock.mockImplementation(() => respond(PLUS));
     render(<PlanCard />);
     expect(
-      await screen.findByRole("button", { name: "Manage your subscription" }),
+      await screen.findByText("Paid once. Nothing renews, and there is nothing to cancel."),
     ).toBeInTheDocument();
+    expect(screen.queryByRole("button")).not.toBeInTheDocument();
   });
 
   it("says so instead of offering a button when billing is not configured", async () => {
     fetchMock.mockImplementation(() => respond({ ...FREE, configured: false }));
     render(<PlanCard />);
-    expect(await screen.findByText(/Subscriptions are not open yet/)).toBeInTheDocument();
+    expect(await screen.findByText(/Payments are not open yet/)).toBeInTheDocument();
     expect(screen.queryByRole("button")).not.toBeInTheDocument();
+  });
+
+  it("thanks them when they come back from paying", async () => {
+    fetchMock.mockImplementation(() => respond(PLUS));
+    vi.stubGlobal("location", { ...window.location, search: "?billing=done" });
+    render(<PlanCard />);
+    expect(await screen.findByRole("status")).toHaveTextContent(/Thank you/);
+  });
+
+  it("does not thank them for a visit that was not a payment", async () => {
+    fetchMock.mockImplementation(() => respond(PLUS));
+    vi.stubGlobal("location", { ...window.location, search: "" });
+    render(<PlanCard />);
+    await screen.findByText("Paid once. Nothing renews, and there is nothing to cancel.");
+    expect(screen.queryByRole("status")).not.toBeInTheDocument();
   });
 
   it("opens the checkout and follows the url it is given", async () => {
@@ -105,12 +122,14 @@ describe("PlanCard", () => {
       url === "/api/billing" ? respond(FREE) : respond({ url: "https://checkout.stripe.test/1" }),
     );
     render(<PlanCard />);
-    await userEvent.click(await screen.findByRole("button", { name: "See what Plus costs" }));
+    await userEvent.click(await screen.findByRole("button", { name: "Pay $5, once" }));
     await waitFor(() => expect(assign).toHaveBeenCalledWith("https://checkout.stripe.test/1"));
-    expect(fetchMock).toHaveBeenCalledWith(
-      "/api/billing/checkout",
-      expect.objectContaining({ method: "POST" }),
-    );
+    const [url, init] = fetchMock.mock.calls.at(-1)!;
+    expect(url).toBe("/api/billing/checkout");
+    expect(init).toMatchObject({ method: "POST" });
+    // The server decides what is for sale and at what price; the browser only
+    // says "one Plus, please", and not even that in a body.
+    expect(init).not.toHaveProperty("body");
   });
 
   it("says so when the checkout cannot be opened", async () => {
@@ -118,7 +137,7 @@ describe("PlanCard", () => {
       url === "/api/billing" ? respond(FREE) : respond({}, { status: 503 }),
     );
     render(<PlanCard />);
-    await userEvent.click(await screen.findByRole("button", { name: "See what Plus costs" }));
+    await userEvent.click(await screen.findByRole("button", { name: "Pay $5, once" }));
     expect(await screen.findByRole("status")).toHaveTextContent(/could not open that just now/);
   });
 
@@ -127,7 +146,7 @@ describe("PlanCard", () => {
       url === "/api/billing" ? respond(FREE) : Promise.reject(new Error("offline")),
     );
     render(<PlanCard />);
-    await userEvent.click(await screen.findByRole("button", { name: "See what Plus costs" }));
+    await userEvent.click(await screen.findByRole("button", { name: "Pay $5, once" }));
     expect(await screen.findByRole("status")).toHaveTextContent(/could not open that just now/);
   });
 

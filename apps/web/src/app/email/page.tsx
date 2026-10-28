@@ -11,7 +11,7 @@ import { useAppState, useHydrated } from "@/lib/store";
 /**
  * What the weekly email would say.
  *
- * This page exists because the honest answer to "what do I get for $7.99" is
+ * This page exists because the honest answer to "what do I get for $5" is
  * not a bullet list — it is the thing itself. It also makes the gate legible:
  * when nothing would be sent, the page says which of the six reasons stopped
  * it, in the same words the job log uses.

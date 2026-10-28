@@ -26,7 +26,7 @@ Technical design for V1. The goal is a small, boring, fast, accessible system th
 | Database      | **Postgres 16 (Neon)**                                     | Relational content graph, JSONB for flexible fields, FTS         |
 | ORM           | **Drizzle**                                                | Typed SQL, migrations in git, no magic                           |
 | Auth          | **Auth.js v5** — email magic link + Google + Apple         | No password support burden                                       |
-| Payments      | **Stripe** Checkout + Customer Portal + webhooks           | Standard, low ops                                                |
+| Payments      | **Stripe** Checkout, one payment, + webhooks               | Standard, low ops; nothing to renew or cancel                    |
 | Email         | **Resend + React Email**                                   | Same components as the app                                       |
 | Jobs          | **Inngest** (or Vercel Cron for V1)                        | Weekly digest, link checks, recall sync                          |
 | Search        | **Postgres FTS + pg_trgm**                                 | No extra service in V1                                           |
@@ -257,10 +257,10 @@ create table subscriptions (
   id uuid primary key default gen_random_uuid(),
   household_id uuid references households(id) on delete cascade,
   stripe_customer_id text unique,
-  stripe_subscription_id text unique,
+  stripe_subscription_id text unique,  -- null for a one-time purchase
   plan text not null check (plan in ('free','plus','family','b2b')),
-  status text not null,
-  current_period_end timestamptz,
+  status text not null,                -- 'active' | 'refunded' | legacy subscription states
+  current_period_end timestamptz,      -- legacy subscriptions only
   created_at timestamptz not null default now()
 );
 
@@ -538,11 +538,14 @@ things zoom cannot do.
 
 ## 9. Payments
 
-- Stripe Checkout for Plus/Family; Customer Portal for cancel/update.
-- Webhooks: `checkout.session.completed`, `customer.subscription.updated`, `customer.subscription.deleted`, `invoice.payment_failed`.
-- Entitlements are derived from `subscriptions.status` + `plan`, cached in a signed cookie for 5 minutes.
+- **One price, paid once.** Plus is $5, charged a single time. Stripe Checkout runs in `mode: "payment"` with an inline `price_data` line item, so the price on the button, the price on the checkout and the price on `/terms` come from one constant (`apps/web/src/lib/pricing.ts`) and cannot drift.
+- There is no subscription and no Customer Portal. A one-time purchase has no renewal to show, no card to update and no cancel to offer; a portal for it would open empty. `/settings` says "Paid once. Nothing renews, and there is nothing to cancel."
+- `customer_creation: "always"` on the session, so the charge carries a customer id that a refund can be mapped back to a household.
+- Webhooks: `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `charge.refunded`. The subscription events (`customer.subscription.updated`, `customer.subscription.deleted`, `invoice.payment_failed`) are still handled for rows written while Plus was monthly.
+- A session grants only when `payment_status` is absent or one of `paid`/`no_payment_required`; the delayed-method case arrives later as `async_payment_succeeded`. A full refund writes `status = 'refunded'` and the household falls back to free; a partial refund changes nothing.
+- Entitlements are derived from `subscriptions.status` + `plan` by one pure function (`entitlementsFor`), with `active` meaning "paid, and there is no period for it to end".
 - **Free tier never loses red flags, crisis numbers, or the current week.**
-- No dark patterns: cancel is one click, no "are you sure" maze, no hidden annual lock-in.
+- No dark patterns: no renewal to forget, no "are you sure" maze, no hidden annual lock-in.
 
 ---
 
@@ -675,7 +678,7 @@ What is locale data, not code: units, spelling, emergency numbers, benefit progr
 | Domain + email | $5                         |
 | **Total**      | **~$100–150/mo**           |
 
-At 10k MAU and 4% paid at $7.99, revenue is ~$3,200/mo. The unit economics work at small scale, which is the point.
+At 10k MAU and 4% paying $5 once, revenue is ~$2,000 in the month those 400 buy. A one-time price makes revenue a function of new households rather than of retained ones, so the number that matters is not MRR — it is whether the $5 keeps arriving from people who arrive. That is the bet, stated plainly: no recurring revenue, and no churn to manage either.
 
 ---
 
@@ -692,7 +695,7 @@ A release is V1 when all of these are true:
 - [ ] Search returns cited results for the top 100 queries.
 - [ ] Triage covers the top 20 red-flag paths, all clinician-reviewed.
 - [ ] Weekly email sends correctly across timezones, idempotently.
-- [ ] Stripe Plus/Family works; cancel is one click.
+- [ ] Stripe Plus works: one payment of $5, refunds revoke, nothing to cancel.
 - [ ] PWA installable; current week + triage work offline.
 - [ ] WCAG 2.2 AA verified; Lighthouse a11y 100.
 - [ ] 200% and 400% zoom reflow verified.

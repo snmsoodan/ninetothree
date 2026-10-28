@@ -6,6 +6,12 @@
  * that a webhook really came from Stripe, and turning an event into a row.
  * Both are pure enough to test, and both are the parts a real integration would
  * otherwise have to trust.
+ *
+ * The product is one payment of five dollars, not a subscription, so the events
+ * that matter are the ones a single payment produces: a completed checkout, the
+ * late completion a delayed payment method produces, and a refund. The
+ * subscription events are still handled, because rows written while the product
+ * was a subscription still exist and a cancel must still mean something.
  */
 
 import { createHmac, timingSafeEqual } from "node:crypto";
@@ -71,6 +77,11 @@ export interface StripeObject {
   customer?: string | null;
   subscription?: string | null;
   status?: string;
+  /** On a checkout session: whether the money has actually arrived. */
+  payment_status?: string;
+  /** On a charge: what was charged, and what has been given back. */
+  amount?: number;
+  amount_refunded?: number;
   client_reference_id?: string | null;
   current_period_end?: number | null;
   metadata?: Record<string, string> | null;
@@ -85,11 +96,20 @@ export interface StripeEvent {
 
 export interface AppliedEvent {
   /** What the event did, for the log line. */
-  action: "subscribed" | "updated" | "cancelled" | "payment-failed" | "ignored";
+  action: "purchased" | "updated" | "cancelled" | "payment-failed" | "refunded" | "ignored";
   householdId?: string;
 }
 
 const PLAN_NAMES: readonly Plan[] = ["free", "plus", "family", "b2b"];
+
+/**
+ * A checkout session's `payment_status` when the money is in.
+ *
+ * `no_payment_required` is in the list because a hundred-percent discount
+ * produces it, and a session we created for five dollars should still count as
+ * bought if Stripe decides nothing is owed.
+ */
+const PAID_PAYMENT_STATUSES = new Set(["paid", "no_payment_required"]);
 
 function planOf(object: StripeObject): Plan | undefined {
   const named = object.metadata?.plan;
@@ -115,9 +135,23 @@ function periodEndOf(object: StripeObject): Date | undefined {
 export async function applyStripeEvent(db: SqlClient, event: StripeEvent): Promise<AppliedEvent> {
   const object = event.data.object;
 
-  if (event.type === "checkout.session.completed") {
+  if (
+    event.type === "checkout.session.completed" ||
+    event.type === "checkout.session.async_payment_succeeded"
+  ) {
     const householdId = object.client_reference_id;
     if (!householdId) return { action: "ignored" };
+
+    /*
+     * A session can complete before the money arrives — that is what a delayed
+     * payment method does — and granting on that would open the guide for a
+     * payment that may still fail. `async_payment_succeeded` is where such a
+     * session becomes a purchase; the second delivery lands here and grants.
+     */
+    if (object.payment_status && !PAID_PAYMENT_STATUSES.has(object.payment_status)) {
+      return { action: "ignored", householdId };
+    }
+
     const plan = planOf(object) ?? "plus";
     await db.query(
       `insert into subscriptions (household_id, plan, status, stripe_customer_id, stripe_subscription_id)
@@ -129,7 +163,7 @@ export async function applyStripeEvent(db: SqlClient, event: StripeEvent): Promi
          stripe_subscription_id = coalesce(excluded.stripe_subscription_id, subscriptions.stripe_subscription_id)`,
       [householdId, plan, object.customer ?? null, object.subscription ?? null],
     );
-    return { action: "subscribed", householdId };
+    return { action: "purchased", householdId };
   }
 
   const customerId = object.customer;
@@ -167,6 +201,23 @@ export async function applyStripeEvent(db: SqlClient, event: StripeEvent): Promi
       householdId,
     ]);
     return { action: "cancelled", householdId };
+  }
+
+  /*
+   * A refund is a return, not a renewal problem: the guide goes back to free.
+   * Stripe sends the same event for a partial refund, and taking everything
+   * away over five dollars minus a goodwill credit would be the wrong reading,
+   * so only a full refund revokes.
+   */
+  if (event.type === "charge.refunded") {
+    const amount = object.amount ?? 0;
+    const refunded = object.amount_refunded ?? 0;
+    if (amount > 0 && refunded < amount) return { action: "ignored", householdId };
+
+    await db.query("update subscriptions set status = 'refunded' where household_id = $1", [
+      householdId,
+    ]);
+    return { action: "refunded", householdId };
   }
 
   if (event.type === "invoice.payment_failed") {
