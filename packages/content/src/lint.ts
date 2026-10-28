@@ -221,6 +221,23 @@ export function proseFields(pack: StagePack): Prose[] {
     });
   });
 
+  (pack.personas ?? []).forEach((view, i) => {
+    push(`personas[${i}].headline`, view.headline);
+    push(`personas[${i}].body`, view.body);
+    push(`personas[${i}].light`, view.light);
+    view.actions.forEach((action, j) => {
+      push(`personas[${i}].actions[${j}].title`, action.title);
+      push(`personas[${i}].actions[${j}].why`, action.why);
+      push(`personas[${i}].actions[${j}].detail`, action.detail);
+      push(`personas[${i}].actions[${j}].skipIf`, action.skipIf);
+      action.options.forEach((option, k) => {
+        push(`personas[${i}].actions[${j}].options[${k}].label`, option.label);
+        push(`personas[${i}].actions[${j}].options[${k}].detail`, option.detail);
+        push(`personas[${i}].actions[${j}].options[${k}].note`, option.note);
+      });
+    });
+  });
+
   pack.alsoKnow.forEach((item, i) => {
     push(`alsoKnow[${i}].title`, item.title);
     push(`alsoKnow[${i}].body`, item.body);

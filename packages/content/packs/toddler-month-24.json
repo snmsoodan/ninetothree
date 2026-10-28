@@ -50,6 +50,83 @@
       "keywords": ["potty", "toilet", "readiness"]
     }
   ],
+  "personas": [
+    {
+      "persona": "partner",
+      "headline": "You are the other half of the discipline",
+      "body": "A two-year-old learns what is allowed by testing both of you. Two different answers is a lesson in which parent to ask.",
+      "actions": [
+        {
+          "id": "m24-partner-rule",
+          "type": "do",
+          "priority": "recommended",
+          "domain": "mind",
+          "title": "Agree on the one rule",
+          "why": "Pick the thing you will both hold, and hold it the same way. One rule held is worth ten announced.",
+          "minutes": 20
+        },
+        {
+          "id": "m24-partner-out",
+          "type": "do",
+          "priority": "recommended",
+          "domain": "play",
+          "title": "Take them out on your own",
+          "why": "An hour at the park, without her, is an hour she is not being climbed on.",
+          "minutes": 60
+        }
+      ]
+    },
+    {
+      "persona": "grandparent",
+      "headline": "You are the safe place with the boring rules",
+      "body": "A toddler who knows your house has the same rules as their house is a toddler who can relax. That is the gift.",
+      "actions": [
+        {
+          "id": "m24-grandparent-rules",
+          "type": "do",
+          "priority": "recommended",
+          "domain": "home",
+          "title": "Match their rules at your house",
+          "why": "If the cot has no blanket at home, it has no blanket at yours. Consistency is what makes you restful.",
+          "minutes": 15
+        },
+        {
+          "id": "m24-grandparent-backup",
+          "type": "know",
+          "priority": "recommended",
+          "domain": "mind",
+          "title": "Back the parent up in front of the child",
+          "why": "Disagree later, in the kitchen. A toddler who sees you overrule a parent learns to shop for the softer answer.",
+          "minutes": 5
+        }
+      ]
+    },
+    {
+      "persona": "extended",
+      "headline": "This is when you become the fun one",
+      "body": "A two-year-old cannot be charmed, but can be delighted. You are the person with no rules to enforce and no bedtime to defend.",
+      "actions": [
+        {
+          "id": "m24-extended-out",
+          "type": "do",
+          "priority": "recommended",
+          "domain": "play",
+          "title": "Take them somewhere with weather",
+          "why": "Puddles, sticks, a hill. The outing that costs nothing is the one they talk about.",
+          "minutes": 90
+        },
+        {
+          "id": "m24-extended-ask",
+          "type": "know",
+          "priority": "recommended",
+          "domain": "mind",
+          "title": "Ask the parent first",
+          "why": "A sweet before dinner is not your call. Ask once, in front of the child, and take the answer.",
+          "minutes": 2
+        }
+      ]
+    }
+  ],
   "alsoKnow": [
     {
       "id": "t24-milk",

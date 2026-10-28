@@ -80,6 +80,29 @@ export {
   type ChecklistIssue,
   type ChecklistLoadResult,
 } from "./checklists";
+export {
+  PERSONA_META,
+  LENS_PERSONAS,
+  isPersona,
+  isLensPersona,
+  BANDS,
+  BAND_LABELS,
+  bandFor,
+  PERSONA_TRACKS,
+  PERSONA_LIGHT,
+  lightFor,
+  lensFor,
+  findView,
+  type PersonaMeta,
+  type LensPersona,
+  type Band,
+  type StageLike,
+  type Track,
+  type TrackSuggestion,
+  type Lens,
+  type LensOptions,
+  type LightOptions,
+} from "./persona";
 export { LOCALES, DEFAULT_LOCALE, localeData, dirFor, intlFor, type LocaleData } from "./locales";
 export { POLICIES, POLICIES_EFFECTIVE, CORRECTIONS, CORRECTION_WINDOWS } from "./policies";
 export type { PolicyLink, Correction } from "./policies";

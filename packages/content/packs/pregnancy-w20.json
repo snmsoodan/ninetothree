@@ -78,6 +78,85 @@
       "keywords": ["birth class", "lamaze", "breathing"]
     }
   ],
+  "personas": [
+    {
+      "persona": "partner",
+      "headline": "Halfway, and the list is longer than the bump",
+      "body": "The middle months are the easy ones. The cot, the class, the car seat and the pediatrician are all easier to sort now than at 38 weeks.",
+      "actions": [
+        {
+          "id": "w20-partner-cot",
+          "type": "do",
+          "priority": "recommended",
+          "domain": "home",
+          "title": "Build the cot before the bump",
+          "why": "Assembling furniture at eight months pregnant, in a small room, is a two-person job and an argument.",
+          "minutes": 120
+        },
+        {
+          "id": "w20-partner-class",
+          "type": "book",
+          "priority": "recommended",
+          "domain": "health-parent",
+          "title": "Book the birth class",
+          "why": "You will both be in the room. Knowing the words for what is happening is not a spectator sport.",
+          "minutes": 60
+        }
+      ]
+    },
+    {
+      "persona": "grandparent",
+      "headline": "The useful grandparent has a car and no opinions",
+      "body": "By now she has heard every warning twice. What she has not got is somebody who can drive to the 8am appointment.",
+      "actions": [
+        {
+          "id": "w20-grandparent-lift",
+          "type": "do",
+          "priority": "recommended",
+          "domain": "home",
+          "title": "Take a morning off for an appointment",
+          "why": "The 20-week scan is the long one. A lift and a coffee afterwards is worth more than a cot.",
+          "minutes": 120
+        },
+        {
+          "id": "w20-grandparent-gift",
+          "type": "buy",
+          "priority": "recommended",
+          "domain": "gear",
+          "title": "Give the thing they will not buy",
+          "why": "Nappies, a cleaner, a meal. Not another outfit in newborn size.",
+          "minutes": 20,
+          "noChooser": "There is no chooser for nappies. Buy the size on their list and keep the receipt."
+        }
+      ]
+    },
+    {
+      "persona": "extended",
+      "headline": "The fun aunt or uncle is a real job",
+      "body": "You are not the parent and not the grandparent. You can be delighted without being responsible, and that is a better position than it sounds.",
+      "actions": [
+        {
+          "id": "w20-extended-list",
+          "type": "buy",
+          "priority": "recommended",
+          "domain": "gear",
+          "title": "Buy from the list, not the shop",
+          "why": "They wrote a list for a reason. The fourth muslin is not the gift; the thing nobody bought is.",
+          "minutes": 20,
+          "noChooser": "The list is the chooser. Anything off it is a guess, and they will be polite about it."
+        },
+        {
+          "id": "w20-extended-plan",
+          "type": "do",
+          "priority": "recommended",
+          "domain": "home",
+          "title": "Plan one thing for after the birth",
+          "why": "A meal, a walk, an afternoon of company. Week three is when the visitors stop and the help is still needed.",
+          "minutes": 30
+        }
+      ]
+    }
+  ],
   "alsoKnow": [
     {
       "id": "w20-sex",

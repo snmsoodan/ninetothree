@@ -234,7 +234,14 @@ export function previousStage(
 // here too; nothing else is, because nothing else is ever read.
 const actionIndex = {};
 for (const pack of packs) {
-  for (const action of pack.coreActions) {
+  // Persona actions are pinned and shown in history exactly like the parent's,
+  // so they resolve through the same index. The pack stays the stage they
+  // belong to.
+  const actions = [
+    ...pack.coreActions,
+    ...(pack.personas ?? []).flatMap((view) => view.actions),
+  ];
+  for (const action of actions) {
     actionIndex[action.id] = {
       id: action.id,
       title: action.title,

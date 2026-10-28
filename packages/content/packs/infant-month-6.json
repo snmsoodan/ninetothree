@@ -207,6 +207,83 @@
       "keywords": ["daycare", "nursery", "childcare"]
     }
   ],
+  "personas": [
+    {
+      "persona": "partner",
+      "headline": "Six months in, the novelty is gone",
+      "body": "The baby is more fun and the work is the same. This is the stretch that quietly wears couples down, and it is survivable.",
+      "actions": [
+        {
+          "id": "m6-partner-split",
+          "type": "do",
+          "priority": "recommended",
+          "domain": "home",
+          "title": "Write down who does what",
+          "why": "The invisible list is the argument. Writing it down makes it visible, and divisible.",
+          "minutes": 20
+        },
+        {
+          "id": "m6-partner-night",
+          "type": "do",
+          "priority": "recommended",
+          "domain": "sleep",
+          "title": "Take one night wake",
+          "why": "Teething wakes everybody. One of you getting up every time is how two people end up exhausted.",
+          "minutes": 30
+        }
+      ]
+    },
+    {
+      "persona": "grandparent",
+      "headline": "The baby is not yours to raise",
+      "body": "The hardest part of this year is watching your child do it differently from how you did it, and saying nothing.",
+      "actions": [
+        {
+          "id": "m6-grandparent-advice",
+          "type": "know",
+          "priority": "recommended",
+          "domain": "mind",
+          "title": "Answer only what is asked",
+          "why": "If they ask how you did it, tell them. If they do not, the silence is the help.",
+          "minutes": 5
+        },
+        {
+          "id": "m6-grandparent-photo",
+          "type": "do",
+          "priority": "recommended",
+          "domain": "safety",
+          "title": "Ask before you post a photo",
+          "why": "A photograph on your page is a photograph on the internet, permanently, with their name attached.",
+          "minutes": 5
+        }
+      ]
+    },
+    {
+      "persona": "extended",
+      "headline": "Be the one who is not keeping score",
+      "body": "By now everyone has an opinion about the sleep, the feeding and the screens. You can be the one who asks and does not grade the answer.",
+      "actions": [
+        {
+          "id": "m6-extended-task",
+          "type": "do",
+          "priority": "recommended",
+          "domain": "home",
+          "title": "Turn up with a task",
+          "why": "Not to hold the baby. To walk it round the block so she can eat with two hands.",
+          "minutes": 30
+        },
+        {
+          "id": "m6-extended-song",
+          "type": "do",
+          "priority": "recommended",
+          "domain": "play",
+          "title": "Learn one song they like",
+          "why": "A song you can sing badly is worth more to a six-month-old than a toy that needs batteries.",
+          "minutes": 15
+        }
+      ]
+    }
+  ],
   "alsoKnow": [
     {
       "id": "m6-water",

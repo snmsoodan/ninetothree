@@ -106,6 +106,83 @@
       "keywords": ["postpartum depression", "baby blues", "screening"]
     }
   ],
+  "personas": [
+    {
+      "persona": "partner",
+      "headline": "Nobody is themselves in the first week",
+      "body": "She is healing, feeding around the clock and running on broken sleep. The most useful thing you own is the ability to take the baby for an hour.",
+      "actions": [
+        {
+          "id": "pp1-partner-feed",
+          "type": "do",
+          "priority": "recommended",
+          "domain": "feeding",
+          "title": "Own one night feed",
+          "why": "One feed you do without waking her is the difference between four hours of sleep and two.",
+          "minutes": 40
+        },
+        {
+          "id": "pp1-partner-gate",
+          "type": "do",
+          "priority": "recommended",
+          "domain": "home",
+          "title": "Be the one who says no",
+          "why": "You are the gatekeeper. \"Not today\" is easier to hear from you than from her.",
+          "minutes": 5
+        }
+      ]
+    },
+    {
+      "persona": "grandparent",
+      "headline": "Hold the baby. Wash the dishes.",
+      "body": "The visit that helps is the one where you do the boring thing and leave. The visit that hurts is the one where you hold the baby and she makes the tea.",
+      "actions": [
+        {
+          "id": "pp1-grandparent-chore",
+          "type": "do",
+          "priority": "recommended",
+          "domain": "home",
+          "title": "Do one chore without asking",
+          "why": "Not \"what can I do\". The dishes. The bin. The laundry sitting in the machine.",
+          "minutes": 20
+        },
+        {
+          "id": "pp1-grandparent-short",
+          "type": "do",
+          "priority": "recommended",
+          "domain": "mind",
+          "title": "Keep the visit short",
+          "why": "Forty minutes, then go. A new parent is hosting you whether they meant to or not.",
+          "minutes": 40
+        }
+      ]
+    },
+    {
+      "persona": "extended",
+      "headline": "Week three is the week they need you",
+      "body": "In the first week there are too many people. In the third there is nobody, and the doorbell has stopped ringing.",
+      "actions": [
+        {
+          "id": "pp1-extended-later",
+          "type": "do",
+          "priority": "recommended",
+          "domain": "home",
+          "title": "Offer to come in week three",
+          "why": "Say the date now, so nobody has to ask. The first week is for grandparents and sleep.",
+          "minutes": 5
+        },
+        {
+          "id": "pp1-extended-sick",
+          "type": "know",
+          "priority": "recommended",
+          "domain": "safety",
+          "title": "Stay away if you are ill",
+          "why": "A cold in a newborn is a hospital visit. A cold in you is a week off. Reschedule.",
+          "minutes": 2
+        }
+      ]
+    }
+  ],
   "alsoKnow": [
     {
       "id": "pp1-jaundice",

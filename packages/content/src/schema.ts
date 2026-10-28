@@ -207,6 +207,33 @@ export const AlsoKnow = z.object({
 export type AlsoKnow = z.infer<typeof AlsoKnow>;
 
 /**
+ * Who is reading. Roles relative to the pregnancy, not genders: a father can be
+ * the birthing parent and a mother can be the partner, and what changes the
+ * guidance is who is carrying, not who they are.
+ *
+ * See PERSONAS.md.
+ */
+export const PERSONAS = ["parent", "partner", "grandparent", "extended"] as const;
+export const Persona = z.enum(PERSONAS);
+export type Persona = z.infer<typeof Persona>;
+
+/**
+ * A week written for somebody who is not the parent. The pack is already the
+ * parent's week, so `parent` never gets one. At most two actions, because the
+ * reader is not doing the parent's three things.
+ */
+export const PersonaView = z.object({
+  persona: Persona,
+  /** A statement about this week, not a question. Under 80 characters. */
+  headline: z.string().min(1).max(80),
+  body: z.string().min(1).max(400),
+  /** One wry line. Never about the body, money, feeding, or the baby. */
+  light: z.string().max(160).optional(),
+  actions: z.array(ActionWithChooser).max(2).default([]),
+});
+export type PersonaView = z.infer<typeof PersonaView>;
+
+/**
  * A step that only appears for some parents. `when` names a rule in
  * `packages/rules`; the rule decides whether, the pack decides what. This
  * keeps added content inside the schema, the lint, and clinical review.
@@ -253,6 +280,11 @@ export const StagePack = z
     coreActions: z.array(ActionWithChooser).min(1).max(3),
     /** Steps that only some parents see. Never counted against the three. */
     profileActions: z.array(ProfileAction).max(3).optional(),
+    /**
+     * Views for the people reading over the parent's shoulder. Absent on most
+     * packs: the fallback tracks cover the rest. See PERSONAS.md §3.
+     */
+    personas: z.array(PersonaView).max(3).optional(),
     alsoKnow: z.array(AlsoKnow).max(8).default([]),
     /** At least one. A pack with no red flags is a pack that has not been thought about. */
     redFlags: z.array(RedFlag).min(1),
@@ -270,6 +302,7 @@ export const StagePack = z
     const all = [
       ...pack.coreActions.map((a) => a.id),
       ...(pack.profileActions ?? []).map((a) => a.action.id),
+      ...(pack.personas ?? []).flatMap((view) => view.actions.map((a) => a.id)),
       ...pack.alsoKnow.map((a) => a.id),
       ...pack.redFlags.map((a) => a.id),
       ...pack.appointments.map((a) => a.id),
@@ -321,6 +354,36 @@ export const StagePack = z
           message: `buy action "${action.id}" has no options`,
           path: ["coreActions"],
         });
+      }
+    }
+
+    // A persona view is a lens on the parent's week, never a second week.
+    const personaSeen = new Set<string>();
+    for (const view of pack.personas ?? []) {
+      if (view.persona === "parent") {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `pack ${pack.id} has a parent view; the pack is already the parent's week`,
+          path: ["personas"],
+        });
+      }
+      if (personaSeen.has(view.persona)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `pack ${pack.id} has two views for "${view.persona}"`,
+          path: ["personas"],
+        });
+      }
+      personaSeen.add(view.persona);
+
+      for (const action of view.actions) {
+        if (action.priority === "essential") {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: `persona action "${action.id}" is essential; the three essentials are the parent's`,
+            path: ["personas"],
+          });
+        }
       }
     }
 

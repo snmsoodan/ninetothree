@@ -50,6 +50,58 @@
       "keywords": ["next", "preschool", "four"]
     }
   ],
+  "personas": [
+    {
+      "persona": "partner",
+      "headline": "Three is the year of the question",
+      "body": "\"Why?\" is not defiance, it is the job. Answering the fourth one badly is not a failure.",
+      "actions": [
+        {
+          "id": "m36-partner-why",
+          "type": "know",
+          "priority": "recommended",
+          "domain": "play",
+          "title": "Answer the fourth why",
+          "why": "The fourth question is usually the real one. Answering it is the difference between a conversation and a wall.",
+          "minutes": 10
+        },
+        {
+          "id": "m36-partner-nursery",
+          "type": "do",
+          "priority": "recommended",
+          "domain": "childcare",
+          "title": "Decide on the nursery or preschool now",
+          "why": "The good ones have waitlists that run a year. This is the week the list is still short.",
+          "minutes": 60
+        }
+      ]
+    },
+    {
+      "persona": "grandparent",
+      "headline": "Three is when they start to remember you",
+      "body": "A three-year-old keeps the things you do. The walk, the biscuit, the song in the car. This is the year it becomes memory.",
+      "actions": [
+        {
+          "id": "m36-grandparent-memory",
+          "type": "do",
+          "priority": "recommended",
+          "domain": "play",
+          "title": "Start one thing that is only yours",
+          "why": "A walk, a biscuit, a song in the car. One repeated thing is what a three-year-old keeps.",
+          "minutes": 30
+        },
+        {
+          "id": "m36-grandparent-ask",
+          "type": "ask",
+          "priority": "recommended",
+          "domain": "mind",
+          "title": "Ask what they need before you offer",
+          "why": "The offer you would have made last year may not be the one they need now.",
+          "minutes": 5
+        }
+      ]
+    }
+  ],
   "alsoKnow": [
     {
       "id": "t36-thousand-words",
