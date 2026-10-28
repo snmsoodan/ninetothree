@@ -1,7 +1,7 @@
 # Nine to Three — one week at a time, from bump to third birthday
 
 **Name:** **Nine to Three** — `ninetothree.com` verified unregistered at standard price. See [Naming](#naming).
-**Status:** Blueprint v0.1 — ideas locked before any code
+**Status:** V1 built — 85 stage packs, 251 vetted links, five CI jobs green. Beta (#51) not yet run.
 **Scope of this document set:** pregnancy week 4 → child's 3rd birthday
 **Market:** **United States first** (en-US). UK is V2, then Canada and Australia. Every locale is data, not code.
 
@@ -12,6 +12,26 @@
 > **It tells a parent the three things that actually matter this week, gives them two or three vetted ways to do each one, and remembers what they've already done — so they never have to wonder "what now?" again.**
 
 Not a content library. Not a forum. Not a baby tracker. A **guided weekly operating system** for the first three years.
+
+---
+
+## What it looks like
+
+Every picture below was taken by a test, at 390×844 — the phone this is designed for — from the shipped build. None of them is a mockup: `apps/web/e2e/evidence.spec.ts` takes them, and `pnpm screenshots` re-takes them into this folder. (The release evidence pack under `evidence/` is generated per release and never committed; this folder is the README's own copy, and it is refreshed by running that command rather than by pasting a new file.)
+
+| Where you start                                                                                                                                              | The week card — the product                                                                                                                                            | The dashboard — a shelf, not a feed                                                                                                                            | The library                                                                                                                          |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| ![Onboarding asking "Where are you right now?", with "I am pregnant" and "My baby is here" as two large choices](docs/screenshots/01-onboarding-welcome.png) | ![Week 28 of pregnancy: the subtitle as the heading, a progress ring, what is happening to the baby and to you, then three core actions](docs/screenshots/05-week.png) | ![The dashboard after onboarding: this week's summary card at the top, then the pin shelf, appointments and the partner's jobs](docs/screenshots/04-today.png) | ![The library: search, a "what do you need?" filter, a cost filter, and every link grouped by type](docs/screenshots/06-library.png) |
+| **Two choices, not a form.** Then one question at a time, six in total, and no account required.                                                             | **Three things, not thirty.** Each with a verb, a time estimate, a cost band and a finish line.                                                                        | **One place to look.** This week first; pins, appointments and the partner's jobs underneath.                                                                  | **Every place we send you, in one list.** Nothing is here because someone paid for it.                                               |
+
+The two screens that matter most at 3am:
+
+| If something is wrong                                                                                                                           | Is this normal?                                                                                                                                            |
+| ----------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ![The safety page: "If something is wrong", a button to work out who to call, and the phone numbers underneath](docs/screenshots/07-safety.png) | ![Triage asking "Who is this about?", with four answers: you while pregnant, you after birth, the baby, or an older child](docs/screenshots/08-triage.png) |
+| **Always there, always free, never behind a sign-in.** Who to call, in the order you should call them.                                          | **Never reassuring by default.** A few questions and one answer — and it works without a signal.                                                           |
+
+The rest are in [`docs/screenshots/`](docs/screenshots): the due-date question with its "assume I am 28 weeks" shortcut, the confirmation step, the printable week pack, the offline page, and the same dashboard at **320 px** — the narrowest phone supported, where a test asserts nothing scrolls sideways.
 
 ---
 
