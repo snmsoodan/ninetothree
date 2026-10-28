@@ -516,7 +516,7 @@ The strings that do the emotional work. These are canonical — use them, don't 
 **Money**
 
 - "This is free. The rest of the week is too."
-- "Nine to Three Plus is $7.99 a month. Here's exactly what it adds."
+- "Nine to Three Plus is $5, once. Here's exactly what it adds."
 
 **Never**
 

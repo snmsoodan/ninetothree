@@ -54,24 +54,25 @@ export default function TermsPage() {
       <h2>What it costs</h2>
       <p>
         The week you are in, the safety pages and the triage questions are free, permanently and
-        without an account. <strong>Plus is $7.99 a month.</strong> It opens the whole timeline in
+        without an account. <strong>Plus is $5, paid once.</strong> It opens the whole timeline in
         both directions, lifts the limit on pins, adds a second adult to your household, and turns
         on offline reading and printing.
       </p>
       <p>
-        Subscriptions renew monthly until cancelled. You can cancel at any time from{" "}
-        <TextLink href="/settings">Settings</TextLink>, and you keep access until the end of the
-        period you have paid for. If a card fails we do not cut you off immediately — the processor
-        retries for about two weeks first, because an expired card is not a decision to leave.
+        It is not a subscription. There is no monthly charge, nothing renews, and there is nothing
+        to cancel — one payment and the guide is yours for as long as we run it. Paying once also
+        means there is no card to expire and no failed payment to be cut off by.
       </p>
       <p>
-        If we raise the price, we will tell you before it applies to you, and you can cancel first.
+        The price you pay is the price on the day you pay it. If we raise it later, that applies to
+        new purchases, not to yours.
       </p>
 
       <h2>Refunds</h2>
       <p>
-        If Plus is not what you expected, write to us within thirty days of a charge and we will
-        refund it, no interrogation. After that, cancel and keep access to the end of the period.
+        If Plus is not what you expected, write to us within thirty days of paying and we will
+        refund it, no interrogation. A refund ends the access it paid for — the week you are in, the
+        safety pages and the triage questions stay, because those were never the thing being sold.
       </p>
 
       <h2>The content</h2>

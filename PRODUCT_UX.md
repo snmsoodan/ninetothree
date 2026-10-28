@@ -363,12 +363,12 @@ Never for:
 
 ### The value ladder
 
-| Tier       | Price              | What you get                                                                                                                             |
-| ---------- | ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| **Free**   | $0                 | This week + last week, 3 pins, basic search, red flags, weekly email                                                                     |
-| **Plus**   | $7.99/mo or $59/yr | Full timeline (all weeks), unlimited pins, partner, offline, printable packs, appointment reminders, personalized gear list, data export |
-| **Family** | $99/yr             | Up to 5 caregivers, multiples, grandparent view, shared calendar                                                                         |
-| **B2B**    | Custom             | Employer benefit, insurer, health system, fertility clinic                                                                               |
+| Tier       | Price    | What you get                                                                                                                             |
+| ---------- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| **Free**   | $0       | This week + last week, 3 pins, basic search, red flags, weekly email                                                                     |
+| **Plus**   | $5, once | Full timeline (all weeks), unlimited pins, partner, offline, printable packs, appointment reminders, personalized gear list, data export |
+| **Family** | $99/yr   | Up to 5 caregivers, multiples, grandparent view, shared calendar                                                                         |
+| **B2B**    | Custom   | Employer benefit, insurer, health system, fertility clinic                                                                               |
 
 ### Why people pay
 
@@ -385,7 +385,7 @@ Never for:
 - No selling data.
 - No paywalled red flags or crisis numbers.
 - No "premium support" that implies the free tier is unsafe.
-- No annual-only trap; monthly cancel is one click.
+- No renewal at all: one payment, and the receipt is the end of the transaction.
 
 ### Affiliate policy
 

@@ -1,9 +1,15 @@
 /**
- * What a household is allowed to do, worked out from its subscription.
+ * What a household is allowed to do, worked out from what it has bought.
  *
  * This is a pure function of one row, deliberately. The paywall (issue #40) and
  * the billing routes both read it, and neither should be able to disagree with
  * the other about what "plus" means.
+ *
+ * "Plus" is five dollars paid once, so the row is a purchase rather than a
+ * subscription: `active` means paid, and there is no period to end. The
+ * subscription statuses below are still understood because rows written before
+ * the price changed still exist, and an old cancel or a failed card must still
+ * read as something.
  */
 
 export type Plan = "free" | "plus" | "family" | "b2b";
@@ -52,10 +58,11 @@ export const PAID: Omit<Entitlements, "plan"> = {
 /**
  * Statuses that still count as paid.
  *
- * `past_due` is in the list on purpose. Stripe retries a failed card for about
- * two weeks, and taking somebody's week away because a card expired is exactly
- * the kind of thing this product should not do. `unpaid` is the end of that
- * road, and it is not here.
+ * `past_due` is here for the rows written while Plus was a subscription: Stripe
+ * retried a failed card for about two weeks, and taking somebody's week away
+ * because a card expired is exactly the kind of thing this product should not
+ * do. A purchase writes `active`. `refunded`, `canceled` and `unpaid` are the
+ * ends of their roads, and none of them are here.
  */
 const ENTITLED_STATUSES = new Set(["active", "trialing", "past_due"]);
 

@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { Button, Card, CardBody } from "@ninetothree/ui";
 
+import { PRICE_LABEL } from "@/lib/pricing";
+
 interface Billing {
   plan: "free" | "plus" | "family" | "b2b";
   status: string;
@@ -31,11 +33,15 @@ const PLAN_NAME: Record<Billing["plan"], string> = {
 };
 
 /**
- * What this household pays for, and what that gets it.
+ * What this household has bought, and what that gets it.
  *
  * The list is written from the entitlements the server sent, not from a copy of
  * the rules kept here — the paywall and this card must not be able to disagree
  * about what "plus" means.
+ *
+ * Plus is one payment, so there is nothing to manage afterwards: no renewal
+ * date, no cancel button, no "your card expires in March". Saying that plainly
+ * is the whole of this card's paid state.
  *
  * When billing is not configured the card says so and offers no button. A
  * button that opens a checkout that cannot exist is worse than no button.
@@ -45,6 +51,13 @@ export function PlanCard() {
   const [state, setState] = useState<State>({ kind: "loading" });
   const [busy, setBusy] = useState(false);
   const [note, setNote] = useState<string | null>(null);
+  const [justPaid, setJustPaid] = useState(false);
+
+  // Stripe sends them back to `/settings?billing=done`. Read on the client, in
+  // an effect, so this component needs no Suspense boundary to be prerendered.
+  useEffect(() => {
+    setJustPaid(new URLSearchParams(window.location.search).get("billing") === "done");
+  }, []);
 
   useEffect(() => {
     if (status === "loading") return;
@@ -75,15 +88,11 @@ export function PlanCard() {
     };
   }, [status]);
 
-  async function go(where: "checkout" | "portal"): Promise<void> {
+  async function go(): Promise<void> {
     setBusy(true);
     setNote(null);
     try {
-      const response = await fetch(`/api/billing/${where}`, {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ plan: "plus" }),
-      });
+      const response = await fetch("/api/billing/checkout", { method: "POST" });
       if (!response.ok) {
         setNote("We could not open that just now. Try again in a moment.");
         return;
@@ -160,24 +169,29 @@ export function PlanCard() {
           The red flags, the safety pages and the recall feed are never behind any of this.
         </p>
 
-        {billing.configured ? (
+        {paid ? (
+          <p className="mt-4 text-base text-ink-muted">
+            Paid once. Nothing renews, and there is nothing to cancel.
+          </p>
+        ) : billing.configured ? (
           <div className="mt-4 flex flex-wrap items-center gap-2">
-            {paid ? (
-              <Button variant="quiet" onClick={() => void go("portal")} disabled={busy}>
-                {busy ? "Opening" : "Manage your subscription"}
-              </Button>
-            ) : (
-              <Button onClick={() => void go("checkout")} disabled={busy}>
-                {busy ? "Opening" : "See what Plus costs"}
-              </Button>
-            )}
+            <Button onClick={() => void go()} disabled={busy}>
+              {busy ? "Opening" : `Pay ${PRICE_LABEL}, once`}
+            </Button>
+            <p className="text-base text-ink-muted">One payment. It does not renew.</p>
           </div>
         ) : (
           <p className="mt-4 text-base text-ink-muted">
-            Subscriptions are not open yet. Everything here is free until they are, and nothing you
-            have now will be taken away.
+            Payments are not open yet. Everything here is free until they are, and nothing you have
+            now will be taken away.
           </p>
         )}
+
+        {justPaid && paid ? (
+          <p role="status" className="mt-3 text-base text-ink">
+            Thank you. The payment went through, and the whole guide is open.
+          </p>
+        ) : null}
 
         {note ? (
           <p role="status" className="mt-3 text-base text-ink-muted">

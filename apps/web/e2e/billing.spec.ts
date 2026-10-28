@@ -38,8 +38,7 @@ async function signIn(page: Page, email: string) {
 test.describe("billing", () => {
   test("the endpoints refuse a signed-out caller", async ({ page }) => {
     expect((await page.request.get("/api/billing")).status()).toBe(401);
-    expect((await page.request.post("/api/billing/checkout", { data: {} })).status()).toBe(401);
-    expect((await page.request.post("/api/billing/portal", { data: {} })).status()).toBe(401);
+    expect((await page.request.post("/api/billing/checkout")).status()).toBe(401);
   });
 
   test("a new household is on the free plan with the free limits", async ({ page }) => {
@@ -76,7 +75,7 @@ test.describe("billing", () => {
     expect(response.status()).toBe(400);
   });
 
-  test("a signed webhook upgrades the household and the plan endpoint agrees", async ({ page }) => {
+  test("a signed webhook sells the household the guide, once", async ({ page }) => {
     await signIn(page, address());
 
     const before = (await (await page.request.get("/api/billing")).json()) as { plan: string };
@@ -93,7 +92,8 @@ test.describe("billing", () => {
         object: {
           client_reference_id: household.id,
           customer,
-          subscription: `sub_${randomUUID()}`,
+          subscription: null,
+          payment_status: "paid",
           metadata: { plan: "plus" },
         },
       },
@@ -105,7 +105,7 @@ test.describe("billing", () => {
     });
     expect(response.status()).toBe(200);
     expect((await response.json()) as { action: string }).toEqual({
-      action: "subscribed",
+      action: "purchased",
       householdId: household.id,
     });
 
@@ -119,11 +119,91 @@ test.describe("billing", () => {
     expect(after.entitlements.partner).toBe(true);
   });
 
-  test("a cancelled subscription drops the household back to free", async ({ page }) => {
+  test("a payment that has not cleared does not open anything", async ({ page }) => {
+    await signIn(page, address());
+    const household = (await (await page.request.get("/api/household")).json()) as { id: string };
+
+    const body = JSON.stringify({
+      id: "evt_e2e_unpaid",
+      type: "checkout.session.completed",
+      data: {
+        object: {
+          client_reference_id: household.id,
+          customer: `cus_${randomUUID()}`,
+          payment_status: "unpaid",
+          metadata: { plan: "plus" },
+        },
+      },
+    });
+    const response = await page.request.post("/api/billing/webhook", {
+      data: body,
+      headers: { "stripe-signature": signed(body) },
+    });
+    expect(response.status()).toBe(200);
+    expect((await response.json()) as { action: string }).toEqual({
+      action: "ignored",
+      householdId: household.id,
+    });
+
+    const after = (await (await page.request.get("/api/billing")).json()) as { plan: string };
+    expect(after.plan).toBe("free");
+  });
+
+  test("a full refund takes the guide back", async ({ page }) => {
     await signIn(page, address());
     const household = (await (await page.request.get("/api/household")).json()) as { id: string };
     const customer = `cus_${randomUUID()}`;
 
+    const buy = JSON.stringify({
+      id: "evt_e2e_buy",
+      type: "checkout.session.completed",
+      data: {
+        object: {
+          client_reference_id: household.id,
+          customer,
+          payment_status: "paid",
+          metadata: { plan: "plus" },
+        },
+      },
+    });
+    await page.request.post("/api/billing/webhook", {
+      data: buy,
+      headers: { "stripe-signature": signed(buy) },
+    });
+    expect(((await (await page.request.get("/api/billing")).json()) as { plan: string }).plan).toBe(
+      "plus",
+    );
+
+    const refund = JSON.stringify({
+      id: "evt_e2e_refund",
+      type: "charge.refunded",
+      data: { object: { customer, amount: 500, amount_refunded: 500 } },
+    });
+    const response = await page.request.post("/api/billing/webhook", {
+      data: refund,
+      headers: { "stripe-signature": signed(refund) },
+    });
+    expect(response.status()).toBe(200);
+    expect((await response.json()) as { action: string }).toEqual({
+      action: "refunded",
+      householdId: household.id,
+    });
+
+    const after = (await (await page.request.get("/api/billing")).json()) as {
+      plan: string;
+      status: string;
+    };
+    expect(after.plan).toBe("free");
+    expect(after.status).toBe("refunded");
+  });
+
+  test("a cancelled subscription drops a legacy household back to free", async ({ page }) => {
+    await signIn(page, address());
+    const household = (await (await page.request.get("/api/household")).json()) as { id: string };
+    const customer = `cus_${randomUUID()}`;
+
+    // A row written while Plus was a monthly subscription still has to behave
+    // itself: rows from that era are still in the table.
     const subscribe = JSON.stringify({
       id: "evt_e2e_1",
       type: "checkout.session.completed",
@@ -131,6 +211,7 @@ test.describe("billing", () => {
         object: {
           client_reference_id: household.id,
           customer,
+          subscription: `sub_${randomUUID()}`,
           metadata: { plan: "plus" },
         },
       },

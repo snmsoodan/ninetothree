@@ -48,7 +48,7 @@ export const Long: Story = {
         </p>
         <h2>What it costs</h2>
         <p>
-          The guide, the safety pages and five pins are free. Plus is $7.99 a month and adds the
+          The guide, the safety pages and five pins are free. Plus is $5, paid once, and adds the
           weekly email, a shared household and the export.
         </p>
       </>

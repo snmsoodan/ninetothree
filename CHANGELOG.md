@@ -9,6 +9,24 @@ changelog written after the fact from memory is a changelog nobody can trust.
 
 ## Unreleased
 
+### One price, paid once: $5 (#126)
+
+- **Plus is $5, charged one time.** The checkout runs Stripe in `mode: "payment"`
+  with an inline price, so the button, the checkout and the terms page read the
+  same number from one constant and cannot drift apart. No subscription, no
+  annual plan, no renewal to forget.
+- **The Customer Portal is gone.** A one-time purchase has nothing to manage, so
+  `/settings` says "Paid once. Nothing renews, and there is nothing to cancel."
+  instead of offering a page that would open empty.
+- **The webhook reads a purchase.** A session grants only when its payment has
+  cleared; the delayed-method case grants when `async_payment_succeeded`
+  arrives; a full refund takes the guide back and a partial one changes
+  nothing. Rows written while Plus was monthly still work, so the legacy cancel
+  path is still tested.
+- **Copy and docs follow the price**: `/terms`, `/editorial`, the policy story,
+  `ARCHITECTURE.md`, `README.md`, `PRODUCT_UX.md` and `UX_CRAFT.md`. The record
+  is in [`EVIDENCE.md`](EVIDENCE.md) §61.
+
 ### A page that reads for whoever is holding the phone (E15)
 
 - **Onboarding starts by asking who is reading.** Four answers — the parent, a
