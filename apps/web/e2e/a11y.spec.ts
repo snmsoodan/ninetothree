@@ -21,7 +21,8 @@ async function audit(page: Page) {
 
 async function onboard(page: Page) {
   await page.goto("/onboarding");
-  await page.getByRole("button", { name: /I am pregnant/ }).click();
+  await page.getByRole("button", { name: /^I am the parent/ }).click();
+  await page.getByRole("button", { name: /^I am pregnant/ }).click();
   await page.getByRole("button", { name: /assume I am 28 weeks/ }).click();
   // date, country, feeding, first baby
   for (let i = 0; i < 4; i += 1) {
@@ -312,12 +313,22 @@ test("the whole journey is keyboard reachable", async ({ page }) => {
 
   // Tab until the first choice has focus, then activate it with the keyboard
   // alone. Counting tabs would break every time the header gains a control.
-  const first = page.getByRole("button", { name: /I am pregnant/ });
-  for (let i = 0; i < 10; i += 1) {
-    if (await first.evaluate((el) => el === document.activeElement)) break;
-    await page.keyboard.press("Tab");
+  async function tabTo(target: ReturnType<typeof page.getByRole>) {
+    for (let i = 0; i < 10; i += 1) {
+      if (await target.evaluate((el) => el === document.activeElement)) return;
+      await page.keyboard.press("Tab");
+    }
   }
-  await expect(first).toBeFocused();
+
+  const reader = page.getByRole("button", { name: /^I am the parent/ });
+  await tabTo(reader);
+  await expect(reader).toBeFocused();
+  await page.keyboard.press("Enter");
+  await expect(page.getByRole("heading", { name: "Where are you right now?" })).toBeVisible();
+
+  const status = page.getByRole("button", { name: /^I am pregnant/ });
+  await tabTo(status);
+  await expect(status).toBeFocused();
   await page.keyboard.press("Enter");
   await expect(page.getByRole("heading", { name: /due date/i })).toBeVisible();
 });

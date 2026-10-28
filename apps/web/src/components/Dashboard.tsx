@@ -3,6 +3,8 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { RECALLS } from "@ninetothree/content";
+import { getPack } from "@ninetothree/content/registry";
+import { lensFor } from "@ninetothree/content/core";
 import { ACTION_INDEX } from "@ninetothree/content/action-index";
 import { PACK_INDEX, findPackAtOrBefore, nextPackIndex } from "@ninetothree/content/pack-index";
 import { computeStage, stageLabel } from "@ninetothree/rules";
@@ -14,6 +16,7 @@ import { ReminderCard } from "@/components/ReminderCard";
 import { ProgressLine } from "@/components/ProgressLine";
 import { ShareCard } from "@/components/ShareCard";
 import { WeekSummaryCard } from "@/components/WeekSummaryCard";
+import { PersonaLensCard } from "@/components/PersonaLensCard";
 import { QuietWeek } from "@/components/QuietWeek";
 import { datedAppointments } from "@/lib/appointments";
 import { useHousehold } from "@/lib/household";
@@ -110,7 +113,8 @@ export function Dashboard() {
     );
   }
 
-  const stage = computeStage(input, new Date().toISOString().slice(0, 10));
+  const today = new Date().toISOString().slice(0, 10);
+  const stage = computeStage(input, today);
   const pack = findPackAtOrBefore(stage.kind, stage.index);
   const label = stageLabel(stage);
 
@@ -129,6 +133,12 @@ export function Dashboard() {
   const ahead = nextPackIndex(pack);
   const quiet = state.profile.loss !== undefined;
 
+  // The lens needs the pack's prose, which the index deliberately does not
+  // carry. A loss has no light line and no cheerful lens: the quiet week
+  // stands in for every reader.
+  const full = getPack(pack.id);
+  const lens = full ? lensFor(full, state.persona, { enabled: state.humour && !quiet }) : null;
+
   return (
     <AppShell stage={label}>
       <div className="space-y-10">
@@ -139,7 +149,7 @@ export function Dashboard() {
         />
         {quiet ? (
           <QuietWeek />
-        ) : (
+        ) : state.persona === "parent" ? (
           <WeekSummaryCard
             pack={pack}
             progress={progress}
@@ -147,7 +157,15 @@ export function Dashboard() {
             href={`/week/${pack.id}`}
             nextHref={ahead ? `/week/${ahead.id}` : undefined}
           />
-        )}
+        ) : lens ? (
+          <PersonaLensCard
+            lens={lens}
+            packId={pack.id}
+            packTitle={pack.title}
+            today={today}
+            href={`/week/${pack.id}`}
+          />
+        ) : null}
         <RecallList notices={notices} recalls={RECALLS} onDismiss={dismissNotice} />
         <PinList
           pins={pins}

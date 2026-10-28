@@ -35,7 +35,8 @@ test("the walkthrough: onboarding to the third trimester", async ({ page }) => {
   await page.goto("/onboarding");
   await shot(page, "01-onboarding-welcome");
 
-  await page.getByRole("button", { name: /I am pregnant/ }).click();
+  await page.getByRole("button", { name: /^I am the parent/ }).click();
+  await page.getByRole("button", { name: /^I am pregnant/ }).click();
   await shot(page, "02-onboarding-stage");
 
   await page.getByRole("button", { name: /assume I am 28 weeks/ }).click();

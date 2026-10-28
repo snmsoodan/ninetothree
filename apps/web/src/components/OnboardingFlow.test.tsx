@@ -18,9 +18,20 @@ function dateField(): HTMLInputElement {
   return el;
 }
 
+/** The reader comes first, then where they are. */
+async function startAs(
+  user: ReturnType<typeof userEvent.setup>,
+  status: RegExp = /^I am pregnant/,
+  persona = /^I am the parent/,
+) {
+  await user.click(screen.getByRole("button", { name: persona }));
+  await user.click(screen.getByRole("button", { name: status }));
+}
+
 function draft(overrides: Record<string, unknown> = {}) {
   return JSON.stringify({
     step: "feeding",
+    persona: "parent",
     status: "pregnant",
     date: "2026-12-01",
     country: "US",
@@ -33,7 +44,7 @@ function draft(overrides: Record<string, unknown> = {}) {
 
 /** Walks from the first screen to the payoff, answering nothing optional. */
 async function walkToPayoff(user: ReturnType<typeof userEvent.setup>) {
-  await user.click(screen.getByRole("button", { name: /I am pregnant/ }));
+  await startAs(user);
   await user.type(dateField(), "2026-12-01");
   await user.click(screen.getByRole("button", { name: "Continue" }));
   await user.click(screen.getByRole("button", { name: "Continue" }));
@@ -55,39 +66,151 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-describe("OnboardingFlow", () => {
-  it("opens with one question and two answers", () => {
+describe("OnboardingFlow, reading as someone else", () => {
+  it("asks a grandparent in their own words", async () => {
+    const user = userEvent.setup();
     render(<OnboardingFlow />);
+    await user.click(screen.getByRole("button", { name: /^I am a grandparent/ }));
+
+    expect(
+      screen.getByRole("button", { name: /^My grandchild is on the way/ }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /^My grandchild is here/ })).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /^I am pregnant/ })).not.toBeInTheDocument();
+  });
+
+  it("does not call the due date yours when it is the baby's", async () => {
+    const user = userEvent.setup();
+    render(<OnboardingFlow />);
+    await user.click(screen.getByRole("button", { name: /^I am a grandparent/ }));
+    await user.click(screen.getByRole("button", { name: /^My grandchild is on the way/ }));
+    expect(screen.getByRole("heading", { name: "When is the baby due?" })).toBeInTheDocument();
+  });
+
+  it("does not ask a grandparent how they are feeding", async () => {
+    const user = userEvent.setup();
+    render(<OnboardingFlow />);
+    await user.click(screen.getByRole("button", { name: /^I am the other parent/ }));
+    await user.click(screen.getByRole("button", { name: /^My partner is pregnant/ }));
+    await user.type(dateField(), "2026-12-01");
+    await user.click(screen.getByRole("button", { name: "Continue" }));
+    await user.click(screen.getByRole("button", { name: "Continue" }));
+
+    expect(
+      screen.getByRole("heading", { name: "That is everything we need." }),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "How are you feeding?" })).not.toBeInTheDocument();
+  });
+
+  it("counts the questions it will actually ask", async () => {
+    const user = userEvent.setup();
+    render(<OnboardingFlow />);
+    expect(screen.getByText("Step 1 of 7")).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: /^I am an aunt/ }));
+    expect(screen.getByText("Step 2 of 5")).toBeInTheDocument();
+  });
+
+  it("says who the week is for, and that it can change", async () => {
+    const user = userEvent.setup();
+    render(<OnboardingFlow />);
+    await user.click(screen.getByRole("button", { name: /^I am a grandparent/ }));
+    await user.click(screen.getByRole("button", { name: /^My grandchild is on the way/ }));
+    await user.type(dateField(), "2026-12-01");
+    await user.click(screen.getByRole("button", { name: "Continue" }));
+    await user.click(screen.getByRole("button", { name: "Continue" }));
+
+    expect(screen.getByText(/Reading as a grandparent/)).toBeInTheDocument();
+    expect(screen.getByText(/They are at/)).toBeInTheDocument();
+  });
+
+  it("records the reader it was given", async () => {
+    const user = userEvent.setup();
+    render(<OnboardingFlow />);
+    await user.click(screen.getByRole("button", { name: /^I am a grandparent/ }));
+    await user.click(screen.getByRole("button", { name: /^My grandchild is on the way/ }));
+    await user.type(dateField(), "2026-12-01");
+    await user.click(screen.getByRole("button", { name: "Continue" }));
+    await user.click(screen.getByRole("button", { name: "Continue" }));
+    await user.click(screen.getByRole("button", { name: "Show me" }));
+
+    const state = getSnapshot();
+    expect(state.persona).toBe("grandparent");
+    expect(state.onboarded).toBe(true);
+    expect(push).toHaveBeenCalledWith("/today");
+  });
+
+  it("does not count the parent's questions as skipped for anyone else", async () => {
+    const user = userEvent.setup();
+    render(<OnboardingFlow />);
+    await user.click(screen.getByRole("button", { name: /^I am the other parent/ }));
+    await user.click(screen.getByRole("button", { name: /^Our baby is here/ }));
+    await user.type(dateField(), "2026-06-01");
+    await user.click(screen.getByRole("button", { name: "Continue" }));
+    await user.click(screen.getByRole("button", { name: "Continue" }));
+    // The country was guessed, and the feeding and first-baby questions were
+    // never theirs to answer, so nothing is reported as skipped.
+    expect(screen.queryByText(/You skipped/)).not.toBeInTheDocument();
+  });
+
+  it("goes back to the reader question, not the parent's first question", async () => {
+    const user = userEvent.setup();
+    render(<OnboardingFlow />);
+    await user.click(screen.getByRole("button", { name: /^I am a grandparent/ }));
+    await user.click(screen.getByRole("button", { name: /^My grandchild is on the way/ }));
+    await user.type(dateField(), "2026-12-01");
+    await user.click(screen.getByRole("button", { name: "Continue" }));
+    await user.click(screen.getByRole("button", { name: "Continue" }));
+    await user.click(screen.getByRole("button", { name: "Back" }));
+    expect(screen.getByRole("heading", { name: "Where are you?" })).toBeInTheDocument();
+  });
+});
+
+describe("OnboardingFlow", () => {
+  it("opens by asking who is reading", () => {
+    render(<OnboardingFlow />);
+    expect(screen.getByRole("heading", { name: "Who is reading?" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /I am the parent/ })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /I am the other parent/ })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /I am a grandparent/ })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /aunt, uncle, sibling or friend/ }),
+    ).toBeInTheDocument();
+  });
+
+  it("asks where you are right now once it knows the reader", async () => {
+    const user = userEvent.setup();
+    render(<OnboardingFlow />);
+    await user.click(screen.getByRole("button", { name: /^I am the parent/ }));
     expect(screen.getByRole("heading", { name: "Where are you right now?" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /I am pregnant/ })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /My baby is here/ })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /^I am pregnant/ })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /^My baby is here/ })).toBeInTheDocument();
   });
 
   it("asks for a due date when pregnant", async () => {
     const user = userEvent.setup();
     render(<OnboardingFlow />);
-    await user.click(screen.getByRole("button", { name: /I am pregnant/ }));
+    await startAs(user);
     expect(screen.getByRole("heading", { name: "When is your due date?" })).toBeInTheDocument();
   });
 
   it("asks for a birth date when the baby is here", async () => {
     const user = userEvent.setup();
     render(<OnboardingFlow />);
-    await user.click(screen.getByRole("button", { name: /My baby is here/ }));
+    await startAs(user, /^My baby is here/);
     expect(screen.getByRole("heading", { name: "When was the baby born?" })).toBeInTheDocument();
   });
 
   it("will not continue without a date", async () => {
     const user = userEvent.setup();
     render(<OnboardingFlow />);
-    await user.click(screen.getByRole("button", { name: /I am pregnant/ }));
+    await startAs(user);
     expect(screen.getByRole("button", { name: "Continue" })).toBeDisabled();
   });
 
   it("offers a way past not knowing the due date", async () => {
     const user = userEvent.setup();
     render(<OnboardingFlow />);
-    await user.click(screen.getByRole("button", { name: /I am pregnant/ }));
+    await startAs(user);
     await user.click(screen.getByRole("button", { name: /assume I am 28 weeks/ }));
     expect(screen.getByRole("button", { name: "Continue" })).toBeEnabled();
   });
@@ -95,14 +218,14 @@ describe("OnboardingFlow", () => {
   it("does not offer that shortcut for a birth date", async () => {
     const user = userEvent.setup();
     render(<OnboardingFlow />);
-    await user.click(screen.getByRole("button", { name: /My baby is here/ }));
+    await startAs(user, /^My baby is here/);
     expect(screen.queryByRole("button", { name: /assume/ })).not.toBeInTheDocument();
   });
 
   it("goes back to the first question", async () => {
     const user = userEvent.setup();
     render(<OnboardingFlow />);
-    await user.click(screen.getByRole("button", { name: /I am pregnant/ }));
+    await startAs(user);
     await user.click(screen.getByRole("button", { name: "Back" }));
     expect(screen.getByRole("heading", { name: "Where are you right now?" })).toBeInTheDocument();
   });
@@ -110,7 +233,7 @@ describe("OnboardingFlow", () => {
   it("asks where you are, and says what it guessed", async () => {
     const user = userEvent.setup();
     render(<OnboardingFlow />);
-    await user.click(screen.getByRole("button", { name: /I am pregnant/ }));
+    await startAs(user);
     await user.type(dateField(), "2026-12-01");
     await user.click(screen.getByRole("button", { name: "Continue" }));
 
@@ -127,7 +250,7 @@ describe("OnboardingFlow", () => {
 
     const user = userEvent.setup();
     render(<OnboardingFlow />);
-    await user.click(screen.getByRole("button", { name: /I am pregnant/ }));
+    await startAs(user);
     await user.type(dateField(), "2026-12-01");
     await user.click(screen.getByRole("button", { name: "Continue" }));
 
@@ -138,7 +261,7 @@ describe("OnboardingFlow", () => {
   it("says plainly that only the US is covered", async () => {
     const user = userEvent.setup();
     render(<OnboardingFlow />);
-    await user.click(screen.getByRole("button", { name: /I am pregnant/ }));
+    await startAs(user);
     await user.type(dateField(), "2026-12-01");
     await user.click(screen.getByRole("button", { name: "Continue" }));
     expect(screen.getByText(/We only cover the United States right now/)).toBeInTheDocument();
@@ -147,7 +270,7 @@ describe("OnboardingFlow", () => {
   it("says what happens if you pick somewhere else", async () => {
     const user = userEvent.setup();
     render(<OnboardingFlow />);
-    await user.click(screen.getByRole("button", { name: /I am pregnant/ }));
+    await startAs(user);
     await user.type(dateField(), "2026-12-01");
     await user.click(screen.getByRole("button", { name: "Continue" }));
     await user.click(screen.getByRole("radio", { name: "Somewhere else" }));
@@ -157,7 +280,7 @@ describe("OnboardingFlow", () => {
   it("asks how you are feeding, and lets you skip it", async () => {
     const user = userEvent.setup();
     render(<OnboardingFlow />);
-    await user.click(screen.getByRole("button", { name: /I am pregnant/ }));
+    await startAs(user);
     await user.type(dateField(), "2026-12-01");
     await user.click(screen.getByRole("button", { name: "Continue" }));
     await user.click(screen.getByRole("button", { name: "Continue" }));
@@ -179,7 +302,7 @@ describe("OnboardingFlow", () => {
   it("records the answers and sends the parent to the dashboard", async () => {
     const user = userEvent.setup();
     render(<OnboardingFlow />);
-    await user.click(screen.getByRole("button", { name: /I am pregnant/ }));
+    await startAs(user);
     await user.type(dateField(), "2026-12-01");
     await user.click(screen.getByRole("button", { name: "Continue" }));
     await user.click(screen.getByRole("button", { name: "Continue" }));
@@ -211,7 +334,7 @@ describe("OnboardingFlow", () => {
   it("records a birth date for a parent", async () => {
     const user = userEvent.setup();
     render(<OnboardingFlow />);
-    await user.click(screen.getByRole("button", { name: /My baby is here/ }));
+    await startAs(user, /^My baby is here/);
     await user.type(dateField(), "2026-01-01");
     await user.click(screen.getByRole("button", { name: "Continue" }));
     await user.click(screen.getByRole("button", { name: "Continue" }));
@@ -228,7 +351,7 @@ describe("OnboardingFlow", () => {
   it("goes back from the country question", async () => {
     const user = userEvent.setup();
     render(<OnboardingFlow />);
-    await user.click(screen.getByRole("button", { name: /I am pregnant/ }));
+    await startAs(user);
     await user.type(dateField(), "2026-12-01");
     await user.click(screen.getByRole("button", { name: "Continue" }));
     await user.click(screen.getByRole("button", { name: "Back" }));
@@ -246,9 +369,9 @@ describe("OnboardingFlow", () => {
   it("announces the step to a screen reader", async () => {
     const user = userEvent.setup();
     render(<OnboardingFlow />);
-    expect(screen.getByText("Step 1 of 6")).toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: /I am pregnant/ }));
-    expect(screen.getByText("Step 2 of 6")).toBeInTheDocument();
+    expect(screen.getByText("Step 1 of 7")).toBeInTheDocument();
+    await startAs(user);
+    expect(screen.getByText("Step 3 of 7")).toBeInTheDocument();
   });
 
   it("shows the starting week on the payoff screen", async () => {
@@ -261,7 +384,7 @@ describe("OnboardingFlow", () => {
   it("shows the starting month for a parent", async () => {
     const user = userEvent.setup();
     render(<OnboardingFlow />);
-    await user.click(screen.getByRole("button", { name: /My baby is here/ }));
+    await startAs(user, /^My baby is here/);
     await user.type(dateField(), "2026-01-01");
     await user.click(screen.getByRole("button", { name: "Continue" }));
     await user.click(screen.getByRole("button", { name: "Continue" }));
@@ -273,7 +396,7 @@ describe("OnboardingFlow", () => {
   it("goes back from the last two questions without losing the answers", async () => {
     const user = userEvent.setup();
     render(<OnboardingFlow />);
-    await user.click(screen.getByRole("button", { name: /I am pregnant/ }));
+    await startAs(user);
     await user.type(dateField(), "2026-12-01");
     await user.click(screen.getByRole("button", { name: "Continue" }));
     await user.click(screen.getByRole("button", { name: "Continue" }));
@@ -291,7 +414,7 @@ describe("OnboardingFlow", () => {
   it("says one question was skipped when only one was", async () => {
     const user = userEvent.setup();
     render(<OnboardingFlow />);
-    await user.click(screen.getByRole("button", { name: /I am pregnant/ }));
+    await startAs(user);
     await user.type(dateField(), "2026-12-01");
     await user.click(screen.getByRole("button", { name: "Continue" }));
     await user.click(screen.getByRole("button", { name: "Continue" }));
@@ -304,7 +427,7 @@ describe("OnboardingFlow", () => {
   it("does not record a country we do not cover", async () => {
     const user = userEvent.setup();
     render(<OnboardingFlow />);
-    await user.click(screen.getByRole("button", { name: /I am pregnant/ }));
+    await startAs(user);
     await user.type(dateField(), "2026-12-01");
     await user.click(screen.getByRole("button", { name: "Continue" }));
     await user.click(screen.getByRole("radio", { name: "Somewhere else" }));
@@ -326,7 +449,7 @@ describe("OnboardingFlow", () => {
   it("says nothing about skipping when nothing was skipped", async () => {
     const user = userEvent.setup();
     render(<OnboardingFlow />);
-    await user.click(screen.getByRole("button", { name: /I am pregnant/ }));
+    await startAs(user);
     await user.type(dateField(), "2026-12-01");
     await user.click(screen.getByRole("button", { name: "Continue" }));
     await user.click(screen.getByRole("button", { name: "Continue" }));
@@ -340,7 +463,7 @@ describe("OnboardingFlow", () => {
   it("warns that the numbers are US ones when the country is not covered", async () => {
     const user = userEvent.setup();
     render(<OnboardingFlow />);
-    await user.click(screen.getByRole("button", { name: /I am pregnant/ }));
+    await startAs(user);
     await user.type(dateField(), "2026-12-01");
     await user.click(screen.getByRole("button", { name: "Continue" }));
     await user.click(screen.getByRole("radio", { name: "The United Kingdom" }));
@@ -358,7 +481,7 @@ describe("OnboardingFlow", () => {
     expect(
       await screen.findByRole("heading", { name: "How are you feeding?" }),
     ).toBeInTheDocument();
-    expect(screen.getByText("Step 4 of 6")).toBeInTheDocument();
+    expect(screen.getByText("Step 5 of 7")).toBeInTheDocument();
   });
 
   it("keeps the answers from the draft", async () => {
@@ -371,19 +494,19 @@ describe("OnboardingFlow", () => {
     const old = new Date(Date.now() - 8 * 86_400_000).toISOString();
     window.localStorage.setItem(DRAFT_KEY, draft({ at: old }));
     render(<OnboardingFlow />);
-    expect(screen.getByRole("heading", { name: "Where are you right now?" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Who is reading?" })).toBeInTheDocument();
   });
 
   it("ignores a draft it cannot read", async () => {
     window.localStorage.setItem(DRAFT_KEY, "{not json");
     render(<OnboardingFlow />);
-    expect(screen.getByRole("heading", { name: "Where are you right now?" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "Who is reading?" })).toBeInTheDocument();
   });
 
   it("writes the draft as the parent answers", async () => {
     const user = userEvent.setup();
     render(<OnboardingFlow />);
-    await user.click(screen.getByRole("button", { name: /I am pregnant/ }));
+    await startAs(user);
     await user.type(dateField(), "2026-12-01");
     await user.click(screen.getByRole("button", { name: "Continue" }));
 

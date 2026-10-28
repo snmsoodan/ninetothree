@@ -40,7 +40,10 @@ import {
   markReminded,
   setNotifications,
   setPinReminder,
+  setHumour,
+  setPersona,
   setReading,
+  stepsFor,
   setProfile,
   snooze,
   stageInput,
@@ -822,9 +825,125 @@ describe("choices", () => {
   });
 });
 
+describe("who is reading", () => {
+  it("starts as the parent, with the light line on", () => {
+    expect(getSnapshot().persona).toBe("parent");
+    expect(getSnapshot().humour).toBe(true);
+  });
+
+  it("changes the reader without touching a single answer", () => {
+    completeOnboarding({
+      status: "pregnant",
+      dueDate: "2026-12-01",
+      profile: { country: "US", feeding: "formula" },
+    });
+    markDone(step("a1"));
+    togglePin(step("a1"));
+    const before = getSnapshot();
+
+    setPersona("grandparent");
+    const after = getSnapshot();
+
+    expect(after.persona).toBe("grandparent");
+    // The rules engine reads `profile`, so a view change must not reach it.
+    expect(after.profile).toEqual(before.profile);
+    expect(after.status).toBe(before.status);
+    expect(after.dueDate).toBe(before.dueDate);
+    expect(after.progress).toEqual(before.progress);
+    expect(after.pins).toEqual(before.pins);
+  });
+
+  it("keeps the reader across a reload", () => {
+    setPersona("extended");
+    __resetForTests();
+    subscribe(() => {});
+    expect(getSnapshot().persona).toBe("extended");
+  });
+
+  it("reads storage written before there were personas as the parent's", () => {
+    const { persona: _persona, humour: _humour, ...v1 } = EMPTY_STATE;
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ ...v1, onboarded: true }));
+    __resetForTests();
+    subscribe(() => {});
+    expect(getSnapshot().persona).toBe("parent");
+    expect(getSnapshot().humour).toBe(true);
+  });
+
+  it("discards a stored reader it does not know", () => {
+    window.localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ ...EMPTY_STATE, persona: "mother", humour: "yes" }),
+    );
+    __resetForTests();
+    subscribe(() => {});
+    expect(getSnapshot().persona).toBe("parent");
+    expect(getSnapshot().humour).toBe(true);
+  });
+
+  it("turns the light line off and back on", () => {
+    setHumour(false);
+    expect(getSnapshot().humour).toBe(false);
+    __resetForTests();
+    subscribe(() => {});
+    expect(getSnapshot().humour).toBe(false);
+    setHumour(true);
+    expect(getSnapshot().humour).toBe(true);
+  });
+
+  it("is erased with everything else", () => {
+    setPersona("partner");
+    setHumour(false);
+    resetAll();
+    expect(getSnapshot().persona).toBe("parent");
+    expect(getSnapshot().humour).toBe(true);
+  });
+
+  it("records the reader chosen during onboarding", () => {
+    completeOnboarding({
+      status: "pregnant",
+      persona: "partner",
+      dueDate: "2026-12-01",
+      profile: {},
+    });
+    expect(getSnapshot().persona).toBe("partner");
+  });
+
+  it("defaults to the parent when onboarding was given no reader", () => {
+    completeOnboarding({ status: "pregnant", dueDate: "2026-12-01", profile: {} });
+    expect(getSnapshot().persona).toBe("parent");
+  });
+});
+
+describe("stepsFor", () => {
+  it("asks the parent two questions nobody else is asked", () => {
+    expect(stepsFor("parent")).toEqual([
+      "persona",
+      "status",
+      "date",
+      "country",
+      "feeding",
+      "first",
+      "ready",
+    ]);
+  });
+
+  it("does not ask a grandparent how they are feeding", () => {
+    for (const persona of ["partner", "grandparent", "extended"] as const) {
+      expect(stepsFor(persona)).toEqual(["persona", "status", "date", "country", "ready"]);
+    }
+  });
+
+  it("always starts with the reader", () => {
+    for (const persona of ["parent", "partner", "grandparent", "extended"] as const) {
+      expect(stepsFor(persona)[0]).toBe("persona");
+    }
+  });
+});
+
 describe("the onboarding draft", () => {
   const full = {
     step: "feeding" as const,
+    persona: "parent" as const,
     status: "pregnant" as const,
     date: "2026-12-01",
     country: "US",
@@ -857,6 +976,38 @@ describe("the onboarding draft", () => {
   it("says nothing when the draft is not JSON", () => {
     window.localStorage.setItem(DRAFT_KEY, "{not json");
     expect(readDraft()).toBeNull();
+  });
+
+  it("keeps a draft that stopped on the reader question, before any answer", () => {
+    store({ step: "persona", persona: "grandparent", at: full.at });
+    expect(readDraft(new Date("2026-10-21T10:00:00.000Z"))).toEqual({
+      step: "persona",
+      persona: "grandparent",
+      status: "pregnant",
+      date: "",
+      country: "",
+      feeding: "",
+      firstBaby: "",
+      at: full.at,
+    });
+  });
+
+  it("reads a draft written before there were personas as the parent's", () => {
+    const { persona: _persona, ...v1 } = full;
+    store(v1);
+    expect(readDraft(new Date("2026-10-21T10:00:00.000Z"))?.persona).toBe("parent");
+  });
+
+  it("refuses a step that this reader is never asked", () => {
+    // A grandparent's flow has no feeding question. A draft claiming one was
+    // written by a bug, not by a person.
+    store({ ...full, persona: "grandparent", step: "feeding" });
+    expect(readDraft(new Date("2026-10-21T10:00:00.000Z"))).toBeNull();
+  });
+
+  it("still expires a draft that only reached the reader question", () => {
+    store({ step: "persona", persona: "parent", at: "2026-10-20T10:00:00.000Z" });
+    expect(readDraft(new Date("2026-10-28T10:00:00.000Z"))).toBeNull();
   });
 
   it("says nothing when the draft is not an object", () => {
@@ -901,6 +1052,7 @@ describe("the onboarding draft", () => {
     store({ step: "country", status: "parent", date: "2026-01-01", at: full.at });
     expect(readDraft(new Date("2026-10-21T10:00:00.000Z"))).toEqual({
       step: "country",
+      persona: "parent",
       status: "parent",
       date: "2026-01-01",
       country: "",

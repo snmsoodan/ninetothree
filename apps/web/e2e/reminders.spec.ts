@@ -21,7 +21,8 @@ function iso(offsetDays: number): string {
 
 async function onboard(page: Page) {
   await page.goto("/onboarding");
-  await page.getByRole("button", { name: /I am pregnant/ }).click();
+  await page.getByRole("button", { name: /^I am the parent/ }).click();
+  await page.getByRole("button", { name: /^I am pregnant/ }).click();
   await page.getByRole("button", { name: /assume I am 28 weeks/ }).click();
   for (let i = 0; i < 4; i += 1) {
     await page.getByRole("button", { name: "Continue" }).click();

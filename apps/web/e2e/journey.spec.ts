@@ -3,7 +3,7 @@ import { expect, test, type Page } from "@playwright/test";
 import { address, gotoWeek, signIn, upgrade } from "./helpers";
 
 /**
- * The path a brand-new parent takes: land, answer three questions, get a week,
+ * The path a brand-new parent takes: land, answer the questions, get a week,
  * finish one thing, pin another, find both on the shelf.
  *
  * If this test is red, the product does not work.
@@ -13,7 +13,8 @@ async function onboardAsPregnant(page: Page) {
   await page.goto("/");
   await expect(page).toHaveURL(/\/onboarding$/);
 
-  await page.getByRole("button", { name: /I am pregnant/ }).click();
+  await page.getByRole("button", { name: /^I am the parent/ }).click();
+  await page.getByRole("button", { name: /^I am pregnant/ }).click();
   await page.getByRole("button", { name: /assume I am 28 weeks/ }).click();
   // date, country, feeding, first baby
   for (let i = 0; i < 4; i += 1) {
@@ -34,7 +35,8 @@ test("onboarding takes under ninety seconds, and every answer is recorded", asyn
   await page.goto("/");
   await expect(page).toHaveURL(/\/onboarding$/);
 
-  await page.getByRole("button", { name: /I am pregnant/ }).click();
+  await page.getByRole("button", { name: /^I am the parent/ }).click();
+  await page.getByRole("button", { name: /^I am pregnant/ }).click();
   await page.getByRole("button", { name: /assume I am 28 weeks/ }).click();
   await page.getByRole("button", { name: "Continue" }).click();
 
@@ -63,14 +65,15 @@ test("onboarding takes under ninety seconds, and every answer is recorded", asyn
 
 test("onboarding resumes where it was left, and forgets a stale draft", async ({ page }) => {
   await page.goto("/onboarding");
-  await page.getByRole("button", { name: /I am pregnant/ }).click();
+  await page.getByRole("button", { name: /^I am the parent/ }).click();
+  await page.getByRole("button", { name: /^I am pregnant/ }).click();
   await page.getByRole("button", { name: /assume I am 28 weeks/ }).click();
   await page.getByRole("button", { name: "Continue" }).click();
   await expect(page.getByText("Where are you?")).toBeVisible();
 
   await page.reload();
   await expect(page.getByText("Where are you?")).toBeVisible();
-  await expect(page.getByText("Step 3 of 6")).toBeVisible();
+  await expect(page.getByText("Step 4 of 7")).toBeVisible();
 
   // A draft from three months ago is not a draft, it is a stale date.
   await page.evaluate(() => {
@@ -80,8 +83,8 @@ test("onboarding resumes where it was left, and forgets a stale draft", async ({
     window.localStorage.setItem(key, JSON.stringify(draft));
   });
   await page.reload();
-  await expect(page.getByText("Where are you right now?")).toBeVisible();
-  await expect(page.getByText("Step 1 of 6")).toBeVisible();
+  await expect(page.getByText("Who is reading?")).toBeVisible();
+  await expect(page.getByText("Step 1 of 7")).toBeVisible();
 });
 
 test("a new parent can get from the front door to a finished step", async ({ page }) => {
@@ -713,6 +716,7 @@ test("a step that is a purchase can be narrowed to one answer, and the answer st
   // A parent past six months, so the high chair is the week they are on.
   const birthDate = new Date(Date.now() - 200 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
   await page.goto("/onboarding");
+  await page.getByRole("button", { name: /^I am the parent/ }).click();
   await page.getByRole("button", { name: /My baby is here/ }).click();
   await page.locator("#date").fill(birthDate);
   // date, country, feeding, first baby
@@ -881,6 +885,7 @@ test("a two-year-old gets a toddler month, not the last baby month", async ({ pa
   // the month-12 pack forever. This is the product-level guard for that gap.
   const birthDate = new Date(Date.now() - 800 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
   await page.goto("/onboarding");
+  await page.getByRole("button", { name: /^I am the parent/ }).click();
   await page.getByRole("button", { name: /My baby is here/ }).click();
   await page.locator("#date").fill(birthDate);
   for (let i = 0; i < 4; i += 1) {

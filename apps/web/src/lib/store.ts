@@ -5,6 +5,7 @@ import type { Profile } from "@ninetothree/rules";
 import {
   RECALL_BECAUSES,
   recallKey,
+  type Persona,
   type RecallBecause,
   type RecallMatch,
 } from "@ninetothree/content/core";
@@ -15,6 +16,7 @@ import {
   type NotificationPrefs,
 } from "./notifications";
 import { DEFAULT_READING, migrateReading, type ReadingPrefs } from "./reading";
+import { DEFAULT_HUMOUR, DEFAULT_PERSONA, migrateHumour, migratePersona } from "./persona";
 import { ONBOARDED_COOKIE, ONBOARDED_COOKIE_MAX_AGE } from "./onboarded-cookie";
 
 /**
@@ -40,16 +42,25 @@ export const DRAFT_KEY = "ninetothree.onboarding.v1";
 /** A draft older than this is a different pregnancy. Start again. */
 export const DRAFT_TTL_DAYS = 7;
 
-export type OnboardingStep = "status" | "date" | "country" | "feeding" | "first" | "ready";
+export type OnboardingStep =
+  "persona" | "status" | "date" | "country" | "feeding" | "first" | "ready";
 
-export const ONBOARDING_STEPS: OnboardingStep[] = [
-  "status",
-  "date",
-  "country",
-  "feeding",
-  "first",
-  "ready",
-];
+/**
+ * The steps, per reader.
+ *
+ * Feeding and first-baby are the parent's business: a grandparent has no
+ * feeding method to choose, and asking would be a question they cannot answer
+ * truthfully. The persona step is first because the next question — "I am
+ * pregnant / my baby is here" — is only correct for the parent.
+ */
+export function stepsFor(persona: Persona): OnboardingStep[] {
+  return persona === "parent"
+    ? ["persona", "status", "date", "country", "feeding", "first", "ready"]
+    : ["persona", "status", "date", "country", "ready"];
+}
+
+/** The parent's flow. Used where no persona is known yet — the server render. */
+export const ONBOARDING_STEPS: OnboardingStep[] = stepsFor("parent");
 
 /**
  * The draft is the form's own state, nothing more. `""` means "not answered
@@ -57,6 +68,7 @@ export const ONBOARDING_STEPS: OnboardingStep[] = [
  */
 export interface OnboardingDraft {
   step: OnboardingStep;
+  persona: Persona;
   status: "pregnant" | "parent";
   date: string;
   country: string;
@@ -227,6 +239,13 @@ export interface AppState {
   reminded: Record<string, string>;
   /** How the words are shown. Not a theme: three answers zoom cannot give. */
   reading: ReadingPrefs;
+  /**
+   * Who is reading. A view preference, not a fact about the baby, so it is
+   * kept out of `profile` and out of the rules engine. See PERSONAS.md.
+   */
+  persona: Persona;
+  /** Whether the light line is allowed to be funny. */
+  humour: boolean;
 }
 
 export const EMPTY_STATE: AppState = {
@@ -244,6 +263,8 @@ export const EMPTY_STATE: AppState = {
   notifications: DEFAULT_NOTIFICATIONS,
   reminded: {},
   reading: DEFAULT_READING,
+  persona: DEFAULT_PERSONA,
+  humour: DEFAULT_HUMOUR,
 };
 
 let state: AppState = EMPTY_STATE;
@@ -433,6 +454,8 @@ function hydrate(): void {
       notifications: migrateNotifications(parsed.notifications),
       reminded: migrateReminded(parsed.reminded),
       reading: migrateReading(parsed.reading),
+      persona: migratePersona(parsed.persona),
+      humour: migrateHumour(parsed.humour),
     };
     emit();
   } catch {
@@ -492,6 +515,7 @@ export function useAppState(): AppState {
 
 export function completeOnboarding(input: {
   status: "pregnant" | "parent";
+  persona?: Persona;
   dueDate?: string;
   birthDate?: string;
   profile: Profile;
@@ -500,6 +524,7 @@ export function completeOnboarding(input: {
     ...state,
     onboarded: true,
     status: input.status,
+    persona: input.persona ?? DEFAULT_PERSONA,
     dueDate: input.dueDate,
     birthDate: input.birthDate,
     profile: input.profile,
@@ -533,21 +558,32 @@ export function readDraft(now = new Date()): OnboardingDraft | null {
   if (!parsed || typeof parsed !== "object") return null;
 
   const draft = parsed as Partial<OnboardingDraft>;
-  if (typeof draft.step !== "string" || !ONBOARDING_STEPS.includes(draft.step as OnboardingStep)) {
+  // A draft written before V2 has no persona. It was a parent's draft.
+  const persona = migratePersona(draft.persona);
+  if (typeof draft.step !== "string" || !stepsFor(persona).includes(draft.step as OnboardingStep)) {
     return null;
   }
-  if (draft.status !== "pregnant" && draft.status !== "parent") return null;
-  if (typeof draft.date !== "string" || draft.date === "" || typeof draft.at !== "string") {
-    return null;
-  }
+  if (typeof draft.at !== "string") return null;
 
+  // A draft that only reached the persona question has no status or date yet,
+  // so those two checks cannot apply to it. The TTL still does, and it is
+  // checked first, so an expired draft never reaches the relaxed branch.
   const age = now.getTime() - Date.parse(draft.at);
   if (!Number.isFinite(age) || age > DRAFT_TTL_DAYS * 86_400_000) return null;
 
+  const atPersona = draft.step === "persona";
+  if (draft.status !== "pregnant" && draft.status !== "parent") {
+    if (!atPersona) return null;
+  }
+  if (typeof draft.date !== "string" || draft.date === "") {
+    if (!atPersona) return null;
+  }
+
   return {
     step: draft.step as OnboardingStep,
-    status: draft.status,
-    date: draft.date,
+    persona,
+    status: draft.status === "parent" ? "parent" : "pregnant",
+    date: typeof draft.date === "string" ? draft.date : "",
     country: typeof draft.country === "string" ? draft.country : "",
     feeding: typeof draft.feeding === "string" ? draft.feeding : "",
     firstBaby: typeof draft.firstBaby === "string" ? draft.firstBaby : "",
@@ -736,6 +772,21 @@ export function setNotifications(patch: Partial<NotificationPrefs>): void {
  */
 export function setReading(patch: Partial<ReadingPrefs>): void {
   set({ ...state, reading: { ...state.reading, ...patch } });
+}
+
+/**
+ * Reading as someone else is a view change, not a re-onboarding.
+ *
+ * It takes effect immediately, it keeps every pin and every completed step,
+ * and it is reversible in one tap — which is the only reason it is safe to
+ * offer at all.
+ */
+export function setPersona(persona: Persona): void {
+  set({ ...state, persona });
+}
+
+export function setHumour(humour: boolean): void {
+  set({ ...state, humour });
 }
 
 /**

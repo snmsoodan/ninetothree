@@ -14,7 +14,14 @@ vi.mock("@/lib/week-gate", () => ({
 
 import { WeekView } from "./WeekView";
 import { TEST_PACK } from "@/test-fixtures";
-import { __resetForTests, markDone, snooze, updateProfile } from "@/lib/store";
+import {
+  __resetForTests,
+  markDone,
+  setHumour,
+  setPersona,
+  snooze,
+  updateProfile,
+} from "@/lib/store";
 
 vi.mock("next/navigation", () => ({
   usePathname: () => "/week/test-week",
@@ -386,6 +393,45 @@ describe("WeekView", () => {
     for (const flag of TEST_PACK.redFlags) {
       expect(screen.getByText(flag.text)).toBeInTheDocument();
     }
+  });
+
+  it("gives a grandparent their own panel instead of the parent's list", () => {
+    setPersona("grandparent");
+    render(<WeekView pack={TEST_PACK} />);
+
+    expect(screen.queryByRole("heading", { name: /The \d+ things?/ })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Done" })).not.toBeInTheDocument();
+    // A week nobody wrote for them falls back to the band, and says so.
+    expect(screen.getByText(/The middle months|The last weeks/)).toBeInTheDocument();
+  });
+
+  it("keeps every red flag in front of a reader who is not the parent", () => {
+    setPersona("partner");
+    render(<WeekView pack={TEST_PACK} />);
+    for (const flag of TEST_PACK.redFlags) {
+      expect(screen.getByText(flag.text)).toBeInTheDocument();
+    }
+  });
+
+  it("does not show a reader the parent's progress or week completion", () => {
+    setPersona("extended");
+    render(<WeekView pack={TEST_PACK} nextId="pregnancy-w29" />);
+
+    expect(screen.queryByText(/of \d+ steps done or skipped/)).not.toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: /The baby/ })).not.toBeInTheDocument();
+  });
+
+  it("gives the parent the light line and no empty lens card", () => {
+    render(<WeekView pack={TEST_PACK} />);
+    // The parent's lens carries only the line; a card with no headline would
+    // be a blank box on their own week.
+    expect(screen.getByRole("heading", { name: /The \d+ things?/ })).toBeInTheDocument();
+  });
+
+  it("says nothing light when the reader has turned it off", () => {
+    setHumour(false);
+    render(<WeekView pack={TEST_PACK} />);
+    expect(screen.queryByText(/lasagne|coffee|nap/i)).not.toBeInTheDocument();
   });
 
   it("still names the week it is holding back", () => {
