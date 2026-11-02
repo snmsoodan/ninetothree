@@ -2,6 +2,19 @@ import { Client } from "pg";
 
 import { migrateDown, migrateUp, migrationStatus, type SqlClient } from "../migrate";
 
+const NO_DATABASE_URL = `DATABASE_URL is not set.
+
+Without it the app runs on PGlite, an in-memory database that lives inside the
+web server process. That is what makes "pnpm install && pnpm dev" enough, and it
+is also why these commands need a real Postgres: a second process would open a
+different, empty database and seed that.
+
+Put a connection string in .env.local at the repository root — this CLI and the
+web app both read that file — and run the command again:
+
+  DATABASE_URL=postgres://localhost:5432/ninetothree
+`;
+
 const USAGE = `usage: db <up|down|status> [steps]
 
   up            apply every pending migration
@@ -14,7 +27,7 @@ async function main(argv: string[]): Promise<number> {
   const [command, argument] = argv;
   const url = process.env.DATABASE_URL;
   if (!url) {
-    process.stderr.write("DATABASE_URL is not set\n");
+    process.stderr.write(NO_DATABASE_URL);
     return 1;
   }
   if (command !== "up" && command !== "down" && command !== "status") {
