@@ -30,6 +30,7 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.14.0",
+    "@next/env": "^15.1.3",
     "@ninetothree/config": "workspace:*",
     "@ninetothree/db": "workspace:*",
     "@playwright/test": "^1.49.1",

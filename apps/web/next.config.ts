@@ -1,4 +1,31 @@
+import { existsSync } from "node:fs";
+import path from "node:path";
+
+import { loadEnvConfig } from "@next/env";
 import type { NextConfig } from "next";
+
+/**
+ * Load the one `.env.local` that lives at the root of the monorepo.
+ *
+ * Next loads env files from the app's own directory, which here is
+ * `apps/web` — so a `.env.local` copied next to `.env.example`, where the
+ * README tells you to put it, was silently ignored. The failure was not "env
+ * missing", it was `/api/auth/*` answering 500 with `MissingSecret`, which
+ * reads as a broken sign-in rather than a file in the wrong place. Loading the
+ * workspace root means one file configures the web app, the database CLIs and
+ * the tests.
+ *
+ * `loadEnvConfig` caches its result per process and returns the cache unless
+ * asked to reload — and Next has already called it for `apps/web` by the time
+ * this file runs, so the call has to pass `forceReload`. Reloading restores the
+ * environment the process started with and then applies the root files, so a
+ * variable that is really set (CI, a deployment platform, Playwright's
+ * `webServer`) still wins over the file.
+ */
+const workspaceRoot = path.resolve(process.cwd(), "../..");
+if (existsSync(path.join(workspaceRoot, "pnpm-workspace.yaml"))) {
+  loadEnvConfig(workspaceRoot, process.env.NODE_ENV !== "production", console, true);
+}
 
 const config: NextConfig = {
   reactStrictMode: true,

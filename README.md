@@ -246,11 +246,49 @@ A parent in the US can:
 
 ```bash
 pnpm install
-cp .env.example .env.local     # then set AUTH_SECRET to any long random string
-pnpm dev
+cp .env.example .env.local
 ```
 
-`AUTH_SECRET` is the only thing you have to set. With no `DATABASE_URL`, the app uses an in-process PGlite database that is created and migrated on first use, so there is no server to install and no setup step. `pnpm db:seed` fills it with fixtures if you want a dashboard that looks lived-in.
+Open `.env.local` and set `AUTH_SECRET` to any long random string — `openssl rand -base64 32` gives you one — then:
+
+```bash
+pnpm dev        # http://localhost:3000
+```
+
+That is the whole setup. With no `DATABASE_URL` the app uses an in-process PGlite database that is created and migrated on first use, so there is no server to install, no container and no seed step. `AUTH_SECRET` is required for `pnpm dev` and for `pnpm build`: Auth.js reads it from the environment, and without it every `/api/auth/*` request answers 500 with `MissingSecret` — which looks like a broken sign-in rather than a missing variable.
+
+**Sign in with no email provider.** Open `/signin`, enter any address, and the dev server prints the magic link to the terminal instead of sending it. Open that link and you are in. `RESEND_API_KEY` is only for real email.
+
+**`.env.local` belongs at the root of the repository, not in `apps/web`.** `apps/web/next.config.ts` loads the workspace root before Next starts, so one file configures the web app, the `db:*` commands and the scripts. A file in `apps/web` also works and wins over the root one, and a variable set in the real environment wins over both — which is what keeps CI and a deployment platform unaffected.
+
+### Testing it
+
+```bash
+pnpm test                                                          # every package, with coverage gates
+pnpm --filter @ninetothree/web exec vitest run src/lib/country.test.ts   # one file
+pnpm test:e2e                                                      # the browser journeys
+pnpm --filter @ninetothree/web test:e2e -- billing.spec.ts          # one spec
+```
+
+The coverage thresholds are global, so a single test file run through `pnpm test` fails on coverage even when every test passes; `exec vitest run <file>` is the way to iterate on one. Stop `pnpm dev` before `pnpm test:e2e`: Playwright reuses a server already listening on port 3000, and a dev server has neither `AUTH_TEST_MODE=1` nor the Stripe webhook secret the suite sets, so the sign-in and billing journeys fail against it. With the port free it builds and starts its own.
+
+The rest of the gate, in the order CI runs it:
+
+```bash
+pnpm format:check && pnpm lint && pnpm typecheck && pnpm content:validate \
+  && pnpm content:registry:check && pnpm test && pnpm build && pnpm bundle:check
+```
+
+### A database with something in it
+
+The default database is in memory, which is why `pnpm db:seed` needs a real Postgres: a second process opens a different database, so a seed run would fill rows the web server never sees. Point `DATABASE_URL` at a local Postgres, then:
+
+```bash
+pnpm db:migrate
+pnpm db:seed
+```
+
+Both read `DATABASE_URL` from the root `.env.local`, and the web app picks up the same URL, so the fixtures you seed are the fixtures you browse: `maya@example.com` at week 28, `priya@example.com` at week 6, `ingrid@example.com` four months postpartum. Without a `DATABASE_URL` those commands stop and say so rather than writing to a throwaway database.
 
 ## How it is verified
 
@@ -274,7 +312,7 @@ Five CI jobs run on every pull request. Each one fails for exactly one class of 
 
 **A cross-household read is impossible by construction, and that is two things, not one.** `packages/db/src/scope.ts` exports a `Scope` with a brand that is never exported, so it cannot be built from an object literal — the only way to get one is `scopeFor(db, userId)`, which reads the membership out of the database. Every repository function takes a `Scope` first and none of them accepts a bare `household_id` or `user_id`, so there is no parameter to pass the wrong one through. Underneath that, `0002_rls` turns on row-level security for the eleven tables that hold something about a person. The tests prove the second half by connecting as an ordinary role and running `select ... from pregnancies` with **no `where` clause at all**: one row comes back, not two. That test also documents a deployment requirement — a superuser bypasses every policy, so the application must not connect as the table owner or the policies are decorative.
 
-**`pnpm db:seed` gives you an app with something in it.** Three households, five people, two pregnancies, two children, forty item states, fourteen settled weeks, five appointments and all 85 stage packs — with fixed UUIDs, so running it twice leaves the same rows rather than a second Maya. Maya is at week 28 with two pins and a forced week; Priya is at week 6 with almost nothing done; Ingrid is four months postpartum. The seed deletes the personal tables first, which is why it refuses any host that is not localhost unless you pass `--force`.
+**`pnpm db:seed` gives you an app with something in it.** Three households, five people, two pregnancies, two children, forty item states, fourteen settled weeks, five appointments and all 85 stage packs — with fixed UUIDs, so running it twice leaves the same rows rather than a second Maya. Maya is at week 28 with two pins and a forced week; Priya is at week 6 with almost nothing done; Ingrid is four months postpartum. The seed deletes the personal tables first, which is why it refuses any host that is not localhost unless you pass `--force`. It also needs a real `DATABASE_URL`, because the default database is in memory and a second process cannot reach it — see "A database with something in it" above.
 **Signing in is a magic link, and the session is a row you can delete.** Auth.js v5 with database sessions rather than JWT, because a JWT cannot be revoked — a stolen laptop stays signed in until the token expires and "sign out everywhere" becomes a lie. That choice rules out the `Credentials` provider, so the end-to-end suite drives the real magic-link flow: request a link, read it back from a gated endpoint, follow it, land signed in. Six journeys cover it — sign in, sign out, a signed-out settings page that offers a way in rather than an error, an expired link that says so in words, a link used twice that works once, and the sixth request in fifteen minutes refused with a time to try again. `AUTH_SECRET` is required for `pnpm dev` and for `pnpm build`. `AUTH_URL` is required in production and is worth setting locally too: Auth.js resolves a relative callback URL against it, and when it is unset that origin is `http://localhost:3000`. A link followed on `127.0.0.1`, or on the real domain behind a proxy, then lands on a host where the session cookie does not exist — which looks like "sign-in did not work" and is really two hosts disagreeing.
 
 **A household is a trust boundary, and the database enforces it rather than the code.** `0004_household` adds two SELECT policies so a member can read the other memberships in their household and the name and address of their co-members, and leaves every write policy alone — a partner can see your name, and cannot change your row. Your own notes, pins, progress and reminders stay self-only, which is what makes "your own notes stay yours" true rather than aspirational. `app_household_ids()` had to become `security definer` because the new policy on `household_members` calls a function that reads `household_members`, and Postgres refuses that cycle; it pins `set search_path = public, pg_temp` so the elevated read cannot be redirected. The owner of that function matters in production and no test here can prove it, so it is written down in `packages/db/SCHEMA.md` and belongs in the deployment runbook.

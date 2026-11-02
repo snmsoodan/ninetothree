@@ -9,6 +9,23 @@ changelog written after the fact from memory is a changelog nobody can trust.
 
 ## Unreleased
 
+### The local setup in the README now works as written (#128)
+
+- **`cp .env.example .env.local && pnpm dev` is enough.** `apps/web/next.config.ts`
+  loads the workspace root, because Next only reads env files from the app
+  directory and a root `.env.local` was silently ignored — which surfaced as
+  `MissingSecret` on every `/api/auth/*` request rather than as a missing file.
+- **`pnpm db:seed`, `db:migrate`, `db:status`, `db:rollback` and `db:purge` exist
+  at the root** and read `DATABASE_URL` from the same `.env.local`, through
+  `--env-file-if-exists` on `tsx`.
+- **The database commands explain the in-memory default** instead of failing
+  with `DATABASE_URL is not set`: PGlite lives inside the web server process, so
+  seeding needs a real Postgres.
+- **The README has a "Testing it" section** with the single-file, single-spec and
+  full-gate commands, the coverage-threshold trap in `pnpm test <file>`, and the
+  Playwright rule about stopping `pnpm dev` first. The record is in
+  [`EVIDENCE.md`](EVIDENCE.md) §62.
+
 ### One price, paid once: $5 (#126)
 
 - **Plus is $5, charged one time.** The checkout runs Stripe in `mode: "payment"`
