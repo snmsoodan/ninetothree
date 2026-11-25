@@ -98,6 +98,14 @@ a pull request, because a site having a bad afternoon is not a link we broke. `p
 link sits in that list on the weekly run, somebody opens it and either replaces the entry or
 confirms the host is simply blocking us. Nothing in that list is ever a 404.
 
+A host that hangs up on Node's handshake is the fourth case, and it is the one that used to land in
+the wrong list. `postpartum.net` and `cribsforkids.org` close the socket on `fetch` with "other side
+closed", which the check read as a dead domain — the Links job failed on `main` every Monday from
+early November for it. Those URLs are retried once with `curl`, first with the browser user agent
+and then with curl's own, because the two groups are opposite: one hangs up on Node, the other hangs
+up on anything that claims to be Chrome from a client that is not. A socket that survives both is
+reported as "could not be checked" and does not fail a pull request.
+
 If a link moved, replace it with the same document, not a similar-sounding one. If the document is
 gone, the claim that cited it goes too — see [§11](#11-a-clinical-error).
 

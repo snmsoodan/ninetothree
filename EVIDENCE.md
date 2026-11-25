@@ -2024,6 +2024,18 @@ The fix is a `NOT_OURS` deny list checked before any rule (`adult`, `senior`, `e
 
 **What this does not prove.** The feed is verified against the real CPSC and openFDA responses **today**; both are public APIs with no contract, and `RUNBOOK.md` §12 records what breaks first and how to recognise it. NHTSA is not polled at all. Nothing emails a parent about a new recall — the page is current when it is opened, and the dashboard card reads the same cached feed. Screenshots use a fixed `/api/updates` response because the real one changes hourly, so `17-updates.png` is a true rendering of the page and not a record of one particular hour.
 
-## 65. How this file is maintained
+## 65. The link check called two live pages dead (issue #134)
+
+**The Links job failed on `main` every week from early November, and it was not a link.** The job reported four broken links — `postpartum.net`, `postpartum.net/bluedot/` and `cribsforkids.org` — and every one of them answers 200 in a browser. The check was reading Node's own transport as the site being gone.
+
+**What actually happened.** `fetch` to those hosts throws `fetch failed` with a cause of `other side closed` (`UND_ERR_SOCKET`): the far end hangs up on the handshake. The classifier had two buckets for that — "unreachable" and "dead" — and neither is right. A closed socket is the network, not a 404, and the file's own doctrine says so in the same paragraph: "a refused connection or a missing name is the domain being gone". A hang-up from the other side had simply never been in the list of transient causes, because the hosts that did it had never been cited before.
+
+**The fix is a second opinion, not a whitelist.** A socket-level failure is retried once with `curl`, which uses a different TLS and HTTP stack: browser user agent first, then curl's own. Both directions matter — `postpartum.net` answers curl's default name with a 200 and answers a Chrome user agent with an empty reply, which is bot protection pointed at anything that claims to be a browser and is not. Only a socket that survives both is reported as "could not be checked", which does not fail a pull request, and `--strict` on the Monday run still fails on it, so a host that is genuinely down still needs a person. Nothing was added to `BOT_PROTECTED`: that set exists for 403s, and pretending these four were 403s would have hidden the real behaviour.
+
+**What it holds now.** `pnpm links:check` reports 299 links checked, none broken, none moved, none unanswered. The same command with `--strict` — the only form the weekly job runs — exits 0, so the Monday run is green for the first time since the fourth of November. The `curl` path is exercised by running it: `postpartum.net` reaches the fallback and returns 200 through it, and `cribsforkids.org` does the same.
+
+**What this does not prove.** The fallback is a shell-out to `curl`, so it needs `curl` on the runner; when it is missing, `spawnSync` errors, the fallback returns null, and the classification falls back to "could not be checked" — the same behaviour as before the fix, not a crash. Windows uses `NUL` instead of `/dev/null` and is untested, because this repo has never run its scripts there.
+
+## 66. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.
