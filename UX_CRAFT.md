@@ -435,32 +435,42 @@ become the thin end of a wedge:
 
 - **One place.** Only the dashboard shell, and never on `/safety` or `/triage`, where a
   decoration would sit next to a red flag.
-- **One weight.** A single ink stroke at 10% on paper, `1.5px`, no fill, no second
+- **One weight.** A single ink stroke at 7% on paper, `1.5px`, no fill, no second
   colour, no shadow. Nothing but a silhouette. It is deliberately one step above
   invisible: legible as a shape when you look for it, never something you read past.
+- **A body, not a pictogram.** The drawing is generated from a skeleton rather than
+  typed as coordinates: joints, then limbs as tapered capsules around them, then a
+  Catmull-Rom curve through the result. That is what buys a jaw and a nose, a nape of
+  hair with a strand loose, a chest above a waist, hips wider than the chest, a dress
+  falling to below the knee with folds in it, and knees and heels in the legs. Detail
+  is still the enemy at this weight, so everything is one line and nothing is filled.
 - **Drawn sideways.** She stands in profile facing right, the child held at her chest.
   It is a side view because a front-on composition reads as a poster; in profile the
   two figures read as one gesture, and the line has room to travel across the page as
-  the child rises. The femininity is carried by the outline — a nape of hair, a chest
-  above a waist, hips wider than the chest, a dress flaring below the knee — and not by
-  any added detail, because detail at this weight turns into noise.
+  the child rises.
 - **A lift, not a throw.** The child rises mostly vertically and stays inside arm's
   length the whole way. Carrying them out to the edge of the frame would read as
   handing them to someone, which is the opposite of what the drawing is for.
-- **Behind, and given room.** The figure is pinned to the bottom of the viewport and
-  sized by height (`46vh`, capped at 430px) so it clears the bottom navigation at every
-  breakpoint that matters. It never overlaps a button or the nav; `pointer-events: none`
-  and `aria-hidden`, so it cannot be focused, tapped, or read aloud.
-- **One concession to being seen: the cards go slightly clear.** Raised surfaces sit at
-  88% opacity and sunken ones at 92%, so the drawing reads through them without the
-  text ever sitting on a busy field. This is the only place the app is not fully
-  opaque, and it exists only while the figure does.
-- **Two poses, no animation.** It is drawn in the hugging pose, or in the raised pose,
-  interpolated by scroll position. Nothing moves on a timer, nothing loops, nothing
-  bounces. `prefers-reduced-motion: reduce` pins it to one pose forever.
+- **Over the page, and given room.** The figure is pinned to the bottom of the viewport
+  and sized by height (`52vh`, capped at 470px) so it clears the bottom navigation at
+  every breakpoint that matters. It paints _above_ the content column at `z-20` —
+  below the header and tab bar at `z-30` — because behind it was a figure nobody could
+  see: the cards are opaque and their colour is one or two percent off the paper, so
+  translucency enough to let the stroke through also dissolves the card. Over the top,
+  the line has the same weight on a card as on the paper. It never covers a button or
+  the nav; `pointer-events: none` and `aria-hidden`, so it cannot be focused, tapped, or
+  read aloud.
+- **It does not touch the text.** The ink is `currentColor`, and ink over ink is a
+  no-op: `#1f1f1f` at 7% over `#1f1f1f` is still `#1f1f1f`. The strokes darken paper and
+  pass straight through a letter without softening it, which is why the layer can sit
+  on top without costing a single point of contrast. Nothing is set to a partial
+  opacity anywhere else in the product any more.
+- **One walk, no animation.** The drawing is one image — a picture, not something this
+  codebase renders — and the only thing the scroll does is step it 18px to one side and
+  back, with a sub-pixel bob. It starts where it ends, so it never drifts, and nothing
+  moves on a timer, loops or bounces. `prefers-reduced-motion: reduce` holds it still.
 - **It yields.** `prefers-contrast: more` — and the reading setting that does the same —
-  removes it entirely, and restores full card opacity with it. It is also excluded from
-  print.
+  removes it entirely with `display: none !important`. It is also excluded from print.
 
 If a later change needs a third pose, a second figure, a photograph, or a colour, that
 change needs to reopen this document first, not extend this list.

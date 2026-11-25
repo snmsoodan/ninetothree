@@ -95,24 +95,6 @@
 }
 
 /*
- * Cards are the only opaque thing between the drawing and the reader, so on a
- * page that has one they are a veil rather than a wall: a few percent of
- * transparency, which is invisible as a colour change because the paper behind
- * them is the same paper, and enough for a stroke to ghost through the panel
- * instead of stopping at its edge. The ink is still on the paper it was tested
- * against — this moves 10% of a 10% drawing, not the text.
- */
-@media (prefers-contrast: no-preference) {
-  :root:not([data-contrast="more"]) [data-figure] [data-surface][data-tone="raised"] {
-    background-color: color-mix(in srgb, var(--color-paper-raised) 88%, transparent);
-  }
-
-  :root:not([data-contrast="more"]) [data-figure] [data-surface][data-tone="sunken"] {
-    background-color: color-mix(in srgb, var(--color-paper-sunken) 92%, transparent);
-  }
-}
-
-/*
  * An article body. The Markdown carries no class names, so the styles live
  * here, keyed on the element. The measure is the same as everywhere else and
  * the line height is looser, because this is the one place in the product

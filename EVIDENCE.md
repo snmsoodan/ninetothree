@@ -2063,7 +2063,7 @@ The fix is a `NOT_OURS` deny list checked before any rule (`adult`, `senior`, `e
 
 **What this does not prove.** The band boundaries are the standard ones — the AAP introduces solids around six months and whole milk and a cup replace formula and the bottle around twelve — and they are coarse on purpose, because a child who starts solids at five months and one who starts at seven are both handled and neither is wrong. Nothing nudges a parent who answered `breast` in pregnancy to answer again once the band becomes `solids`; the radio simply shows nothing selected and the answer stands until they change it. A stored `cup` hides breastfeeding steps, and no step in the toddler packs is breastfeeding-specific, so in practice the value changes what the settings screen says more than what the week shows.
 
-## 67. A faint figure behind the dashboard that lifts the child as you scroll (issue #136)
+## 67. A faint drawing over the dashboard that walks as you scroll (issue #136)
 
 **The ask, and the argument against it.** The owner wanted a barely visible outline of a
 mother holding a child behind the dashboard, which raises the child as the page scrolls.
@@ -2075,64 +2075,104 @@ carries a named exception with its limits written down, and the two other rules 
 it. If the experiment is rejected, delete the component and the exception together — the
 drawing must not outlive the paragraph that justifies it.
 
-**The drawing is data, not a file.** `components/raising.ts` holds seventeen paths and a
-function `figureAt(t)` that returns the same seventeen paths at any `t` from 0 to 1, in a
-fixed order, so the renderer can address them by index and never remounts a node. Each
-coordinate is the linear interpolation between a hugging pose and a raised pose, then run
-through a smoothstep so the lift starts and stops without a jolt. Only the coordinates
-that differ between the poses actually move: her hair, head, neck, torso, skirt, legs and
-feet are the same in both, and her arms and the child's head, body, arms and legs travel.
-That is what makes it read as lifting rather than as a cross-fade of two pictures.
+**Four drawings failed before the fifth stopped being a drawing.** The first version was
+thirty hand-plotted points, and the owner's verdict was "too basic". The second was a
+skeleton of joints wrapped in tapered capsules, and the verdict was "the figure still looks
+robotic". The third was a single closed contour with a jaw and a nape; the fourth was a
+walking family of three, its limbs swept as outlines, tuned over several rounds with a
+throwaway test that flattened every path `d` into a character grid and printed it as ASCII.
+Each one was arithmetically right — correct proportions, hands that met, feet on the ground
+— and each one read as a wireframe mannequin, which is the failure mode of procedural
+figures: they have no wobble, no uneven pressure, and no moment where the line is decided
+rather than computed. A library search found nothing to substitute either: Open Peeps is
+CC0 but has no baby, unDraw and Humaaans are filled colour or CC-BY, and Flaticon and
+IconScout are attribution-only. So the drawing stopped being geometry.
 
-**The scroll drives it, and nothing else does.** `RaisingFigure.tsx` is a client component
-with one passive `scroll` listener, one `resize` listener and one `matchMedia` change
-listener. Scroll sets a target; a single `requestAnimationFrame` loop eases the current
-value toward it at 0.18 per frame and stops when the gap is under 0.002, so an idle page
-has no running animation frame. Each frame writes `d` straight onto the thirteen nodes
-that move with `setAttribute` — thirteen attribute writes, not a React render per scroll
-event. The travel is 1.5 viewport heights, which is long enough to feel like the page is
-being lifted and short enough that the child arrives before the footer.
+**The artwork is a file, and it is a mask rather than an image.** One image model, one
+prompt — a single continuous wobbly ink line, a father, a mother and a toddler walking hand
+in hand, no fills, a long loose ground line — produced `apps/web/public/art/raising-family.png`.
+It is 1100×701 and **17.5 kB**: cropped 28px outside the ink's bounding box, resized to
+1100px wide, `alpha = 255 − luminance`, quantised to 16 levels, and saved as a 32-colour
+palette. The component paints it as `mask-image` over a `bg-current` div, with `mask-size:
+contain`, `mask-position: center bottom` and the `WebkitMask*` twins Safari needs, so the
+line is the page's own ink: `#1f1f1f` of paper in light mode, `#F2EDE6` on `#17140F` in dark.
+An `<img>` would have been a black drawing in both.
+
+**Only the walk is code.** `raising.ts` is now four exports and no geometry: `raiseSpan(h)`
+is 1.5 viewport heights, `raiseProgress(scrollY, span)` clamps and treats a non-finite
+scroll as the start, and `walkOffset(t)` returns the group's offset — `x = sin(2πt) × 18`
+and `y = (cos(4πt) − 1) × 0.8`, rounded to hundredths, so the family steps 18px to the side
+and back with a 1.6px bob at twice the frequency for the footfall. Both ends are exactly
+`{x: 0, y: 0}`, which is what keeps a loop seamless and a narrow phone safe: nothing drifts
+off-screen however far the page goes. `RaisingFigure.tsx` keeps one passive `scroll`
+listener, one `resize` listener and one `matchMedia` change listener; scroll sets a target,
+a single `requestAnimationFrame` loop eases the current value toward it at 0.18 per frame,
+and stops when the gap is under 0.002, so an idle page runs no frames at all. Each frame
+writes one `transform` — one attribute write, not a React render per scroll event.
+
+**Over the page, because behind was invisible.** The first attempt put the figure at `z-0`
+behind the content and made the cards slightly transparent so a stroke could ghost through
+them. Measured with a pixel diff — screenshot with the figure on, screenshot with it
+`display: none`, decode both through a canvas, subtract per channel — a stroke under a card
+moved the pixels by **2 of 255** at 88% card opacity. Raising the ink to 12% and the cards to
+70% took that to 21, against 83 in the gaps, and there the arithmetic stops: under-card
+visibility is `(1 − β)` times gap visibility, so parity needs `β ≈ 0.5`, and a card only four
+luminance levels above the paper vanishes long before that. Translucency could not deliver a
+figure that stands out faintly; it could only deliver slivers in the gaps, which is what the
+owner photographed and objected to. So the layer moved to `z-20`, above the content column
+and below the header and tab bar at `z-30`, at 7% ink. The `data-figure` attribute, the
+`[data-surface][data-tone]` veil rules and `data-tone` on `Card` were deleted with it, and
+every card is opaque again.
+
+**Why 7% over the top costs nothing.** The ink is `currentColor`, and ink over ink is a
+no-op — `#1f1f1f` at 7% over `#1f1f1f` is still `#1f1f1f`. The layer darkens paper and cards
+and passes straight through letters without softening them, so a decoration on top is not a
+contrast risk, and the axe suite is unchanged. The whole layer is one colour at 7%, so the
+largest per-channel delta it can produce anywhere on the page is **18 of 255**, by
+construction, whether it crosses a gap or a card — uniform presence instead of a shape that
+appears and disappears as you scroll past the panels.
 
 **It cannot be a nuisance.** The layer is `aria-hidden`, has no `tabindex`, is
 `pointer-events-none`, and is skipped entirely on `/safety` and `/triage`. `prefers-reduced
--motion: reduce` freezes it in the hugging pose — the pose is chosen before the first
+-motion: reduce` holds it at the start of the walk — the pose is chosen before the first
 paint, so there is no flash of motion. `prefers-contrast: more`, or the reading setting that
 sets `data-contrast="more"`, hides it with `display: none !important`. It is excluded from
-print. The ink is `currentColor` at 10% opacity, one 1.5px stroke, no fill. The layer is sized
-by height, `46vh` capped at 430px, so it clears the bottom navigation at both 390×844 and
-320×640: measured `svg` boxes of `y 344–732` against a nav top of `779`, and `234–528`
-against `575`.
+print. It is sized `min(92vw, 900px)` wide and 552–701px tall depending on the artwork's
+ratio, centred at the bottom of the viewport, clear of the bottom navigation at both
+390×844 and 320×640.
 
-**What the tests hold.** `raising.test.ts` (15 cases): the key order is stable across the
-whole range, her strokes and the child's are distinct, the child's head ends above her
-shoulders, the rise is monotonic, her hands finish above her shoulders while the child's
-feet finish inside arm's length and to the right of her body, `t` clamps outside 0–1 and a `NaN` or `Infinity`
-resolves to the start pose, and no path ever contains `NaN`, `Infinity` or `undefined` across
-21 samples. `raiseSpan` and `raiseProgress` get their own cases, including a zero-height
-span and a scroll shorter than the span. `RaisingFigure.test.tsx` (10 cases): the markup is
-out of the accessibility tree and focus order, the child's head rises below 60 when the
-page rises by more than 90 pixels when the page scrolls and returns to the hug at scroll 0,
-the figure is frozen under
-`prefers-reduced-motion` and under `data-motion="reduced"`, it settles back when the media
-query flips mid-scroll, it re-reads the span on `resize`, and both listeners are removed on
-unmount — tested both before it ever moved and mid-rise.
+**What the tests hold.** `raising.test.ts` (9 cases): the span is 1.5 viewports and zero for
+a zero, negative or `NaN` height; progress runs 0 → 0.5 → 1 and clamps at both ends,
+including the negative `scrollY` that iOS rubber-band overscroll produces; the walk starts
+and finishes at exactly `{x: 0, y: 0}`, steps right by more than 10 at `t = 0.25` and left by
+more than 10 at `t = 0.75`, never exceeds 18px sideways or 2px vertically across 51 samples,
+bobs twice per stride, and clamps or survives a `NaN` like progress does. `RaisingFigure.
+test.tsx` (12 cases): the wrapper is out of the accessibility tree and out of the pointer's
+way; the layer really is a mask over `bg-current` pointing at the artwork, not an `<img>`;
+it is at 7%; it starts at zero; it steps out past 8px after a scroll and turns around on the
+second half of the page; it returns to zero when the page returns to the top; it does not
+move under `prefers-reduced-motion` or under `data-motion="reduced"`, and settles back to
+zero when the media query flips mid-walk; it re-reads the span on `resize`; and both
+listeners are removed on unmount — tested both before it ever moved and mid-walk.
 
 **Two new pictures.** `evidence.spec.ts` photographs `/today` at the top of the page
-(`21-figure-hug.png`) and again after scrolling to the bottom (`22-figure-raised.png`),
-asserting in between that the child's head has moved up by at least 80 pixels, so the
-second picture cannot show a scroll that did nothing. On a fresh load at 390×844 the child's
-head `d` goes from `M221 164…` to `M423 72…` — a real attribute change, not a CSS transition.
+(`21-figure-at-rest.png`) and again after scrolling 40% of a viewport
+(`22-figure-walking.png`), asserting in between that the masked layer's `transform` has
+moved past 8px — a real attribute change on a real scroll, not a CSS transition that the
+screenshot merely coincided with. It polls for the value rather than sleeping, because the
+walk is eased over about twenty frames.
 
-**What this does not prove.** The silhouette is hand-measured geometry, not illustration:
-nobody has drawn it, no illustrator has looked at it, and whether it reads as a mother
-lifting a child, or as a smudge, is a judgement this file cannot make — and in this round it
-was not even possible to look: the agent doing the work cannot view images, so every check
-here is a measurement. The poses were tuned by coordinates, not by eye, across four rounds of
-the owner's direction ("sideways", "standing", "more feminine", "keep the baby closer"). What
-was measured: a display-off diff profile of the page, per-path bounding boxes, the `d`
-attribute before and after a real scroll, and the computed card colour. What was not
-measured, and cannot be: whether the line actually reads as a mother and child. It is drawn
-at one size on two phone viewports and has not been looked at on a large monitor.
+**What this does not prove.** The agent doing this work cannot view images. Every check here
+is a measurement: the artwork was analysed numerically as a PNG — 1.5% of pixels carry ink,
+the dark-pixel bounding box is 1180×732, and the ink forms one connected column run from x
+177 to 1358, so the three figures are actually holding on to each other rather than being
+three drawings side by side — and it was also rendered down to a 104×30 ASCII grid and read
+as a silhouette. Neither says whether the drawing is charming. The owner judged each round
+in a live browser, and the verdicts are recorded above precisely because that judgement is
+not reproducible here. Nor is the file auditable the way typed geometry was: nobody can read
+the PNG and see how a shoulder was placed, and regenerating it would produce a different
+family. If that matters more than legibility later, the geometry is in the git history at
+`35f3d39`.
 
 ## 68. How this file is maintained
 

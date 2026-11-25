@@ -26,15 +26,12 @@ function matchMedia(matches: boolean) {
   };
 }
 
-function paths() {
-  return Array.from(document.querySelectorAll('[data-testid="raising-figure"] path'));
-}
+const art = () => screen.getByTestId("raising-figure-art");
 
-/** The child's head is the one part named for it, so it is found by name. */
-function childHeadY(): number {
-  const shape = document.querySelector('[data-part="child-head"]');
-  const match = /^M-?[\d.]+ (-?[\d.]+)/.exec(shape?.getAttribute("d") ?? "");
-  if (!match) throw new Error("no child head");
+/** The horizontal part of the group's transform. */
+function walked(): number {
+  const match = /translate3d\((-?[\d.]+)px/.exec(art().style.transform ?? "");
+  if (!match) throw new Error(`no walk offset in "${art().style.transform}"`);
   return Number(match[1]);
 }
 
@@ -63,99 +60,109 @@ describe("RaisingFigure", () => {
 
     const wrapper = screen.getByTestId("raising-figure");
     expect(wrapper).toHaveAttribute("aria-hidden", "true");
-    expect(wrapper.querySelector("svg")).toHaveAttribute("focusable", "false");
-    expect(paths()).toHaveLength(17);
-  });
-
-  it("keeps every path out of the tab order and the way of a tap", () => {
-    matchMedia(false);
-    render(<RaisingFigure />);
-
-    const wrapper = screen.getByTestId("raising-figure");
     expect(wrapper.className).toContain("pointer-events-none");
-    expect(paths().every((path) => !path.hasAttribute("tabindex"))).toBe(true);
   });
 
-  it("lifts the child as the page scrolls", async () => {
+  it("draws the hand-drawn art in the page's own ink, not a black image", () => {
     matchMedia(false);
     render(<RaisingFigure />);
-    const held = childHeadY();
 
-    await scrollTo(1200); // raiseSpan(800)
-    await waitFor(() => expect(childHeadY()).toBeLessThan(held));
-    await waitFor(() => expect(childHeadY()).toBeLessThan(90));
+    const style = art().getAttribute("style") ?? "";
+    // A mask over `bg-current` is what lets the line follow the theme; an
+    // `<img>` would be a black drawing in dark mode and a black one in light.
+    expect(style).toContain("raising-family.png");
+    expect(style).toContain("mask-image");
+    expect(art().className).toContain("bg-current");
   });
 
-  it("puts the child back down when the page returns to the top", async () => {
+  it("is faint, so it never competes with the words", () => {
     matchMedia(false);
     render(<RaisingFigure />);
-    const held = childHeadY();
+    expect(art().className).toContain("opacity-[0.07]");
+  });
 
-    await scrollTo(1200);
-    await waitFor(() => expect(childHeadY()).toBeLessThan(90));
+  it("walks the family as the page scrolls", async () => {
+    matchMedia(false);
+    render(<RaisingFigure />);
+    expect(walked()).toBe(0);
+
+    await scrollTo(300); // a quarter of raiseSpan(800)
+    await waitFor(() => expect(walked()).toBeGreaterThan(8));
+  });
+
+  it("turns the walk around over the second half of the page", async () => {
+    matchMedia(false);
+    render(<RaisingFigure />);
+
+    await scrollTo(900);
+    await waitFor(() => expect(walked()).toBeLessThan(-8));
+  });
+
+  it("comes back to the start when the page returns to the top", async () => {
+    matchMedia(false);
+    render(<RaisingFigure />);
+
+    await scrollTo(300);
+    await waitFor(() => expect(walked()).toBeGreaterThan(8));
 
     await scrollTo(0);
-    await waitFor(() => expect(childHeadY()).toBeCloseTo(held, 0));
+    await waitFor(() => expect(walked()).toBe(0));
   });
 
   it("does not move at all under reduced motion", async () => {
     matchMedia(true);
     render(<RaisingFigure />);
-    const held = childHeadY();
 
-    await scrollTo(1200);
+    await scrollTo(300);
     await act(async () => {
       await new Promise((resolve) => setTimeout(resolve, 60));
     });
-    expect(childHeadY()).toBe(held);
+    expect(walked()).toBe(0);
   });
 
   it("also holds still when the preference is set in the app", async () => {
     matchMedia(false);
     document.documentElement.dataset.motion = "reduced";
     render(<RaisingFigure />);
-    const held = childHeadY();
 
-    await scrollTo(1200);
+    await scrollTo(300);
     await act(async () => {
       await new Promise((resolve) => setTimeout(resolve, 60));
     });
-    expect(childHeadY()).toBe(held);
+    expect(walked()).toBe(0);
   });
 
-  it("settles back into the hug if reduced motion is turned on mid-scroll", async () => {
+  it("returns to the start if reduced motion is turned on mid-walk", async () => {
     const motion = matchMedia(false);
     render(<RaisingFigure />);
-    const held = childHeadY();
 
-    await scrollTo(1200);
-    await waitFor(() => expect(childHeadY()).toBeLessThan(90));
+    await scrollTo(300);
+    await waitFor(() => expect(walked()).toBeGreaterThan(8));
 
     await act(async () => {
       motion.flip(true);
     });
-    await waitFor(() => expect(childHeadY()).toBeCloseTo(held, 0));
+    await waitFor(() => expect(walked()).toBe(0));
   });
 
   it("re-reads the scroll position when the window is resized", async () => {
     matchMedia(false);
     render(<RaisingFigure />);
-    const held = childHeadY();
 
     Object.defineProperty(window, "innerHeight", { configurable: true, value: 400 });
-    Object.defineProperty(window, "scrollY", { configurable: true, value: 600 });
+    Object.defineProperty(window, "scrollY", { configurable: true, value: 300 });
     await act(async () => {
       window.dispatchEvent(new Event("resize"));
     });
-    await waitFor(() => expect(childHeadY()).toBeLessThan(held));
+    await waitFor(() => expect(walked()).toBeGreaterThan(8));
   });
 
-  it("stops listening when it is removed, mid-rise or not", async () => {
+  it("stops listening when it is removed, mid-walk or not", async () => {
     matchMedia(false);
     const remove = vi.spyOn(window, "removeEventListener");
     const { unmount } = render(<RaisingFigure />);
 
-    await scrollTo(1200);
+    await scrollTo(300);
     unmount();
 
     expect(remove).toHaveBeenCalledWith("scroll", expect.any(Function));

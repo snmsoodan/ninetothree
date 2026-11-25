@@ -184,24 +184,28 @@ test("the feeding question at two years, on both screens that ask it", async ({ 
   await shot(page, "20-settings-feeding-two-year");
 });
 
-test("the figure behind the page, at rest and lifted by the scroll", async ({ page }) => {
+test("the figure over the page, at rest and walking as the page scrolls", async ({ page }) => {
   await onboard(page);
   const figure = page.getByTestId("raising-figure");
-  const childHead = figure.locator('[data-part="child-head"]');
+  const art = page.getByTestId("raising-figure-art");
   await expect(figure).toHaveAttribute("aria-hidden", "true");
-  await shot(page, "21-figure-hug");
+  await shot(page, "21-figure-at-rest");
 
-  const hugging = await childHead.boundingBox();
-  expect(hugging).not.toBeNull();
-  await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
-  /* The lift is eased over ~20 frames, so wait for it to arrive rather than
-     sleeping a guessed number of milliseconds. */
-  await expect
-    .poll(async () => (await childHead.boundingBox())?.y ?? Number.POSITIVE_INFINITY, {
-      timeout: 5_000,
-    })
-    .toBeLessThan((hugging?.y ?? 0) - 80);
-  await shot(page, "22-figure-raised");
+  /* The artwork is one line drawn in the page's ink through a mask, so there
+     are no parts to measure. What can be measured is the walk: a transform
+     that moves out and back as the page scrolls. */
+  const walked = () =>
+    art.evaluate((node) => {
+      const match = /translate3d\((-?[\d.]+)px/.exec(node.style.transform);
+      return match ? Number(match[1]) : 0;
+    });
+  expect(await walked()).toBe(0);
+
+  await page.evaluate(() => window.scrollTo(0, window.innerHeight * 0.4));
+  /* The walk is eased over ~20 frames, so poll for it rather than sleeping a
+     guessed number of milliseconds. */
+  await expect.poll(walked, { timeout: 5_000 }).toBeGreaterThan(8);
+  await shot(page, "22-figure-walking");
 });
 
 test("the narrowest phone we support, with nothing sideways", async ({ page }) => {

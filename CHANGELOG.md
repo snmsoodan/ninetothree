@@ -9,32 +9,29 @@ changelog written after the fact from memory is a changelog nobody can trust.
 
 ## Unreleased
 
-### A faint figure behind the dashboard that lifts the child as you scroll (#136)
+### A faint drawing over the dashboard that walks as you scroll (#136)
 
-- **A drawing behind the page, at 10% ink.** A mother holding a child, one
-  `1.5px` line, no fill and no colour, behind the dashboard and behind nothing
-  else. As the page scrolls she raises the child to play. She stands in profile
-  facing right and lifts the child mostly upward, keeping them at arm's length
-  rather than carrying them to the edge of the frame. It is the one decorative
-  thing in the product and it argues with `UX_CRAFT.md` on purpose: §11 now
-  records the exception and its limits, and rules 2 and 8 point at it.
-- **The cards go slightly clear so it can be seen.** Raised surfaces sit at 88%
-  opacity and sunken ones at 92% while the figure is on screen, so the drawing
-  reads through them without putting text on a busy field. The reading setting
-  restores full opacity along with hiding the figure.
-- **Two poses, drawn by scroll position, not animated.** Only her arms and the
-  child move; her hair, head, torso, skirt, legs and feet are identical in both
-  poses, which is what makes it read as lifting instead of as a cross-fade. The
-  travel is 1.5 viewport heights and it eases with a smoothstep at both ends.
-- **It yields to the reader.** `prefers-reduced-motion` pins it to the hugging
-  pose before the first paint; `prefers-contrast: more`, and the reading setting
-  that does the same, remove it entirely; it is excluded from print, is
+- **A drawing, not geometry.** A father, mother and toddler walking hand in
+  hand, one `1.5px` continuous line at 7% ink, over the dashboard and over
+  nothing else. Four procedural versions came before it — hand-plotted points,
+  a capsule skeleton, a filled contour, a tapered walking family — and the
+  owner's verdict on each was the same complaint in different words: a
+  mannequin. No CC0 illustration library has an animatable mother and baby, so
+  the drawing is now a picture and only the motion is code.
+- **The picture is a mask, not an image.** `public/art/raising-family.png` is
+  the ink's own alpha, painted as `mask-image` over a `bg-current` div, so the
+  line takes the page's colour in light and dark instead of being a black
+  drawing in one of them. It is 1100×701 and 17.5 kB after a 32-colour palette.
+- **Only the walk is code.** `walkOffset(t)` swings the group 18px to the side
+  and back — one stride each way, so nothing drifts off a narrow phone — with a
+  1.6px bob at twice the frequency for the footfall. It eases into place over
+  one `requestAnimationFrame` loop that stops when the gap is under 0.002, so
+  an idle page runs no frames at all.
+- **It yields to the reader.** `prefers-reduced-motion` holds it at the start of
+  the walk before the first paint; `prefers-contrast: more`, and the reading
+  setting that does the same, remove it entirely; it is excluded from print, is
   `aria-hidden`, cannot be focused or tapped, and never appears on `/safety` or
   `/triage`.
-- **Thirteen attribute writes a frame, not a React render a scroll event.**
-  Seventeen paths in a fixed order, `setAttribute("d", …)` straight onto the
-  nodes that move, and the `requestAnimationFrame` loop stops inside 0.002 so an
-  idle page runs no frames at all.
 
 ### The feeding question grows up with the child (#132)
 
