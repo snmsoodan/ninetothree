@@ -3,6 +3,9 @@
 import { useEffect, useState } from "react";
 import { RECALLS } from "@ninetothree/content";
 
+// The schema and the type share a name; the local type comes from this module.
+import { RecallFeed as RecallFeedSchema } from "@ninetothree/contracts";
+
 import type { RecallFeed } from "./recall-feed";
 
 /**
@@ -26,14 +29,6 @@ export const CURATED_FEED: RecallFeed = {
   fetchedAt: "",
 };
 
-function looksLikeFeed(value: unknown): value is RecallFeed {
-  if (typeof value !== "object" || value === null) return false;
-  const feed = value as Partial<RecallFeed>;
-  return (
-    Array.isArray(feed.recalls) && Array.isArray(feed.sources) && typeof feed.live === "boolean"
-  );
-}
-
 export interface RecallFeedState {
   feed: RecallFeed;
   /** `feed.recalls`, lifted so a caller that only wants the list can say so. */
@@ -53,7 +48,9 @@ export function useRecallFeed(): RecallFeedState {
     fetch("/api/updates", { signal: controller.signal })
       .then((response) => (response.ok ? response.json() : Promise.reject(new Error("bad status"))))
       .then((body: unknown) => {
-        if (alive && looksLikeFeed(body)) setFeed(body);
+        if (!alive) return;
+        const parsed = RecallFeedSchema.safeParse(body);
+        if (parsed.success) setFeed(parsed.data);
       })
       .catch(() => {
         // The curated list is already on screen. Nothing to say.

@@ -810,5 +810,11 @@ structural rather than tactical:
   app sends it as a bearer token. There is no second identity system, so revoking
   a session revokes it everywhere, which is the behaviour a lost phone deserves.
 
-No native code exists yet. Route B is accepted, and the first slice is the
-exchange above; none of it changes the web build.
+The first of those is built. `packages/contracts` holds the schemas, and six
+handlers parse against them on the way out — the household read, pins, the invite
+list and creation, leaving a household, and `/api/updates`. The web's own types
+are `z.infer` from the same package, so a divergence between what a handler sends
+and what a screen believes fails in a route handler during the test run rather
+than on a phone. The remaining household routes (`/together`, `/jobs`) and the
+account export have no schema yet, and no native client exists: the exchange
+above is the next slice, and none of it changes the web build.

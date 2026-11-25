@@ -2410,6 +2410,69 @@ running Expo Go.
 
 ---
 
-## 71. How this file is maintained
+## 71. One description of the wire, and the web parses against it (issue #145)
+
+**The idea.** Route B claims that a phone can be served by the routes the web
+already has. That claim is only worth something if both clients read the same
+description of a response. `@ninetothree/contracts` is that description: `zod`
+schemas for the four shapes the household screens exchange, for the invite
+list, and for the updates feed.
+
+**What is in it.** `packages/contracts/src` holds `shared.ts` (`Timestamp`,
+`MemberRole`, `ErrorBody`), `household.ts`, `invites.ts` and `updates.ts`, plus
+`index.ts` re-exporting them. `RecallFeed` composes the `Recall` schema that
+already lived in `@ninetothree/content` rather than restating it — two
+descriptions of a recall is how the curated list and the live one drift apart.
+
+**The web parses on the way out, not the phone on the way in.** Five handlers
+now end in `.parse(...)`:
+
+| Route                              | In                    | Out                |
+| ---------------------------------- | --------------------- | ------------------ |
+| `GET /api/household`               | —                     | `Household`        |
+| `POST /api/household/pins`         | `SharePinRequest`     | `SharePinResponse` |
+| `GET /api/household/invites`       | —                     | `InviteList`       |
+| `POST /api/household/invites`      | `CreateInviteRequest` | `CreatedInvite`    |
+| `DELETE /api/household/membership` | —                     | `LeaveResponse`    |
+| `GET /api/updates`                 | —                     | `RecallFeed`       |
+
+The point of parsing on the way out is where the failure lands. A field the web
+adds and forgets to describe fails in a route handler during the test run,
+against a stack trace, rather than on a phone six weeks after release. The
+request schemas double as validation: `CreateInviteRequest` replaced a
+hand-rolled `isRole`, and `SharePinRequest` replaced three `typeof` checks.
+
+**A real bug class, caught by counting rather than by a test.** `expires_at` is a
+`timestamptz` that `pg` hands back as a `Date`, and `JSON.stringify` turns into an
+ISO string — so the type the handler holds is not the type the client receives.
+Both invite handlers therefore call `.toISOString()` before parsing, and
+`invites.test.ts` asserts that a `Date` is refused, so the conversion cannot be
+removed as redundant.
+
+**The client stopped guessing too.** `looksLikeFeed` in `use-recall-feed.ts` was
+a hand-rolled property check that would have accepted `{ recalls: [], sources: [],
+live: true }` and dropped every recall in it; it is now `RecallFeed.safeParse`.
+`lib/household.ts`, `HouseholdList.tsx` and `lib/recall-feed.ts` take their types
+from the package instead of restating them, so there is one `HouseholdMember` in
+the repository rather than three.
+
+**How it was verified.** `pnpm --filter @ninetothree/contracts test` → 29 tests,
+100% statements, branches, functions and lines. `pnpm --filter @ninetothree/web test`
+→ 89 files, 1137 tests passing. The three e2e specs that exercise these handlers
+against a real Postgres and a real browser — `household.spec.ts`,
+`invites.spec.ts`, `updates.spec.ts` — 18 tests passing, which is what proves the
+parses describe the rows the database actually returns rather than the rows the
+first draft imagined. `pnpm typecheck`, `pnpm lint` and `pnpm format:check` clean.
+
+**What it does not do.** `/api/household/together`, `/api/household/jobs` and the
+account export have no schema yet, so a phone cannot be written against them.
+The object schemas strip unknown keys, which is deliberate — a field added for
+the web must not break a shipped app — but it means an undeclared field is
+invisible rather than rejected. There is no native client to parse with; the
+phone half of route B is still the token exchange.
+
+---
+
+## 72. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.

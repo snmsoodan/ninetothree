@@ -9,6 +9,22 @@ changelog written after the fact from memory is a changelog nobody can trust.
 
 ## Unreleased
 
+### One description of the wire: `packages/contracts` (#145)
+
+- **The routes a phone needs now have `zod` schemas, and the web parses against them on the way
+  out.** `@ninetothree/contracts` describes `Household`, `SharePinRequest`/`SharePinResponse`,
+  `InviteList`, `CreateInviteRequest`/`CreatedInvite`, `LeaveResponse` and `RecallFeed`; six
+  handlers end in `.parse(...)`. A field the web adds and forgets to describe fails in a route
+  handler during the test run rather than on a phone six weeks after release.
+- **`RecallFeed` composes the existing `Recall` schema from `@ninetothree/content`** instead of
+  restating it, and the hand-rolled `looksLikeFeed` guard in `use-recall-feed.ts` is now
+  `RecallFeed.safeParse` — the old one would have accepted a feed whose `recalls` array it then
+  dropped.
+- **The client stopped restating the server's types.** `lib/household.ts`, `HouseholdList.tsx` and
+  `lib/recall-feed.ts` import them, so there is one `HouseholdMember` in the repository rather
+  than three. 29 contract tests at 100% coverage; 1137 web tests; 18 e2e tests across household,
+  invites and updates against a real database and a real browser.
+
 ### One codebase, three platforms: route B (#143)
 
 - **`docs/PLATFORM.md` is the answer to "how would iOS and Android work", written before a line

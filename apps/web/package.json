@@ -27,6 +27,7 @@
   "dependencies": {
     "@auth/drizzle-adapter": "1.11.3",
     "@electric-sql/pglite": "^0.5.11",
+    "@ninetothree/contracts": "workspace:*",
     "@ninetothree/content": "workspace:*",
     "@ninetothree/rules": "workspace:*",
     "@ninetothree/ui": "workspace:*",

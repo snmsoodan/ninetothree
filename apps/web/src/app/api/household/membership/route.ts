@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { LeaveResponse } from "@ninetothree/contracts";
 import { leaveHousehold, scopeFor } from "@ninetothree/db";
 
 import { getDb } from "@/lib/auth/db";
@@ -21,5 +22,5 @@ export async function DELETE() {
   const scope = await scopeFor(sql, userId);
   const left = await leaveHousehold(sql, scope);
 
-  return NextResponse.json({ left });
+  return NextResponse.json(LeaveResponse.parse({ left }));
 }

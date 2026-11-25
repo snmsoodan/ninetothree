@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { SharePinRequest, SharePinResponse } from "@ninetothree/contracts";
 import { shareItem, unshareItem } from "@ninetothree/db";
 
 import { getDb } from "@/lib/auth/db";
@@ -15,33 +16,25 @@ export async function POST(request: Request) {
   const userId = session?.user?.id;
   if (!userId) return NextResponse.json({ error: "signed out" }, { status: 401 });
 
-  const body = (await request.json().catch(() => null)) as {
-    itemId?: unknown;
-    title?: unknown;
-    packId?: unknown;
-    packTitle?: unknown;
-    shared?: unknown;
-  } | null;
-
-  const itemId = typeof body?.itemId === "string" ? body.itemId : "";
-  const title = typeof body?.title === "string" ? body.title : "";
-  if (!itemId || !title) {
+  const parsed = SharePinRequest.safeParse(await request.json().catch(() => null));
+  if (!parsed.success) {
     return NextResponse.json({ error: "itemId and title are required" }, { status: 400 });
   }
+  const { itemId, title, packId, packTitle, shared } = parsed.data;
 
   const { sql } = await getDb();
   const scope = await ensureScope(sql, userId);
 
-  if (body?.shared === false) {
+  if (shared === false) {
     await unshareItem(sql, scope, itemId);
-    return NextResponse.json({ shared: false });
+    return NextResponse.json(SharePinResponse.parse({ shared: false }));
   }
 
   await shareItem(sql, scope, {
     itemId,
     title,
-    stagePackId: typeof body?.packId === "string" ? body.packId : null,
-    packTitle: typeof body?.packTitle === "string" ? body.packTitle : null,
+    stagePackId: packId ?? null,
+    packTitle: packTitle ?? null,
   });
-  return NextResponse.json({ shared: true });
+  return NextResponse.json(SharePinResponse.parse({ shared: true }));
 }

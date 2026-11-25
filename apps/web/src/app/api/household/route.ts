@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { Household } from "@ninetothree/contracts";
 import { listJobs, listMemberDetails, listSharedItems } from "@ninetothree/db";
 
 import { getDb } from "@/lib/auth/db";
@@ -26,21 +27,23 @@ export async function GET() {
     listJobs(sql, scope),
   ]);
 
-  return NextResponse.json({
-    id: scope.householdId,
-    role: scope.role,
-    members: members.map((member) => ({
-      userId: member.user_id,
-      role: member.role,
-      email: member.email,
-      name: member.name,
-      isYou: member.user_id === userId,
-    })),
-    sharedItemIds: shared.map((item) => item.itemId),
-    // Only the open jobs handed to you. The dashboard is a short page, and a
-    // finished job is not something to act on.
-    jobsForYou: jobs
-      .filter((job) => job.status === "open" && job.assignedTo === userId)
-      .map((job) => ({ id: job.id, title: job.title, packTitle: job.packTitle })),
-  });
+  return NextResponse.json(
+    Household.parse({
+      id: scope.householdId,
+      role: scope.role,
+      members: members.map((member) => ({
+        userId: member.user_id,
+        role: member.role,
+        email: member.email,
+        name: member.name,
+        isYou: member.user_id === userId,
+      })),
+      sharedItemIds: shared.map((item) => item.itemId),
+      // Only the open jobs handed to you. The dashboard is a short page, and a
+      // finished job is not something to act on.
+      jobsForYou: jobs
+        .filter((job) => job.status === "open" && job.assignedTo === userId)
+        .map((job) => ({ id: job.id, title: job.title, packTitle: job.packTitle })),
+    }),
+  );
 }
