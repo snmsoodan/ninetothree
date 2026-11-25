@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 
+import { RecallFeed } from "@ninetothree/contracts";
+
 import { getRecallFeed } from "@/lib/recall-feed";
 
 /**
@@ -20,7 +22,7 @@ export async function GET() {
   const today = new Date().toISOString().slice(0, 10);
   const feed = await getRecallFeed({ today });
 
-  return NextResponse.json(feed, {
+  return NextResponse.json(RecallFeed.parse(feed), {
     headers: {
       "cache-control": "public, s-maxage=3600, stale-while-revalidate=86400",
     },

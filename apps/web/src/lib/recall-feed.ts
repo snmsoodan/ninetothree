@@ -1,3 +1,4 @@
+import type { RecallFeed, RecallSourceId, RecallSourceStatus } from "@ninetothree/contracts";
 import { RECALLS, mergeRecalls, type Recall } from "@ninetothree/content";
 
 import { FEED_WINDOW_DAYS, daysBefore, normalizeCpsc, normalizeFda } from "./recall-sources";
@@ -29,26 +30,10 @@ const USER_AGENT = "NineToThreeRecallFeed/1.0 (+https://ninetothree.com; recall 
 const FETCH_TIMEOUT_MS = 5000;
 const MAX_BYTES = 8_000_000;
 
-export type RecallSourceId = "cpsc" | "fda";
-
-export interface RecallSourceStatus {
-  id: RecallSourceId;
-  name: string;
-  ok: boolean;
-  /** How many records this source contributed after filtering. */
-  count: number;
-  /** Why it failed, in words a support engineer can act on. */
-  error?: string;
-}
-
-export interface RecallFeed {
-  recalls: Recall[];
-  sources: RecallSourceStatus[];
-  /** False when at least one register did not answer and the list is partial. */
-  live: boolean;
-  /** ISO timestamp the feed was assembled, or empty when it was not. */
-  fetchedAt: string;
-}
+// The wire shape lives in the contracts package so a phone and this browser
+// read the same description of it. Re-exported here because this module is
+// where the rest of the app already looks for it.
+export type { RecallFeed, RecallSourceId, RecallSourceStatus };
 
 /** Whether the feed is allowed to touch the network. Read per call, not per module. */
 export function isOffline(): boolean {

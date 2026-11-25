@@ -1,30 +1,17 @@
 "use client";
 
+import type { Household, SharePinRequest } from "@ninetothree/contracts";
 import { SessionContext } from "next-auth/react";
 import { useCallback, useContext, useEffect, useState } from "react";
 
-export interface HouseholdMember {
-  userId: string;
-  role: "parent" | "partner" | "grandparent" | "carer";
-  email: string;
-  name: string | null;
-  isYou: boolean;
-}
-
-export interface HouseholdJob {
-  id: string;
-  title: string;
-  packTitle: string | null;
-}
-
-export interface Household {
-  id: string;
-  role: HouseholdMember["role"];
-  members: HouseholdMember[];
-  sharedItemIds: string[];
-  /** Open jobs somebody handed to you. */
-  jobsForYou: HouseholdJob[];
-}
+// The descriptions are the contracts package's, not this file's: `/api/household`
+// parses against the same schema on the way out, so what this page believes it
+// received is what the server promised to send.
+export type {
+  Household,
+  HouseholdMember,
+  HouseholdJobSummary as HouseholdJob,
+} from "@ninetothree/contracts";
 
 export interface ShareablePin {
   id: string;
@@ -87,7 +74,7 @@ export function useHousehold(): UseHousehold {
         packId: pin.packId,
         packTitle: pin.packTitle,
         shared,
-      }),
+      } satisfies SharePinRequest),
     }).catch(() => undefined);
     setNonce((n) => n + 1);
   }, []);

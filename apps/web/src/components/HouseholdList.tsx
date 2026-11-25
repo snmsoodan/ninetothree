@@ -1,14 +1,8 @@
+import type { HouseholdMember, MemberRole } from "@ninetothree/contracts";
 import { Card, CardBody } from "@ninetothree/ui";
 
-export type HouseholdRole = "parent" | "partner" | "grandparent" | "carer";
-
-export interface HouseholdMember {
-  userId: string;
-  role: HouseholdRole;
-  email: string;
-  name: string | null;
-  isYou: boolean;
-}
+export type { HouseholdMember };
+export type HouseholdRole = MemberRole;
 
 export const ROLE_LABEL: Record<HouseholdRole, string> = {
   parent: "Parent",

@@ -1,17 +1,11 @@
 import { NextResponse } from "next/server";
 
+import { CreateInviteRequest, CreatedInvite, InviteList } from "@ninetothree/contracts";
 import { createInvite, listInvites, mintInviteToken, NotAllowedError } from "@ninetothree/db";
 
 import { getDb } from "@/lib/auth/db";
 import { ensureScope } from "@/lib/auth/household";
 import { auth } from "@/lib/auth/session";
-
-const ROLES = ["parent", "partner", "grandparent", "carer"] as const;
-type Role = (typeof ROLES)[number];
-
-function isRole(value: unknown): value is Role {
-  return typeof value === "string" && (ROLES as readonly string[]).includes(value);
-}
 
 /** The invites this household has issued that still work. */
 export async function GET() {
@@ -23,13 +17,16 @@ export async function GET() {
   const scope = await ensureScope(sql, userId);
   const invites = await listInvites(sql, scope);
 
-  return NextResponse.json({
-    invites: invites.map((invite) => ({
-      id: invite.id,
-      role: invite.role,
-      expiresAt: invite.expires_at,
-    })),
-  });
+  return NextResponse.json(
+    InviteList.parse({
+      invites: invites.map((invite) => ({
+        id: invite.id,
+        role: invite.role,
+        // pg hands back a Date; the contract describes the JSON a phone reads.
+        expiresAt: invite.expires_at.toISOString(),
+      })),
+    }),
+  );
 }
 
 /**
@@ -44,11 +41,11 @@ export async function POST(request: Request) {
   const userId = session?.user?.id;
   if (!userId) return NextResponse.json({ error: "signed out" }, { status: 401 });
 
-  const body = (await request.json().catch(() => null)) as { role?: unknown } | null;
-  const role = body?.role;
-  if (!isRole(role)) {
+  const parsed = CreateInviteRequest.safeParse(await request.json().catch(() => null));
+  if (!parsed.success) {
     return NextResponse.json({ error: "unknown role" }, { status: 400 });
   }
+  const { role } = parsed.data;
 
   const { sql } = await getDb();
   const scope = await ensureScope(sql, userId);
@@ -56,12 +53,14 @@ export async function POST(request: Request) {
   try {
     const token = mintInviteToken();
     const invite = await createInvite(sql, scope, role, { token });
-    return NextResponse.json({
-      id: invite.id,
-      role,
-      expiresAt: invite.expiresAt,
-      url: `/join/${token}`,
-    });
+    return NextResponse.json(
+      CreatedInvite.parse({
+        id: invite.id,
+        role,
+        expiresAt: invite.expiresAt.toISOString(),
+        url: `/join/${token}`,
+      }),
+    );
   } catch (error) {
     if (error instanceof NotAllowedError) {
       return NextResponse.json({ error: "not allowed" }, { status: 403 });
