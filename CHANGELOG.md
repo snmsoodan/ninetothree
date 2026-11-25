@@ -62,6 +62,13 @@ changelog written after the fact from memory is a changelog nobody can trust.
   setting that does the same, remove it entirely; it is excluded from print, is
   `aria-hidden`, cannot be focused or tapped, and never appears on `/safety` or
   `/triage`.
+- **A decoration that wins the largest-paint race is a bug.** The phone budget
+  job failed on the first version: Lighthouse named the drawing itself as the
+  largest contentful paint at 3.9s on `/week/pregnancy-w28` and 3.8s on
+  `/search`, against a 2s ceiling — not because 18kB is heavy, but because the
+  biggest thing on the page could not paint until its PNG arrived. With the
+  single fixed, `contain`ed layer the same runner on the same routes now paints
+  text first, 1508–1552ms across three runs each, and the budget passes.
 
 ### The feeding question grows up with the child (#132)
 

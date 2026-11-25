@@ -210,10 +210,32 @@ describe("the theme for a page", () => {
 
   it("covers every page in the app with one of the drawings", () => {
     const pages = [
-      "/", "/today", "/week", "/week/24", "/read", "/read/slug", "/library", "/shelf", "/search",
-      "/together", "/updates", "/history", "/appointments", "/choose/a-buy", "/settings", "/email",
-      "/license", "/privacy", "/terms", "/corrections", "/editorial", "/signin", "/signin/check-email",
-      "/signin/error", "/onboarding", "/join/token",
+      "/",
+      "/today",
+      "/week",
+      "/week/24",
+      "/read",
+      "/read/slug",
+      "/library",
+      "/shelf",
+      "/search",
+      "/together",
+      "/updates",
+      "/history",
+      "/appointments",
+      "/choose/a-buy",
+      "/settings",
+      "/email",
+      "/license",
+      "/privacy",
+      "/terms",
+      "/corrections",
+      "/editorial",
+      "/signin",
+      "/signin/check-email",
+      "/signin/error",
+      "/onboarding",
+      "/join/token",
     ];
     for (const page of pages) {
       expect(THEMES).toContain(themeForPath(page));

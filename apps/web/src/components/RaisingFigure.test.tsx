@@ -30,8 +30,7 @@ function matchMedia(matches: boolean) {
 const art = () => screen.getByTestId("raising-figure-art");
 
 /** The four stacked drawings, in cycle order. */
-const layers = () =>
-  [0, 1, 2, 3].map((i) => screen.getByTestId(`raising-figure-frame-${i}`));
+const layers = () => [0, 1, 2, 3].map((i) => screen.getByTestId(`raising-figure-frame-${i}`));
 
 /** Which drawing is painted in, as the component last set it. */
 const showing = () =>
@@ -104,10 +103,10 @@ describe("RaisingFigure", () => {
     expect(showing()).toEqual([0]);
     expect(art()).toHaveAttribute("data-frame", "0");
     expect(layers().map((layer) => layer.style.maskImage ?? "")).toEqual([
-      'url(/art/family-1.png)',
-      'url(/art/family-2.png)',
-      'url(/art/family-3.png)',
-      'url(/art/family-4.png)',
+      "url(/art/family-1.png)",
+      "url(/art/family-2.png)",
+      "url(/art/family-3.png)",
+      "url(/art/family-4.png)",
     ]);
   });
 
@@ -135,12 +134,12 @@ describe("RaisingFigure", () => {
     matchMedia(false);
     const { unmount } = render(<RaisingFigure pathname="/week/24" />);
     expect(screen.getByTestId("raising-figure")).toHaveAttribute("data-theme", "expecting");
-    expect(layers()[0]!.style.maskImage).toBe('url(/art/expecting-1.png)');
+    expect(layers()[0]!.style.maskImage).toBe("url(/art/expecting-1.png)");
     unmount();
 
     render(<RaisingFigure pathname="/signin" />);
     expect(screen.getByTestId("raising-figure")).toHaveAttribute("data-theme", "welcome");
-    expect(layers()[0]!.style.maskImage).toBe('url(/art/welcome-1.png)');
+    expect(layers()[0]!.style.maskImage).toBe("url(/art/welcome-1.png)");
   });
 
   it("draws nothing at all on the pages that have to stand alone", () => {

@@ -128,7 +128,16 @@ const THEME_ROUTES: ReadonlyArray<readonly [Theme, readonly string[]]> = [
   ["welcome", ["/signin", "/onboarding", "/join"]],
   [
     "outing",
-    ["/appointments", "/settings", "/email", "/license", "/privacy", "/terms", "/corrections", "/editorial"],
+    [
+      "/appointments",
+      "/settings",
+      "/email",
+      "/license",
+      "/privacy",
+      "/terms",
+      "/corrections",
+      "/editorial",
+    ],
   ],
   ["expecting", ["/week", "/read", "/library", "/shelf", "/search"]],
   ["play", ["/updates", "/history", "/choose", "/together"]],

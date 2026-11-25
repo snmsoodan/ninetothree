@@ -2095,13 +2095,13 @@ because a cycle has four distinct moments and three would visibly skip one. So t
 became a flipbook, and because a dashboard, a library and a sign-in page should not all be
 the same walk, it became five flipbooks:
 
-| Theme      | Drawing                                                | Pages                                                                                  |
-| ---------- | ------------------------------------------------------ | -------------------------------------------------------------------------------------- |
-| `welcome`  | a parent rocking a newborn, held against the shoulder   | `/signin`, `/onboarding`, `/join`                                                       |
-| `expecting`| one parent standing, hand on the bump                   | `/week`, `/read`, `/library`, `/shelf`, `/search`                                       |
-| `family`   | the father, mother and toddler, hands joined            | `/today`, and every page that is not listed here                                        |
-| `play`     | a toddler chasing a ball, the parent behind             | `/updates`, `/history`, `/choose`, `/together`                                          |
-| `outing`   | a parent pushing a pram                                 | `/appointments`, `/settings`, `/email`, `/license`, `/privacy`, `/terms`, `/corrections`, `/editorial` |
+| Theme       | Drawing                                               | Pages                                                                                                  |
+| ----------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `welcome`   | a parent rocking a newborn, held against the shoulder | `/signin`, `/onboarding`, `/join`                                                                      |
+| `expecting` | one parent standing, hand on the bump                 | `/week`, `/read`, `/library`, `/shelf`, `/search`                                                      |
+| `family`    | the father, mother and toddler, hands joined          | `/today`, and every page that is not listed here                                                       |
+| `play`      | a toddler chasing a ball, the parent behind           | `/updates`, `/history`, `/choose`, `/together`                                                         |
+| `outing`    | a parent pushing a pram                               | `/appointments`, `/settings`, `/email`, `/license`, `/privacy`, `/terms`, `/corrections`, `/editorial` |
 
 Twenty files, `apps/web/public/art/<theme>-<1..4>.png`, **15–32 kB each and 500 kB in
 total** — not a photo set, a line drawing. Each is still the ink's own alpha: `alpha =
@@ -2204,6 +2204,22 @@ tested both before it ever moved and mid-walk.
 moved past 10px, that `data-theme="family"`, that `data-frame` is a real frame index, and
 that exactly one layer carries inline `opacity: 1`. It polls rather than sleeping, because
 the stride is eased over about thirty frames.
+
+**The drawing nearly became the slowest thing on the page.** The phone budget job failed on
+the previous commit — 3949, 3955 and 3967ms on `/week/pregnancy-w28`, 3776ms on `/search`,
+against a 2000ms ceiling — and Lighthouse named
+`div[data-testid="raising-figure-art"]` as the largest contentful paint. A 7% line drawing
+had become the page's main paint. The element then was an inline block sized
+`min(92vw, 900px)` whose masked background could not paint until its PNG arrived: the
+request left at 1522ms and finished at 2458ms on a throttled connection, and the render
+delay after that was another 1496ms. Nothing about it was slow in the sense of a heavy
+file — 18KB — it was simply _the biggest thing painted last_, which is what the metric
+measures. On the commit that collapsed the five cycles into one fixed, `contain`ed layer
+over the page, the same runner on the same three routes painted text first instead:
+`/week/pregnancy-w28` 1547–1552ms, `/search` 1508–1516ms, `/onboarding` 1523–1532ms, three
+runs each, all inside budget. The lesson stays here rather than in the component: a
+decoration wide enough to win the largest-paint race is a performance bug even at 7% ink,
+and the budget job is the only thing that would have said so.
 
 **What this does not prove.** The agent doing this work cannot view images, so every check
 here is a measurement. Each generated sheet was validated before it was cut up: the four
