@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { acceptInvite } from "@ninetothree/db";
 
 import { getDb } from "@/lib/auth/db";
-import { auth } from "@/lib/auth/session";
+import { currentUser } from "@/lib/auth/bearer";
 
 /**
  * Joins the household an invite points at.
@@ -13,7 +13,7 @@ import { auth } from "@/lib/auth/session";
  * about a household they are not in.
  */
 export async function POST(request: Request) {
-  const session = await auth();
+  const session = await currentUser(request);
   const userId = session?.user?.id;
   if (!userId) return NextResponse.json({ error: "signed out" }, { status: 401 });
 

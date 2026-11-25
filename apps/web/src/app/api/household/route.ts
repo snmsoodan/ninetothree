@@ -5,7 +5,7 @@ import { listJobs, listMemberDetails, listSharedItems } from "@ninetothree/db";
 
 import { getDb } from "@/lib/auth/db";
 import { ensureScope } from "@/lib/auth/household";
-import { auth } from "@/lib/auth/session";
+import { currentUser } from "@/lib/auth/bearer";
 
 /**
  * Who is in this household.
@@ -14,8 +14,8 @@ import { auth } from "@/lib/auth/session";
  * "we do not know who you are" are different answers and the page shows them
  * differently.
  */
-export async function GET() {
-  const session = await auth();
+export async function GET(request: Request) {
+  const session = await currentUser(request);
   const userId = session?.user?.id;
   if (!userId) return NextResponse.json({ error: "signed out" }, { status: 401 });
 

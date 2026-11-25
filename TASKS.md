@@ -447,7 +447,6 @@ This is how the pharmacy project stayed shippable. Keep it.
 
 ## 7. What is explicitly out of scope for V1
 
-- Native iOS/Android apps.
 - Community/forum.
 - Baby tracker/logging.
 - AI chatbot.
@@ -457,6 +456,33 @@ This is how the pharmacy project stayed shippable. Keep it.
 - 12–36 month content (V2).
 - Employer/insurer B2B (V3).
 - Multi-language UI (scaffold only).
+
+Native apps were on this list until route B was accepted (`docs/PLATFORM.md`). They are now in scope, delivered as
+ordered issues so each slice is independently testable:
+
+| #   | Issue                                                        | Shared?                      |
+| --- | ------------------------------------------------------------ | ---------------------------- |
+| 147 | A phone signs in and gets a session                          | shared                       |
+| 148 | The tokens compile twice, from one file                      | shared                       |
+| 149 | The behaviour, written once (`packages/domain`)              | shared                       |
+| 150 | Fifteen primitives, one props surface (`packages/ui-native`) | shared                       |
+| 151 | The shell: Expo Router, tabs, deep links, theme              | shared                       |
+| 152 | Today, on the phone                                          | shared                       |
+| 153 | The week, on the phone                                       | shared                       |
+| 154 | Library and search, on the phone                             | shared                       |
+| 155 | Triage on the phone                                          | shared (dialler branch)      |
+| 156 | The shelf and Together, on the phone                         | shared (share-sheet branch)  |
+| 157 | Settings, updates, appointments, history, reads              | shared                       |
+| 158 | Sign in with Google and Apple, on the device                 | per-platform providers       |
+| 159 | The parity harness                                           | shared                       |
+| 160 | Foldables: four width modes, tested                          | shared (two posture sources) |
+| 161 | Push from the pack                                           | native-only delivery         |
+| 162 | Store readiness                                              | native-only                  |
+
+Issue 147 (the token exchange) is merged; 148–162 are open. Issues 147–157 come first because they are the ones that make a screen exist. 158–160 make the three clients agree.
+161–162 are marked "not parity" on purpose: the web has no push channel and no store, so they extend the phone
+without adding a web obligation. Nothing here changes the free-product decision: the apps are the same product with
+no purchase, no entitlement and no upsell.
 
 ---
 

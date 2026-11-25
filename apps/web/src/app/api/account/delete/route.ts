@@ -5,7 +5,7 @@ import { cancelDeletion, deletionStatus, requestDeletion } from "@ninetothree/db
 import { getDb } from "@/lib/auth/db";
 import { createMailer } from "@/lib/auth/email";
 import { ensureScope } from "@/lib/auth/household";
-import { auth } from "@/lib/auth/session";
+import { currentUser } from "@/lib/auth/bearer";
 
 /**
  * Asking to be deleted, and changing your mind.
@@ -15,8 +15,8 @@ import { auth } from "@/lib/auth/session";
  * common reason to delete an account is a bad afternoon, and a person who
  * comes back a week later should not find their dates gone.
  */
-export async function GET() {
-  const session = await auth();
+export async function GET(request: Request) {
+  const session = await currentUser(request);
   const userId = session?.user?.id;
   if (!userId) return NextResponse.json({ error: "signed out" }, { status: 401 });
 
@@ -25,8 +25,8 @@ export async function GET() {
   return NextResponse.json({ deletion: (await deletionStatus(sql, scope)) ?? null });
 }
 
-export async function POST() {
-  const session = await auth();
+export async function POST(request: Request) {
+  const session = await currentUser(request);
   const userId = session?.user?.id;
   const email = session?.user?.email;
   if (!userId) return NextResponse.json({ error: "signed out" }, { status: 401 });
@@ -62,8 +62,8 @@ export async function POST() {
   return NextResponse.json({ deletion });
 }
 
-export async function DELETE() {
-  const session = await auth();
+export async function DELETE(request: Request) {
+  const session = await currentUser(request);
   const userId = session?.user?.id;
   if (!userId) return NextResponse.json({ error: "signed out" }, { status: 401 });
 

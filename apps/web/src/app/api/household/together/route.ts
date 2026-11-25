@@ -5,7 +5,7 @@ import { PACKS } from "@ninetothree/content/registry";
 
 import { getDb } from "@/lib/auth/db";
 import { ensureScope } from "@/lib/auth/household";
-import { auth } from "@/lib/auth/session";
+import { currentUser } from "@/lib/auth/bearer";
 
 /**
  * The shared surface of a household: who is in it, what has been shared, what
@@ -16,7 +16,7 @@ import { auth } from "@/lib/auth/session";
  * already knows and gets back the four lines a partner needs.
  */
 export async function GET(request: Request) {
-  const session = await auth();
+  const session = await currentUser(request);
   const userId = session?.user?.id;
   if (!userId) return NextResponse.json({ error: "signed out" }, { status: 401 });
 

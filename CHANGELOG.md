@@ -9,6 +9,31 @@ changelog written after the fact from memory is a changelog nobody can trust.
 
 ## Unreleased
 
+### A phone trades an ID token for a session (#147)
+
+- **`POST /api/auth/native/exchange` is the only new server code route B owes.**
+  A phone posts `{ provider, idToken }`, the handler verifies the signature against Google's or
+  Apple's published keys, links the person by address the way the web's
+  `allowDangerousEmailAccountLinking` already does, and inserts into the same `sessions` table the
+  browser reads — so signing out on the phone ends the session everywhere, and revoking one revokes
+  both.
+- **`currentUser(request)` replaces `auth()` in the eleven handlers the phone will call.** It tries
+  `Authorization: Bearer` first and falls back to the cookie, so `api/household/**` and
+  `api/account/**` serve a device and a browser through one read path. The bearer lookup requires
+  `s.expires > now()` and `u.deleted_at is null`, which is why a deleted account's token stops
+  working without a second code path.
+- **The refusals are the interesting part.** A provider with no configured audience answers
+  `not-configured` rather than verifying against an empty list; a token with no `email` or no `sub`
+  is refused rather than becoming a blank account; Google's two historical issuer spellings are
+  accepted and nothing else; the exchange is rate limited to 10 per fifteen minutes with a
+  `Retry-After`, keyed on the first forwarded hop and degrading to a shared bucket rather than no
+  limit.
+- **Two `jose` mistakes that each looked like a passing test.** `jwtVerify` needs the _public_
+  `CryptoKey` from `generateKeyPair`, and `setExpirationTime("1m")` resolves against the real clock
+  rather than `setIssuedAt` — so the "expired token" test was passing a token that was not expired.
+  Both are fixed and both are recorded in `EVIDENCE.md` §72. 90 files, 1156 web tests; 8 new contract
+  tests; typecheck, lint and format clean.
+
 ### One description of the wire: `packages/contracts` (#145)
 
 - **The routes a phone needs now have `zod` schemas, and the web parses against them on the way

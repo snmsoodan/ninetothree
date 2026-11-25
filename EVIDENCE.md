@@ -2473,6 +2473,86 @@ phone half of route B is still the token exchange.
 
 ---
 
-## 72. How this file is maintained
+## 72. A phone trades an ID token for a session (issue #147)
+
+**The idea.** Route B says a phone is served by the routes the web already has.
+That only works if a phone can become a signed-in user without a browser cookie.
+Everything the app needs after that — the household, the pins, the invites, the
+updates feed — is already behind `currentUser`-shaped session checks. So the
+smallest honest thing is: a phone posts the token its operating system already
+has, and gets back the same `sessions` row the browser would have got.
+
+**One identity system, not two.** `POST /api/auth/native/exchange` takes
+`{ provider, idToken }`, checks the signature against the provider's published
+keys (`www.googleapis.com/oauth2/v3/certs`, `appleid.apple.com/auth/keys`),
+and then does what the web's `allowDangerousEmailAccountLinking` already does:
+finds or creates the person by address. `users.email` is `citext unique`, so a
+Google account and an Apple account with the same address are one person rather
+than two, and the `on conflict (email) do update` keeps a real name when the
+provider hands back a null one (`coalesce` on `name` and `email_verified`).
+There is no second user table, no refresh-token table, and no separate
+revocation path: the exchange inserts into the `sessions` table the web already
+reads, so signing out on the phone ends the session everywhere.
+
+**What is deliberately narrow.** Google's two historical issuer spellings are
+both accepted and nothing else is; Apple has one. Audiences are the web client
+ID plus `AUTH_GOOGLE_NATIVE_IDS` (comma separated, because an Android client ID
+is a different value from the web one) and `AUTH_APPLE_NATIVE_ID` plus
+`AUTH_APPLE_ID`. A provider with no configured audience answers `not-configured`
+instead of verifying against an empty list, and a token with no `email` or no
+`sub` is refused rather than turned into an account with a blank address.
+
+**The part that was easiest to get wrong: `jose` and key types.** The first run
+failed every valid token with a 401 whose cause was
+`TypeError: CryptoKey instances must be of type "public"`. `generateKeyPair`
+returns both halves and `jwtVerify` needs the public one, so the verifier keeps
+`signingPublicKey` and the injected `jwks` returns that. The same class of
+mistake hid in the expiry test: `setExpirationTime("1m")` resolves against the
+real clock, not against `setIssuedAt`, so a token "issued an hour ago" was
+issued an hour ago and expiring a minute from _now_ — it passed. The test now
+passes an absolute epoch second and the expired case actually expires.
+
+**One read path for both kinds of caller.** `currentUser(request)` in
+`lib/auth/bearer.ts` tries `Authorization: Bearer` first and falls back to the
+cookie session, returning `null` when there is no user id. Eleven route
+handlers moved from `auth()` to it, four of which previously took no argument at
+all. The bearer lookup is one SQL statement that joins `sessions` to `users` and
+requires `s.expires > now()` and `u.deleted_at is null` — which is why a deleted
+account's bearer token stops working without a second code path.
+
+**Rate limiting the one endpoint that takes a credential from the internet.**
+`EXCHANGE_RATE_LIMIT_MAX = 10` per fifteen minutes in
+`packages/db/src/auth/policy.ts`, keyed on the first `x-forwarded-for` hop,
+falling back to `x-real-ip` and then to an `native-exchange:unattributed`
+bucket so a proxy that strips both headers degrades to a shared limit rather
+than to no limit. A refused exchange answers `429` with `Retry-After`, and
+attempts are cleared on success so a person who fat-fingers a provider twice is
+not locked out of the third try.
+
+**How it was verified.** `pnpm --filter @ninetothree/web test` → 90 files, 1156
+tests passing, with the 95% thresholds on statements, branches, functions and
+lines enforced. The 19 new tests in `lib/auth/native.test.ts` run against a real
+in-process Postgres (`getDb()`/`resetDbForTests()`) and sign real RS256 tokens
+with an injected JWKS, so the verifier is exercised through `jose` rather than
+mocked around it: exchange and account linking, name coalescing, forged
+signature, expired token, wrong audience, no email claim, unconfigured provider,
+malformed body, rate limit with `Retry-After: 900`, attempt clearing, the
+unattributed bucket, a revoked bearer, an expired bearer, a never-issued bearer,
+scheme parsing, cookie fallback and bearer-wins precedence. Eight more contract
+tests cover the wire shape. `pnpm typecheck`, `pnpm lint` and
+`pnpm format:check` clean across all six workspace tasks.
+
+**What it does not do.** No phone exists yet, so nothing here has been exercised
+from a device; the tokens are minted by the test rather than by Google or Apple,
+and the audience lists are unset in every environment until someone actually
+registers the native client IDs. There is no refresh, because the session itself
+is the credential and `SESSION_MAX_AGE_S` bounds it; when a phone needs to stay
+signed in longer than that, that is a new issue rather than a silent extension.
+The two-pane and foldable behaviour, the shared domain and the native UI are all
+still ahead.
+
+---
+
+## 73. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.
