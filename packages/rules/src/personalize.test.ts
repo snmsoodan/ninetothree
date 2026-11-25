@@ -8,6 +8,7 @@ import {
   personalizePack,
   PROFILE_FIELDS,
   PROFILE_GROUPS,
+  profileFieldsFor,
   readField,
   HIDE_RULES,
   ADD_RULES,
@@ -151,6 +152,18 @@ describe("HIDE_RULES", () => {
           feeding: "formula",
         }),
       ).toBe(false);
+    });
+
+    it("hides it for a cup feeder, who is past the question entirely", () => {
+      expect(formula.hides(latch, { feeding: "cup" })).toBe(true);
+    });
+
+    it("keeps it for both, because a parent doing both is still doing it", () => {
+      expect(formula.hides(latch, { feeding: "both" })).toBe(false);
+    });
+
+    it("keeps it when the question was never answered", () => {
+      expect(formula.hides(latch, {})).toBe(false);
     });
 
     it("matches pump and milk supply", () => {
@@ -421,6 +434,33 @@ describe("OPTION_RULES", () => {
     expect(result.trimmed.map((t) => t.ruleId)).toEqual(["formula-options", "formula-options"]);
   });
 
+  it("trims the same support for a cup feeder, who is past bottles", () => {
+    const feed = action({
+      id: "feed",
+      domain: "feeding",
+      title: "Milk at twelve months",
+      options: [
+        { id: "lc", label: "A lactation consultant" },
+        { id: "cup", label: "A cup with a lid" },
+      ],
+    });
+    const result = personalizePack(pack([feed]), { feeding: "cup" });
+    expect(result.pack.coreActions[0]?.options.map((o) => o.id)).toEqual(["cup"]);
+  });
+
+  it("keeps the support when the question was never answered", () => {
+    const feed = action({
+      id: "feed",
+      domain: "feeding",
+      title: "Milk at twelve months",
+      options: [
+        { id: "lc", label: "A lactation consultant" },
+        { id: "cup", label: "A cup with a lid" },
+      ],
+    });
+    expect(personalizePack(pack([feed]), {}).trimmed).toEqual([]);
+  });
+
   it("keeps the step when every option was breastfeeding support", () => {
     const feed = action({
       id: "feed",
@@ -476,6 +516,56 @@ describe("OPTION_RULES", () => {
     expect(result.pack.coreActions).toHaveLength(1);
     expect(result.hidden).toEqual([]);
     expect(result.trimmed).toEqual([]);
+  });
+});
+
+describe("profileFieldsFor", () => {
+  const feedingOf = (band: "pregnancy" | "milk" | "weaning" | "solids") =>
+    profileFieldsFor(band).find((f) => f.key === "feeding")!;
+
+  it("leaves every other field exactly as it was", () => {
+    const before = PROFILE_FIELDS.filter((f) => f.key !== "feeding");
+    for (const band of ["pregnancy", "milk", "weaning", "solids"] as const) {
+      const after = profileFieldsFor(band).filter((f) => f.key !== "feeding");
+      expect(after.map((f) => f.key)).toEqual(before.map((f) => f.key));
+    }
+  });
+
+  it("keeps the same order as PROFILE_FIELDS, so the page does not reshuffle", () => {
+    for (const band of ["pregnancy", "milk", "weaning", "solids"] as const) {
+      expect(profileFieldsFor(band).map((f) => f.key)).toEqual(PROFILE_FIELDS.map((f) => f.key));
+    }
+  });
+
+  it("offers a cup only once the child is old enough to drink from one", () => {
+    expect(feedingOf("pregnancy").options.some((o) => o.value === "cup")).toBe(false);
+    expect(feedingOf("weaning").options.some((o) => o.value === "cup")).toBe(false);
+    expect(feedingOf("solids").options.some((o) => o.value === "cup")).toBe(true);
+  });
+
+  it("keeps the default feeding field on the milk wording", () => {
+    expect(
+      PROFILE_FIELDS.find((f) => f.key === "feeding")!.options.some((o) => o.value === "cup"),
+    ).toBe(false);
+  });
+
+  it("does not let a caller mutate the shared choices", () => {
+    const field = feedingOf("milk");
+    field.options[0]!.label = "Changed";
+    expect(feedingOf("milk").options[0]!.label).not.toBe("Changed");
+    expect(PROFILE_FIELDS.find((f) => f.key === "feeding")!.options[0]!.label).not.toBe("Changed");
+  });
+
+  it("keeps the rule id and effect on the feeding field so the settings page still explains it", () => {
+    const field = feedingOf("solids");
+    expect(field.ruleId).toBe("formula-feeding");
+    expect(field.effect).toMatch(/breastfeeding/i);
+  });
+
+  it("still writes and reads a cup answer after the field is rebuilt", () => {
+    const field = feedingOf("solids");
+    expect(field.options.map((o) => o.value)).toContain("cup");
+    expect(readField(writeField({}, "feeding", "cup"), "feeding")).toBe("cup");
   });
 });
 

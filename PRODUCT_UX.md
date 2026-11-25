@@ -37,7 +37,7 @@ The screens, the flows, the rules, and the copy. This is the part that decides w
 | 2    | Due date or baby's birth date                      | Anchors every week                                    | No                        |
 | 3    | Country                                            | Vaccines, benefits, emergency numbers, links          | No (auto-detect, confirm) |
 | 4    | Is this your first baby?                           | Hides "you know this" content for second-time parents | Yes                       |
-| 5    | How are you feeding / planning to feed?            | Formula, breast, mixed, undecided variants            | Yes ("decide later")      |
+| 5    | How you feed — worded for the child's age          | Hides breastfeeding steps when they no longer apply   | Yes ("decide later")      |
 | 6    | What's worrying you most right now? (multi-select) | Pins 1–2 relevant cards to the top of week 1          | Yes                       |
 
 **Then:** "Here's your week 24." No paywall, no tour, no 12-slide carousel. The product is the first card.

@@ -1,5 +1,9 @@
 import type { Action, Option, StagePack } from "@ninetothree/content";
 
+import { FEEDING_CHOICES, stillBreastfeeding, type Feeding, type FeedingBand } from "./feeding";
+
+export type { Feeding } from "./feeding";
+
 /**
  * Personalization is a rules engine, not a model.
  *
@@ -10,7 +14,6 @@ import type { Action, Option, StagePack } from "@ninetothree/content";
  */
 
 export type Country = "US" | "UK";
-export type Feeding = "breast" | "formula" | "both" | "undecided";
 export type Delivery = "vaginal" | "cesarean" | "undecided";
 export type Work = "returning" | "staying-home" | "undecided";
 export type Support = "partner" | "alone" | "other";
@@ -64,7 +67,7 @@ export const HIDE_RULES: HideRule[] = [
     id: "formula-feeding",
     reason: "You told us you are formula feeding, so breastfeeding-specific steps are hidden.",
     hides: (action, profile) =>
-      profile.feeding === "formula" &&
+      !stillBreastfeeding(profile.feeding) &&
       action.domain === "feeding" &&
       /breastfeed|latch|milk supply|pump/i.test(`${action.title} ${action.why}`),
   },
@@ -103,7 +106,7 @@ export const OPTION_RULES: OptionRule[] = [
     id: "formula-options",
     reason: "You told us you are formula feeding, so breastfeeding support is not shown.",
     trims: (_action, option, profile) =>
-      profile.feeding === "formula" &&
+      !stillBreastfeeding(profile.feeding) &&
       /lactation|breastfeed|la leche/i.test(`${option.label} ${option.detail ?? ""}`),
   },
 ];
@@ -370,14 +373,9 @@ export const PROFILE_FIELDS: ProfileField[] = [
     key: "feeding",
     group: "Feeding",
     label: "Feeding",
-    effect: "Hides breastfeeding support if you are formula feeding.",
+    effect: "Hides breastfeeding support if you are not breastfeeding.",
     type: "choice",
-    options: [
-      { value: "breast", label: "Breastfeeding" },
-      { value: "formula", label: "Formula" },
-      { value: "both", label: "Both" },
-      { value: "undecided", label: "Not decided yet" },
-    ],
+    options: FEEDING_CHOICES.milk.map((choice) => ({ ...choice })),
     ruleId: "formula-feeding",
   },
   {
@@ -502,6 +500,19 @@ export const PROFILE_FIELDS: ProfileField[] = [
     ],
   },
 ];
+
+/**
+ * The same fields, with the feeding question worded for the child's age.
+ *
+ * A settings screen that offers a parent of a two-year-old "Breastfeeding /
+ * Formula / Both / Not decided yet" is answering a question they finished
+ * with a year ago. Only the feeding options move; every other field is the
+ * same at every age, and the order is the order they are rendered in.
+ */
+export function profileFieldsFor(band: FeedingBand): ProfileField[] {
+  const options = FEEDING_CHOICES[band].map((choice) => ({ ...choice }));
+  return PROFILE_FIELDS.map((field) => (field.key === "feeding" ? { ...field, options } : field));
+}
 
 /** The stored value as the string the radio group uses. */
 export function readField(profile: Profile, key: keyof Profile): string | undefined {

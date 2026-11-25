@@ -4,8 +4,9 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { RULE_INDEX } from "@ninetothree/content/rule-index";
 import {
-  PROFILE_FIELDS,
   PROFILE_GROUPS,
+  feedingBand,
+  profileFieldsFor,
   readField,
   suppressesEmail,
   writeField,
@@ -23,6 +24,7 @@ import { PlanCard } from "@/components/PlanCard";
 import { InviteCard } from "@/components/InviteCard";
 import { ReadingSettings } from "@/components/ReadingSettings";
 import { PersonaSettings } from "@/components/PersonaSettings";
+import { localDate } from "@/lib/reminders";
 import {
   resetAll,
   stageInput,
@@ -61,6 +63,7 @@ export default function SettingsPage() {
     );
   }
 
+  const fields = profileFieldsFor(feedingBand(input, localDate(new Date())));
   const dateLabel = state.status === "pregnant" ? "Due date" : "Birth date";
   const dateValue = state.status === "pregnant" ? (state.dueDate ?? "") : (state.birthDate ?? "");
 
@@ -145,21 +148,21 @@ export default function SettingsPage() {
           </p>
           <div className="mt-4 space-y-8">
             {PROFILE_GROUPS.map((group) => {
-              const fields = PROFILE_FIELDS.filter((field) => field.group === group);
-              if (fields.length === 0) return null;
+              const inGroup = fields.filter((field) => field.group === group);
+              if (inGroup.length === 0) return null;
               return (
                 <div key={group}>
                   <h3 className="text-sm font-medium text-ink-muted">{group}</h3>
                   <div className="mt-3 space-y-5">
-                    {fields.map((field) => {
+                    {inGroup.map((field) => {
                       const value = readField(state.profile, field.key);
                       if (field.readOnly) {
-                        const shown = field.options.find((o) => o.value === value);
+                        const selected = field.options.find((o) => o.value === value);
                         return (
                           <div key={field.key}>
                             <p className="text-base text-ink">{field.label}</p>
                             <p className="mt-1 text-sm text-ink-muted">
-                              {shown?.label ?? "Not set"}. {field.effect}
+                              {selected?.label ?? "Not set"}. {field.effect}
                             </p>
                           </div>
                         );
