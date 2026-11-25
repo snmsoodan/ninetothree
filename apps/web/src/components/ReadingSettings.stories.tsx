@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { DEFAULT_READING, type ReadingPrefs } from "@/lib/reading";
+import { DEFAULT_READING, type ReadingPrefs } from "@ninetothree/domain";
 import { ReadingSettings } from "./ReadingSettings";
 
 const prefs = (patch: Partial<ReadingPrefs> = {}): ReadingPrefs => ({

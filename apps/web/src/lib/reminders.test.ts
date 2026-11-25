@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { DEFAULT_NOTIFICATIONS, type NotificationPrefs } from "./notifications";
+import { DEFAULT_NOTIFICATIONS, type NotificationPrefs } from "@ninetothree/domain";
 import {
   addDays,
   dueReminders,

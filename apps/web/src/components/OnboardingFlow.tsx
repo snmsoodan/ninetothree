@@ -21,7 +21,7 @@ import {
   useHydrated,
   type OnboardingStep,
 } from "@/lib/store";
-import { PERSONA_NOTE, PERSONA_ORDER, dateQuestion, statusOptions } from "@/lib/persona";
+import { PERSONA_NOTE, PERSONA_ORDER, dateQuestion, statusOptions } from "@ninetothree/domain";
 import { countryName, detectCountry, isCovered } from "@/lib/country";
 import { localDate } from "@/lib/reminders";
 import { HelpNow } from "./HelpNow";

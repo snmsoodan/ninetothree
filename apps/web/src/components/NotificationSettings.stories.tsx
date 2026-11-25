@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import { DEFAULT_NOTIFICATIONS, type NotificationPrefs } from "@/lib/notifications";
+import { DEFAULT_NOTIFICATIONS, type NotificationPrefs } from "@ninetothree/domain";
 import { NotificationSettings } from "./NotificationSettings";
 
 const prefs = (patch: Partial<NotificationPrefs> = {}): NotificationPrefs => ({

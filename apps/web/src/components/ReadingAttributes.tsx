@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { applyReading, readingBootstrapScript } from "@/lib/reading";
+import { applyReading, readingBootstrapScript } from "@ninetothree/domain";
 import { useAppState, useHydrated } from "@/lib/store";
 
 /**

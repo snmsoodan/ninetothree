@@ -29,6 +29,7 @@
     "@electric-sql/pglite": "^0.5.11",
     "@ninetothree/content": "workspace:*",
     "@ninetothree/contracts": "workspace:*",
+    "@ninetothree/domain": "workspace:*",
     "@ninetothree/rules": "workspace:*",
     "@ninetothree/ui": "workspace:*",
     "@react-email/components": "^1.0.12",

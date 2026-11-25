@@ -6,8 +6,8 @@
  * fact about the parent's calendar, not about UTC.
  */
 
-import type { NotificationPrefs } from "./notifications";
-import { shouldSend } from "./notifications";
+import type { NotificationPrefs } from "@ninetothree/domain";
+import { shouldSend } from "@ninetothree/domain";
 
 export const REMINDER_KINDS = ["appointment", "pin"] as const;
 export type ReminderKind = (typeof REMINDER_KINDS)[number];

@@ -116,10 +116,16 @@ Each of these is one place, and each is testable on its own.
    actually receives: a week pack, a library entry, a pin, a household, a
    triage answer, an update. The web's route handlers and the mobile client
    validate against the same schema, so the API cannot drift from the app.
-4. **`packages/domain`** (new) — the hooks that hold behaviour: `useWeek`,
-   `usePins`, `useHousehold`, `useTriage`. Written once against contracts, used
-   by both apps. A screen becomes markup over a hook, which is why porting a
-   screen is mechanical rather than a re-decision.
+4. **`packages/domain`** (built, #149) — the state machine, corrected from what
+   this document first said. It is not the hooks: `useWeek` and the rest are
+   `useSyncExternalStore` over this machine and belong with the screens. What
+   moved is the machine itself — `createStore(io)`, the state shapes, the nine
+   migrations, the selectors — with a port of `load`, `save`, `remove` and an
+   optional `onOnboarded`. The web binding is 103 lines over `localStorage`; the
+   phone's is four methods over AsyncStorage and is written down here, not in
+   the repository, because there is no device to run it on. The port is
+   synchronous: `localStorage` is, AsyncStorage is not, and buffering the
+   writes is cheaper than an `await` in every screen.
 5. **`packages/ui-native`** (new) — about fifteen primitives: `Card`, `Heading`,
    `Body`, `Button`, `Chip`, `Badge`, `ProgressRing`, `PinButton`, `Callout`,
    `LinkRow`, `SectionHeader`, `Skeleton`, `Sheet`, `Toast`, `Screen`. Each

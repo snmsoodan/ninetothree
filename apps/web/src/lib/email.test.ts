@@ -12,7 +12,7 @@ import {
   type Transport,
   type WeeklyEmail,
 } from "./email";
-import { DEFAULT_NOTIFICATIONS, type NotificationPrefs } from "./notifications";
+import { DEFAULT_NOTIFICATIONS, type NotificationPrefs } from "@ninetothree/domain";
 import { EMPTY_STATE, type AppState } from "./store";
 
 const BASE = "https://ninetothree.com";

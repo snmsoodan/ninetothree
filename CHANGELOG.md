@@ -9,6 +9,36 @@ changelog written after the fact from memory is a changelog nobody can trust.
 
 ## Unreleased
 
+### The behaviour, written once (#149)
+
+- **The week-by-week state machine moved out of the web app and into
+  `@ninetothree/domain`.** 991 lines in `apps/web/src/lib/store.ts` were three
+  things at once — the state shapes, the migrations, and the machine — reaching
+  straight into `window.localStorage` seven times and `document.cookie` once.
+  That is what made it unportable, not React. `apps/web/src/lib/store.ts` is now
+  a 103-line binding, and nothing a component imports changed name.
+- **The platform seam is three methods and one callback.**
+  `createStore(io)` takes `load`, `save`, `remove` and an optional `onOnboarded`,
+  which exists only because the browser needs a cookie and the phone does not.
+  `memoryIO()` ships for tests and for a platform that has not been written yet.
+- **The port is synchronous on purpose.** `localStorage` is synchronous and
+  AsyncStorage is not; the web's suite already requires that actions write
+  before they return and that `isHydrated()` flips exactly once, so the phone's
+  adapter buffers its own writes rather than making every screen await.
+- **The acceptance test is the one that already existed.** The 1498-line,
+  161-test `apps/web/src/lib/store.test.ts` was not edited and still passes. The
+  new `packages/domain` suite adds 10, including a differential test that runs
+  the same ten minutes of taps through two adapters and compares the resulting
+  bytes.
+- **`notifications`, `reading` and `persona` moved with the store**, because
+  `AppState` embeds their types; their tests moved untouched. The onboarded
+  cookie's name and lifetime stayed in the web, so the store is told a boolean
+  and never learns what a cookie is.
+- **No coverage threshold in the new package, deliberately:** the exhaustive
+  suite is the web one, and a threshold measured over a subset of the suite
+  would be a number about the subset. `packages/domain/turbo.json` drops the
+  empty coverage output so the monorepo run stays quiet. See `EVIDENCE.md` §74.
+
 ### The tokens compile twice, from one file (#148)
 
 - **`@ninetothree/tokens` is the source of truth, and `packages/ui/src/tokens.css` is now generated

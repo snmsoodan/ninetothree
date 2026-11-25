@@ -2626,6 +2626,82 @@ the generator runs under `node --experimental-strip-types`, which requires
 imports to name their `.ts` files; consumers type-check that source, so they
 need the same flag.
 
-## 74. How this file is maintained
+## 74. The behaviour, written once (issue #149)
+
+**The idea.** A parent's week — done, skipped, snoozed, pinned, chosen,
+completed, noticed, dismissed — is the whole product, and it lived in one
+991-line module in `apps/web/src/lib`. That module was not web-specific by
+design; it was web-specific by accident. It reached for `window.localStorage`
+seven times and wrote `document.cookie` once, which is enough to make it
+unusable on a phone.
+
+**What moved.** `packages/domain` now holds the machine. `store.ts` is a factory,
+`createStore(io)`, closing over the state and the listeners; `model.ts` holds
+every stored shape; `migrate.ts` holds the nine forward migrations plus the two
+decoders; `selectors.ts` holds the reads that take a state and return a value;
+`io.ts` holds the one seam. Three pure siblings moved with it —
+`notifications.ts`, `reading.ts`, `persona.ts` — because `AppState` embeds
+`NotificationPrefs`, `ReadingPrefs` and `Persona`, so a state shape that depends
+on them cannot live in one package and the types in another. Their three test
+files moved untouched, and still pass.
+
+**The seam is three methods and one callback.** `StoreIO` is
+`load(key)`, `save(key, value)`, `remove(key)`, plus an optional `onOnboarded`
+that exists because the browser needs a cookie the phone does not. The web
+binding is 103 lines: it hands the store an adapter over `localStorage`, writes
+the cookie in the callback, calls `store.hydrate()` once, and re-exports the
+methods. Nothing else in `apps/web` changed shape — fourteen import sites now
+point at `@ninetothree/domain`, and `apps/web/src/lib/store.ts` still exports the
+same names it did before, so no component was edited for this.
+
+**Why the port is synchronous.** `localStorage` is synchronous and AsyncStorage
+is not, which usually forces a promise through every caller. It does not have to:
+the web's own suite asserts that `isHydrated()` is `false` until a subscribe and
+`true` after it, and every action already writes synchronously. So the port is
+synchronous, the phone's adapter reads once at start-up and buffers writes, and
+no screen ever awaits the store. `docs/PLATFORM.md` §4 item 4 said this seam would
+be `useWeek`/`usePins` hooks; it is not, because the hooks are `useSyncExternalStore`
+over this machine and belong with the screens. The correction is in §4.
+
+**The acceptance test is the one that already existed.** `apps/web/src/lib/store.test.ts`
+is 1498 lines and 161 tests, and it was not touched: `git diff` on that path is
+empty. It still passes, which is the claim — the behaviour did not change, only
+where it is written. The package adds 10 of its own tests on top, and the one
+that matters is differential: the same ten minutes of taps through
+`memoryIO()` and through a hand-written stand-in for `localStorage` must produce
+identical state _and_ identical bytes, because "same behaviour on two platforms"
+is a string comparison rather than an opinion. Four more prove the port cannot
+take the app down — a `save` that throws on quota, a `remove` that throws, a
+`load` that throws, and an `onOnboarded` that throws all leave a working store.
+
+**No coverage threshold in the package, and that is deliberate.** The exhaustive
+suite is the web one, which drives every action through the binding. A number
+collected in `packages/domain` would measure only the part of the machine this
+package's own tests reach; a threshold computed from a subset is a number about
+the subset. The reasoning is in `vitest.config.ts` rather than in a commit
+message, and `packages/domain/turbo.json` drops the `coverage/**` output so the
+monorepo run does not warn about a file that is not produced.
+
+**What stayed in the web, and why.** `apps/web/src/lib/onboarded-cookie.ts` is
+still there: it names the cookie and its lifetime, and the binding closes over
+both. The store never learns the cookie's name — it is told a boolean. That
+keeps the one piece of routing knowledge that is genuinely browser-shaped on the
+browser side.
+
+**How it was verified.** `pnpm --filter @ninetothree/domain test` → 61 tests in
+four files. `pnpm --filter @ninetothree/web exec vitest run src/lib/store.test.ts`
+→ 161 tests, file unmodified. `pnpm test` across the monorepo → eight packages,
+all green, with the web's 95% thresholds still met. `pnpm typecheck`,
+`pnpm lint` and `pnpm format:check` clean. The three `typeof window` guards in
+the binding are the only uncovered branches in it, because jsdom always has a
+window; CI's `pnpm build` renders the client pages on the server and is what
+exercises that path.
+
+**What it does not do.** There is no AsyncStorage adapter in the repository. The
+adapter is four methods and is described in `docs/PLATFORM.md`, but this machine
+has no Xcode licence and no Android SDK, so writing one would be a file no test
+could run. The package is proven port-shaped, not device-shaped.
+
+## 75. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.

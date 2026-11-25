@@ -849,3 +849,22 @@ at the call site. A consequence worth stating: the phone never reads CSS, so a
 token added for the web is not automatically a token the phone has — the source
 file is the only place a new value can be introduced, which is exactly the
 coupling route B wanted.
+
+The fourth bullet is built, and it is the one that decides whether a screen is
+cheap or expensive to port. The parent's state — what is done, skipped, snoozed,
+pinned, chosen, completed, noticed — was a 991-line module inside `apps/web`,
+and it was web-specific by accident rather than by design: it read and wrote
+`window.localStorage` directly and set the onboarded cookie. It is now
+`@ninetothree/domain`, a plain factory `createStore(io)` over a three-method port
+(`load`, `save`, `remove`) plus an optional `onOnboarded` callback, and the web's
+copy is a 103-line adapter over `localStorage`. Three consequences are
+architectural rather than mechanical. First, the state shapes and their nine
+migrations travel with the machine, so a phone hydrates history written by a
+browser. Second, the port is synchronous: `localStorage` is, AsyncStorage is not,
+and rather than push an `await` through every screen the phone's adapter buffers
+its own writes — a decision that holds only because the machine already requires
+actions to be synchronous and `isHydrated()` to flip exactly once. Third, the
+cookie's name stayed on the web side, so the shared package is told a boolean and
+never learns what a cookie is. `apps/web/src/lib/store.ts` still exports the same
+names, which is why the 161-test suite that guards the behaviour is unchanged and
+still passes: the seam was proven by not having to rewrite the tests.
