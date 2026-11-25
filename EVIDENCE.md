@@ -2239,6 +2239,64 @@ the owner supplied, because those files' licence could not be verified. The earl
 single-figure geometry is in the git history at `35f3d39` if legibility ever comes back to
 matter more than character.
 
-## 68. How this file is maintained
+## 68. Everything is free, and the wall is deleted rather than adjusted (issue #138)
+
+**The ask.** The owner's words: "make all feature free for use, no paywall at all ... remove
+all the blockers we put in place and make everything visible. A user should just need to
+sign in." The temptation is to set every plan to `paid` and leave the machinery in place,
+which is a one-line change that leaves a loaded gun in the repository. #138 deletes the gun.
+
+**What was gated, and where.** Five call sites held a ternary:
+
+| Call site                            | What a free household saw              |
+| ------------------------------------ | -------------------------------------- |
+| `components/WeekView.tsx`            | every week except the one they were in |
+| `components/PrintGate.tsx`           | a print button that offered an upgrade |
+| `components/ActionItem.tsx`          | five pins, then a dialog               |
+| `components/InviteCard.tsx`          | no partner link                        |
+| `app/settings/page.tsx` + `PlanCard` | a plan card and a "Plus" button        |
+
+**What was deleted.** `packages/db/src/entitlements.ts` and its test; `apps/web/src/lib/entitlements.ts`,
+`week-gate.ts`, `pricing.ts` and their tests; `Paywall`, `PlanCard`, `PrintGate` and their
+stories and tests; `app/api/billing/{route,checkout,webhook}`; `packages/db/src/stripe.ts`
+and its test; the `./entitlements` and `./stripe` exports; `e2e/paywall.spec.ts` and
+`e2e/billing.spec.ts`; and `upgrade()` from `e2e/helpers.ts`, which drove a real Stripe
+webhook to put a test household on "Plus". Every call site now renders the content the
+ternary had been hiding: the week, the print controls, the pin button, the invite link.
+
+**What was deliberately kept, and why.** The `subscriptions` table, its Drizzle definition,
+its migrations, the `getSubscription` / `upsertSubscription` helpers in `packages/db/src/repo.ts`
+and the seed rows all survive. They are the record of what somebody once bought, and dropping
+a table is a migration nobody asked for; a later billing idea can start from a truthful
+history. Nothing reads them to decide what to show.
+
+**The tripwire.** `apps/web/src/lib/free.test.ts` walks the shipped source and fails on a
+gate hook, a plan check, a price, a billing route or a paywall component reappearing — and,
+separately, on any copy that sells a subscription. It is the difference between "free" being
+a current state and being a property of the codebase. Two of its three assertions failed on
+their first run for the right reason: the forbidden-word regex was case-insensitive and
+matched the _prose_ "paid" in `/terms`, `/editorial` and the home page, which is the copy
+promising there is nothing to pay, so the pattern was narrowed to identifiers.
+
+**Test churn that was not about money.** Removing the gates meant removing six of
+`WeekView.test.tsx`'s tests that existed to prove the wall's edges ("holds back a week",
+"still names the week it is holding back"). A scripted range deletion in the same file
+swallowed five unrelated persona and humour tests — grandparent panel, red flags for a
+non-parent, no parent progress for `extended`, the parent's light line, humour turned off —
+which surfaced as two unused imports and two lint errors rather than as missing coverage.
+They were restored verbatim from `HEAD` and the file re-run. The lesson is the one already in
+§63: after a scripted edit to a test file, read the diff line by line.
+
+**What was verified.** `pnpm typecheck` (5/5), `pnpm test` (every package, coverage gates
+green), `pnpm lint` (0 errors), `pnpm format:check` (clean — CI's Verify job runs it and
+`pnpm lint` does not), and `pnpm test:e2e` in full: **319 passed, 6 skipped**, with the
+sign-in, invite, together and journey specs still driving a real magic-link session and no
+`upgrade()` anywhere. `pnpm screenshots` regenerated `docs/screenshots/15-settings-reading-as.png`
+and `20-settings-feeding-two-year.png`, which no longer carry a plan card.
+
+**What could not be verified here.** That Google and Apple sign-in work — that is #139, and
+today `/signin` renders an email form only.
+
+## 69. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.

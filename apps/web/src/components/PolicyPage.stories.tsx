@@ -48,8 +48,8 @@ export const Long: Story = {
         </p>
         <h2>What it costs</h2>
         <p>
-          The guide, the safety pages and five pins are free. Plus is $5, paid once, and adds the
-          weekly email, a shared household and the export.
+          Nothing. The whole guide is free, with a shared household, printing, offline reading and
+          the export included.
         </p>
       </>
     ),

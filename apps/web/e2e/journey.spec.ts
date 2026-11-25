@@ -1,6 +1,6 @@
 import { expect, test, type Page } from "@playwright/test";
 
-import { address, gotoWeek, signIn, upgrade } from "./helpers";
+import { address, gotoWeek, signIn } from "./helpers";
 
 /**
  * The path a brand-new parent takes: land, answer the questions, get a week,
@@ -481,9 +481,8 @@ test("a finished step is recorded, and the record can be taken away", async ({ p
 });
 
 test("changing a setting re-personalizes the week without a reload", async ({ page }) => {
-  // Week 36 is not the week they are in, so this test needs Plus to see it.
+  // Week 36 is not the week they are in, and it opens anyway.
   await signIn(page, address());
-  await upgrade(page);
 
   // A marker on window survives client-side navigation and dies on a reload,
   // so it is the proof that the AC's "without a reload" is actually true.
@@ -622,9 +621,8 @@ test("the week can be worked through with the keyboard alone", async ({ page }) 
 });
 
 test("search finds a step by the word a parent would use, and cites it", async ({ page }) => {
-  // The anatomy scan is week 20, which a free household cannot open.
+  // The anatomy scan is week 20, which is not the week they are in and opens anyway.
   await signIn(page, address());
-  await upgrade(page);
   await page.goto("/search");
 
   // "ultrasound" is not in the anatomy scan's title. The pack declares it.

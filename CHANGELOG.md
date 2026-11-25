@@ -9,6 +9,24 @@ changelog written after the fact from memory is a changelog nobody can trust.
 
 ## Unreleased
 
+### Everything is free (#138)
+
+- **The wall is gone, not lowered.** Every week of pregnancy and of the first three years
+  is readable, printing is a button, a household can pin as many things as it likes, and
+  inviting a partner costs nothing. `Paywall`, `PlanCard`, `PrintGate`, `useWeekGate`,
+  `useEntitlements`, `pricing.ts`, the entitlement maths, the three `/api/billing` routes
+  and `packages/db/src/stripe.ts` are deleted, and the five ternaries they guarded now
+  render their content directly.
+- **The `subscriptions` table stays.** It is the record of what somebody once bought, and
+  nothing reads it to decide what to show.
+- **The copy stopped selling.** `/terms`, `/editorial`, `/privacy`, `/settings` and the
+  policy stories no longer mention a price, a plan or a payment processor.
+- **A tripwire, not a promise.** `apps/web/src/lib/free.test.ts` fails if a gate, a plan
+  check, a price or a billing route returns to the shipped source.
+- The end-to-end suite lost `paywall.spec.ts`, `billing.spec.ts` and the `upgrade()` helper
+  that drove a real Stripe webhook; the remaining journeys are unchanged and all pass.
+  Recorded in [`EVIDENCE.md`](EVIDENCE.md) §68.
+
 ### A faint drawing over the dashboard that walks as you scroll (#136)
 
 - **A drawing, not geometry.** A father, mother and toddler walking hand in

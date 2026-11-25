@@ -218,6 +218,18 @@ test("the figure over the page, at rest and walking as the page scrolls", async 
   await shot(page, "22-figure-walking");
 });
 
+test("a week that is not yours, readable without paying", async ({ page }) => {
+  /* The wall used to sit here: a parent at week 28 who opened week 34 was
+     offered an upgrade instead of a week. It is gone (#138), and the honest way
+     to show that is the picture a reviewer would have needed before. */
+  await onboard(page);
+  await page.goto("/week/pregnancy-w40");
+  await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+  await expect(page.getByText(/Upgrade|part of Plus|Start your|\$5/)).toHaveCount(0);
+  await page.getByRole("heading", { level: 1 }).scrollIntoViewIfNeeded();
+  await shot(page, "23-week-not-yours");
+});
+
 test("the narrowest phone we support, with nothing sideways", async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 640 });
   await onboard(page);

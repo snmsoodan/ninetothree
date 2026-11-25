@@ -1,50 +1,6 @@
-import { createHmac, randomUUID } from "node:crypto";
+import { randomUUID } from "node:crypto";
 
 import { expect, type Page } from "@playwright/test";
-
-/** The secret the test server signs with. Set in the e2e environment. */
-const SECRET = "whsec_e2e_secret";
-
-/** A Stripe-shaped signature header, so the webhook route accepts the event. */
-export function signed(body: string, secret = SECRET): string {
-  const timestamp = Math.floor(Date.now() / 1000);
-  const signature = createHmac("sha256", secret).update(`${timestamp}.${body}`).digest("hex");
-  return `t=${timestamp},v1=${signature}`;
-}
-
-/**
- * Puts the signed-in household on Plus.
- *
- * Goes through the real webhook rather than a test-only back door, so the flow
- * being exercised is the one Stripe drives in production. A customer id is
- * unique per call because a Stripe customer belongs to one household and the
- * e2e database is shared by every test in the run.
- *
- * The event is a one-time purchase — `payment_status` paid, no subscription —
- * because that is what the checkout now creates.
- */
-export async function upgrade(page: Page): Promise<void> {
-  const household = (await (await page.request.get("/api/household")).json()) as { id: string };
-  const body = JSON.stringify({
-    id: `evt_e2e_${randomUUID()}`,
-    type: "checkout.session.completed",
-    data: {
-      object: {
-        client_reference_id: household.id,
-        customer: `cus_${randomUUID()}`,
-        subscription: null,
-        payment_status: "paid",
-        metadata: { plan: "plus" },
-      },
-    },
-  });
-
-  const response = await page.request.post("/api/billing/webhook", {
-    data: body,
-    headers: { "stripe-signature": signed(body) },
-  });
-  expect(response.status()).toBe(200);
-}
 
 /** A unique address per test: the e2e database is shared by the whole run. */
 export function address(): string {

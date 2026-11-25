@@ -273,15 +273,10 @@ PR #17 Beta release + evidence pack
 
 ### E11 — Business
 
-**#39 — Stripe**
+**#39 — Stripe** and **#40 — Paywall** — ~~cut~~ **retired by #138.**
 
-- Checkout, portal, webhooks, entitlements, failed payment handling.
-- **AC:** upgrade/downgrade/cancel tested; free tier keeps safety content.
-
-**#40 — Paywall**
-
-- Gate full timeline, unlimited pins, partner, offline, print; never gate red flags.
-- **AC:** a free user can always reach the current week and all safety content.
+- The owner's decision was that everything is free, so the checkout, the webhook, the entitlements and the four gates were deleted rather than adjusted. `ARCHITECTURE.md` §9 and `EVIDENCE.md` §68 record what went and what stayed.
+- **AC:** met inverted — a signed-in parent can reach every week, print, pin without a limit and invite a partner, and `apps/web/src/lib/free.test.ts` fails if a gate comes back.
 
 **#41 — Export + delete**
 

@@ -2,7 +2,7 @@ import { randomUUID } from "node:crypto";
 
 import { expect, test, type Page } from "@playwright/test";
 
-import { forgetEverything, upgrade } from "./helpers";
+import { forgetEverything } from "./helpers";
 
 function address() {
   return `maya+${randomUUID()}@example.com`;
@@ -44,9 +44,6 @@ async function signOut(page: Page) {
 
 /** Makes a link from the settings page and returns the path it points at. */
 async function makeLink(page: Page, role = "partner"): Promise<string> {
-  // The invite form is part of Plus, so the household has to be on it before
-  // the button exists.
-  await upgrade(page);
   await page.goto("/settings");
   const section = page.getByRole("region", { name: "Invite someone" });
   await section.getByLabel("They join as").selectOption(role);

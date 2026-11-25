@@ -576,16 +576,13 @@ things zoom cannot do.
 
 ---
 
-## 9. Payments
+## 9. Nothing is for sale
 
-- **One price, paid once.** Plus is $5, charged a single time. Stripe Checkout runs in `mode: "payment"` with an inline `price_data` line item, so the price on the button, the price on the checkout and the price on `/terms` come from one constant (`apps/web/src/lib/pricing.ts`) and cannot drift.
-- There is no subscription and no Customer Portal. A one-time purchase has no renewal to show, no card to update and no cancel to offer; a portal for it would open empty. `/settings` says "Paid once. Nothing renews, and there is nothing to cancel."
-- `customer_creation: "always"` on the session, so the charge carries a customer id that a refund can be mapped back to a household.
-- Webhooks: `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `charge.refunded`. The subscription events (`customer.subscription.updated`, `customer.subscription.deleted`, `invoice.payment_failed`) are still handled for rows written while Plus was monthly.
-- A session grants only when `payment_status` is absent or one of `paid`/`no_payment_required`; the delayed-method case arrives later as `async_payment_succeeded`. A full refund writes `status = 'refunded'` and the household falls back to free; a partial refund changes nothing.
-- Entitlements are derived from `subscriptions.status` + `plan` by one pure function (`entitlementsFor`), with `active` meaning "paid, and there is no period for it to end".
-- **Free tier never loses red flags, crisis numbers, or the current week.**
-- No dark patterns: no renewal to forget, no "are you sure" maze, no hidden annual lock-in.
+- **Everything is free.** Every week, every pin, printing, and a partner link. There is no plan, no price, no checkout and no gate anywhere in the app (#138).
+- **The wall was deleted, not lowered.** `entitlementsFor`, `useEntitlements`, `useWeekGate`, `Paywall`, `PlanCard`, `PrintGate`, `lib/pricing.ts`, `packages/db/src/stripe.ts` and the three `/api/billing` routes are gone. Nothing computes what a household is allowed to see, because there is nothing to compute.
+- **`subscriptions` stays in the database.** The table, its migrations, `getSubscription` / `upsertSubscription` and the seed rows record what somebody once bought. Nothing reads them to decide what to render. Dropping a table is a migration nobody asked for, and a later billing idea should start from a truthful history.
+- **A test, not a promise.** `apps/web/src/lib/free.test.ts` fails if a gate hook, a plan check, a price, a billing route or paywall copy reappears in shipped source.
+- **Still true from the old rules:** no dark patterns, nothing hidden behind an account you cannot delete, and the content keeps shipping in the client bundle so a week works offline and prints without JavaScript.
 
 ---
 
