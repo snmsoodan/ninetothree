@@ -816,5 +816,20 @@ list and creation, leaving a household, and `/api/updates`. The web's own types
 are `z.infer` from the same package, so a divergence between what a handler sends
 and what a screen believes fails in a route handler during the test run rather
 than on a phone. The remaining household routes (`/together`, `/jobs`) and the
-account export have no schema yet, and no native client exists: the exchange
-above is the next slice, and none of it changes the web build.
+account export have no schema yet.
+
+The second bullet is built too, and it cost less than expected because it is not
+a new subsystem. `POST /api/auth/native/exchange` verifies a Google or Apple ID
+token against the provider's published keys and then does what
+`allowDangerousEmailAccountLinking` already does — links the person by address,
+since `users.email` is `citext unique` — before inserting into the `sessions`
+table the browser's cookie also names. On the read side, `currentUser(request)`
+accepts a bearer token or a cookie, so the eleven handlers the phone calls serve
+both kinds of caller through one function. The consequences that matter
+architecturally: there is no refresh token and no parallel revocation list (the
+session _is_ the credential, bounded by `SESSION_MAX_AGE_S`), and a deleted
+account's token stops working because the bearer lookup joins to `users` and
+requires `deleted_at is null`. Unconfigured providers refuse rather than verify
+against an empty audience list, which is the difference between a phone that
+cannot sign in and one that signs in as nobody. No native client exists yet, so
+the seam is proven by tests rather than by a device.

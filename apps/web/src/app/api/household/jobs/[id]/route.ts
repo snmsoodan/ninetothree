@@ -4,13 +4,13 @@ import { removeJob, setJobStatus, type JobStatus } from "@ninetothree/db";
 
 import { getDb } from "@/lib/auth/db";
 import { ensureScope } from "@/lib/auth/household";
-import { auth } from "@/lib/auth/session";
+import { currentUser } from "@/lib/auth/bearer";
 
 const STATUSES: readonly JobStatus[] = ["open", "done", "dropped"];
 
 /** Moves a job's status. Anyone in the household can do this. */
 export async function PATCH(request: Request, context: { params: Promise<{ id: string }> }) {
-  const session = await auth();
+  const session = await currentUser(request);
   const userId = session?.user?.id;
   if (!userId) return NextResponse.json({ error: "signed out" }, { status: 401 });
 
@@ -29,8 +29,8 @@ export async function PATCH(request: Request, context: { params: Promise<{ id: s
 }
 
 /** Takes a job off the list entirely. */
-export async function DELETE(_request: Request, context: { params: Promise<{ id: string }> }) {
-  const session = await auth();
+export async function DELETE(request: Request, context: { params: Promise<{ id: string }> }) {
+  const session = await currentUser(request);
   const userId = session?.user?.id;
   if (!userId) return NextResponse.json({ error: "signed out" }, { status: 401 });
 

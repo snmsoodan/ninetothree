@@ -4,7 +4,7 @@ import { NotAllowedError, revokeInvite } from "@ninetothree/db";
 
 import { getDb } from "@/lib/auth/db";
 import { ensureScope } from "@/lib/auth/household";
-import { auth } from "@/lib/auth/session";
+import { currentUser } from "@/lib/auth/bearer";
 
 /**
  * Revokes an invite.
@@ -13,8 +13,8 @@ import { auth } from "@/lib/auth/session";
  * that consumes the token, so there is no window in which a revoked link still
  * works.
  */
-export async function DELETE(_request: Request, context: { params: Promise<{ id: string }> }) {
-  const session = await auth();
+export async function DELETE(request: Request, context: { params: Promise<{ id: string }> }) {
+  const session = await currentUser(request);
   const userId = session?.user?.id;
   if (!userId) return NextResponse.json({ error: "signed out" }, { status: 401 });
 

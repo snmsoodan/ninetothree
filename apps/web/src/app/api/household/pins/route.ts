@@ -5,14 +5,14 @@ import { shareItem, unshareItem } from "@ninetothree/db";
 
 import { getDb } from "@/lib/auth/db";
 import { ensureScope } from "@/lib/auth/household";
-import { auth } from "@/lib/auth/session";
+import { currentUser } from "@/lib/auth/bearer";
 
 /**
  * Sharing a pin copies its title into the household's shared table. The note
  * stays behind, because the shared table has no column for one.
  */
 export async function POST(request: Request) {
-  const session = await auth();
+  const session = await currentUser(request);
   const userId = session?.user?.id;
   if (!userId) return NextResponse.json({ error: "signed out" }, { status: 401 });
 

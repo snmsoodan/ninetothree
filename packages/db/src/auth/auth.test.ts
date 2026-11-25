@@ -3,7 +3,13 @@ import { createHash } from "node:crypto";
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import { migrateUp } from "../migrate";
 import { createTestDb } from "../testing";
-import { RATE_LIMIT_MAX, RATE_LIMIT_WINDOW_MS, SESSION_MAX_AGE_S, TOKEN_TTL_MS } from "./policy";
+import {
+  EXCHANGE_RATE_LIMIT_MAX,
+  RATE_LIMIT_MAX,
+  RATE_LIMIT_WINDOW_MS,
+  SESSION_MAX_AGE_S,
+  TOKEN_TTL_MS,
+} from "./policy";
 import { checkRateLimit, clearAttempts, pruneAttempts, recordAttempt } from "./rateLimit";
 import { mintLinkToken } from "./tokens";
 
@@ -34,6 +40,10 @@ describe("the shipped policy", () => {
   it("allows five attempts per window", () => {
     expect(RATE_LIMIT_MAX).toBe(5);
     expect(RATE_LIMIT_WINDOW_MS).toBe(15 * 60 * 1000);
+  });
+
+  it("allows ten token exchanges per caller per window", () => {
+    expect(EXCHANGE_RATE_LIMIT_MAX).toBe(10);
   });
 
   it("keeps a session for thirty days", () => {

@@ -5,11 +5,11 @@ import { createInvite, listInvites, mintInviteToken, NotAllowedError } from "@ni
 
 import { getDb } from "@/lib/auth/db";
 import { ensureScope } from "@/lib/auth/household";
-import { auth } from "@/lib/auth/session";
+import { currentUser } from "@/lib/auth/bearer";
 
 /** The invites this household has issued that still work. */
-export async function GET() {
-  const session = await auth();
+export async function GET(request: Request) {
+  const session = await currentUser(request);
   const userId = session?.user?.id;
   if (!userId) return NextResponse.json({ error: "signed out" }, { status: 401 });
 
@@ -37,7 +37,7 @@ export async function GET() {
  * immediately rather than offering to look it up later.
  */
 export async function POST(request: Request) {
-  const session = await auth();
+  const session = await currentUser(request);
   const userId = session?.user?.id;
   if (!userId) return NextResponse.json({ error: "signed out" }, { status: 401 });
 
