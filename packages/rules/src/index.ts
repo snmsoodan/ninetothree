@@ -17,6 +17,7 @@ export {
   readField,
   writeField,
   suppressesEmail,
+  profileFieldsFor,
   HIDE_RULES,
   ADD_RULES,
   ADJUST_RULES,
@@ -44,6 +45,17 @@ export {
   type Housing,
   type Loss,
 } from "./personalize";
+export {
+  feedingBand,
+  feedingQuestion,
+  stillBreastfeeding,
+  FEEDING_CHOICES,
+  SOLIDS_FROM_MONTHS,
+  CUP_FROM_MONTHS,
+  type FeedingBand,
+  type FeedingChoice,
+  type FeedingQuestion,
+} from "./feeding";
 export {
   ruleEffects,
   personalizeIndexedPack,

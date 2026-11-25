@@ -156,6 +156,34 @@ test("what applies at this age: the card and the updates page", async ({ page })
   await shot(page, "18-updates-check-it-yourself");
 });
 
+test("the feeding question at two years, on both screens that ask it", async ({ page }) => {
+  await page.goto("/onboarding");
+  await page.getByRole("button", { name: /^I am the parent/ }).click();
+  await page.getByRole("button", { name: /^My baby is here/ }).click();
+  // A child past their second birthday: the bottle and the formula are behind
+  // them, and the question should sound like it knows that.
+  const born = new Date();
+  born.setUTCMonth(born.getUTCMonth() - 24, 15);
+  await page.locator("#date").fill(born.toISOString().slice(0, 10));
+  for (let i = 0; i < 2; i += 1) await page.getByRole("button", { name: "Continue" }).click();
+  await expect(page.getByRole("heading", { name: "What is your child eating now?" })).toBeVisible();
+  await shot(page, "19-onboarding-feeding-two-year");
+
+  await page.getByRole("radio", { name: "Table food and milk or water from a cup" }).click();
+  for (let i = 0; i < 2; i += 1) await page.getByRole("button", { name: "Continue" }).click();
+  await page.getByRole("button", { name: "Show me" }).click();
+  await expect(page).toHaveURL(/\/today$/);
+
+  await page.goto("/settings");
+  const feeding = page.getByRole("heading", { name: "Feeding", exact: true });
+  await feeding.scrollIntoViewIfNeeded();
+  await expect(feeding).toBeInViewport();
+  await expect(
+    page.getByRole("radio", { name: "Table food and milk or water from a cup" }),
+  ).toBeChecked();
+  await shot(page, "20-settings-feeding-two-year");
+});
+
 test("the narrowest phone we support, with nothing sideways", async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 640 });
   await onboard(page);

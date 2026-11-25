@@ -9,6 +9,27 @@ changelog written after the fact from memory is a changelog nobody can trust.
 
 ## Unreleased
 
+### The feeding question grows up with the child (#132)
+
+- **The question is asked in the tense of the child's age.** Before the birth it
+  is "How do you plan to feed?"; in the first six months, "How are you feeding?";
+  from six months, "How is feeding going?"; and from twelve, "What is your child
+  eating now?" The answer options follow: "Breastfeeding, and starting solids" at
+  eight months, "Table food and milk or water from a cup" at two years. A screen
+  that offers a two-year-old's parent "Breastfeeding / Formula / Both" is
+  answering a question they finished with a year ago.
+- **One new stored value, `cup`, and no new meanings.** Breast, formula, both and
+  undecided keep the same values at every age — only their labels move — so the
+  one thing a rule reads ("is this parent still breastfeeding?") stays true, and
+  a profile saved in pregnancy still means what it meant.
+- **A skipped question still hides nothing.** The rule now keys off the answers
+  that mean _not_ breastfeeding — formula and cup — instead of keying off formula
+  alone, so both, undecided and unanswered all keep the breastfeeding steps. The
+  cost of showing a step that does not apply is a wasted tap; the cost of hiding
+  one that does is worse.
+- **Settings asks the same age-appropriate question.** The fields are rebuilt per
+  band rather than held as one static list, so the two screens cannot drift.
+
 ### The link check stops calling live pages dead (#134)
 
 - **A socket closed by the far end is not a 404.** `postpartum.net` and

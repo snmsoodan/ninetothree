@@ -28,6 +28,14 @@ async function startAs(
   await user.click(screen.getByRole("button", { name: status }));
 }
 
+/** A birth date that makes the child `months` old today, on the real clock. */
+function bornMonthsAgo(months: number): string {
+  const d = new Date();
+  d.setDate(1);
+  d.setMonth(d.getMonth() - months);
+  return d.toISOString().slice(0, 10);
+}
+
 function draft(overrides: Record<string, unknown> = {}) {
   return JSON.stringify({
     step: "feeding",
@@ -99,7 +107,9 @@ describe("OnboardingFlow, reading as someone else", () => {
     expect(
       screen.getByRole("heading", { name: "That is everything we need." }),
     ).toBeInTheDocument();
-    expect(screen.queryByRole("heading", { name: "How are you feeding?" })).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("heading", { name: /how .*feeding|what is your child eating/i }),
+    ).not.toBeInTheDocument();
   });
 
   it("counts the questions it will actually ask", async () => {
@@ -277,7 +287,7 @@ describe("OnboardingFlow", () => {
     expect(screen.getByText(/the numbers in it are US numbers/)).toBeInTheDocument();
   });
 
-  it("asks how you are feeding, and lets you skip it", async () => {
+  it("asks how you plan to feed during pregnancy, and lets you skip it", async () => {
     const user = userEvent.setup();
     render(<OnboardingFlow />);
     await startAs(user);
@@ -285,9 +295,69 @@ describe("OnboardingFlow", () => {
     await user.click(screen.getByRole("button", { name: "Continue" }));
     await user.click(screen.getByRole("button", { name: "Continue" }));
 
-    expect(screen.getByRole("heading", { name: "How are you feeding?" })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: "How do you plan to feed?" })).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Skip" }));
     expect(screen.getByRole("heading", { name: "Is this your first baby?" })).toBeInTheDocument();
+  });
+
+  it("still asks how you are feeding when the baby is only a few months old", async () => {
+    const user = userEvent.setup();
+    render(<OnboardingFlow />);
+    await startAs(user, /^My baby is here/);
+    await user.type(dateField(), bornMonthsAgo(4));
+    await user.click(screen.getByRole("button", { name: "Continue" }));
+    await user.click(screen.getByRole("button", { name: "Continue" }));
+
+    expect(screen.getByRole("heading", { name: "How are you feeding?" })).toBeInTheDocument();
+    expect(screen.queryByRole("radio", { name: /cup/ })).not.toBeInTheDocument();
+  });
+
+  it("asks a two-year-old's parent what the child is eating, not how they are feeding", async () => {
+    const user = userEvent.setup();
+    render(<OnboardingFlow />);
+    await startAs(user, /^My baby is here/);
+    await user.type(dateField(), bornMonthsAgo(24));
+    await user.click(screen.getByRole("button", { name: "Continue" }));
+    await user.click(screen.getByRole("button", { name: "Continue" }));
+
+    expect(
+      screen.getByRole("heading", { name: "What is your child eating now?" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("radio", { name: "Table food and milk or water from a cup" }),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole("radio", { name: "Not decided yet" })).not.toBeInTheDocument();
+  });
+
+  it("records the cup answer for a child who has left the bottle behind", async () => {
+    const user = userEvent.setup();
+    render(<OnboardingFlow />);
+    await startAs(user, /^My baby is here/);
+    await user.type(dateField(), bornMonthsAgo(24));
+    await user.click(screen.getByRole("button", { name: "Continue" }));
+    await user.click(screen.getByRole("button", { name: "Continue" }));
+    await user.click(
+      screen.getByRole("radio", { name: "Table food and milk or water from a cup" }),
+    );
+    await user.click(screen.getByRole("button", { name: "Continue" }));
+    await user.click(screen.getByRole("button", { name: "Skip" }));
+    await user.click(screen.getByRole("button", { name: "Show me" }));
+
+    expect(getSnapshot().profile.feeding).toBe("cup");
+  });
+
+  it("asks how feeding is going once solids have started", async () => {
+    const user = userEvent.setup();
+    render(<OnboardingFlow />);
+    await startAs(user, /^My baby is here/);
+    await user.type(dateField(), bornMonthsAgo(8));
+    await user.click(screen.getByRole("button", { name: "Continue" }));
+    await user.click(screen.getByRole("button", { name: "Continue" }));
+
+    expect(screen.getByRole("heading", { name: "How is feeding going?" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("radio", { name: "Breastfeeding, and starting solids" }),
+    ).toBeInTheDocument();
   });
 
   it("asks if it is the first baby, and lets you skip it", async () => {
@@ -479,7 +549,7 @@ describe("OnboardingFlow", () => {
     window.localStorage.setItem(DRAFT_KEY, draft());
     render(<OnboardingFlow />);
     expect(
-      await screen.findByRole("heading", { name: "How are you feeding?" }),
+      await screen.findByRole("heading", { name: "How do you plan to feed?" }),
     ).toBeInTheDocument();
     expect(screen.getByText("Step 5 of 7")).toBeInTheDocument();
   });

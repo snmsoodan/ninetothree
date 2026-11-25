@@ -3,7 +3,14 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button, Card, CardBody, RadioGroup, cn } from "@ninetothree/ui";
-import { computeStage, type Country, type Profile } from "@ninetothree/rules";
+import {
+  computeStage,
+  feedingBand,
+  feedingQuestion,
+  FEEDING_CHOICES,
+  type Country,
+  type Profile,
+} from "@ninetothree/rules";
 import { PERSONA_META, type Persona } from "@ninetothree/content/core";
 import {
   completeOnboarding,
@@ -18,13 +25,6 @@ import { PERSONA_NOTE, PERSONA_ORDER, dateQuestion, statusOptions } from "@/lib/
 import { countryName, detectCountry, isCovered } from "@/lib/country";
 import { localDate } from "@/lib/reminders";
 import { HelpNow } from "./HelpNow";
-
-const FEEDING = [
-  { value: "breast", label: "Breastfeeding" },
-  { value: "formula", label: "Formula" },
-  { value: "both", label: "Both" },
-  { value: "undecided", label: "Not decided yet" },
-];
 
 const FIRST_BABY = [
   { value: "yes", label: "Yes, my first" },
@@ -127,6 +127,20 @@ export function OnboardingFlow() {
 
   const { label: dateLabel, hint: dateHint } = dateQuestion(persona, status);
   const statusAnswers = statusOptions(persona);
+
+  // The date step allows a future due date and a birth date up to today, so
+  // an empty date is the only case with no stage to speak of. That reads as
+  // pregnancy, which is what the question would ask if they were answering
+  // it two screens ago.
+  const band = feedingBand(
+    date === ""
+      ? null
+      : status === "pregnant"
+        ? { status: "pregnant", dueDate: date }
+        : { status: "parent", birthDate: date },
+    todayIso(),
+  );
+  const feedingAsk = feedingQuestion(band);
 
   // Feeding and first-baby are the parent's business, so they are not in a
   // grandparent's flow and are not counted as skipped for them either.
@@ -329,17 +343,15 @@ export function OnboardingFlow() {
       {step === "feeding" ? (
         <section aria-labelledby="q4">
           <h1 id="q4" className="font-display text-3xl text-ink">
-            How are you feeding?
+            {feedingAsk.heading}
           </h1>
-          <p className="mt-2 text-base text-ink-muted">
-            This only changes what we hide. It never changes what we warn you about.
-          </p>
+          <p className="mt-2 text-base text-ink-muted">{feedingAsk.note}</p>
           <RadioGroup
             name="feeding"
-            label="How are you feeding?"
+            label={feedingAsk.heading}
             value={feeding || undefined}
             onValueChange={setFeeding}
-            options={FEEDING}
+            options={FEEDING_CHOICES[band]}
             className="mt-6"
           />
           <div className="mt-8 flex gap-2">

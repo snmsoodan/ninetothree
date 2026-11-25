@@ -433,6 +433,17 @@ Personas live in `packages/content/src/persona.ts` as a view preference, and the
 
 **A client component reads a projection, not the registry.** The dashboard renders the lens, and the first version imported `getPack` from `@ninetothree/content/registry` to get it. That pulls every pack into the bundle: CI measured `/today` at 454 kB against a 150 kB budget, and the check failed on the pull request rather than in somebody's hand. `scripts/gen-indexes.mjs` now writes `persona-index.ts` — the 24 authored views and nothing else, 17 kB — and the client reads `findPersonaViews(pack.id)`. The rule generalises: if a browser needs something from the corpus, it gets a generated projection with a drift test, not an import of the corpus.
 
+### The feeding question, and why it has four sets of words (#132)
+
+`Feeding` is `"breast" | "formula" | "both" | "undecided" | "cup"`, and it means the same thing at every age: **is this parent still breastfeeding?** That is the only question any rule asks it, so adding a value per stage would make one profile mean different things depending on when it was saved.
+
+What changes with age is the wording, not the value. `packages/rules/src/feeding.ts` holds four bands — `pregnancy`, `milk` (0–5 months), `weaning` (6–11), `solids` (12+) — each with a heading and at most four options, because a radio list is a question and a question with six answers stops being one. `feedingBand(input, today)` is a pure function of `StageInput` and a date, so the answer is the same on the server and in the browser.
+
+Two consequences worth knowing before editing it:
+
+- **The hide rule is keyed off the answers that _end_ breastfeeding support**, not off the ones that start it. `stillBreastfeeding(feeding)` returns false only for `formula` and `cup`; `both`, `undecided` and an **unanswered** profile all return true. The question is optional, so "unanswered hides the help" would have removed breastfeeding steps from most parents.
+- **Settings renders `profileFieldsFor(band)`, not `PROFILE_FIELDS`.** Same fields, same order, only the feeding options rebuilt and copied. Two screens reading one static array is how the onboarding question and the settings question drift apart.
+
 ### Recalls and updates
 
 A recall is the one piece of this product that is _already_ true before the parent arrives, and it is the only place where being wrong hurts somebody in their house. So it is modelled separately from the guide, and it has three rules.
