@@ -9,6 +9,42 @@ changelog written after the fact from memory is a changelog nobody can trust.
 
 ## Unreleased
 
+### One codebase, three platforms: route B (#143)
+
+- **`docs/PLATFORM.md` is the answer to "how would iOS and Android work", written before a line
+  of it exists.** It measures what already crosses to a native client — `packages/content` (85
+  packs) and `packages/rules` are plain TypeScript with no React and no DOM, and the 108 design
+  tokens are values rather than classes — then states what cannot: the Radix view layer, the
+  print stylesheets and the drawn scroll walk.
+- **Four routes weighed, one recommended.** Expo for all three; Next plus Expo with a shared
+  domain (recommended); a Capacitor shell; Flutter or Compose. The recommendation is reversible:
+  if Expo Router's web output catches up, the second becomes the first by replacing the web app,
+  not the domain.
+- **The data access crosses too, which the first draft of the document got wrong.** Counting
+  instead of assuming: `/week/[id]` is static over the pack registry and never opens the database,
+  `/library` and `/search` are client components over the same bundled registries, and `/today` is
+  a client dashboard — twelve of the thirteen files that import `@ninetothree/db` are route
+  handlers. A phone therefore bundles the packs exactly as the web does, and the server work in
+  route B is contracts on the existing routes plus a token exchange, not a new read API. The two
+  invented endpoints are gone from `ARCHITECTURE.md` §19; `EVIDENCE.md` §70 records the correction
+  rather than quietly rewriting it.
+- **Foldables are a layout question, not a device question.** Four width modes and a two-pane
+  "book", `useWindowDimensions` for width and `expo-hinge` for posture, the same four widths on
+  the web through container queries, and a test matrix of the iPhone Duo simulator, a Pixel Fold
+  emulator and a Playwright sweep.
+- **The route is chosen, not guessed.** B — Next keeps the web, Expo takes iOS and Android, and a
+  shared domain carries content, rules, contracts and behaviour — was accepted by the owner on
+  2026-11-25. The spike that follows renders the real packs at three shapes and ends in a measured
+  bundle number rather than a verdict.
+
+### The architecture caught up with the product (#143)
+
+- **`ARCHITECTURE.md` §2 still listed Stripe and a magic link** as the stack, months after #138
+  deleted the checkout and #139 made Google or Apple the only ways in. The rows now say what is
+  true; §16 lost its Stripe line and the revenue arithmetic that went with it; §17's "Stripe Plus
+  works" is now the free-product line; §18 records #138, #139 and the platform decision, and marks
+  0005 as revisited; §19 points at the platform document.
+
 ### Two ways in: Google or Apple (#139)
 
 - **The sign-in page offers Google and Apple, and nothing else.** Both were already buildable
