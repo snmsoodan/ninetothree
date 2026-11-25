@@ -25,8 +25,8 @@ Technical design for V1. The goal is a small, boring, fast, accessible system th
 | Components    | **Radix UI primitives + custom design system**             | Accessible by default                                            |
 | Database      | **Postgres 16 (Neon)**                                     | Relational content graph, JSONB for flexible fields, FTS         |
 | ORM           | **Drizzle**                                                | Typed SQL, migrations in git, no magic                           |
-| Auth          | **Auth.js v5** — email magic link + Google + Apple         | No password support burden                                       |
-| Payments      | **Stripe** Checkout, one payment, + webhooks               | Standard, low ops; nothing to renew or cancel                    |
+| Auth          | **Auth.js v5** — Google or Apple, database sessions        | Two ways in, no password to reset, revocable on the server       |
+| Payments      | **Nothing is sold** (§9)                                   | No checkout, no webhook, no plan to check                        |
 | Email         | **Resend + React Email**                                   | Same components as the app                                       |
 | Jobs          | **Inngest** (or Vercel Cron for V1)                        | Weekly digest, link checks, content staleness                    |
 | Search        | **Postgres FTS + pg_trgm**                                 | No extra service in V1                                           |
@@ -38,7 +38,7 @@ Technical design for V1. The goal is a small, boring, fast, accessible system th
 | Docs          | **Storybook 8**                                            | Component catalogue                                              |
 | CI            | **GitHub Actions**                                         | Lint, typecheck, test, build, a11y, link check, content validate |
 
-**Explicitly rejected for V1:** a headless CMS (git is the CMS), a separate search service, a native app, a GraphQL layer, microservices, Kubernetes.
+**Explicitly rejected for V1:** a headless CMS (git is the CMS), a separate search service, a GraphQL layer, microservices, Kubernetes. A native app was in this list; it is now an open decision rather than a rejection — see §19.
 
 ---
 
@@ -566,12 +566,15 @@ things zoom cannot do.
 
 ## 8. Auth and household model
 
-- Magic link is the default. Google/Apple optional.
+- Google or Apple, in that order. There is no password, and no magic link in
+  production — the email link survives only as a test seam behind
+  `AUTH_TEST_MODE`, because the e2e suite has to sign in without a human.
 - A **household** is the unit of sharing. One household can have multiple pregnancies/children over time.
 - Roles: `parent`, `partner`, `grandparent`, `carer`.
 - Partner invite: signed, single-use, 7-day expiry, revocable.
-- Session: httpOnly, secure, sameSite=lax, 30-day rolling.
-- No passwords, no security questions, no SMS 2FA in V1 (magic link is the second factor).
+- Session: a row in the database, httpOnly cookie on the web, 30-day rolling.
+- No passwords, no security questions, no SMS 2FA in V1 — the provider's own
+  second factor (device lock, passkey) is the second factor.
 - Account deletion: soft delete 30 days, then hard delete; export available immediately.
 
 ---
@@ -610,22 +613,22 @@ things zoom cannot do.
 
 ## 11. Security and privacy
 
-| Area            | Control                                                                |
-| --------------- | ---------------------------------------------------------------------- |
-| Transport       | HTTPS only, HSTS, secure cookies                                       |
-| Auth            | Magic link, rate-limited, single-use, 15-min expiry                    |
-| Authorisation   | Every query scoped by `household_id`; repository layer enforces it     |
-| Input           | Zod at every boundary; no raw SQL                                      |
-| Secrets         | Vercel env vars, never in repo; `gitleaks` in CI                       |
-| PII             | Minimal: email, country, dates, feeding choice. Child names optional   |
-| Children's data | No advertising profiles, no sale, no third-party ad pixels             |
-| Analytics       | PostHog EU, IP anonymised, no session recording on health pages        |
-| Retention       | Account data deleted 30 days after request; analytics 24 months        |
-| Backups         | Neon PITR 7 days; monthly restore test                                 |
-| Dependencies    | Dependabot, `pnpm audit` in CI, no postinstall scripts                 |
-| Headers         | CSP, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy` |
-| Rate limits     | Auth, search, triage, export                                           |
-| Audit           | Admin actions logged; content changes versioned                        |
+| Area            | Control                                                                                                    |
+| --------------- | ---------------------------------------------------------------------------------------------------------- |
+| Transport       | HTTPS only, HSTS, secure cookies                                                                           |
+| Auth            | Google or Apple OAuth only; no password, no replayable link; sessions are database rows and can be revoked |
+| Authorisation   | Every query scoped by `household_id`; repository layer enforces it                                         |
+| Input           | Zod at every boundary; no raw SQL                                                                          |
+| Secrets         | Vercel env vars, never in repo; `gitleaks` in CI                                                           |
+| PII             | Minimal: email, country, dates, feeding choice. Child names optional                                       |
+| Children's data | No advertising profiles, no sale, no third-party ad pixels                                                 |
+| Analytics       | PostHog EU, IP anonymised, no session recording on health pages                                            |
+| Retention       | Account data deleted 30 days after request; analytics 24 months                                            |
+| Backups         | Neon PITR 7 days; monthly restore test                                                                     |
+| Dependencies    | Dependabot, `pnpm audit` in CI, no postinstall scripts                                                     |
+| Headers         | CSP, `X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`                                     |
+| Rate limits     | Auth, search, triage, export                                                                               |
+| Audit           | Admin actions logged; content changes versioned                                                            |
 
 **Compliance posture:** US state privacy laws (CCPA/CPRA and successors) + COPPA-aware (no child-directed accounts); UK GDPR + DPA 2018 and EU GDPR for expansion; WCAG 2.2 AA; WHO Code for formula marketing.
 
@@ -704,18 +707,21 @@ What is locale data, not code: units, spelling, emergency numbers, benefit progr
 
 ## 16. Cost estimate (V1, 10k MAU)
 
-| Item           | Monthly                    |
-| -------------- | -------------------------- |
-| Vercel Pro     | $20                        |
-| Neon Launch    | $19                        |
-| Resend         | $20                        |
-| PostHog        | $0–50                      |
-| Sentry         | $0–26                      |
-| Stripe         | 1.4% + 20p per transaction |
-| Domain + email | $5                         |
-| **Total**      | **~$100–150/mo**           |
+| Item           | Monthly         |
+| -------------- | --------------- |
+| Vercel Pro     | $20             |
+| Neon Launch    | $19             |
+| Resend         | $20             |
+| PostHog        | $0–50           |
+| Sentry         | $0–26           |
+| Domain + email | $5              |
+| **Total**      | **~$90–140/mo** |
 
-At 10k MAU and 4% paying $5 once, revenue is ~$2,000 in the month those 400 buy. A one-time price makes revenue a function of new households rather than of retained ones, so the number that matters is not MRR — it is whether the $5 keeps arriving from people who arrive. That is the bet, stated plainly: no recurring revenue, and no churn to manage either.
+There is no revenue line, because since #138 there is nothing to buy. That makes
+this the cost of a gift, and the number worth watching is cost per active
+household per month: at 10k MAU it is a cent or two, and at 100 it is not. The
+honest reading is that the product is affordable while it is small and becomes a
+decision — not an accident — when it is large.
 
 ---
 
@@ -732,7 +738,7 @@ A release is V1 when all of these are true:
 - [ ] Search returns cited results for the top 100 queries.
 - [ ] Triage covers the top 20 red-flag paths, all clinician-reviewed.
 - [ ] Weekly email sends correctly across timezones, idempotently.
-- [ ] Stripe Plus works: one payment of $5, refunds revoke, nothing to cancel.
+- [ ] Everything is free: no plan, no price, no gate, and `lib/free.test.ts` green.
 - [ ] PWA installable; current week + triage work offline.
 - [ ] WCAG 2.2 AA verified; Lighthouse a11y 100.
 - [ ] 200% and 400% zoom reflow verified.
@@ -747,15 +753,59 @@ A release is V1 when all of these are true:
 
 ## 18. ADRs to write in PR #1
 
-| ADR  | Decision                                     |
-| ---- | -------------------------------------------- |
-| 0001 | Next.js App Router + RSC                     |
-| 0002 | Postgres + Drizzle, JSONB for stage payloads |
-| 0003 | Git-based content, not a CMS                 |
-| 0004 | Rules engine, not LLM, for personalisation   |
-| 0005 | PWA first, no native app in V1               |
-| 0006 | US-first locale, locale data not code        |
-| 0007 | No formula advertising (WHO Code)            |
-| 0008 | Cited search, no chatbot in V1               |
-| 0009 | Free tier includes all safety content        |
-| 0010 | Content schema enforces source + red flags   |
+| ADR  | Decision                                                                      |
+| ---- | ----------------------------------------------------------------------------- |
+| 0001 | Next.js App Router + RSC                                                      |
+| 0002 | Postgres + Drizzle, JSONB for stage payloads                                  |
+| 0003 | Git-based content, not a CMS                                                  |
+| 0004 | Rules engine, not LLM, for personalisation                                    |
+| 0005 | PWA first, no native app in V1 — revisited in §19                             |
+| 0006 | US-first locale, locale data not code                                         |
+| 0007 | No formula advertising (WHO Code)                                             |
+| 0008 | Cited search, no chatbot in V1                                                |
+| 0009 | Free tier includes all safety content — superseded: everything is free (#138) |
+| 0010 | Content schema enforces source + red flags                                    |
+| 0011 | Free for everyone; no plan, price or gate (#138)                              |
+| 0012 | Google and Apple are the only ways in (#139)                                  |
+| 0013 | One codebase, three targets — route chosen in `docs/PLATFORM.md`              |
+
+---
+
+## 19. Platforms: web, iOS, Android
+
+The web app is the product today, and it is the surface that gets found. An iOS
+app and an Android app are wanted next, from as much of the same code as
+possible, including the shapes those devices now come in — foldables first among
+them.
+
+What already crosses is the large, slow, expensive part: `packages/content` (85
+packs, every citation, every red flag) and `packages/rules` are plain TypeScript
+with no React and no DOM, and the 108 design tokens are values rather than CSS
+classes. What does not cross is the view layer — Radix components, Tailwind,
+print stylesheets, the drawn scroll walk — and the data access, because server
+components read Postgres directly and a phone cannot.
+
+The route recommended there, and the cost of it, is in **`docs/PLATFORM.md`**,
+with the four options that were weighed and the reasons the other three were
+not. Two consequences belong in the architecture proper, because they are
+structural rather than tactical:
+
+- **A client-facing API becomes real.** Today the only typed boundary is the
+  repository layer under React Server Components. A phone cannot open a Postgres
+  socket, so it needs two reads over HTTP:
+
+  ```
+  GET /api/v1/week/[id]
+  GET /api/v1/library
+  ```
+
+  validated by the same `zod` contracts the server already uses, so there is one
+  description of what a client receives rather than two.
+
+- **Sessions stay in the database, and the phone joins them.** A native sign-in
+  exchanges a Google or Apple ID token for an ordinary row in `sessions`, and the
+  app sends it as a bearer token. There is no second identity system, so revoking
+  a session revokes it everywhere, which is the behaviour a lost phone deserves.
+
+No native code exists yet, and none of this changes the web build until the route
+in `docs/PLATFORM.md` is chosen.

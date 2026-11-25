@@ -2354,6 +2354,50 @@ consent screen. That needs a real client id registered against the deployed orig
 the owner's to create; what is verified is that the page offers them, that the server builds
 them, and that a parent who picks one leaves on that provider's authorize URL.
 
-## 70. How this file is maintained
+## 70. A platform decision, offered before anything is built (issue #143)
+
+**What it produced:** `docs/PLATFORM.md`, a §19 in `ARCHITECTURE.md` that points at
+it, and no code. The user asked for the mechanism to be argued before it is tested,
+so the deliverable is the argument plus a defined spike, not an `apps/mobile`.
+
+**The measurements it is built on**, each with the command that produced it, because
+these are the numbers the recommendation stands or falls by:
+
+| Claim                                                                                           | How it was checked                                                                                                                                  |
+| ----------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `packages/content` and `packages/rules` are framework-free                                      | `package.json` of each: `zod` and each other, nothing else; `sideEffects: false`; no `react` or `react-dom` in `dependencies` or `peerDependencies` |
+| 85 packs: 39 pregnancy weeks (w4–w42), 12 postpartum weeks, 10 infant months, 24 toddler months | `ls packages/content/packs \| sed -E 's/-[0-9]+\.json//' \| sort \| uniq -c`                                                                        |
+| design tokens are values, not classes                                                           | `grep -c '^\s*--' packages/ui/src/tokens.css` → 108                                                                                                 |
+| `packages/ui` is web-only                                                                       | its `package.json` peer-deps on `react-dom`; Radix `react-checkbox`, `react-dialog`, `react-radio-group`, `react-tabs`                              |
+| 13 server files read Drizzle directly                                                           | `grep -rl '@ninetothree/db' apps/web/src/app apps/web/src/components \| wc -l`                                                                      |
+| 64 components under `src/components`                                                            | `find apps/web/src/components -name '*.tsx' ! -name '*.test.tsx' ! -name '*.stories.tsx' \| wc -l`                                                  |
+| the web's JavaScript budgets                                                                    | `scripts/check-bundle.mjs`: `BUNDLE_BUDGET_BYTES ?? 150_000`, `/week/[id]` gzip `90_000`                                                            |
+| the web already ships an offline shell                                                          | `apps/web/public/sw.js` (140 lines, precache + offline fallback), `public/offline.html`, `e2e/offline.spec.ts`                                      |
+| sessions are database rows, so a bearer token can join them                                     | `apps/web/src/lib/auth/config.ts`: `session: { strategy: "database" }`                                                                              |
+
+**What it found that was not the question.** Describing the stack honestly meant
+reading `ARCHITECTURE.md` §2, which still listed Stripe Checkout and a magic link
+months after #138 deleted the checkout and #139 made Google or Apple the only ways
+in. §16 still priced a $5 sale and did the arithmetic on 4% paying. That drift is
+fixed here: the stack table says what is true, the cost table is a cost table again,
+and §18 records #138, #139 and this decision while marking 0005 as revisited.
+
+**What it could not verify, and does not claim.** Nothing in this PR ran on a phone,
+a simulator or an emulator. The claims about Expo Router v56 (streaming SSR, data
+loaders, API routes) and about `expo-hinge` in SDK 58 come from Expo's release notes
+and a third-party guide, not from this repository. The assertion that a React Native
+Web shell cannot meet a 90 kB route budget is reasoning from the shape of that shell,
+not a measured build — which is precisely why the spike in §7 of `docs/PLATFORM.md`
+ends in a number instead of a verdict. And the spike cannot start on simulators
+today: Xcode's licence is unaccepted on this machine and there is no Android SDK
+installed, so the device half needs either those installs or a physical phone
+running Expo Go.
+
+**What would falsify the recommendation** is written down in the same document
+(§9), so the next reader can check it rather than relitigate it.
+
+---
+
+## 71. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.
