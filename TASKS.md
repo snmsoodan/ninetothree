@@ -466,7 +466,7 @@ ordered issues so each slice is independently testable:
 | 148 | The tokens compile twice, from one file                     | shared                       |
 | 149 | The behaviour, written once (`packages/domain`)             | shared — merged              |
 | 150 | Twelve primitives, one props surface (`packages/ui-native`) | shared — merged              |
-| 151 | The shell: Expo Router, tabs, deep links, theme             | shared                       |
+| 151 | The shell: Expo Router, tabs, deep links, theme             | shared — merged              |
 | 152 | Today, on the phone                                         | shared                       |
 | 153 | The week, on the phone                                      | shared                       |
 | 154 | Library and search, on the phone                            | shared                       |
@@ -479,8 +479,10 @@ ordered issues so each slice is independently testable:
 | 161 | Push from the pack                                          | native-only delivery         |
 | 162 | Store readiness                                             | native-only                  |
 
-Issues 147 (the token exchange), 148 (the token source), 149 (the machine) and
-150 (the primitives) are merged; 151–162 are open. Issues 147–157 come first because they are the ones that make a screen exist. 158–160 make the three clients agree.
+Issues 147 (the token exchange), 148 (the token source), 149 (the machine),
+150 (the primitives) and 151 (the shell) are merged; 152–162 are open. Issues
+147–157 come first because they are the ones that make a screen exist. 158–160
+make the three clients agree.
 161–162 are marked "not parity" on purpose: the web has no push channel and no store, so they extend the phone
 without adding a web obligation. Nothing here changes the free-product decision: the apps are the same product with
 no purchase, no entitlement and no upsell.
