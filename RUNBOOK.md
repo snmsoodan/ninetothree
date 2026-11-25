@@ -30,8 +30,8 @@ ship, restore, or delete something.
 | Web        | Next.js app, `apps/web`    | Vercel, one project, `main` → production                    |
 | Database   | Postgres                   | `DATABASE_URL`; PGlite in-process if unset                  |
 | Content    | JSON packs + TS registries | `packages/content`, compiled into the app                   |
-| Email      | Resend                     | `RESEND_API_KEY`, `EMAIL_FROM`                              |
-| Payments   | Stripe                     | `packages/db/src/stripe.ts` (seam only)                     |
+| Sign-in    | Google and Apple           | `AUTH_GOOGLE_ID`/`_SECRET`, `AUTH_APPLE_ID`/`_SECRET`       |
+| Email      | Resend                     | `RESEND_API_KEY`, `EMAIL_FROM` — the weekly email only      |
 | Link check | `pnpm links:check`         | GitHub Actions, every PR + Mondays 13:00 UTC                |
 | Uptime     | `GET /api/health`          | Add it to the monitor; 200 = up, 503 = database unreachable |
 
@@ -171,16 +171,25 @@ column, so the hand-written SQL cannot drift from the typed schema without faili
 
 ## 8. Sign-in is broken
 
-The magic link is the only sign-in that always exists; Google and Apple appear only when both
-halves of their env pair are set.
+Sign-in is Google or Apple, and only those. The page draws a button per provider whose **two**
+env vars are set, and says "Sign-in is not set up on this copy of the app" when none are. That
+sentence in production means the deployment is missing a credential pair, not that the code is
+broken — `/signin` is server-rendered from the same list the server built, so it cannot be
+lying about what exists.
 
-| What you see                               | What it is                                                                                                                                                                                                     |
-| ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Link works on desktop, not on the phone    | `AUTH_URL` is unset or wrong. Auth.js resolves the callback against it; unset means `localhost:3000`, so the cookie lands on a host the phone is not on.                                                       |
-| Every link is rejected with `Verification` | The token in the URL and the hash in the database disagree. Auth.js stores `sha256(token + AUTH_SECRET)`; changing `AUTH_SECRET` invalidates every outstanding link, which is correct behaviour and not a bug. |
-| No email arrives                           | `RESEND_API_KEY` unset → the link is printed to stderr instead. Check the function logs before suspecting the provider.                                                                                        |
-| Sign-in loops back to `/signin`            | The session cookie is not being set: check the cookie's domain and `Secure` against the public origin, and check the browser is not blocking it.                                                               |
-| `/api/auth/dev/link` returns 404           | Correct unless `AUTH_TEST_MODE=1`. **Never set that in production** — it hands out working sign-in links to anyone who asks.                                                                                   |
+**The magic link still exists, and is not a way in.** It is built only under
+`AUTH_TEST_MODE=1`, which is what the end-to-end suite sets to get a real session. Production
+must have that variable unset: with it on, `/api/auth/dev/link` hands a working sign-in link for
+any address to anyone who asks.
+
+| What you see                               | What it is                                                                                                                                                                                                                                                                                                                            |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Link works on desktop, not on the phone    | `AUTH_URL` is unset or wrong. Auth.js resolves the callback against it; unset means `localhost:3000`, so the cookie lands on a host the phone is not on.                                                                                                                                                                              |
+| Every link is rejected with `Verification` | The token in the URL and the hash in the database disagree. Auth.js stores `sha256(token + AUTH_SECRET)`; changing `AUTH_SECRET` invalidates every outstanding link, which is correct behaviour and not a bug.                                                                                                                        |
+| "Sign-in is not set up" on `/signin`       | A credential pair is incomplete. Both halves are required: `AUTH_GOOGLE_ID`+`AUTH_GOOGLE_SECRET`, or `AUTH_APPLE_ID`+`AUTH_APPLE_SECRET`. Set them and **redeploy**: Vercel bakes the environment into a deployment, and the Auth.js instance is built once per process, so a variable added to a running deployment changes nothing. |
+| No email arrives                           | `RESEND_API_KEY` unset → the link is printed to stderr instead. Check the function logs before suspecting the provider. This is the weekly email; sign-in no longer sends one.                                                                                                                                                        |
+| Sign-in loops back to `/signin`            | The session cookie is not being set: check the cookie's domain and `Secure` against the public origin, and check the browser is not blocking it.                                                                                                                                                                                      |
+| `/api/auth/dev/link` returns 404           | Correct unless `AUTH_TEST_MODE=1`. **Never set that in production** — it hands out working sign-in links to anyone who asks.                                                                                                                                                                                                          |
 
 If sign-in is down, the guide still works signed out: reading, safety, triage and local pins need
 no account. Say that in any status message; it is true and it is most of the product.
