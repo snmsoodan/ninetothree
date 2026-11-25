@@ -427,53 +427,59 @@ Warm, low-contrast, paper-like. No pure white, no pure black, no saturated brand
 
 ### The one exception: the figure on the dashboard
 
-The owner asked for a faint line drawing of a mother holding a child, behind the
-dashboard, that lifts the child up as the page scrolls. It is a direct contradiction of
-this section and of rule 2 in "Ten product rules", and it was built knowingly, as an
-experiment to be judged by eye rather than by argument. It is scoped so that it cannot
-become the thin end of a wedge:
+The owner asked for a faint drawing behind the dashboard: first a mother holding a
+child, then a family walking hand in hand, that moves as the page scrolls. It is a direct
+contradiction of this section and of rule 2 in "Ten product rules", and it was built
+knowingly, as an experiment to be judged by eye rather than by argument. It is scoped so
+that it cannot become the thin end of a wedge:
 
-- **One place.** Only the dashboard shell, and never on `/safety` or `/triage`, where a
-  decoration would sit next to a red flag.
-- **One weight.** A single ink stroke at 7% on paper, `1.5px`, no fill, no second
-  colour, no shadow. Nothing but a silhouette. It is deliberately one step above
-  invisible: legible as a shape when you look for it, never something you read past.
-- **A body, not a pictogram.** The drawing is generated from a skeleton rather than
-  typed as coordinates: joints, then limbs as tapered capsules around them, then a
-  Catmull-Rom curve through the result. That is what buys a jaw and a nose, a nape of
-  hair with a strand loose, a chest above a waist, hips wider than the chest, a dress
-  falling to below the knee with folds in it, and knees and heels in the legs. Detail
-  is still the enemy at this weight, so everything is one line and nothing is filled.
-- **Drawn sideways.** She stands in profile facing right, the child held at her chest.
-  It is a side view because a front-on composition reads as a poster; in profile the
-  two figures read as one gesture, and the line has room to travel across the page as
-  the child rises.
-- **A lift, not a throw.** The child rises mostly vertically and stays inside arm's
-  length the whole way. Carrying them out to the edge of the frame would read as
-  handing them to someone, which is the opposite of what the drawing is for.
-- **Over the page, and given room.** The figure is pinned to the bottom of the viewport
-  and sized by height (`52vh`, capped at 470px) so it clears the bottom navigation at
-  every breakpoint that matters. It paints _above_ the content column at `z-20` —
-  below the header and tab bar at `z-30` — because behind it was a figure nobody could
-  see: the cards are opaque and their colour is one or two percent off the paper, so
-  translucency enough to let the stroke through also dissolves the card. Over the top,
-  the line has the same weight on a card as on the paper. It never covers a button or
-  the nav; `pointer-events: none` and `aria-hidden`, so it cannot be focused, tapped, or
-  read aloud.
+- **One place, one drawing per page.** Mounted once in the root layout, so it covers the
+  dashboard, the library and sign-in, but never `/safety`, `/triage` or `/print`, where a
+  decoration would sit next to a red flag. Each area of the product gets the drawing that
+  belongs to it — a parent rocking a newborn on sign-in, a parent with the bump over the
+  guide, the walking family on the dashboard, a toddler playing, a parent with a pram on
+  the account pages — so the picture never tells a parent a story that is not theirs.
+- **One weight.** A single ink stroke at 7% on paper, no fill, no second colour, no shadow.
+  Nothing but a silhouette. It is deliberately one step above invisible: legible as a shape
+  when you look for it, never something you read past.
+- **Drawn, not computed.** Four rounds of procedural geometry — plotted points, a capsule
+  skeleton, a filled contour, tapered tubes — all read as a wireframe mannequin, and no CC0
+  illustration library has an animatable mother and child. So the drawings are pictures now,
+  stored as the ink's own alpha and painted through a mask: the one files in the product that
+  nobody typed. Twenty of them — four poses for each of five moments — because one picture
+  cannot swing its legs, and a cycle has four distinct moments.
+- **On screen whole.** The layer is `fixed inset-0`; all twenty poses are composited onto one
+  1100×838 stage and masked to `contain` from the centre, so the drawing is complete on a
+  phone as well as a laptop and the figure does not change size when a parent changes page.
+- **A walk, not a loop.** The scroll carries them forward 44px over 1.5 viewports, with a 4px
+  footfall bob twice per stride, two strides in all, and a 0.6° lean about the feet. Two is
+  the number that reads as ambling: a dozen turned the page into a sprint, and a pose every
+  150px is one step per screen. Both ends are still — it starts on the spot and finishes
+  standing flat, so nothing drifts off a narrow phone and nothing rewinds — and it eases over
+  one `requestAnimationFrame` loop that stops when the gap is under 0.002, so an idle page
+  runs no frames at all. Nothing moves on a timer.
+- **Poses dissolve, they do not cut.** The four drawings are stacked layers and the handover
+  is a 320ms cross-fade, so the outgoing pose is still there while the next comes up and the
+  eye reads a continuous walk. A hard cut between four drawings is a slide show: that was the
+  second thing the owner said no to, after the speed. Two masks at partial opacity can never
+  exceed full opacity, so the dissolve does not thicken the ink.
+- **Over the page, and given room.** It paints _above_ the content column at `z-20` — below
+  the header and tab bar at `z-30` — because behind it was a figure nobody could see: the
+  cards are opaque and their colour is one or two percent off the paper, so translucency
+  enough to let the stroke through also dissolves the card. Over the top, the line has the
+  same weight on a card as on the paper. `pointer-events: none` and `aria-hidden`, so it
+  cannot be focused, tapped, or read aloud.
 - **It does not touch the text.** The ink is `currentColor`, and ink over ink is a
   no-op: `#1f1f1f` at 7% over `#1f1f1f` is still `#1f1f1f`. The strokes darken paper and
   pass straight through a letter without softening it, which is why the layer can sit
-  on top without costing a single point of contrast. Nothing is set to a partial
-  opacity anywhere else in the product any more.
-- **One walk, no animation.** The drawing is one image — a picture, not something this
-  codebase renders — and the only thing the scroll does is step it 18px to one side and
-  back, with a sub-pixel bob. It starts where it ends, so it never drifts, and nothing
-  moves on a timer, loops or bounces. `prefers-reduced-motion: reduce` holds it still.
-- **It yields.** `prefers-contrast: more` — and the reading setting that does the same —
+  on top without costing a single point of contrast. It is also why the same file works in
+  dark mode, where the ink is `#F2EDE6`.
+- **It yields.** `prefers-reduced-motion: reduce` holds it at the start of the walk before
+  the first paint. `prefers-contrast: more` — and the reading setting that does the same —
   removes it entirely with `display: none !important`. It is also excluded from print.
 
-If a later change needs a third pose, a second figure, a photograph, or a colour, that
-change needs to reopen this document first, not extend this list.
+If a later change needs a sixth theme, a fifth pose, a photograph, or a colour, that change
+needs to reopen this document first, not extend this list.
 
 ---
 

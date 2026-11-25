@@ -52,16 +52,19 @@ One question with four sets of words. "How are you feeding?" is the wrong questi
 | ![Onboarding asking "What is your child eating now?" with four answers: table food, table food and milk or water from a cup, still on formula, and a mix of milk and food](docs/screenshots/19-onboarding-feeding-two-year.png) | ![Settings' Feeding section, scrolled into view, with "Table food and milk or water from a cup" selected](docs/screenshots/20-settings-feeding-two-year.png) |
 | **Four options, never six.** Pregnancy, milk, starting solids and table food each get their own words; only "from a cup" is a new stored value.                                                                                 | **One answer, everywhere.** Settings reads the same band from the baby's birthday, so what onboarding asked is what settings shows.                          |
 
-A drawing of a family walking hand in hand — one continuous line, at 7% ink, over the
-dashboard and nothing else. As you scroll they take a step to the side and back. It is the
-one decorative thing in the product, added at the owner's request, and it argues with our
-own design notes on purpose — see §11 of [`UX_CRAFT.md`](UX_CRAFT.md) for the exception and
-its limits:
+A drawing at 7% ink, filling the viewport behind the page and nothing else: a parent rocking
+a newborn on sign-in, a parent with the bump over the guide, the walking family on the
+dashboard, a toddler chasing a ball on updates, a parent with a pram on the account pages.
+Each is four poses — a walk cycle cannot be faked with one picture, because a cycle has four
+distinct moments — and they dissolve into each other as you scroll, two strides per page with
+a footfall bob and a slight lean. It is the one decorative thing in the product, added at the
+owner's request, and it argues with our own design notes on purpose — see §11 of
+[`UX_CRAFT.md`](UX_CRAFT.md) for the exception and its limits:
 
-| At rest                                                                                                                                                                                  | Scrolled: a step into the walk                                                                                                       |
-| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| ![The dashboard with a very faint continuous line drawing of two adults and a small child walking hand in hand, painted over the page at 7% ink](docs/screenshots/21-figure-at-rest.png) | ![The same dashboard a little further down, the same drawing stepped to one side](docs/screenshots/22-figure-walking.png)            |
-| **Faint enough to ignore.** One line weight, no fill, no colour, and it never sits in front of text or a button.                                                                         | **The scroll is the only trigger.** One drawing, a transform that eases out and back; nothing animates on a timer and nothing loops. |
+| At rest                                                                                                                                                                     | Scrolled: partway into the walk                                                                                                                |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| ![The dashboard with a very faint outline drawing of two adults and a small child walking hand in hand, filling the page at 7% ink](docs/screenshots/21-figure-at-rest.png) | ![The same dashboard a little further down, the same drawing stepped forward](docs/screenshots/22-figure-walking.png)                          |
+| **Faint enough to ignore.** One line weight, no fill, no colour, and it never sits in front of text or a button.                                                            | **The scroll is the only trigger.** Four poses and a transform, both driven by where the page is; nothing animates on a timer and nothing loops. |
 
 The rest are in [`docs/screenshots/`](docs/screenshots): the due-date question with its "assume I am 28 weeks" shortcut, the persona question that opens onboarding, the confirmation step, the printable week pack, the offline page, and the same dashboard at **320 px** — the narrowest phone supported, where a test asserts nothing scrolls sideways.
 

@@ -7,7 +7,6 @@ import type { RedFlag } from "@ninetothree/content";
 import { cn } from "@ninetothree/ui";
 import { HelpNow } from "./HelpNow";
 import { OfflineNote } from "./OfflineNote";
-import { RaisingFigure } from "./RaisingFigure";
 import { SiteFooter } from "./SiteFooter";
 
 const NAV = [
@@ -64,11 +63,6 @@ export function AppShell({
 
   return (
     <div className="min-h-dvh bg-paper">
-      {/* Decoration, so it is absent from the two pages someone opens in a
-          hurry. It is drawn over the content column (z-20) rather than behind
-          it, because cards are opaque and a figure behind them is a figure
-          nobody sees; the header and tab bar stay above it at z-30. */}
-      {safetyContent ? null : <RaisingFigure />}
       <header className="no-print sticky top-0 z-30 border-b border-line bg-paper/95 backdrop-blur-sm">
         <div className="mx-auto flex h-14 max-w-2xl items-center justify-between px-5">
           <Link

@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import { ToastProvider } from "@ninetothree/ui";
 import { AuthProvider } from "@/components/AuthProvider";
 import { DIR, LANG } from "@/lib/i18n";
+import { RaisingFigure } from "@/components/RaisingFigure";
 import { ReadingAttributes } from "@/components/ReadingAttributes";
 import { RouteFocus } from "@/components/RouteFocus";
 import { ServiceWorker } from "@/components/ServiceWorker";
@@ -127,6 +128,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             Skip to content
           </a>
           <RouteFocus />
+          {/* One mount for the whole app, so sign-in and onboarding get the
+              drawing too and no new page can forget it. The route decides
+              whether there is one and which; safety, triage and print get
+              none. */}
+          <RaisingFigure />
           <ServiceWorker />
           <AuthProvider>
             <ToastProvider>{children}</ToastProvider>
