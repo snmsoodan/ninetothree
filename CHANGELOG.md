@@ -9,6 +9,34 @@ changelog written after the fact from memory is a changelog nobody can trust.
 
 ## Unreleased
 
+### The shapes a thumb can reach (#150)
+
+- **`@ninetothree/ui-native` exists, with the primitives a phone screen needs.**
+  Twelve components and four modules of pure logic, imported from the same
+  tokens as the web, so a colour changed once changes in both places. Where the
+  web has a twin (`Card`, `Button`, `Badge`, `ProgressRing`) the prop names and
+  variants are the same; where it does not (`Heading`, `Body`, `SectionHeader`,
+  `Callout`, `Chip`, `PinButton`, `Skeleton`, `Screen`, `Sheet`) the component is
+  defined here and the package header says so instead of claiming parity.
+- **The window decides the layout, not the device.** `layoutModeFor` gives four
+  modes at 360/600/840, `panesFor` splits a two-pane "book" on a real hinge when
+  one exists and on the middle when it does not, and `hingeFor()` returns `null`
+  as the documented seam for `expo-hinge`. Unfold, rotate and split-screen all
+  arrive through one width.
+- **Two bugs found by tests.** `layoutModeFor(NaN)` returned `expanded`, so an
+  unmeasured first frame would have drawn the widest layout on the narrowest
+  phone; and `Chip` announced nothing to a web screen reader, because
+  `accessibilityState` is not rendered for `role="checkbox"` by
+  react-native-web. It now sets `aria-checked` too.
+- **The ring is forty ticks, not an SVG arc.** React Native has no SVG in core
+  and a border cannot paint a sector, so the native `ProgressRing` is countable
+  ticks at 2.5% each — a week's seven days land exactly. `Button size="sm"` is 44
+  rather than the web's 36, because a thumb is not a pointer.
+- **67 tests, 100% lines and functions, 97.01% branches.** They render through
+  react-native-web in jsdom, which proves structure, roles and tokens and does
+  not prove pixels: there is no simulator on this machine, so `EVIDENCE.md` §75
+  states that limitation rather than leaving it implied.
+
 ### The behaviour, written once (#149)
 
 - **The week-by-week state machine moved out of the web app and into

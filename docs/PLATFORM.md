@@ -126,11 +126,19 @@ Each of these is one place, and each is testable on its own.
    the repository, because there is no device to run it on. The port is
    synchronous: `localStorage` is, AsyncStorage is not, and buffering the
    writes is cheaper than an `await` in every screen.
-5. **`packages/ui-native`** (new) — about fifteen primitives: `Card`, `Heading`,
-   `Body`, `Button`, `Chip`, `Badge`, `ProgressRing`, `PinButton`, `Callout`,
-   `LinkRow`, `SectionHeader`, `Skeleton`, `Sheet`, `Toast`, `Screen`. Each
-   mirrors the props of its web twin in `packages/ui`, so the same screen
-   description produces the same hierarchy on both.
+5. **`packages/ui-native`** (built, #150) — twelve primitives. Four of them
+   mirror a props surface that exists in `packages/ui` and are held to it:
+   `Card`/`CardHeader`/`CardBody`/`CardFooter`, `Button`, `Badge`,
+   `ProgressRing`. The rest — `Heading`, `Body`, `SectionHeader`, `Callout`,
+   `Chip`, `PinButton`, `Skeleton`, `Screen`, `Sheet` — have no web twin, because
+   the web reaches for utility classes and raw elements where a phone needs a
+   component. They are native definitions, not ports, and saying so is the point:
+   a claim of complete parity would be false. `Toast` is not built yet; the
+   screens that need one (#151–#157) will add it.
+   Two deviations from the web are deliberate and written down in
+   `EVIDENCE.md` §75: the ring is forty ticks rather than an SVG arc, because
+   React Native has no SVG in core, and `Button size="sm"` is 44 points rather
+   than 36, because a thumb cannot hit what a pointer can.
 6. **Push and email from the pack.** The weekly email already renders a pack.
    The push notification is a field of the same pack: one edit, three channels.
 
@@ -183,10 +191,14 @@ the window, never from the device.**
 
 - `useLayoutMode()` reads `useWindowDimensions()` and returns the mode plus
   `posture` and `hinge`. Width alone already covers unfold, rotate, split-screen
-  and tablet, because React Native re-renders when the window resizes.
+  and tablet, because React Native re-renders when the window resizes. Both are
+  built (#150): `layoutModeFor`, `panesFor` and `crossesHinge` in `layout.ts`,
+  and `hingeFor()` in `hinge.ts` returning `null` as the seam below.
 - `expo-hinge` (SDK 58) adds the posture and angle that only the OS knows, which
   is what tells us to keep interactive controls off the crease and to move the
-  primary action to the top half in half-open "laptop" posture.
+  primary action to the top half in half-open "laptop" posture. It plugs into
+  `hingeFor()`; everything downstream already speaks `Hinge`, so the foldable
+  work is #160 rather than a rewrite.
 - Web gets the same four modes from container queries, and
   `env(viewport-segment-*)` / `device-posture` where a browser reports them,
   with the width rules as the fallback that always works.

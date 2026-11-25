@@ -2702,6 +2702,82 @@ adapter is four methods and is described in `docs/PLATFORM.md`, but this machine
 has no Xcode licence and no Android SDK, so writing one would be a file no test
 could run. The package is proven port-shaped, not device-shaped.
 
-## 75. How this file is maintained
+## 75. The shapes a thumb can reach (issue #150)
+
+**The idea.** One description of a screen, drawn on both clients. `packages/ui`
+already holds the web's primitives; this issue writes the native twelve that a
+phone screen actually needs, with the same prop names and the same variants, so
+`<Button variant="secondary" block>` means the same thing in both places.
+
+**What was built.** `packages/ui-native`, four files of pure logic and six of
+components. The logic is where the portability claims live:
+
+- `theme.tsx` — the tokens through a context, because React Native has no
+  cascade. The default is the light theme rather than an error, so a primitive
+  rendered in a modal's new root or in a test still draws. `resolveMode()` is a
+  pure function so the system-follows-room branch is testable without mocking
+  the OS.
+- `layout.ts` — `compact < 360 ≤ regular < 600 ≤ medium < 840 ≤ expanded`, the
+  four modes `docs/PLATFORM.md` §6 promised. `panesFor(width, hinge)` splits on
+  the crease when there is one and on the middle when there is not, and
+  `crossesHinge()` is the rule that keeps a control off the fold.
+- `hinge.ts` — `hingeFor()` returns `null`, which is the documented seam for
+  `expo-hinge`. Posture and angle are the OS's to know; what this package
+  guarantees is that everything downstream already speaks `Hinge`.
+- `screen.tsx` — the page, with per-mode padding, optional scroll, and the one
+  place that knows a foldable has two halves. Padding is a number per mode
+  rather than a percentage, so `compact` loses nothing to margins it cannot
+  afford.
+
+**Two bugs the tests found, both invisible on a device.** `layoutModeFor(NaN)`
+returned `expanded`, because every comparison against `NaN` is false — a first
+frame before the window is measured would have drawn the widest layout on the
+narrowest phone. And `Chip` set `accessibilityState={{ checked }}`, which React
+Native maps to the platform's checked state but react-native-web does not render
+for `role="checkbox"`: the chip changed colour and said nothing, which is the
+exact failure the comment above it claimed to prevent. It now sets `aria-checked`
+as well, and `toBeChecked()` is the assertion.
+
+**The ring is forty ticks, not an arc.** The web draws an SVG circle with a dash
+offset. React Native has no SVG in core, and a border-plus-transform trick cannot
+paint an arbitrary sector, so the ring is forty round ticks at 2.5% each — a
+week's seven days land exactly, and the count is something a test asserts rather
+than something an eye approves. `filledTicks` rounds rather than floors, so 43%
+of a week lights seventeen ticks instead of appearing stuck at sixteen. This is
+a visual deviation from the web and `docs/PLATFORM.md` §4 says so.
+
+**One deliberate size difference.** `Button size="sm"` is 36px on the web and 44
+here. A pointer can hit 36; a thumb cannot, and shipping a visual match that
+fails Apple's own touch guidance would be a bug wearing a costume. `MIN_TARGET`
+is 44 and every control honours it.
+
+**Parity is honest about where it stops.** Seven of the components —
+`Card`/`CardHeader`/`CardBody`/`CardFooter`, `Button`, `Badge`, `ProgressRing` —
+mirror a real web twin and share its props. The other seven — `Heading`, `Body`,
+`SectionHeader`, `Callout`, `Chip`, `PinButton`, `Skeleton`, plus `Screen` and
+`Sheet` — have no web counterpart in `packages/ui`: the web reaches for
+utility classes and raw elements where this package needs a component. They are
+defined here, not mirrored, and the package header says so rather than claiming a
+parity that does not exist.
+
+**How it was verified.** `pnpm --filter @ninetothree/ui-native test` → **67 tests
+in ten files**, 100% statements, lines and functions, 97.01% branches, above the
+95% threshold. `pnpm typecheck`, `pnpm lint` and `pnpm format:check` clean;
+`pnpm test` across the monorepo green with the web's thresholds untouched;
+`pnpm exec turbo run build --filter=@ninetothree/web` and `pnpm bundle:check`
+green, so nothing this package does reaches the web bundle.
+
+**What it does not prove, and why that is stated rather than implied.** There is
+no Xcode licence and no Android SDK on this machine, so no simulator ran and no
+screenshot exists. The tests render through **react-native-web in jsdom**,
+which proves the element tree, the accessibility roles and the token values —
+that `Heading` is a heading, that `Button` is disabled and 44 tall, that a
+`Callout` in dark mode is not the light wash, that a chip announces its own
+selection. It does **not** prove pixels: the gap between a drawn arc and forty
+ticks, the feel of a `Pressable`, the true width of an `Inter` line, or whether
+the two-pane spread looks like a book. Those need a device, and issue #159 (the
+parity harness) and #160 (foldables, tested) are where they get one.
+
+## 76. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.
