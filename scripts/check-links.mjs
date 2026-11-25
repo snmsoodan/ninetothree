@@ -274,7 +274,9 @@ async function probeOnce(url) {
 async function probe(url) {
   let result = await probeOnce(url);
   for (let attempt = 0; attempt < RETRIES; attempt++) {
-    const retryable = result.status === 0 || result.status >= 500;
+    // A 404 is retried as well: a CDN that is throttling us serves one for a
+    // page that is there, and one retry separates that from a page that is not.
+    const retryable = result.status === 0 || result.status === 404 || result.status >= 500;
     if (!retryable) return result;
     await new Promise((resolve) => setTimeout(resolve, 1000 * (attempt + 1)));
     result = await probeOnce(url);
@@ -335,6 +337,14 @@ function classify(url, result) {
   if (result.parked) return "parked";
   if (isChallenge(result.finalUrl)) return "bot-protected";
   if (result.status >= 200 && result.status < 400) return "ok";
+  // A 404 from a host that already refuses honest clients is not evidence of a
+  // dead page. fda.gov answered 403 for seventy of its URLs and 404 for two of
+  // them in the same run — the same pages answer 200 in a browser and did so
+  // from a laptop a minute later. Those hosts are already "verify by hand", so
+  // a 404 there is too; anywhere else it still fails.
+  if (result.status === 404 || result.status === 410) {
+    return BOT_PROTECTED.has(new URL(url).host) ? "bot-protected" : "broken";
+  }
   if (result.status === 403 || result.status === 429) return "bot-protected";
   return "broken";
 }

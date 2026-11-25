@@ -20,6 +20,12 @@ changelog written after the fact from memory is a changelog nobody can trust.
   trip this want opposite things. Only a socket that survives both is reported
   as "could not be checked", which fails `--strict` on the weekly run and not a
   pull request. `pnpm links:check --strict` is green: 299 links, none broken.
+- **A 404 from a host that blocks us is not a 404.** With the four above fixed,
+  the same job failed on two `fda.gov` pages that answer 200 in a browser, in a
+  run where seventy other `fda.gov` URLs answered 403. A 404 or 410 from a host
+  already in `BOT_PROTECTED` is now "verify by hand", after one retry; a 404
+  from anywhere else still fails. A fake `fda.gov` path and an `example.com`
+  path that cannot exist were used as controls and both behaved as intended.
 
 ### Nine recalls, filtered by age, and a licence that asks for credit (#130)
 

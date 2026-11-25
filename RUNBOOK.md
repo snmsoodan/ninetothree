@@ -92,6 +92,11 @@ pnpm lighthouse:mobile          # the phone budget
 that block non-browser clients. Those are expected to be 403s, **not** expected to be ignored: open
 them by hand. The list is currently four hosts, named in the check output.
 
+A host on that list can also answer 404 for a page that exists — `fda.gov` returned 403 for seventy
+of its URLs and 404 for two of them in one run, and all seventy-two answer 200 in a browser. So a
+404 from one of those hosts is reported as "verify by hand" too, after one retry. A 404 from any
+other host still fails the check, because there it means what it says.
+
 A host that never answers is a third list — "could not be checked from here" — and it does not fail
 a pull request, because a site having a bad afternoon is not a link we broke. `pnpm links:check --
 --strict` fails on it too, and the Monday schedule is the only run that passes `--strict`. So if a
