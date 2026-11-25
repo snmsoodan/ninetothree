@@ -850,6 +850,24 @@ token added for the web is not automatically a token the phone has — the sourc
 file is the only place a new value can be introduced, which is exactly the
 coupling route B wanted.
 
+The fifth seam is built as `@ninetothree/ui-native`. The web's view layer is
+Radix, Tailwind and utility classes, none of which a phone can render, so the
+primitives are written twice and share only their names: `Card`, `Button`,
+`Badge` and `ProgressRing` mirror `packages/ui` exactly, while `Heading`,
+`Body`, `SectionHeader`, `Callout`, `Chip`, `PinButton`, `Skeleton`, `Screen` and
+`Sheet` have no web twin and are defined natively. That split is the honest
+shape of the duplication — roughly half the surface is shared by contract and
+half by intent. Two decisions are architectural rather than cosmetic. The window
+decides the layout, never the device: `layoutModeFor` gives four width modes and
+`panesFor` splits a two-pane spread on a real hinge when the OS reports one,
+which is what makes unfold, rotate, split-screen and tablet the same code path.
+And `hingeFor()` returns `null` until `expo-hinge` supplies a posture, so the
+foldable case is a plugged hole rather than a branch waiting to be written. The
+package's 67 tests render through react-native-web, which proves the element
+tree, the accessibility roles and the token values and proves nothing about
+pixels; there is no simulator in this environment, and the foldable evidence
+belongs to issues #159 and #160.
+
 The fourth bullet is built, and it is the one that decides whether a screen is
 cheap or expensive to port. The parent's state — what is done, skipped, snoozed,
 pinned, chosen, completed, noticed — was a 991-line module inside `apps/web`,
