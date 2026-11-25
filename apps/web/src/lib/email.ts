@@ -16,7 +16,7 @@ import {
   suppressesEmail,
 } from "@ninetothree/rules";
 import { localDate } from "./reminders";
-import { shouldSend, type NotificationPrefs, type SendReason } from "./notifications";
+import { shouldSend, type NotificationPrefs, type SendReason } from "@ninetothree/domain";
 import { stageInput, type AppState } from "./store";
 
 /** 8am in the parent's own timezone. Not 3am, not midnight. */

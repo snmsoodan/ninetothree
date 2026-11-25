@@ -1,7 +1,7 @@
 "use client";
 
 import { RadioGroup } from "@ninetothree/ui";
-import type { Contrast, Letters, Motion, ReadingPrefs } from "@/lib/reading";
+import type { Contrast, Letters, Motion, ReadingPrefs } from "@ninetothree/domain";
 
 const CONTRAST_OPTIONS = [
   {

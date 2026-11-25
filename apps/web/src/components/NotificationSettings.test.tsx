@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
-import { DEFAULT_NOTIFICATIONS, type NotificationPrefs } from "@/lib/notifications";
+import { DEFAULT_NOTIFICATIONS, type NotificationPrefs } from "@ninetothree/domain";
 import { NotificationSettings } from "./NotificationSettings";
 
 const prefs = (patch: Partial<NotificationPrefs> = {}): NotificationPrefs => ({

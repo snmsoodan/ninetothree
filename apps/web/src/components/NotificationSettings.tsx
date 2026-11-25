@@ -5,7 +5,7 @@ import {
   NOTIFICATION_FREQUENCIES,
   type NotificationFrequency,
   type NotificationPrefs,
-} from "@/lib/notifications";
+} from "@ninetothree/domain";
 
 const FREQUENCY_OPTIONS = [
   { value: "weekly", label: "Every week", hint: "The week you are in, on the day it starts." },

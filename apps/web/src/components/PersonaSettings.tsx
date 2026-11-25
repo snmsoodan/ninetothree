@@ -2,7 +2,7 @@
 
 import { PERSONA_META, type Persona } from "@ninetothree/content/core";
 import { Checkbox, RadioGroup } from "@ninetothree/ui";
-import { PERSONA_ORDER } from "@/lib/persona";
+import { PERSONA_ORDER } from "@ninetothree/domain";
 
 export interface PersonaSettingsProps {
   persona: Persona;

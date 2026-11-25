@@ -1,6 +1,6 @@
 import { act, render, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { READING_STORAGE_KEY, readingBootstrapScript } from "@/lib/reading";
+import { READING_STORAGE_KEY, readingBootstrapScript } from "@ninetothree/domain";
 import { __resetForTests, setReading, subscribe } from "@/lib/store";
 import { ReadingAttributes } from "./ReadingAttributes";
 
