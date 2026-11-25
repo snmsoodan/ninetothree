@@ -782,30 +782,33 @@ What already crosses is the large, slow, expensive part: `packages/content` (85
 packs, every citation, every red flag) and `packages/rules` are plain TypeScript
 with no React and no DOM, and the 108 design tokens are values rather than CSS
 classes. What does not cross is the view layer — Radix components, Tailwind,
-print stylesheets, the drawn scroll walk — and the data access, because server
-components read Postgres directly and a phone cannot.
+print stylesheets, the drawn scroll walk.
+
+The data access crosses almost for free, which an early draft of this section got
+wrong: `/week/[id]` is static over the pack registry and reads no database,
+`/library` and `/search` are client components over the same bundled
+registries, and `/today` is a client dashboard. Twelve of the thirteen files that
+touch Drizzle are route handlers; the single page that opens it is
+`/join/[token]`. A phone therefore bundles the same packs rather than fetching
+them.
 
 The route recommended there, and the cost of it, is in **`docs/PLATFORM.md`**,
 with the four options that were weighed and the reasons the other three were
 not. Two consequences belong in the architecture proper, because they are
 structural rather than tactical:
 
-- **A client-facing API becomes real.** Today the only typed boundary is the
-  repository layer under React Server Components. A phone cannot open a Postgres
-  socket, so it needs two reads over HTTP:
-
-  ```
-  GET /api/v1/week/[id]
-  GET /api/v1/library
-  ```
-
-  validated by the same `zod` contracts the server already uses, so there is one
-  description of what a client receives rather than two.
+- **The existing JSON routes gain contracts.** No new read endpoints are owed:
+  the content is bundled, and the stateful routes are already HTTP. What is
+  missing is a description of what they return — `/api/household/pins`,
+  `/api/household/together`, `/api/household/membership`, `/api/updates` and the
+  account export. They gain `zod` schemas from `packages/contracts` validated on
+  the way out, so a field added for the web cannot silently fail to reach the
+  phone, and there is one description of what a client receives rather than two.
 
 - **Sessions stay in the database, and the phone joins them.** A native sign-in
   exchanges a Google or Apple ID token for an ordinary row in `sessions`, and the
   app sends it as a bearer token. There is no second identity system, so revoking
   a session revokes it everywhere, which is the behaviour a lost phone deserves.
 
-No native code exists yet, and none of this changes the web build until the route
-in `docs/PLATFORM.md` is chosen.
+No native code exists yet. Route B is accepted, and the first slice is the
+exchange above; none of it changes the web build.

@@ -2369,11 +2369,23 @@ these are the numbers the recommendation stands or falls by:
 | 85 packs: 39 pregnancy weeks (w4–w42), 12 postpartum weeks, 10 infant months, 24 toddler months | `ls packages/content/packs \| sed -E 's/-[0-9]+\.json//' \| sort \| uniq -c`                                                                        |
 | design tokens are values, not classes                                                           | `grep -c '^\s*--' packages/ui/src/tokens.css` → 108                                                                                                 |
 | `packages/ui` is web-only                                                                       | its `package.json` peer-deps on `react-dom`; Radix `react-checkbox`, `react-dialog`, `react-radio-group`, `react-tabs`                              |
-| 13 server files read Drizzle directly                                                           | `grep -rl '@ninetothree/db' apps/web/src/app apps/web/src/components \| wc -l`                                                                      |
+| 13 files under `src` import `@ninetothree/db`: 12 route handlers and one page                   | `grep -rl '@ninetothree/db' apps/web/src/app apps/web/src/components` → 13, then checked each one; only `app/join/[token]/page.tsx` is a page       |
 | 64 components under `src/components`                                                            | `find apps/web/src/components -name '*.tsx' ! -name '*.test.tsx' ! -name '*.stories.tsx' \| wc -l`                                                  |
 | the web's JavaScript budgets                                                                    | `scripts/check-bundle.mjs`: `BUNDLE_BUDGET_BYTES ?? 150_000`, `/week/[id]` gzip `90_000`                                                            |
 | the web already ships an offline shell                                                          | `apps/web/public/sw.js` (140 lines, precache + offline fallback), `public/offline.html`, `e2e/offline.spec.ts`                                      |
 | sessions are database rows, so a bearer token can join them                                     | `apps/web/src/lib/auth/config.ts`: `session: { strategy: "database" }`                                                                              |
+
+**A correction to the document it produced.** After §2 and §5 were written, the
+week route was read rather than remembered: `/week/[id]` is static over the pack
+registry and never opens the database, `/library` and `/search` are client
+components over the same bundled registries, and `/today` is a client dashboard.
+The first draft therefore overclaimed — it asserted that a phone needs two new
+reads (`/api/v1/week/[id]`, `/api/v1/library`) because server components read
+Postgres. They do not, for content. The correction narrows the server work in route
+B to contracts on the twelve existing routes plus the token exchange, removes the two
+invented endpoints from `ARCHITECTURE.md` §19, and lowers the estimate in §8 by two to
+three days. It is recorded here rather than quietly edited because the same
+overclaim is exactly what a reader would otherwise inherit.
 
 **What it found that was not the question.** Describing the stack honestly meant
 reading `ARCHITECTURE.md` §2, which still listed Stripe Checkout and a magic link

@@ -42,9 +42,25 @@ Three things are web-shaped, and none of them is an accident:
    `@media print` for the week pack, and the hand-drawn scroll walk
    (`WalkScene`, five themes, four poses, cross-faded). Every one of those has a
    native equivalent, and none of them is the same code.
-2. **Data access.** Server components ask Drizzle directly. That is why there is
-   no loading spinner on `/week/[id]` and why the week prints with JavaScript
-   off. A phone cannot open a Postgres socket, so a phone needs HTTP.
+2. **Data access — and a correction.** The first pass of this document assumed
+   the pages read Postgres server-side, and that a phone would therefore need a
+   whole new read API. Counting it instead of assuming it says otherwise:
+
+   | Where the web's data comes from                    | Files |
+   | -------------------------------------------------- | ----- |
+   | Route handlers under `app/api`                     | 12    |
+   | A page that touches the database (`/join/[token]`) | 1     |
+
+   `/week/[id]` is **static**: `generateStaticParams` over the pack registry,
+   the pack handed straight to `WeekView`, no database at all — which is why it
+   prints with JavaScript off. `/library` and `/search` are client components
+   over the same bundled registries, and `/today` renders a client dashboard.
+   So **the packs already reach the client without an API**: the phone bundles
+   the same registry and gets the same 85 weeks. Everything stateful (pins,
+   household, membership, invites, jobs, together, updates) is already a JSON
+   route. What a phone cannot do is present a **cookie** that Auth.js minted for
+   a browser — that, not the reads, is the real gap. §5.
+
 3. **The performance contract.** `scripts/check-bundle.mjs` enforces 150 kB gzip
    per chunk and 90 kB for `/week/[id]`. A React Native Web shell is several
    times that before it renders a word. Lighthouse would fail, and a content
@@ -55,7 +71,7 @@ Three things are web-shaped, and none of them is an accident:
 | Route                                                                                         | One view layer?                      | Web today | Native    | The bill                                                                                                |
 | --------------------------------------------------------------------------------------------- | ------------------------------------ | --------- | --------- | ------------------------------------------------------------------------------------------------------- |
 | **A** Expo for all three, Expo Router web (v56 ships streaming SSR, data loaders, API routes) | yes                                  | rewritten | yes       | whole web app migrated onto RN primitives; JS budget, Lighthouse and the scroll illustration all redone |
-| **B** Next for web, Expo for iOS + Android, shared domain                                     | no — behaviour shared, markup twice  | untouched | yes       | ~15 primitives written twice; a typed API; a native token exchange                                      |
+| **B** Next for web, Expo for iOS + Android, shared domain                                     | no — behaviour shared, markup twice  | untouched | yes       | ~15 primitives written twice; contracts on the existing routes; a native token exchange                 |
 | **C** Capacitor or a PWA shell around the site                                                | n/a — it is the website in a webview | untouched | a webview | cheapest, but push, background work and real foldable layout stay weak                                  |
 | **D** Flutter, or Compose Multiplatform                                                       | yes                                  | rewritten | yes       | a second language, the content layer discarded, and the web's SEO gone                                  |
 
@@ -110,23 +126,18 @@ Each of these is one place, and each is testable on its own.
 6. **Push and email from the pack.** The weekly email already renders a pack.
    The push notification is a field of the same pack: one edit, three channels.
 
-## 5. The two pieces of work the phone forces
+## 5. What the phone actually forces
 
-Both are server-side, both are small, and neither exists today.
+Less than this document first claimed, which is the reason §2 was counted rather
+than reasoned. No new read endpoints are needed: the content is bundled, and the
+stateful routes already exist. Two things are missing.
 
-**A typed HTTP API.** Not a new API for its own sake: the route handlers that
-already exist (`/api/household/pins`, `/api/household/together`, `/api/updates`)
-keep their paths and gain contracts, and two reads get added because a phone
-has no other way to get them:
-
-```
-GET  /api/v1/week/[id]        the pack, personalised for this household
-GET  /api/v1/library          entries filtered by stage and household
-POST /api/auth/native/exchange  provider ID token in, session token out
-```
-
-Server components keep reading Drizzle directly. The API is for clients that
-cannot.
+**Contracts on the routes that already exist.** `/api/household/pins`,
+`/api/household/together`, `/api/household/membership`, `/api/updates` and the
+account export return shapes described nowhere outside their handlers, so a
+second client would have to re-derive them by reading code and hoping. They gain
+`zod` schemas from `packages/contracts`, validated on the way out, so a field
+added for the web cannot silently fail to reach the phone.
 
 **A native token exchange — one identity system, not two.** Sessions already
 live in the database (`strategy: "database"`, `packages/db/src/schema`). So the
@@ -144,7 +155,9 @@ phone does not need a parallel auth stack:
 
 The consequence worth stating: **signing out on the phone revokes a database
 row**, so it revokes the web session too, and a lost phone is a delete, not a
-hope. It also means Google and Apple remain the only two ways in, on every
+hope.
+
+The exchange is the only genuinely new server code in route B. It also means Google and Apple remain the only two ways in, on every
 platform — no third door appears because a store demanded one.
 
 ## 6. Foldables and the other shapes
@@ -205,7 +218,7 @@ before the toolchains are installed.
 | Work                                                                               | Size      | Risk                                                                     |
 | ---------------------------------------------------------------------------------- | --------- | ------------------------------------------------------------------------ |
 | `packages/tokens`, `contracts`, `domain`                                           | 3–4 days  | low — additive, tested, no web change                                    |
-| Typed API + contracts on existing routes                                           | 3–5 days  | medium — a second read path can quietly disagree with the first          |
+| Contracts on the twelve existing routes                                            | 1–2 days  | low — a strict schema will reject a field the handler already sends      |
 | Native token exchange                                                              | 1–2 days  | medium — token verification is security code and needs its own tests     |
 | `packages/ui-native` (15 primitives)                                               | 4–5 days  | low, but it is the start of the visible duplication                      |
 | `apps/mobile` screens (onboarding, today, week, library, pins, settings, together) | 2–3 weeks | medium — the first screen is slow, the tenth is fast                     |
