@@ -9,6 +9,24 @@ changelog written after the fact from memory is a changelog nobody can trust.
 
 ## Unreleased
 
+### The link check stops calling live pages dead (#134)
+
+- **A socket closed by the far end is not a 404.** `postpartum.net` and
+  `cribsforkids.org` hang up on Node's `fetch` with "other side closed", which
+  the Links job had been reading as a dead domain — and it had failed every
+  Monday on `main` since the fourth of November for four URLs that all answer
+  200 in a browser. A socket-level failure is now retried once with `curl`,
+  browser user agent first and curl's own second, because the two hosts that
+  trip this want opposite things. Only a socket that survives both is reported
+  as "could not be checked", which fails `--strict` on the weekly run and not a
+  pull request. `pnpm links:check --strict` is green: 299 links, none broken.
+- **A 404 from a host that blocks us is not a 404.** With the four above fixed,
+  the same job failed on two `fda.gov` pages that answer 200 in a browser, in a
+  run where seventy other `fda.gov` URLs answered 403. A 404 or 410 from a host
+  already in `BOT_PROTECTED` is now "verify by hand", after one retry; a 404
+  from anywhere else still fails. A fake `fda.gov` path and an `example.com`
+  path that cannot exist were used as controls and both behaved as intended.
+
 ### Nine recalls, filtered by age, and a licence that asks for credit (#130)
 
 - **A recall now knows who it is for.** `ages` on every recall is a signed-month

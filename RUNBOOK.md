@@ -92,11 +92,24 @@ pnpm lighthouse:mobile          # the phone budget
 that block non-browser clients. Those are expected to be 403s, **not** expected to be ignored: open
 them by hand. The list is currently four hosts, named in the check output.
 
+A host on that list can also answer 404 for a page that exists — `fda.gov` returned 403 for seventy
+of its URLs and 404 for two of them in one run, and all seventy-two answer 200 in a browser. So a
+404 from one of those hosts is reported as "verify by hand" too, after one retry. A 404 from any
+other host still fails the check, because there it means what it says.
+
 A host that never answers is a third list — "could not be checked from here" — and it does not fail
 a pull request, because a site having a bad afternoon is not a link we broke. `pnpm links:check --
 --strict` fails on it too, and the Monday schedule is the only run that passes `--strict`. So if a
 link sits in that list on the weekly run, somebody opens it and either replaces the entry or
 confirms the host is simply blocking us. Nothing in that list is ever a 404.
+
+A host that hangs up on Node's handshake is the fourth case, and it is the one that used to land in
+the wrong list. `postpartum.net` and `cribsforkids.org` close the socket on `fetch` with "other side
+closed", which the check read as a dead domain — the Links job failed on `main` every Monday from
+early November for it. Those URLs are retried once with `curl`, first with the browser user agent
+and then with curl's own, because the two groups are opposite: one hangs up on Node, the other hangs
+up on anything that claims to be Chrome from a client that is not. A socket that survives both is
+reported as "could not be checked" and does not fail a pull request.
 
 If a link moved, replace it with the same document, not a similar-sounding one. If the document is
 gone, the claim that cited it goes too — see [§11](#11-a-clinical-error).

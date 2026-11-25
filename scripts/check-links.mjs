@@ -8,6 +8,11 @@
  * anything that is not a browser. A 403 is not a dead link, so it is reported
  * as "verify manually" and does not fail the build. A 404 or 410 does.
  *
+ * A socket closed by the other end is a fourth case, and it is not a dead link
+ * either. Node's fetch is closed on the handshake by a few hosts that answer
+ * curl perfectly well — postpartum.net and cribsforkids.org both do it — so a
+ * socket-level failure is retried once with curl before it is believed.
+ *
  * A host that never answers is a third case, and it is not a dead link either.
  * nationaldiaperbanknetwork.org went quiet for a fortnight; the pull requests
  * that happened to land in that fortnight failed on it, which taught everyone
@@ -19,6 +24,7 @@
  * Runs on every pull request and weekly on a schedule, because a link that
  * worked when it was written can rot without anyone touching the repo.
  */
+import { spawnSync } from "node:child_process";
 import { readdir, readFile } from "node:fs/promises";
 import { join } from "node:path";
 
@@ -176,6 +182,46 @@ async function collect() {
   return urls;
 }
 
+/**
+ * curl, for the hosts that hang up on undici. It is asked only after a
+ * socket-level failure, it follows redirects, and it reports the status and
+ * the address it landed on, so the caller classifies a real answer.
+ */
+function curlOnce(url, userAgent) {
+  const nullDevice = process.platform === "win32" ? "NUL" : "/dev/null";
+  const out = spawnSync(
+    "curl",
+    [
+      "-sS",
+      "-L",
+      "--http1.1",
+      "-o",
+      nullDevice,
+      "--max-time",
+      String(Math.round(TIMEOUT_MS / 1000)),
+      ...(userAgent ? ["-A", userAgent] : []),
+      "-w",
+      "%{http_code} %{url_effective}",
+      url,
+    ],
+    { encoding: "utf8", timeout: TIMEOUT_MS + 5000 },
+  );
+  if (out.error || out.status !== 0) return null;
+  const [code, ...rest] = out.stdout.trim().split(" ");
+  const status = Number(code);
+  if (!Number.isInteger(status) || status === 0) return null;
+  return { status, finalUrl: rest.join(" ") };
+}
+
+function probeWithCurl(url) {
+  // Two tries, because the two failures are opposite. Some hosts hang up on
+  // Node's handshake and answer a browser-shaped curl; others hang up on a
+  // browser-shaped client precisely because it is not a browser and answer
+  // curl's own name. postpartum.net is in the second group: a Chrome UA gets
+  // an empty reply over HTTP/1.1, and no UA gets a 200.
+  return curlOnce(url, UA) ?? curlOnce(url, null);
+}
+
 async function probeOnce(url) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
@@ -201,10 +247,20 @@ async function probeOnce(url) {
   } catch (error) {
     const name = error instanceof Error ? error.name : "";
     const message = error instanceof Error ? error.message : String(error);
+    const cause = error instanceof Error && error.cause instanceof Error ? error.cause : null;
     // An abort is our own timer, or the CDN giving up. A refused connection
     // or a missing name is the domain being gone, which is a real dead link.
+    // A closed socket is neither: it is the other end hanging up, and it is
+    // worth asking a different client before calling the page dead.
+    const dropped = /other side closed|econnreset|socket hang up|und_err_socket/i.test(
+      `${message} ${cause?.message ?? ""} ${cause?.code ?? ""}`,
+    );
+    if (dropped) {
+      const second = probeWithCurl(url);
+      if (second) return second;
+    }
     const silent =
-      name === "AbortError" || /abort|timed?\s?out|eai_again|econnreset/i.test(message);
+      dropped || name === "AbortError" || /abort|timed?\s?out|eai_again|econnreset/i.test(message);
     return { status: 0, error: message, silent };
   } finally {
     clearTimeout(timer);
@@ -218,7 +274,9 @@ async function probeOnce(url) {
 async function probe(url) {
   let result = await probeOnce(url);
   for (let attempt = 0; attempt < RETRIES; attempt++) {
-    const retryable = result.status === 0 || result.status >= 500;
+    // A 404 is retried as well: a CDN that is throttling us serves one for a
+    // page that is there, and one retry separates that from a page that is not.
+    const retryable = result.status === 0 || result.status === 404 || result.status >= 500;
     if (!retryable) return result;
     await new Promise((resolve) => setTimeout(resolve, 1000 * (attempt + 1)));
     result = await probeOnce(url);
@@ -279,6 +337,14 @@ function classify(url, result) {
   if (result.parked) return "parked";
   if (isChallenge(result.finalUrl)) return "bot-protected";
   if (result.status >= 200 && result.status < 400) return "ok";
+  // A 404 from a host that already refuses honest clients is not evidence of a
+  // dead page. fda.gov answered 403 for seventy of its URLs and 404 for two of
+  // them in the same run — the same pages answer 200 in a browser and did so
+  // from a laptop a minute later. Those hosts are already "verify by hand", so
+  // a 404 there is too; anywhere else it still fails.
+  if (result.status === 404 || result.status === 410) {
+    return BOT_PROTECTED.has(new URL(url).host) ? "bot-protected" : "broken";
+  }
   if (result.status === 403 || result.status === 429) return "bot-protected";
   return "broken";
 }
