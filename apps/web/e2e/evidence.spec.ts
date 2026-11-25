@@ -184,6 +184,26 @@ test("the feeding question at two years, on both screens that ask it", async ({ 
   await shot(page, "20-settings-feeding-two-year");
 });
 
+test("the figure behind the page, at rest and lifted by the scroll", async ({ page }) => {
+  await onboard(page);
+  const figure = page.getByTestId("raising-figure");
+  const childHead = figure.locator('[data-part="child-head"]');
+  await expect(figure).toHaveAttribute("aria-hidden", "true");
+  await shot(page, "21-figure-hug");
+
+  const hugging = await childHead.boundingBox();
+  expect(hugging).not.toBeNull();
+  await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+  /* The lift is eased over ~20 frames, so wait for it to arrive rather than
+     sleeping a guessed number of milliseconds. */
+  await expect
+    .poll(async () => (await childHead.boundingBox())?.y ?? Number.POSITIVE_INFINITY, {
+      timeout: 5_000,
+    })
+    .toBeLessThan((hugging?.y ?? 0) - 80);
+  await shot(page, "22-figure-raised");
+});
+
 test("the narrowest phone we support, with nothing sideways", async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 640 });
   await onboard(page);

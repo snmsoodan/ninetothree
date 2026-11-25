@@ -2063,6 +2063,77 @@ The fix is a `NOT_OURS` deny list checked before any rule (`adult`, `senior`, `e
 
 **What this does not prove.** The band boundaries are the standard ones — the AAP introduces solids around six months and whole milk and a cup replace formula and the bottle around twelve — and they are coarse on purpose, because a child who starts solids at five months and one who starts at seven are both handled and neither is wrong. Nothing nudges a parent who answered `breast` in pregnancy to answer again once the band becomes `solids`; the radio simply shows nothing selected and the answer stands until they change it. A stored `cup` hides breastfeeding steps, and no step in the toddler packs is breastfeeding-specific, so in practice the value changes what the settings screen says more than what the week shows.
 
-## 67. How this file is maintained
+## 67. A faint figure behind the dashboard that lifts the child as you scroll (issue #136)
+
+**The ask, and the argument against it.** The owner wanted a barely visible outline of a
+mother holding a child behind the dashboard, which raises the child as the page scrolls.
+Three of this project's own rules forbid it: §11 of `UX_CRAFT.md` ("no illustrations of
+people", "the only decorative element allowed is a thin horizontal rule"), rule 2 of the
+ten product rules ("nothing moves unless the user moved it"), and the "never" line in §8
+(no scroll-triggered reveals). Rather than quietly break them or quietly refuse, §11 now
+carries a named exception with its limits written down, and the two other rules point at
+it. If the experiment is rejected, delete the component and the exception together — the
+drawing must not outlive the paragraph that justifies it.
+
+**The drawing is data, not a file.** `components/raising.ts` holds seventeen paths and a
+function `figureAt(t)` that returns the same seventeen paths at any `t` from 0 to 1, in a
+fixed order, so the renderer can address them by index and never remounts a node. Each
+coordinate is the linear interpolation between a hugging pose and a raised pose, then run
+through a smoothstep so the lift starts and stops without a jolt. Only the coordinates
+that differ between the poses actually move: her hair, head, neck, torso, skirt, legs and
+feet are the same in both, and her arms and the child's head, body, arms and legs travel.
+That is what makes it read as lifting rather than as a cross-fade of two pictures.
+
+**The scroll drives it, and nothing else does.** `RaisingFigure.tsx` is a client component
+with one passive `scroll` listener, one `resize` listener and one `matchMedia` change
+listener. Scroll sets a target; a single `requestAnimationFrame` loop eases the current
+value toward it at 0.18 per frame and stops when the gap is under 0.002, so an idle page
+has no running animation frame. Each frame writes `d` straight onto the thirteen nodes
+that move with `setAttribute` — thirteen attribute writes, not a React render per scroll
+event. The travel is 1.5 viewport heights, which is long enough to feel like the page is
+being lifted and short enough that the child arrives before the footer.
+
+**It cannot be a nuisance.** The layer is `aria-hidden`, has no `tabindex`, is
+`pointer-events-none`, and is skipped entirely on `/safety` and `/triage`. `prefers-reduced
+-motion: reduce` freezes it in the hugging pose — the pose is chosen before the first
+paint, so there is no flash of motion. `prefers-contrast: more`, or the reading setting that
+sets `data-contrast="more"`, hides it with `display: none !important`. It is excluded from
+print. The ink is `currentColor` at 10% opacity, one 1.5px stroke, no fill. The layer is sized
+by height, `46vh` capped at 430px, so it clears the bottom navigation at both 390×844 and
+320×640: measured `svg` boxes of `y 344–732` against a nav top of `779`, and `234–528`
+against `575`.
+
+**What the tests hold.** `raising.test.ts` (15 cases): the key order is stable across the
+whole range, her strokes and the child's are distinct, the child's head ends above her
+shoulders, the rise is monotonic, her hands finish above her shoulders while the child's
+feet finish inside arm's length and to the right of her body, `t` clamps outside 0–1 and a `NaN` or `Infinity`
+resolves to the start pose, and no path ever contains `NaN`, `Infinity` or `undefined` across
+21 samples. `raiseSpan` and `raiseProgress` get their own cases, including a zero-height
+span and a scroll shorter than the span. `RaisingFigure.test.tsx` (10 cases): the markup is
+out of the accessibility tree and focus order, the child's head rises below 60 when the
+page rises by more than 90 pixels when the page scrolls and returns to the hug at scroll 0,
+the figure is frozen under
+`prefers-reduced-motion` and under `data-motion="reduced"`, it settles back when the media
+query flips mid-scroll, it re-reads the span on `resize`, and both listeners are removed on
+unmount — tested both before it ever moved and mid-rise.
+
+**Two new pictures.** `evidence.spec.ts` photographs `/today` at the top of the page
+(`21-figure-hug.png`) and again after scrolling to the bottom (`22-figure-raised.png`),
+asserting in between that the child's head has moved up by at least 80 pixels, so the
+second picture cannot show a scroll that did nothing. On a fresh load at 390×844 the child's
+head `d` goes from `M221 164…` to `M423 72…` — a real attribute change, not a CSS transition.
+
+**What this does not prove.** The silhouette is hand-measured geometry, not illustration:
+nobody has drawn it, no illustrator has looked at it, and whether it reads as a mother
+lifting a child, or as a smudge, is a judgement this file cannot make — and in this round it
+was not even possible to look: the agent doing the work cannot view images, so every check
+here is a measurement. The poses were tuned by coordinates, not by eye, across four rounds of
+the owner's direction ("sideways", "standing", "more feminine", "keep the baby closer"). What
+was measured: a display-off diff profile of the page, per-path bounding boxes, the `d`
+attribute before and after a real scroll, and the computed card colour. What was not
+measured, and cannot be: whether the line actually reads as a mother and child. It is drawn
+at one size on two phone viewports and has not been looked at on a large monitor.
+
+## 68. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.

@@ -7,6 +7,7 @@ import type { RedFlag } from "@ninetothree/content";
 import { cn } from "@ninetothree/ui";
 import { HelpNow } from "./HelpNow";
 import { OfflineNote } from "./OfflineNote";
+import { RaisingFigure } from "./RaisingFigure";
 import { SiteFooter } from "./SiteFooter";
 
 const NAV = [
@@ -62,7 +63,11 @@ export function AppShell({
   }, [pathname]);
 
   return (
-    <div className="min-h-dvh bg-paper">
+    <div data-figure={safetyContent ? undefined : ""} className="min-h-dvh bg-paper">
+      {/* Decoration, so it is absent from the two pages someone opens in a
+          hurry. It sits at z-0 and the content column is lifted to z-10 to
+          clear it; the header and tab bar are already above both. */}
+      {safetyContent ? null : <RaisingFigure />}
       <header className="no-print sticky top-0 z-30 border-b border-line bg-paper/95 backdrop-blur-sm">
         <div className="mx-auto flex h-14 max-w-2xl items-center justify-between px-5">
           <Link
@@ -92,7 +97,7 @@ export function AppShell({
           footer can sit outside `main` — a `<footer>` inside `main` is not
           exposed as the `contentinfo` landmark — while still ending above the
           fixed tab bar. */}
-      <div className="mx-auto max-w-2xl px-5 pb-28">
+      <div className="relative z-10 mx-auto max-w-2xl px-5 pb-28">
         <main
           id="main"
           tabIndex={-1}

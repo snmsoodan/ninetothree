@@ -9,6 +9,33 @@ changelog written after the fact from memory is a changelog nobody can trust.
 
 ## Unreleased
 
+### A faint figure behind the dashboard that lifts the child as you scroll (#136)
+
+- **A drawing behind the page, at 10% ink.** A mother holding a child, one
+  `1.5px` line, no fill and no colour, behind the dashboard and behind nothing
+  else. As the page scrolls she raises the child to play. She stands in profile
+  facing right and lifts the child mostly upward, keeping them at arm's length
+  rather than carrying them to the edge of the frame. It is the one decorative
+  thing in the product and it argues with `UX_CRAFT.md` on purpose: §11 now
+  records the exception and its limits, and rules 2 and 8 point at it.
+- **The cards go slightly clear so it can be seen.** Raised surfaces sit at 88%
+  opacity and sunken ones at 92% while the figure is on screen, so the drawing
+  reads through them without putting text on a busy field. The reading setting
+  restores full opacity along with hiding the figure.
+- **Two poses, drawn by scroll position, not animated.** Only her arms and the
+  child move; her hair, head, torso, skirt, legs and feet are identical in both
+  poses, which is what makes it read as lifting instead of as a cross-fade. The
+  travel is 1.5 viewport heights and it eases with a smoothstep at both ends.
+- **It yields to the reader.** `prefers-reduced-motion` pins it to the hugging
+  pose before the first paint; `prefers-contrast: more`, and the reading setting
+  that does the same, remove it entirely; it is excluded from print, is
+  `aria-hidden`, cannot be focused or tapped, and never appears on `/safety` or
+  `/triage`.
+- **Thirteen attribute writes a frame, not a React render a scroll event.**
+  Seventeen paths in a fixed order, `setAttribute("d", …)` straight onto the
+  nodes that move, and the `requestAnimationFrame` loop stops inside 0.002 so an
+  idle page runs no frames at all.
+
 ### The feeding question grows up with the child (#132)
 
 - **The question is asked in the tense of the child's age.** Before the birth it

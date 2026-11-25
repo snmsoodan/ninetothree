@@ -52,6 +52,13 @@ One question with four sets of words. "How are you feeding?" is the wrong questi
 | ![Onboarding asking "What is your child eating now?" with four answers: table food, table food and milk or water from a cup, still on formula, and a mix of milk and food](docs/screenshots/19-onboarding-feeding-two-year.png) | ![Settings' Feeding section, scrolled into view, with "Table food and milk or water from a cup" selected](docs/screenshots/20-settings-feeding-two-year.png) |
 | **Four options, never six.** Pregnancy, milk, starting solids and table food each get their own words; only "from a cup" is a new stored value.                                                                                 | **One answer, everywhere.** Settings reads the same band from the baby's birthday, so what onboarding asked is what settings shows.                          |
 
+A line drawing of a mother holding a child, at 6% ink, behind everything on the dashboard. As you scroll she lifts them up to play. It is the one decorative thing in the product, added at the owner's request, and it argues with our own design notes on purpose — see §8 of [`UX_CRAFT.md`](UX_CRAFT.md) for the exception and its limits:
+
+| At rest                                                                                                                                                      | Scrolled: the child comes up                                                                                                          |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------- |
+| ![The dashboard with a very faint outline of a mother holding a small child behind the cards, drawn standing in profile](docs/screenshots/21-figure-hug.png) | ![The same dashboard scrolled, the same drawing scrolled, the child lifted up at arm's length](docs/screenshots/22-figure-raised.png) |
+| **Faint enough to ignore.** One line weight, no fill, no colour, and it never sits in front of text or a button.                                             | **The scroll is the only trigger.** Drawn twice, in two poses; nothing animates on a timer and nothing loops.                         |
+
 The rest are in [`docs/screenshots/`](docs/screenshots): the due-date question with its "assume I am 28 weeks" shortcut, the persona question that opens onboarding, the confirmation step, the printable week pack, the offline page, and the same dashboard at **320 px** — the narrowest phone supported, where a test asserts nothing scrolls sideways.
 
 ---

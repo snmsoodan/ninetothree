@@ -27,7 +27,7 @@ If a screen makes someone feel behind, judged, sold to, or overwhelmed, it has f
 These are ranked. When two conflict, the lower number wins.
 
 1. **One thing at a time.** Never two primary actions on one screen. If there are two, one of them is secondary and must look it.
-2. **Nothing moves unless the user moved it.** No autoplay, no carousels, no scroll-triggered animation, no pulsing badges. Motion is a response, never an invitation.
+2. **Nothing moves unless the user moved it.** No autoplay, no carousels, no scroll-triggered animation, no pulsing badges. Motion is a response, never an invitation. _(The dashboard figure moves only because the page is being scrolled — see §11.)_
 3. **No red unless something is actually wrong.** Red is reserved for red flags and destructive actions. Errors in forms are amber. "You're behind" does not exist as a concept.
 4. **No numbers that make you feel late.** No streaks, no percentages, no "3 of 7 done", no countdowns. Progress is shown as _what you've done_, never as _what you haven't_.
 5. **Every screen answers "what do I do now?"** If a screen cannot answer that in one sentence, it is not a screen — it is a settings page.
@@ -346,6 +346,8 @@ Motion exists to explain a change of state. Nothing else.
 | Skeleton shimmer          | 1.6s loop  | linear, 8% opacity delta   |
 
 **Never:** bounce, spring, overshoot, parallax, scroll-triggered reveals, confetti, lottie celebrations, animated illustrations.
+_(The dashboard figure is the single exception: it is scroll-linked, not scroll-triggered, and it is
+drawn rather than animated. §11 sets its limits.)_
 
 **Always:** honour `prefers-reduced-motion: reduce` by removing all transforms and keeping only opacity fades under 100ms.
 
@@ -422,6 +424,46 @@ Warm, low-contrast, paper-like. No pure white, no pure black, no saturated brand
 - No illustrations of people. No animals. No abstract blobs.
 - The only decorative element allowed is a thin horizontal rule.
 - The completion tick is a 16px sage check, drawn at 1.5px, no circle, no fill.
+
+### The one exception: the figure on the dashboard
+
+The owner asked for a faint line drawing of a mother holding a child, behind the
+dashboard, that lifts the child up as the page scrolls. It is a direct contradiction of
+this section and of rule 2 in "Ten product rules", and it was built knowingly, as an
+experiment to be judged by eye rather than by argument. It is scoped so that it cannot
+become the thin end of a wedge:
+
+- **One place.** Only the dashboard shell, and never on `/safety` or `/triage`, where a
+  decoration would sit next to a red flag.
+- **One weight.** A single ink stroke at 10% on paper, `1.5px`, no fill, no second
+  colour, no shadow. Nothing but a silhouette. It is deliberately one step above
+  invisible: legible as a shape when you look for it, never something you read past.
+- **Drawn sideways.** She stands in profile facing right, the child held at her chest.
+  It is a side view because a front-on composition reads as a poster; in profile the
+  two figures read as one gesture, and the line has room to travel across the page as
+  the child rises. The femininity is carried by the outline — a nape of hair, a chest
+  above a waist, hips wider than the chest, a dress flaring below the knee — and not by
+  any added detail, because detail at this weight turns into noise.
+- **A lift, not a throw.** The child rises mostly vertically and stays inside arm's
+  length the whole way. Carrying them out to the edge of the frame would read as
+  handing them to someone, which is the opposite of what the drawing is for.
+- **Behind, and given room.** The figure is pinned to the bottom of the viewport and
+  sized by height (`46vh`, capped at 430px) so it clears the bottom navigation at every
+  breakpoint that matters. It never overlaps a button or the nav; `pointer-events: none`
+  and `aria-hidden`, so it cannot be focused, tapped, or read aloud.
+- **One concession to being seen: the cards go slightly clear.** Raised surfaces sit at
+  88% opacity and sunken ones at 92%, so the drawing reads through them without the
+  text ever sitting on a busy field. This is the only place the app is not fully
+  opaque, and it exists only while the figure does.
+- **Two poses, no animation.** It is drawn in the hugging pose, or in the raised pose,
+  interpolated by scroll position. Nothing moves on a timer, nothing loops, nothing
+  bounces. `prefers-reduced-motion: reduce` pins it to one pose forever.
+- **It yields.** `prefers-contrast: more` — and the reading setting that does the same —
+  removes it entirely, and restores full card opacity with it. It is also excluded from
+  print.
+
+If a later change needs a third pose, a second figure, a photograph, or a colour, that
+change needs to reopen this document first, not extend this list.
 
 ---
 
