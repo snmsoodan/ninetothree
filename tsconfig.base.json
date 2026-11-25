@@ -6,6 +6,7 @@
     "moduleResolution": "Bundler",
     "strict": true,
     "noUncheckedIndexedAccess": true,
+    "allowImportingTsExtensions": true,
     "noImplicitOverride": true,
     "exactOptionalPropertyTypes": false,
     "esModuleInterop": true,

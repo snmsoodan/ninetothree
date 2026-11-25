@@ -55,6 +55,9 @@ jobs:
       - name: The generated indexes are current
         run: pnpm content:indexes:check
 
+      - name: The stylesheet is generated from the token source
+        run: pnpm tokens:check
+
       - name: Test
         run: pnpm test
 

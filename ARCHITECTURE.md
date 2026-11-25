@@ -833,3 +833,19 @@ requires `deleted_at is null`. Unconfigured providers refuse rather than verify
 against an empty audience list, which is the difference between a phone that
 cannot sign in and one that signs in as nobody. No native client exists yet, so
 the seam is proven by tests rather than by a device.
+
+The third bullet — one set of design tokens for both clients — is built as
+`@ninetothree/tokens`. It is worth being precise about what moved, because the
+stylesheet did not: the values now live in `packages/tokens/src/tokens.ts`, and
+`packages/ui/src/tokens.css` is generated from them by `renderTokensCss()`.
+`pnpm tokens:check` runs in CI and fails when the two disagree, so the
+stylesheet is a build artifact that is committed rather than a file anyone can
+edit. `themeFor()` derives the React Native shape from the same object: points
+at the web's 16px root instead of `rem`, numbers instead of `px` and `ms`, a
+per-size `lineHeight` because RN has no unitless line-height, and shadows left
+as strings because RN's new architecture accepts `boxShadow` in CSS syntax. The
+one thing RN cannot express, `ch`, is kept as a character count and multiplied
+at the call site. A consequence worth stating: the phone never reads CSS, so a
+token added for the web is not automatically a token the phone has — the source
+file is the only place a new value can be introduced, which is exactly the
+coupling route B wanted.

@@ -2553,6 +2553,79 @@ still ahead.
 
 ---
 
-## 73. How this file is maintained
+## 73. The tokens compile twice, from one file (issue #148)
+
+**The idea.** The stylesheet in `packages/ui/src/tokens.css` is the product's
+entire visual vocabulary — 108 custom properties, and a rule that says if a
+value is not there, it does not exist. A phone cannot read it: React Native has
+no custom properties, no `rem`, no `ch`, and no cascade. So the file was the one
+thing the two clients could not share, which made "one change, three clients"
+false at the first step.
+
+**One object, two compilers.** `packages/tokens/src/tokens.ts` now holds the
+values, and two things are derived from it: `css.ts` renders the `@theme` block
+plus every override the stylesheet already had, and `native.ts` shapes the same
+values for React Native. `--color-paper` and `themeFor().color.paper` are the
+same field of the same object, so they cannot disagree. Neither is authored
+anywhere.
+
+**The stylesheet is now generated, and checked.** `pnpm tokens:emit` writes
+`packages/ui/src/tokens.css`; `pnpm tokens:check` exits non-zero if the file on
+disk and the source disagree, and CI's Verify job runs it. Hand-editing the
+stylesheet is therefore a build failure rather than a habit. The file is also
+excluded from Prettier in `.prettierignore`, because the generator and the check
+own its bytes: a formatter that rewrapped a line would fail the check on a clean
+checkout.
+
+**The issue was wrong about dark mode, and the code was right.** Issue #148
+says "no dark mode, the light palette is the product". The stylesheet does not
+say that. It has a warm dark palette, a `prefers-contrast` and a
+`data-contrast` override, two reduced-motion blocks that also remove the route
+settle rather than merely zeroing it, an Atkinson Hyperlegible font override,
+and a forced-colours block. Modelling only the light palette would have
+generated a stylesheet that silently deleted five accessibility behaviours. All
+of them are modelled, and the arithmetic is stated in the source:
+53 declarations in `@theme`, dark restating 16 colours and 3 shadows twice (38),
+contrast 4 twice (8), motion 3 twice (6), Hyperlegible 1, forced colours 2 —
+108, which `tokenCount` asserts and a test checks.
+
+**How "nothing changed" was proved.** Before touching anything, `main`'s
+stylesheet was copied to `packages/tokens/src/fixtures/tokens.before.css` and
+excluded from Prettier, so it is a fixed record the generator cannot rewrite.
+`css.test.ts` asserts that the multiset of `--name: value` pairs in the rendered
+css is exactly the multiset in the fixture — nothing added, nothing dropped,
+nothing retyped — and that the files differ only in whitespace and the added
+"Do not edit" header. A list rather than a map, because `--font-sans` is
+declared twice on purpose (Inter, then Hyperlegible) and a map would have hidden
+that.
+
+**The native half is small on purpose.** Four conversions, each forced by the
+platform: `rem` to points at the web's 16px root (`0.9375rem` and `15` are the
+same size), `px` to a number, `ms` to a number, and shadows left as strings
+because React Native's new architecture accepts `boxShadow` in CSS syntax.
+`leading` becomes a per-size `lineHeight`, because RN has no unitless
+line-height. The measure stays a character count and `measureWidth` multiplies
+it, since `ch` is about characters and 0.5em is a close enough em for Inter and
+the system fallbacks. The three unit parsers throw on anything unexpected, so a
+token later authored in `em` or `s` fails the build instead of arriving on a
+phone as `NaN`.
+
+**How it was verified.** `pnpm --filter @ninetothree/tokens test` → 18 tests,
+100% statements, branches, functions and lines. `pnpm typecheck` (seven tasks),
+`pnpm lint`, `pnpm format:check` and a clean-checkout `pnpm tokens:check` all
+pass. The generated stylesheet's diff against `main` is five lines: the two
+added lines of the "do not edit" header, and the one `--font-sans` line Prettier
+had wrapped, which the generator emits unwrapped.
+
+**What it does not do.** Nothing imports the package yet — the web still reads
+the generated stylesheet, and no screen has been written against `themeFor`.
+React Native rendering is unverified here: there is no Xcode licence and no
+Android SDK on this machine, so `native.ts` is covered by unit tests and by
+nothing else. `tsconfig.base.json` gained `allowImportingTsExtensions` because
+the generator runs under `node --experimental-strip-types`, which requires
+imports to name their `.ts` files; consumers type-check that source, so they
+need the same flag.
+
+## 74. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.

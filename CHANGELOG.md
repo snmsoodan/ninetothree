@@ -9,6 +9,28 @@ changelog written after the fact from memory is a changelog nobody can trust.
 
 ## Unreleased
 
+### The tokens compile twice, from one file (#148)
+
+- **`@ninetothree/tokens` is the source of truth, and `packages/ui/src/tokens.css` is now generated
+  from it.** 108 custom properties, one object, two compilers: `renderTokensCss()` for the web and
+  `themeFor()` for React Native. `--color-paper` and `themeFor().color.paper` are the same field,
+  so the two clients cannot disagree about a colour.
+- **`pnpm tokens:check` fails the build when the stylesheet and the source differ**, and CI's
+  Verify job runs it. Hand-editing the stylesheet is no longer possible without a red check, which
+  is the point.
+- **Issue #148 said "no dark mode". The stylesheet disagreed, and the stylesheet was right.** It
+  has a warm dark palette, a high-contrast override, two reduced-motion blocks that also remove the
+  route settle, an Atkinson Hyperlegible override and a forced-colours block. All six are modelled
+  rather than silently deleted on the next regeneration.
+- **The native half is four conversions and no invention:** `rem` to points at the web's 16px root,
+  `px` and `ms` to numbers, shadows left as strings because RN's new architecture takes `boxShadow`
+  in CSS syntax, plus a per-size `lineHeight` because RN has no unitless line-height. The three unit
+  parsers throw rather than returning `NaN`.
+- **"Nothing changed" is a test, not a claim.** The pre-#148 stylesheet is a fixture excluded from
+  Prettier, and the suite asserts the rendered css has exactly the same `--name: value` multisets —
+  nothing added, dropped or retyped — and differs only by whitespace and the added header. 18
+  tests, 100% coverage; typecheck, lint and format clean. See `EVIDENCE.md` §73.
+
 ### A phone trades an ID token for a session (#147)
 
 - **`POST /api/auth/native/exchange` is the only new server code route B owes.**
