@@ -96,6 +96,66 @@ test("a grandparent reading over the parent's shoulder", async ({ page }) => {
   await shot(page, "15-settings-reading-as");
 });
 
+test("what applies at this age: the card and the updates page", async ({ page }) => {
+  // The registers are polled on every visit, so the real response changes hourly
+  // and would make this picture a coin toss. The run is offline (see
+  // `playwright.config.ts`), so the route answers with the curated list and
+  // `live: false`; this rewrites only the freshness fields to the state a quiet
+  // hour produces — both registers answered, nothing new classified — so the
+  // screenshot shows the sentence a parent actually reads on a normal day. No
+  // recall is invented: every entry in the list is the one on disk.
+  // `page.route` would be ignored: the service worker calls `respondWith` for
+  // every same-origin GET, and a request a worker answers never reaches page
+  // interception. Routing on the context does see it.
+  const curated = await (await page.request.get("/api/updates")).json();
+  expect(Array.isArray(curated.recalls)).toBe(true);
+  await page.context().route(/\/api\/updates$/, (route) =>
+    route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        recalls: curated.recalls,
+        sources: [
+          { id: "cpsc", name: "Consumer Product Safety Commission", ok: true, count: 0 },
+          { id: "fda", name: "Food and Drug Administration", ok: true, count: 0 },
+        ],
+        live: true,
+        fetchedAt: new Date().toISOString(),
+      }),
+    }),
+  );
+
+  await page.goto("/onboarding");
+  await page.getByRole("button", { name: /^I am the parent/ }).click();
+  await page.getByRole("button", { name: /^My baby is here/ }).click();
+  // Eighteen months old, so the age filter has something to exclude as well as
+  // something to show: infant formula and a lounger are both behind this baby.
+  const born = new Date();
+  born.setUTCMonth(born.getUTCMonth() - 18, 15);
+  await page.locator("#date").fill(born.toISOString().slice(0, 10));
+  for (let i = 0; i < 4; i += 1) await page.getByRole("button", { name: "Continue" }).click();
+  await page.getByRole("button", { name: "Show me" }).click();
+  await expect(page).toHaveURL(/\/today$/);
+
+  // The card sits below the queue, so the picture starts at its heading rather
+  // than at the top of the page.
+  const card = page.getByRole("heading", { name: "Worth knowing now" });
+  await card.scrollIntoViewIfNeeded();
+  await expect(card).toBeInViewport();
+  await shot(page, "16-today-updates");
+
+  await page.goto("/updates");
+  // The picture has to show the state the route above was written for, or the
+  // rewrite is pointless and the screenshot quietly shows the offline fallback.
+  await expect(page.getByText("Checked against the official registers every hour.")).toBeVisible();
+  await expect(page.getByText(/^Registers checked today\./)).toBeVisible();
+  await shot(page, "17-updates");
+
+  await page.getByRole("link", { name: "Check it yourself" }).click();
+  await expect(page.getByRole("heading", { name: "Check it yourself" })).toBeInViewport();
+  await shot(page, "18-updates-check-it-yourself");
+});
+
 test("the narrowest phone we support, with nothing sideways", async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 640 });
   await onboard(page);

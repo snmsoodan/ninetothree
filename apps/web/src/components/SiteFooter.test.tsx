@@ -29,6 +29,15 @@ describe("SiteFooter", () => {
     expect(link).toHaveAttribute("href", "/safety");
   });
 
+  it("credits the work and links the licence, so a copy can say where it came from", () => {
+    render(<SiteFooter />);
+    expect(screen.getByText(/© 2026 Nine to Three/)).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "What that means" })).toHaveAttribute(
+      "href",
+      "/license",
+    );
+  });
+
   it("does not print", () => {
     /* A printed week should carry the week. The policies are for the screen. */
     render(<SiteFooter />);

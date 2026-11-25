@@ -1,0 +1,53 @@
+The written guidance in this repository is licensed under the
+Creative Commons Attribution 4.0 International licence (CC BY 4.0).
+
+Full text: LICENSES/CC-BY-4.0.txt
+Human-readable summary: https://creativecommons.org/licenses/by/4.0/
+
+Copyright 2026 Sanamdeep Singh.
+
+---------------------------------------------------------------------------
+What this covers
+---------------------------------------------------------------------------
+
+Everything written for parents rather than for the machine:
+
+  packages/content/          the guides, articles, checklists, appointment
+                             schedules, triage answers, recall commentary
+  CONTENT_BLUEPRINT.md
+  CONTENT_LIBRARY.md
+  PERSONAS.md
+  PRODUCT_UX.md
+  UX_CRAFT.md
+
+The source code that renders it is licensed separately, under Apache-2.0, in
+LICENSE.
+
+---------------------------------------------------------------------------
+What it asks of you
+---------------------------------------------------------------------------
+
+Use it, quote it, translate it, build on it, sell what you build. Three
+conditions, all of them easy:
+
+  1. Credit it. Name "Nine to Three", link to https://ninetothree.com, and
+     keep the copyright line above.
+  2. Say what you changed. "Adapted from Nine to Three" is enough.
+  3. Do not imply we endorse you or your version.
+
+---------------------------------------------------------------------------
+What it does not cover
+---------------------------------------------------------------------------
+
+The name "Nine to Three", the wordmark and the domain are trademarks and are
+not licensed by CC BY. See NOTICE.
+
+Recalls, product safety notices and clinical recommendations originate with
+the US Consumer Product Safety Commission, the Food and Drug Administration,
+the National Highway Traffic Safety Administration, the Food Safety and
+Inspection Service, the American College of Obstetricians and Gynecologists,
+the American Academy of Pediatrics and the NHS. They are cited and linked, not
+relicensed, and remain the work of those bodies.
+
+Photographs and illustrations from third parties, if any are added later, keep
+their own licences and will say so where they appear.

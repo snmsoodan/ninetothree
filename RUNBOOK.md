@@ -234,10 +234,58 @@ the same file. It is data with a test, so the page cannot drift from the promise
 `packages/content/recalls/recalls.json` is the list the app shows. A new recall for something the
 catalogue recommends is a content change, not a support reply:
 
-1. Add the recall with its CPSC identifier and date.
+1. Add the recall with its agency identifier and date, a `category`, and an `ages` window.
 2. Anything in `packages/content/links/gear.json` that matches gets `recalled: true` — the card
    then says so, and stops being a recommendation.
 3. If it was in a pack a parent is reading this week, that is an email, not just a page edit.
+
+**The `ages` window is how the Updates page works.** `fromMonths` and `toMonths` are signed months
+from birth: `0` is the due date or the birthday, negative is before birth, and the schema refuses
+anything outside `-9 … 36`. `-9` is week 4 of pregnancy, the first week the guide covers, so a
+recall that applies for the whole guide starts there. Set the window from who can own the product,
+not from the age of the child in the article that mentioned it — a car seat is `-9 … 24` because a
+parent buys one before the birth and uses it until the child outgrows it. Getting this wrong is
+invisible: the recall still exists, it just never reaches the parent holding the product. The
+`ageWindowLabel` test fails if a window cannot be read back as a sentence.
+
+**A recall whose facts you cannot confirm does not go in.** Every record cites a government page
+and the URL is checked in `recalls.test.ts`. If the identifier is not published — a firm that has
+not agreed to a recall, as with the CooCooBaby loungers — use a descriptive `id` rather than
+inventing an agency number, and say in the action what the firm has and has not agreed to.
+
+### The live feed
+
+`/updates` also polls two registers: CPSC (`saferproducts.gov/RestWebServices/Recall`) and openFDA
+(`api.fda.gov/food/enforcement.json`). This is not a cron job — there is no job — it is a fetch on
+request with a one-hour cache in Next's data cache, served by `/api/updates`. Nothing to restart,
+nothing to backfill.
+
+**Check it is alive.** `curl -s localhost:3000/api/updates | jq '{live, sources, n: (.recalls|length)}'`.
+`sources` reports each register as `ok` with a `count`, or not `ok` with an `error`. The page shows
+the same thing in words: a date when both answered, the missing agency's name when one did not, and
+"the registers are not answering us right now" when neither did.
+
+**When a register breaks**, in this order:
+
+1. `curl` the endpoint above from the server and read the status. A `403` from NHTSA is normal and
+   expected — that API has no list endpoint, which is why car-seat campaigns are added by hand.
+2. A `429` or a blocked user agent is the likely cause of a sudden `HTTP 429`. The request sets a
+   `NineToThreeRecallFeed/1.0` user agent and a 5s timeout; if a register starts refusing us, raise
+   `FEED_REVALIDATE_SECONDS` in `apps/web/src/lib/recall-feed.ts` rather than removing the cache.
+3. If a field moved, the normalizer drops the record rather than inventing one — so a feed that is
+   suddenly empty is a **shape change**, not an outage. Compare a live record against
+   `apps/web/src/lib/recall-sources.test.ts` and update the fixtures with a real one.
+4. `RECALLS_OFFLINE=1` turns the whole thing off and serves the nine curated entries. It is safe to
+   set in production for as long as it takes to fix the parser: the page says so, and a parent
+   still gets the list we wrote.
+
+**A live recall is not editable.** Its action is the FDA's or CPSC's own remedy text, because
+rewriting agency prose automatically is how a wrong instruction gets published. If a live record
+deserves better words, add it to `recalls.json` with the same source URL: `mergeRecalls` matches on
+the URL, and the curated entry then wins. That is the intended way to promote one. When the agency
+publishes the same recall at a second address — the FDA's notice and its enforcement-database row are
+two URLs for one event — list the other address in `alsoAt`, and the live copy collapses into the
+curated one instead of sitting beside it.
 
 ---
 

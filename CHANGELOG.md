@@ -9,6 +9,57 @@ changelog written after the fact from memory is a changelog nobody can trust.
 
 ## Unreleased
 
+### Nine recalls, filtered by age, and a licence that asks for credit (#130)
+
+- **A recall now knows who it is for.** `ages` on every recall is a signed-month
+  window from `-9` to `36` — negative before birth, `-9` being week 4, where the
+  guide starts — so a parent who has pinned nothing still hears about the
+  formula or the car seat that affects them this month. It is a second, weaker
+  claim than "you own this", and the notice says **"Worth knowing at this
+  age"** rather than borrowing the language of a match.
+- **Nine recalls instead of five, across three agencies.** An NHTSA car-seat
+  campaign, an FDA infant-formula recall, a CPSC baby lounger and an FDA food
+  pouch join the five CPSC product recalls. Each carries a `category` — sleep,
+  feeding, food, travel, play, care, home — and its facts are copied from the
+  agency page rather than paraphrased.
+- **`/updates` is a page, and it says what it is.** Filtered by age, with
+  "Everything we know" for the parent who wants the whole list; and a "Check it
+  yourself" section linking the CPSC, FDA, NHTSA and FSIS registers plus a way to
+  report an incident. The dashboard gains a "Worth knowing now" card that never
+  repeats what is already in the queue below it.
+- **The list is polled, not promised.** `getRecallFeed` asks the CPSC and openFDA
+  registers for what they published recently, normalizes each record into the
+  recall schema, gives it a category and an age window, and merges it behind the
+  nine hand-written entries. The page says "checked against the official
+  registers" only when a register actually answered; when neither does — or when
+  `RECALLS_OFFLINE=1` — it is the nine and it says so. NHTSA publishes no
+  pollable list, so car-seat campaigns stay hand-added and the source table says
+  which two registers are polled.
+- **Relevance is a classifier, and its first version was too generous.** Records
+  are ours on words in the title, product and hazard — never the description,
+  where "children" is adult allergen boilerplate. An adult bed rail, a bottle of
+  minoxidil, a space heater, a ride-on mower, a balloon pump and a "cheese block"
+  all matched a word that means two things, so `NOT_OURS` and narrower words
+  (`baby bottle`, `infant formula`, `building block`, `glass marble`) now separate
+  them. The food rule additionally needs a word for a child eater or the word
+  "puree", because "pouch" is how a parent's dinner is sold too.
+- **A recall published twice is one recall.** The FDA files the same event as a
+  notice and as an enforcement-database row at a different URL with a different
+  product string, so `alsoAt` on a curated entry names the second address and
+  `sameRecall` collapses the live copy into the hand-written one.
+- **The repository had no licence at all.** Under copyright that means all
+  rights reserved, so a public repository nobody could legally reuse. It is now
+  **Apache 2.0 for the code** (the patent grant MIT lacks, and `NOTICE` must
+  travel with copies), **CC BY 4.0 for the guidance** (attribution is the ask;
+  share-alike would stop a clinic printing a handout), and **OFL 1.1 for the
+  fonts**, with the verbatim texts committed under `LICENSES/`. The name, the
+  wordmark and the domain are not licensed. `/license` says all of it in a
+  parent's words, and the footer carries the one-line credit.
+- **`ageInMonths` is new in `packages/rules`**, not in `packages/content`, so the
+  content package never learns about the clock. It rounds up before birth and
+  is clamped at zero after it. The record is in [`EVIDENCE.md`](EVIDENCE.md) §63;
+  the live feed's is in §64.
+
 ### The local setup in the README now works as written (#128)
 
 - **`cp .env.example .env.local && pnpm dev` is enough.** `apps/web/next.config.ts`

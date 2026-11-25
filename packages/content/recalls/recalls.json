@@ -4,9 +4,14 @@
     "title": "Bicystar high chairs sold without the crotch restraint",
     "product": "Bicystar high chair, model TB-HC6900",
     "brand": "Bicystar",
+    "category": "feeding",
     "hazard": "The chair was sold without the crotch restraint the safety standard requires. A child can slide down and be caught by the neck, or the chair can tip.",
     "action": "Stop using it. Take the seat off the frame, cut the seat cover and the straps, write \"Recalled\" on the back of the seat, and email a photo to bicystarhighchair@outlook.com for a full refund.",
     "severity": "stop-use",
+    "ages": {
+      "fromMonths": 6,
+      "toMonths": 36
+    },
     "publishedAt": "2026-02-26",
     "source": {
       "id": "cpsc-26290",
@@ -25,9 +30,14 @@
     "title": "Rotinyard convertible high chairs sold without the restraint system",
     "product": "Rotinyard convertible high chair, product number HA-028, sold on Amazon",
     "brand": "Rotinyard",
+    "category": "feeding",
     "hazard": "The chair was sold without the attached restraint system the safety standard requires. A child can fall out, or be caught between the seat and the tray.",
     "action": "Stop using it. Take it apart, cut the restraints and the cushion, and email a photo to trailblazeramz@outlook.com for a full refund.",
     "severity": "stop-use",
+    "ages": {
+      "fromMonths": 6,
+      "toMonths": 36
+    },
     "publishedAt": "2025-11-26",
     "source": {
       "id": "cpsc-26121",
@@ -46,9 +56,14 @@
     "title": "Voomf play yard and crib mattresses that may not fit",
     "product": "Voomf play yard and crib mattress, model BYL001, sold on Amazon",
     "brand": "Voomf",
+    "category": "sleep",
     "hazard": "The mattress may leave a gap against the side of some play yards, which is where a baby can become trapped. The full-size crib version also fails the flammability standard.",
     "action": "Stop using it. Write \"Recalled\" on it, cut it in half, and email a photo to voomfrecall@outlook.com for a full refund.",
     "severity": "stop-use",
+    "ages": {
+      "fromMonths": -9,
+      "toMonths": 12
+    },
     "publishedAt": "2026-08-06",
     "source": {
       "id": "cpsc-26669",
@@ -67,9 +82,14 @@
     "title": "Anna Queen play yards a baby can get under the mattress of",
     "product": "Anna Queen play yard, model P700, made in March 2025, sold on Amazon",
     "brand": "Anna Queen",
+    "category": "sleep",
     "hazard": "A baby can get trapped under the mattress or between the mattress and the side of the play yard, which can cause suffocation.",
     "action": "Stop using it. Take it apart, cut up the cover and the mattress pad, and email a photo to tingerservice@outlook.com for a full refund.",
     "severity": "stop-use",
+    "ages": {
+      "fromMonths": -9,
+      "toMonths": 12
+    },
     "publishedAt": "2025-11-20",
     "source": {
       "id": "cpsc-26099",
@@ -88,9 +108,14 @@
     "title": "Hoovy cooling gel pads for car seats and strollers can burn",
     "product": "Hoovy cooling gel insert pad for car seats and strollers",
     "brand": "AMTRADING",
+    "category": "travel",
     "hazard": "The pad can get hot enough to burn a child if it is left in the sun or in a warm car, and a young child may not be able to move away from it.",
     "action": "Stop using it. Contact AMTRADING at 888-259-1411 or info@hoovyproducts.com for a full refund, or register the pad at hoovyproducts.com/pages/product-recall.",
     "severity": "stop-use",
+    "ages": {
+      "fromMonths": -9,
+      "toMonths": 24
+    },
     "publishedAt": "2025-09-25",
     "source": {
       "id": "cpsc-25476",
@@ -102,6 +127,117 @@
     },
     "matches": {
       "actionIds": ["w36-car-seat"]
+    }
+  },
+  {
+    "id": "nhtsa-26c003000",
+    "title": "Graco infant car seats that can come off their base in a crash",
+    "product": "Graco SnugRide Turn & Slide and Modes Nest travel systems",
+    "brand": "Graco",
+    "category": "travel",
+    "hazard": "The infant carrier may detach from its base in a crash, so the seat does not protect the baby the way the standard requires.",
+    "action": "Stop using the seat with its base. Install the carrier with the vehicle seat belt alone until a free replacement seat arrives. Graco is writing to registered owners; call 1-800-345-4109 if you have not heard from them.",
+    "severity": "stop-use",
+    "ages": {
+      "fromMonths": -9,
+      "toMonths": 24
+    },
+    "publishedAt": "2026-03-04",
+    "source": {
+      "id": "26C003000",
+      "title": "Graco Child Seat Recall 26C003000",
+      "publisher": "US National Highway Traffic Safety Administration",
+      "url": "https://api.nhtsa.gov/recalls/campaignNumber?campaignNumber=26C003000",
+      "kind": "government",
+      "accessed": "2026-10-20"
+    },
+    "matches": {
+      "actionIds": ["w16-car-seat", "w25-car-seat-install"],
+      "keywords": ["car seat"]
+    }
+  },
+  {
+    "id": "fda-byheart-formula",
+    "title": "ByHeart whole nutrition infant formula, all batches",
+    "product": "ByHeart Whole Nutrition Infant Formula, 4.5 oz and 14.5 oz cans",
+    "brand": "ByHeart",
+    "category": "food",
+    "hazard": "The formula was linked to infant botulism. Thirty-one babies were hospitalised in fifteen states before the recall.",
+    "action": "Stop feeding it and throw the cans away. Use a different formula, and call your paediatrician straight away if your baby is constipated, floppy, feeding poorly or has a weak cry.",
+    "severity": "stop-use",
+    "ages": {
+      "fromMonths": 0,
+      "toMonths": 12
+    },
+    "publishedAt": "2025-12-17",
+    "source": {
+      "id": "byheart-formula",
+      "title": "ByHeart Updates Information Regarding Voluntary Recall of All Batches of ByHeart Whole Nutrition Infant Formula",
+      "publisher": "US Food and Drug Administration",
+      "url": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/byheart-updates-information-regarding-voluntary-recall-all-batches-byheart-whole-nutrition-infant",
+      "kind": "government",
+      "accessed": "2026-10-20"
+    },
+    "matches": {
+      "actionIds": ["pp7-bottle"],
+      "keywords": ["formula"]
+    }
+  },
+  {
+    "id": "cpsc-coocoobaby-loungers",
+    "title": "CooCooBaby baby loungers that fail the infant sleep standard",
+    "product": "CooCooBaby baby lounger, Classic and Deluxe",
+    "brand": "CooCooBaby",
+    "category": "sleep",
+    "hazard": "The sides are too low, the pad too thick and there are openings a baby can roll into. A baby can suffocate or fall out.",
+    "action": "Stop using it for sleep or for leaving a baby unattended. Cut up the pad and the sides, then email a photo to support@coocoobabyofficial.com for a refund. The company has not agreed to a recall.",
+    "severity": "stop-use",
+    "ages": {
+      "fromMonths": 0,
+      "toMonths": 6
+    },
+    "publishedAt": "2026-06-18",
+    "source": {
+      "id": "coocoobaby-loungers",
+      "title": "CooCooBaby Baby Loungers Recalled Due to Risk of Serious Injury or Death from Suffocation and Fall Hazards",
+      "publisher": "US Consumer Product Safety Commission",
+      "url": "https://www.cpsc.gov/Recalls/2026/CooCooBaby-Baby-Loungers-Recalled-Due-to-Risk-of-Serious-Injury-or-Death-from-Suffocation-and-Fall-Hazards-Violates-Mandatory-Standard-for-Infant-Sleep-Products",
+      "kind": "government",
+      "accessed": "2026-10-20"
+    },
+    "matches": {
+      "actionIds": ["pp4-safe-sleep"],
+      "keywords": ["lounger"]
+    }
+  },
+  {
+    "id": "fda-peter-rabbit-pouches",
+    "title": "Peter Rabbit Organics banana and strawberry pouches with plastic in them",
+    "product": "Peter Rabbit Organics Banana & Strawberry 4 oz fruit puree pouch",
+    "brand": "Peter Rabbit Organics",
+    "category": "food",
+    "hazard": "A defect in the packaging can leave a strand of soft food-grade plastic inside the pouch. No injuries have been reported.",
+    "action": "Stop giving it to a child. Return the pouch to the shop you bought it from for a refund. They were sold at Kroger, Meijer and Target nationwide between March and July 2026.",
+    "severity": "stop-use",
+    "ages": {
+      "fromMonths": 6,
+      "toMonths": 36
+    },
+    "publishedAt": "2026-07-21",
+    "source": {
+      "id": "peter-rabbit-pouches",
+      "title": "PT Organics Limited Recalls Select Pumpkin Tree Peter Rabbit Organics Banana & Strawberry Fruit Puree",
+      "publisher": "US Food and Drug Administration",
+      "url": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/pt-organics-limited-recalls-select-pumpkin-tree-peter-rabbit-organics-banana-strawberry-fruit-puree",
+      "kind": "government",
+      "accessed": "2026-10-20"
+    },
+    "alsoAt": [
+      "https://www.accessdata.fda.gov/scripts/enforcement/enforce_rpt-Product-Tabs.cfm?action=select&id=99448"
+    ],
+    "matches": {
+      "actionIds": ["m5-solids-prep", "m6-solids"],
+      "keywords": ["pouch", "puree"]
     }
   }
 ]

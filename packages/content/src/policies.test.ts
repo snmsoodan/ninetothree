@@ -23,15 +23,17 @@ describe("the policy list", () => {
     }
   });
 
-  it("keeps the four pages the product actually promises", () => {
+  it("keeps the pages the product actually promises", () => {
     /* Not a snapshot: this is the acceptance criterion of #52 — privacy,
-       terms, editorial policy, corrections — stated once so a page cannot be
-       quietly dropped from the footer. */
+       terms, editorial policy, corrections — plus the licence, which is what
+       someone copying the project has to be able to find. Stated once so a
+       page cannot be quietly dropped from the footer. */
     expect(POLICIES.map((policy) => policy.href)).toEqual([
       "/privacy",
       "/terms",
       "/editorial",
       "/corrections",
+      "/license",
     ]);
   });
 

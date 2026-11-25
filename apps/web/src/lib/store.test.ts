@@ -1111,6 +1111,8 @@ describe("notices", () => {
       hazard: "The seat can detach from the frame.",
       action: "Stop using the chair and contact the maker for a free repair kit.",
       severity: "stop-use",
+      category: "feeding",
+      ages: { fromMonths: 6, toMonths: 36 },
       publishedAt: "2026-09-01",
       source: {
         id: "cpsc",

@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { ageInDays, computeStage, daysUntilDue, gestationalDays, stageLabel } from "./stage";
+import {
+  ageInDays,
+  ageInMonths,
+  computeStage,
+  daysUntilDue,
+  gestationalDays,
+  stageLabel,
+} from "./stage";
 
 const TODAY = "2026-06-15";
 
@@ -159,5 +166,45 @@ describe("daysUntilDue and ageInDays", () => {
 
   it("counts up from birth", () => {
     expect(ageInDays(bornAgo(100), TODAY)).toBe(100);
+  });
+});
+
+describe("ageInMonths", () => {
+  it("is zero on the due date, and zero on the birthday", () => {
+    expect(ageInMonths({ status: "pregnant", dueDate: TODAY }, TODAY)).toBe(0);
+    expect(ageInMonths({ status: "parent", birthDate: TODAY }, TODAY)).toBe(0);
+  });
+
+  it("counts the months still to go as negative, rounded up", () => {
+    // Rounding up is what makes "-2" mean "two months or less", so the window
+    // opens at the start of a month rather than in the middle of one.
+    expect(ageInMonths({ status: "pregnant", dueDate: dueIn(30) }, TODAY)).toBe(-1);
+    expect(ageInMonths({ status: "pregnant", dueDate: dueIn(45) }, TODAY)).toBe(-2);
+    expect(ageInMonths({ status: "pregnant", dueDate: dueIn(1) }, TODAY)).toBe(-1);
+  });
+
+  it("reaches -9 at the start of the guide, week 4", () => {
+    // 36 weeks to go is 252 days, the first week we write about.
+    expect(ageInMonths({ status: "pregnant", dueDate: dueIn(252) }, TODAY)).toBe(-9);
+  });
+
+  it("never goes positive once the due date has passed", () => {
+    expect(ageInMonths({ status: "pregnant", dueDate: dueIn(-5) }, TODAY)).toBe(0);
+  });
+
+  it("counts calendar months after birth", () => {
+    expect(ageInMonths({ status: "parent", birthDate: bornAgo(30) }, TODAY)).toBe(0);
+    expect(ageInMonths({ status: "parent", birthDate: bornAgo(31) }, TODAY)).toBe(1);
+    expect(ageInMonths({ status: "parent", birthDate: bornAgo(365) }, TODAY)).toBe(12);
+  });
+
+  it("does not count a month until the day of the month has come round", () => {
+    // Born 15 May, today 14 June: one day short of a month.
+    expect(ageInMonths({ status: "parent", birthDate: "2026-05-15" }, "2026-06-14")).toBe(0);
+    expect(ageInMonths({ status: "parent", birthDate: "2026-05-15" }, "2026-06-15")).toBe(1);
+  });
+
+  it("does not go negative for a baby born after the date we were given", () => {
+    expect(ageInMonths({ status: "parent", birthDate: dueIn(20) }, TODAY)).toBe(0);
   });
 });

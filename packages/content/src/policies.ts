@@ -28,6 +28,10 @@ export const POLICIES = [
     href: "/corrections",
     label: "Corrections",
   },
+  {
+    href: "/license",
+    label: "Licence",
+  },
 ] as const satisfies readonly PolicyLink[];
 
 /** The day this version of the policies took effect. */

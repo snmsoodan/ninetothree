@@ -4,14 +4,16 @@ import { POLICIES } from "@ninetothree/content";
 /**
  * The footer.
  *
- * Four links and one sentence. It sits above the tab bar rather than under it,
- * because the tab bar is fixed to the bottom of the screen and anything below
- * it would be unreachable. It is `no-print`: a printed week should carry the
- * week, not the legal furniture.
+ * Five links, one sentence, and a copyright line. It sits above the tab bar
+ * rather than under it, because the tab bar is fixed to the bottom of the
+ * screen and anything below it would be unreachable. It is `no-print`: a
+ * printed week should carry the week, not the legal furniture.
  *
  * The sentence above the links is the one thing here that is not a link. It is
  * the promise the whole product rests on, so it is stated where a parent who is
- * worried will actually see it.
+ * worried will actually see it. The copyright line is the other non-link, and
+ * it is here rather than only in the repository because a copy of the site is
+ * how most people will meet it.
  */
 export function SiteFooter() {
   return (
@@ -42,6 +44,17 @@ export function SiteFooter() {
           ))}
         </ul>
       </nav>
+
+      <p className="mt-4 text-sm text-ink-faint">
+        © 2026 Nine to Three. The code is Apache 2.0, the guidance is CC BY 4.0.{" "}
+        <Link
+          href="/license"
+          className="underline decoration-1 underline-offset-[3px] hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-clay"
+        >
+          What that means
+        </Link>
+        .
+      </p>
     </footer>
   );
 }

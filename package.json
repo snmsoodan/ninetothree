@@ -1,6 +1,16 @@
 {
   "name": "ninetothree",
   "private": true,
+  "license": "Apache-2.0",
+  "author": {
+    "name": "Sanamdeep Singh",
+    "url": "https://ninetothree.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/snmsoodan/ninetothree.git"
+  },
+  "homepage": "https://ninetothree.com",
   "packageManager": "pnpm@12.3.4",
   "engines": {
     "node": ">=22.18"

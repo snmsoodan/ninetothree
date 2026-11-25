@@ -12,6 +12,7 @@ import { SiteFooter } from "./SiteFooter";
 const NAV = [
   // The week view is a detail page of "This week", so it keeps the tab lit.
   { href: "/today", label: "This week", also: ["/week"] },
+  { href: "/updates", label: "Updates", also: [] },
   { href: "/shelf", label: "Shelf", also: [] },
   { href: "/library", label: "Library", also: [] },
   { href: "/safety", label: "Safety", also: [] },

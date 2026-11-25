@@ -12,6 +12,9 @@ import type { StageKind, StageUnit } from "@ninetothree/content";
 export const GESTATION_DAYS = 280;
 export const DAY_MS = 86_400_000;
 
+/** The average month, used only to turn "days until the due date" into months. */
+const DAYS_PER_MONTH = 30.44;
+
 export interface Stage {
   kind: StageKind;
   index: number;
@@ -140,4 +143,29 @@ export function daysUntilDue(dueDate: string, today: string): number {
 /** Age in days since birth. */
 export function ageInDays(birthDate: string, today: string): number {
   return daysBetween(toUtcDate(birthDate), toUtcDate(today));
+}
+
+/**
+ * Age in months, signed, with pregnancy negative.
+ *
+ * Zero is the due date and birth date alike, so one number can answer both
+ * "is this cot worth buying yet" and "does this apply to a six-month-old".
+ * Before birth the months are rounded up, because "two months to go" should
+ * read as -2 rather than -1 for the whole of the second month. After birth
+ * they are calendar months, matching `computeStage` and every paediatric
+ * schedule, and never negative: a baby born early is not minus anything.
+ */
+export function ageInMonths(input: StageInput, today: string): number {
+  if (input.status === "pregnant") {
+    const days = daysUntilDue(input.dueDate, today);
+    return days <= 0 ? 0 : -Math.ceil(days / DAYS_PER_MONTH);
+  }
+
+  const birth = toUtcDate(input.birthDate);
+  const now = toUtcDate(today);
+  let months =
+    (now.getUTCFullYear() - birth.getUTCFullYear()) * 12 +
+    (now.getUTCMonth() - birth.getUTCMonth());
+  if (now.getUTCDate() < birth.getUTCDate()) months -= 1;
+  return Math.max(0, months);
 }

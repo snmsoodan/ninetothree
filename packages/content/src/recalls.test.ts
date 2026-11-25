@@ -5,13 +5,19 @@ import { PACKS } from "./registry";
 import type { Source } from "./schema";
 import {
   RECALL_BECAUSES,
+  RECALL_CATEGORIES,
   RECALL_SEVERITIES,
   Recall,
+  ageWindowLabel,
   assertValidRecalls,
+  isForAge,
   loadRecalls,
   matchRecalls,
+  mergeRecalls,
   recallIssues,
   recallKey,
+  recallsForAge,
+  sameRecall,
   type RecallMatch,
   type RecallSubject,
 } from "./recalls";
@@ -52,6 +58,8 @@ function recall(over: RecallOver): Recall {
     hazard: "It can break.",
     action: "Stop using it and ask for a refund.",
     severity: "stop-use",
+    category: "sleep",
+    ages: { fromMonths: 0, toMonths: 12 },
     publishedAt: "2026-01-01",
     source: source(),
     matches: matches
@@ -61,13 +69,21 @@ function recall(over: RecallOver): Recall {
   } as Recall;
 }
 
+/** A second source, so two fixtures do not collide on the URL alone. */
+function otherSource(id = "s2"): Source {
+  return {
+    ...source(id),
+    url: "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/b",
+  };
+}
+
 function subject(over: Partial<RecallSubject> = {}): RecallSubject {
   return { choices: {}, pins: [], ...over };
 }
 
 describe("the shipped feed", () => {
   it("holds the recalls we wrote", () => {
-    expect(RECALLS).toHaveLength(5);
+    expect(RECALLS).toHaveLength(9);
   });
 
   it("has no structural problems", () => {
@@ -89,7 +105,23 @@ describe("the shipped feed", () => {
   it("cites the agency, not a blog", () => {
     for (const entry of RECALLS) {
       expect(entry.source.kind).toBe("government");
-      expect(entry.source.url).toMatch(/^https:\/\/www\.cpsc\.gov\/Recalls\//);
+      expect(entry.source.url).toMatch(
+        /^https:\/\/(www\.cpsc\.gov\/Recalls\/|www\.fda\.gov\/safety\/|api\.nhtsa\.gov\/recalls\/)/,
+      );
+    }
+  });
+
+  it("covers more than the cot and the car", () => {
+    const categories = new Set(RECALLS.map((r) => r.category));
+    for (const wanted of ["sleep", "feeding", "food", "travel"]) {
+      expect(categories.has(wanted as never), `no recall about ${wanted}`).toBe(true);
+    }
+  });
+
+  it("gives every recall an age window a parent can read", () => {
+    for (const entry of RECALLS) {
+      expect(entry.ages.fromMonths).toBeLessThanOrEqual(entry.ages.toMonths);
+      expect(ageWindowLabel(entry.ages)).toMatch(/^(Before birth|[A-Z0-9].* to .*)$/);
     }
   });
 
@@ -99,7 +131,7 @@ describe("the shipped feed", () => {
   });
 
   it("loads through the same gate as everything else", () => {
-    expect(loadRecallFeed(TODAY)).toHaveLength(5);
+    expect(loadRecallFeed(TODAY)).toHaveLength(9);
   });
 });
 
@@ -159,9 +191,20 @@ describe("loadRecalls", () => {
     expect(issues.some((i) => i.path === "severity")).toBe(true);
   });
 
-  it("refuses a recall that matches nothing", () => {
+  it("accepts a recall that matches nothing", () => {
+    // The age window is a legitimate way to reach a parent, and every recall
+    // that comes off a live register has no curated matches at all. An empty
+    // `matches` is not a mistake, it is the normal shape of a live record.
     const { issues } = loadRecalls([{ ...recall({ id: "empty" }), matches: {} }]);
-    expect(issues.some((i) => i.message.includes("can never reach a parent"))).toBe(true);
+    expect(issues).toEqual([]);
+  });
+
+  it("defaults a missing matches to empty", () => {
+    const bare = recall({ id: "bare" });
+    delete (bare as { matches?: unknown }).matches;
+    const { recalls, issues } = loadRecalls([bare]);
+    expect(issues).toEqual([]);
+    expect(recalls[0]?.matches).toEqual({ optionIds: [], actionIds: [], keywords: [] });
   });
 
   it("refuses an id that is not kebab-case", () => {
@@ -299,5 +342,147 @@ describe("the vocabulary", () => {
 
   it("parses a recall through the schema", () => {
     expect(Recall.parse(recall({ id: "parsed" })).id).toBe("parsed");
+  });
+});
+
+describe("the age window", () => {
+  it("covers both ends and nothing outside them", () => {
+    const one = recall({ id: "window", ages: { fromMonths: 6, toMonths: 12 } });
+    expect(isForAge(one, 5)).toBe(false);
+    expect(isForAge(one, 6)).toBe(true);
+    expect(isForAge(one, 12)).toBe(true);
+    expect(isForAge(one, 13)).toBe(false);
+  });
+
+  it("treats negative months as before the birth", () => {
+    const before = recall({ id: "before", ages: { fromMonths: -9, toMonths: 0 } });
+    expect(isForAge(before, -3)).toBe(true);
+    expect(isForAge(before, 1)).toBe(false);
+  });
+
+  it("puts the serious ones first, then the newest", () => {
+    const feed = [
+      recall({ id: "info-new", severity: "info", publishedAt: "2026-05-01" }),
+      recall({ id: "stop-old", severity: "stop-use", publishedAt: "2025-01-01" }),
+      recall({ id: "stop-new", severity: "stop-use", publishedAt: "2026-05-01" }),
+    ];
+    expect(recallsForAge(feed, 6).map((r) => r.id)).toEqual(["stop-new", "stop-old", "info-new"]);
+  });
+
+  it("drops what is not for this age", () => {
+    const feed = [
+      recall({ id: "tiny", ages: { fromMonths: 0, toMonths: 3 } }),
+      recall({ id: "big", ages: { fromMonths: 24, toMonths: 36 } }),
+    ];
+    expect(recallsForAge(feed, 30).map((r) => r.id)).toEqual(["big"]);
+  });
+
+  it("writes the window in words a parent reads once", () => {
+    expect(ageWindowLabel({ fromMonths: -9, toMonths: 0 })).toBe("Before birth");
+    expect(ageWindowLabel({ fromMonths: -9, toMonths: 12 })).toBe("Birth to 12 months");
+    expect(ageWindowLabel({ fromMonths: 6, toMonths: 36 })).toBe("6 months to 3 years");
+    expect(ageWindowLabel({ fromMonths: 6, toMonths: 12 })).toBe("6 months to 12 months");
+  });
+
+  it("refuses a window that ends before it starts", () => {
+    const parsed = Recall.safeParse(
+      recall({ id: "backwards", ages: { fromMonths: 12, toMonths: 6 } }),
+    );
+    expect(parsed.success).toBe(false);
+  });
+});
+
+describe("the vocabulary", () => {
+  it("names every category the schema allows", () => {
+    for (const category of RECALL_CATEGORIES) {
+      expect(recall({ id: "cat", category }).category).toBe(category);
+    }
+  });
+});
+
+describe("sameRecall", () => {
+  it("knows an entry by its id", () => {
+    expect(sameRecall(recall({ id: "one" }), recall({ id: "one" }))).toBe(true);
+  });
+
+  it("knows an entry by the register page it points at", () => {
+    // A curated entry and the record it was written from rarely share an id:
+    // one was hand-written before the feed existed. The URL is the same.
+    const curated = recall({ id: "hand-written" });
+    const live = recall({
+      id: "cpsc-26099",
+      product: "Something else entirely",
+      source: { ...source("s2"), url: curated.source.url },
+    });
+    expect(sameRecall(curated, live)).toBe(true);
+  });
+
+  it("knows an entry by the second address the curator listed", () => {
+    // The FDA writes a recall notice and files the same event in its
+    // enforcement database, which is a different URL for the same recall.
+    const enforcement = "https://www.accessdata.fda.gov/enforcement?id=99448";
+    const curated = recall({ id: "hand-written", alsoAt: [enforcement] });
+    const live = recall({
+      id: "fda-h-1223-2026",
+      product: "Something else entirely",
+      source: { ...source("s2"), url: enforcement },
+    });
+    expect(sameRecall(curated, live)).toBe(true);
+    expect(sameRecall(live, curated)).toBe(true);
+  });
+
+  it("knows an entry by the product it names, whatever the wording", () => {
+    const curated = recall({ id: "a", product: "The CooCooBaby lounger" });
+    const live = recall({ id: "b", product: "CooCooBaby baby loungers" });
+    expect(sameRecall(curated, live)).toBe(true);
+  });
+
+  it("does not merge two different products", () => {
+    expect(
+      sameRecall(
+        recall({ id: "a", product: "Graco car seat" }),
+        recall({ id: "b", product: "Graco stroller", source: otherSource() }),
+      ),
+    ).toBe(false);
+  });
+
+  it("does not merge two products that are both only filler words", () => {
+    expect(
+      sameRecall(
+        recall({ id: "a", product: "Baby" }),
+        recall({ id: "b", product: "The infant", source: otherSource() }),
+      ),
+    ).toBe(false);
+  });
+});
+
+describe("mergeRecalls", () => {
+  it("keeps the curated entry when the register publishes the same recall", () => {
+    const curated = recall({ id: "cpsc-26099" });
+    const live = recall({ id: "cpsc-26099", action: "Return it to the store." });
+    const merged = mergeRecalls([curated], [live]);
+    expect(merged).toHaveLength(1);
+    expect(merged[0]?.action).toBe(curated.action);
+  });
+
+  it("adds what the curated list does not have", () => {
+    const merged = mergeRecalls(
+      [recall({ id: "curated" })],
+      [recall({ id: "fresh", product: "A different product", source: otherSource() })],
+    );
+    expect(merged.map((r) => r.id)).toEqual(["curated", "fresh"]);
+  });
+
+  it("leaves the curated list alone when there is no feed", () => {
+    const curated = [recall({ id: "one" }), recall({ id: "two" })];
+    expect(mergeRecalls(curated, [])).toEqual(curated);
+  });
+
+  it("does not add the same live record twice", () => {
+    const merged = mergeRecalls(
+      [],
+      [recall({ id: "same" }), recall({ id: "same", source: otherSource() })],
+    );
+    expect(merged).toHaveLength(1);
   });
 });
