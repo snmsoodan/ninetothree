@@ -2063,6 +2063,182 @@ The fix is a `NOT_OURS` deny list checked before any rule (`adult`, `senior`, `e
 
 **What this does not prove.** The band boundaries are the standard ones — the AAP introduces solids around six months and whole milk and a cup replace formula and the bottle around twelve — and they are coarse on purpose, because a child who starts solids at five months and one who starts at seven are both handled and neither is wrong. Nothing nudges a parent who answered `breast` in pregnancy to answer again once the band becomes `solids`; the radio simply shows nothing selected and the answer stands until they change it. A stored `cup` hides breastfeeding steps, and no step in the toddler packs is breastfeeding-specific, so in practice the value changes what the settings screen says more than what the week shows.
 
-## 67. How this file is maintained
+## 67. A faint drawing over the dashboard that walks as you scroll (issue #136)
+
+**The ask, and the argument against it.** The owner wanted a barely visible outline of a
+mother holding a child behind the dashboard, which raises the child as the page scrolls.
+Three of this project's own rules forbid it: §11 of `UX_CRAFT.md` ("no illustrations of
+people", "the only decorative element allowed is a thin horizontal rule"), rule 2 of the
+ten product rules ("nothing moves unless the user moved it"), and the "never" line in §8
+(no scroll-triggered reveals). Rather than quietly break them or quietly refuse, §11 now
+carries a named exception with its limits written down, and the two other rules point at
+it. If the experiment is rejected, delete the component and the exception together — the
+drawing must not outlive the paragraph that justifies it.
+
+**Four drawings failed before the fifth stopped being a drawing.** The first version was
+thirty hand-plotted points, and the owner's verdict was "too basic". The second was a
+skeleton of joints wrapped in tapered capsules, and the verdict was "the figure still looks
+robotic". The third was a single closed contour with a jaw and a nape; the fourth was a
+walking family of three, its limbs swept as outlines, tuned over several rounds with a
+throwaway test that flattened every path `d` into a character grid and printed it as ASCII.
+Each one was arithmetically right — correct proportions, hands that met, feet on the ground
+— and each one read as a wireframe mannequin, which is the failure mode of procedural
+figures: they have no wobble, no uneven pressure, and no moment where the line is decided
+rather than computed. A library search found nothing to substitute either: Open Peeps is
+CC0 but has no baby, unDraw and Humaaans are filled colour or CC-BY, and Flaticon and
+IconScout are attribution-only. So the drawing stopped being geometry.
+
+**The artwork is five sets of four poses, and every pose is a mask.** One picture cannot
+swing its legs: as the page scrolled, the owner's verdict was that "the image is just moving
+forward as it is". A walk cycle needs at least four drawings — two contacts, two passes —
+because a cycle has four distinct moments and three would visibly skip one. So the drawing
+became a flipbook, and because a dashboard, a library and a sign-in page should not all be
+the same walk, it became five flipbooks:
+
+| Theme       | Drawing                                               | Pages                                                                                                  |
+| ----------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `welcome`   | a parent rocking a newborn, held against the shoulder | `/signin`, `/onboarding`, `/join`                                                                      |
+| `expecting` | one parent standing, hand on the bump                 | `/week`, `/read`, `/library`, `/shelf`, `/search`                                                      |
+| `family`    | the father, mother and toddler, hands joined          | `/today`, and every page that is not listed here                                                       |
+| `play`      | a toddler chasing a ball, the parent behind           | `/updates`, `/history`, `/choose`, `/together`                                                         |
+| `outing`    | a parent pushing a pram                               | `/appointments`, `/settings`, `/email`, `/license`, `/privacy`, `/terms`, `/corrections`, `/editorial` |
+
+Twenty files, `apps/web/public/art/<theme>-<1..4>.png`, **15–32 kB each and 500 kB in
+total** — not a photo set, a line drawing. Each is still the ink's own alpha: `alpha =
+255 − luminance`, quantised to 16 levels, saved as a 32-colour palette, then painted as
+`mask-image` over a `bg-current` div with the `WebkitMask*` twins Safari needs. The line is
+therefore the page's own ink — `#1f1f1f` on paper, `#F2EDE6` on `#17140F` — rather than a
+black drawing in one mode and a grey one in the other.
+
+**Every theme stands on the same stage, and the whole stage is on screen.** A generated
+sheet does not arrive at a predictable size, and five themes that each cropped to their own
+ink would make the drawing jump when a parent moved between pages. So every quadrant is
+cropped to its own ink with an 8px pad, **contained** inside one shared 1100×838 stage,
+pasted bottom-centred on white, and saved — which is what `work/sheet.py` does for all five.
+The mask is sized `contain` from `center center`, so the figure is complete on any viewport.
+The earlier `cover` looked right on a laptop and cut most of the family off a phone, which
+is what the owner photographed and objected to.
+
+**One mount, in the root layout.** The figure lives in `app/layout.tsx` after
+`<RouteFocus />`, not in `AppShell`, so `/signin` and `/onboarding` — which render without
+the shell — get the drawing too. Mounting it in both places would have painted two copies
+and doubled the ink to 14%.
+
+**Only the walk is code.** `raising.ts` computes the motion and holds the route table;
+`walkOffset(t)` returns the group's transform, `walkFrame(t)` returns which of the four
+drawings is on screen. `x` is `44px` eased in and out with `t²(3 − 2t)`; `y` is
+`−4·|sin(2·phase)|` for the footfall, at twice the stride frequency; `sway` is
+`0.6·sin(phase)` degrees turned about the feet with `transformOrigin: 50% 100%`, so the
+bodies lean instead of the picture rotating. At `t = 0` all three are zero and at `t = 1`
+the family stands at `{x: 44, y: 0, sway: 0}` — it lands flat rather than freezing
+mid-stride.
+
+**Speed and smoothness were two different problems, and the frame count was neither.** The
+first live verdict was "very fast, like people are walking extremely fast — is it due to
+less number of images?" It was not: fewer drawings would have looked identical, only
+choppier. What made it a sprint was cadence — `STRIDES × FRAMES` pose changes across a page
+and a half. It went 12 cycles, then 6, then **2**, which is one pose change every 150px of
+scrolling: a stride or so per screen, which is scenery behind somebody reading. The second
+verdict was "this needs to be much more smooth", and that is a different axis: four
+drawings at a walking pace with a hard cut between them is a slide show. So the four layers
+stay stacked and **cross-fade** — the outgoing pose is still visible while the incoming one
+comes up, over `FRAME_FADE_MS = 320`. Two masks at partial opacity combine as
+`1 − (1−a)(1−b) ≤ 1`, so the ink never thickens past the 7% ceiling however long the
+dissolve is. `requestAnimationFrame` eases the current scroll value toward the target at
+**0.12** per frame rather than 0.18, so the group lags the page slightly and settles in
+about thirty frames instead of snapping, and the loop stops when the gap is under 0.002.
+
+**Over the page, because behind was invisible.** The first attempt put the figure at `z-0`
+behind the content and made the cards slightly transparent so a stroke could ghost through
+them. Measured with a pixel diff — screenshot with the figure on, screenshot with it
+`display: none`, decode both through a canvas, subtract per channel — a stroke under a card
+moved the pixels by **2 of 255** at 88% card opacity. Raising the ink to 12% and the cards to
+70% took that to 21, against 83 in the gaps, and there the arithmetic stops: under-card
+visibility is `(1 − β)` times gap visibility, so parity needs `β ≈ 0.5`, and a card only four
+luminance levels above the paper vanishes long before that. So the layer moved to `z-20`,
+above the content column and below the header and tab bar at `z-30`, at 7% ink.
+
+**Why 7% over the top costs nothing.** The ink is `currentColor`, and ink over ink is a
+no-op — `#1f1f1f` at 7% over `#1f1f1f` is still `#1f1f1f`. The layer darkens paper and cards
+and passes straight through letters without softening them, so a decoration on top is not a
+contrast risk, and the axe suite is unchanged. The whole layer is one colour at 7%, so the
+largest per-channel delta it can produce anywhere on the page is **18 of 255**, by
+construction, whether it crosses a gap or a card.
+
+**It cannot be a nuisance.** The layer is `aria-hidden`, has no `tabindex`, is
+`pointer-events-none`, and is skipped entirely on `/safety`, `/triage` and `/print`, where a
+decoration next to a red flag is the wrong thing to draw. `prefers-reduced-motion: reduce`
+holds it on frame one at the start of the walk — the pose is chosen before the first paint,
+so there is no flash of motion. `prefers-contrast: more`, or the reading setting that sets
+`data-contrast="more"`, hides it with `display: none !important`.
+
+**What the tests hold.** `raising.test.ts` (23 cases): the span is 1.5 viewports and zero for
+a zero, negative or `NaN` height; progress runs 0 → 0.5 → 1 and clamps at both ends,
+including the negative `scrollY` that iOS rubber-band overscroll produces; the walk starts
+at exactly `{x: 0, y: 0, sway: 0}` and ends at `{x: 44, y: 0, sway: 0}`; it never steps
+backwards across 101 samples; it descends into a footfall exactly `STRIDES × 2` times and
+never rises off the ground; it leans between 0.5° and 0.6° and alternates sides once per
+stride; the whole stride stays inside `[0, 44]`; and it clamps or survives a `NaN` like
+progress does. The flipbook is a contract, not a picture: frame 0 at both ends, every
+transition exactly one frame forward and wrapping `3 → 0`, exactly `STRIDES × FRAMES`
+changes across the span, always in `[0, FRAMES)`, and the fade is asserted to cover more
+than half of one frame at a brisk 300px-a-second scroll — the measurement behind "smooth"
+rather than a claim about it. The route table is exhaustive over all 26 pages, matches whole
+segments only (so `/read` cannot swallow `/reads`), ignores a trailing slash, and returns
+`null` for the pages that must have no drawing.
+`RaisingFigure.test.tsx` (17 cases): the wrapper is out of the accessibility tree and out of
+the pointer's way; each of the four layers really is a mask over `bg-current` pointing at
+`/art/<theme>-N.png`, sized `contain`, not an `<img>`; exactly one layer is the lit
+destination at any moment and the rest are transparent; the transition on every layer is the
+fade, so the handover cannot become a cut again; the theme follows the route, and the
+component renders nothing at all on `/triage`; it is at 7%; it starts at zero; it walks
+forward past 20px after a scroll and ends at exactly `translate3d(44px, 0px, 0)`; it returns
+to zero when the page returns to the top; it does not move under `prefers-reduced-motion` or
+under `data-motion="reduced"`, and settles back to zero when the media query flips
+mid-walk; it re-reads the span on `resize`; and both listeners are removed on unmount —
+tested both before it ever moved and mid-walk.
+
+**Two new pictures.** `evidence.spec.ts` photographs `/today` at the top of the page
+(`21-figure-at-rest.png`) and again after scrolling 60% of a viewport
+(`22-figure-walking.png`), asserting in between that the masked layer's `transform` has
+moved past 10px, that `data-theme="family"`, that `data-frame` is a real frame index, and
+that exactly one layer carries inline `opacity: 1`. It polls rather than sleeping, because
+the stride is eased over about thirty frames.
+
+**The drawing nearly became the slowest thing on the page.** The phone budget job failed on
+the previous commit — 3949, 3955 and 3967ms on `/week/pregnancy-w28`, 3776ms on `/search`,
+against a 2000ms ceiling — and Lighthouse named
+`div[data-testid="raising-figure-art"]` as the largest contentful paint. A 7% line drawing
+had become the page's main paint. The element then was an inline block sized
+`min(92vw, 900px)` whose masked background could not paint until its PNG arrived: the
+request left at 1522ms and finished at 2458ms on a throttled connection, and the render
+delay after that was another 1496ms. Nothing about it was slow in the sense of a heavy
+file — 18KB — it was simply _the biggest thing painted last_, which is what the metric
+measures. On the commit that collapsed the five cycles into one fixed, `contain`ed layer
+over the page, the same runner on the same three routes painted text first instead:
+`/week/pregnancy-w28` 1547–1552ms, `/search` 1508–1516ms, `/onboarding` 1523–1532ms, three
+runs each, all inside budget. The lesson stays here rather than in the component: a
+decoration wide enough to win the largest-paint race is a performance bug even at 7% ink,
+and the budget job is the only thing that would have said so.
+
+**What this does not prove.** The agent doing this work cannot view images, so every check
+here is a measurement. Each generated sheet was validated before it was cut up: the four
+quadrants have to agree in size to within a pixel or two — otherwise the drawing jumps in
+scale between frames — and the pairwise pixel difference has to sit in the lower half of the
+figure, because only the legs are supposed to move. On the five accepted sheets the upper
+half differs by 1.3–27% and the lower by 6–18%, with the lower/upper ratio as high as 9.9×
+on the pram, which is as close as arithmetic gets to "the feet are walking and the head is
+not". The `welcome` sheet is the weakest of the five: the rocking motion was drawn as a
+lateral lean rather than a leg swing, so its upper-half difference is the highest and the
+motion reads as a sway. None of that says whether a drawing is charming, and the owner
+judged each round in a live browser — those verdicts are recorded above precisely because
+they are not reproducible here. Nor is any of it auditable the way typed geometry was:
+nobody can read a PNG and see how a shoulder was placed, and regenerating one produces a
+different family. The drawings are **generated in the style of** the reference photographs
+the owner supplied, because those files' licence could not be verified. The earlier
+single-figure geometry is in the git history at `35f3d39` if legibility ever comes back to
+matter more than character.
+
+## 68. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.

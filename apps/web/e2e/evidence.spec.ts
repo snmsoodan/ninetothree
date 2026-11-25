@@ -184,6 +184,40 @@ test("the feeding question at two years, on both screens that ask it", async ({ 
   await shot(page, "20-settings-feeding-two-year");
 });
 
+test("the figure over the page, at rest and walking as the page scrolls", async ({ page }) => {
+  await onboard(page);
+  const figure = page.getByTestId("raising-figure");
+  const art = page.getByTestId("raising-figure-art");
+  await expect(figure).toHaveAttribute("aria-hidden", "true");
+  await shot(page, "21-figure-at-rest");
+
+  /* The artwork is four drawings painted through a mask, stepped through like
+     a flipbook, so there are no parts to measure. What can be measured is the
+     walk: a forward stride that eases in as the page scrolls, and exactly one
+     of the four drawings lit at any moment. */
+  const walked = () =>
+    art.evaluate((node) => {
+      const match = /translate3d\((-?[\d.]+)px/.exec(node.style.transform);
+      return match ? Number(match[1]) : 0;
+    });
+  expect(await walked()).toBe(0);
+
+  await page.evaluate(() => window.scrollTo(0, window.innerHeight * 0.6));
+  /* The stride is eased over ~20 frames, so poll for it rather than sleeping a
+     guessed number of milliseconds. */
+  await expect.poll(walked, { timeout: 5_000 }).toBeGreaterThan(10);
+  await expect(figure).toHaveAttribute("data-theme", "family");
+  await expect(art).toHaveAttribute("data-frame", /^[0-3]$/);
+  const lit = await page.evaluate(
+    () =>
+      Array.from(document.querySelectorAll('[data-testid^="raising-figure-frame-"]')).filter(
+        (node) => (node as HTMLElement).style.opacity === "1",
+      ).length,
+  );
+  expect(lit).toBe(1);
+  await shot(page, "22-figure-walking");
+});
+
 test("the narrowest phone we support, with nothing sideways", async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 640 });
   await onboard(page);

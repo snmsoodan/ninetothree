@@ -9,6 +9,67 @@ changelog written after the fact from memory is a changelog nobody can trust.
 
 ## Unreleased
 
+### A faint drawing over the dashboard that walks as you scroll (#136)
+
+- **A drawing, not geometry.** A father, mother and toddler walking hand in
+  hand, one `1.5px` continuous line at 7% ink, over the dashboard and over
+  nothing else. Four procedural versions came before it — hand-plotted points,
+  a capsule skeleton, a filled contour, a tapered walking family — and the
+  owner's verdict on each was the same complaint in different words: a
+  mannequin. No CC0 illustration library has an animatable mother and baby, so
+  the drawing is now a picture and only the motion is code.
+- **The pictures are masks, not images.** Twenty PNGs under `public/art/`, each
+  the ink's own alpha, painted as `mask-image` over a `bg-current` div, so the
+  lines take the page's colour in light and dark instead of being a black
+  drawing in one of them. 15–32 kB each, 500 kB in total, after a 32-colour
+  palette.
+- **One pose cannot walk.** As the page scrolled the owner's verdict was that
+  "the image is just moving forward as it is", which is exactly right: a single
+  drawing cannot swing a leg. So there are now **four poses per drawing**, two
+  contacts and two passes, stepped like a flipbook.
+- **Five drawings, one per part of the product.** A parent rocking a newborn on
+  sign-in and onboarding; a parent with the bump over the week, library and
+  shelf; the walking family of three on the dashboard; a toddler chasing a ball
+  on updates and history; a parent with a pram on the account, legal and
+  settings pages. No drawing at all on `/safety`, `/triage` or `/print`. The
+  table is in `raising.ts`, every route is covered by a test, and it matches on
+  whole segments so `/read` cannot swallow `/reads`.
+- **The whole picture, on every screen.** All twenty poses are composited onto
+  one shared 1100×838 stage and masked to `contain` from the centre, so the
+  figure is complete on a phone as well as a laptop, and it does not change
+  size when a parent changes page. The first version filled the viewport with
+  `cover`, which cropped most of the family away on a phone.
+- **One mount.** The figure lives in the root layout rather than `AppShell`, so
+  sign-in and onboarding — which render without the shell — get the drawing too.
+- **Two strides, not twelve, and they dissolve.** The first live verdict was
+  "very fast, like people are walking extremely fast". It was not the frame
+  count: fewer drawings would have looked identical, only choppier. It was
+  cadence, now two full cycles across a page and a half — a pose every 150px.
+  The second verdict was "needs to be much more smooth", which is the other
+  axis: a hard cut between four drawings is a slide show, so the layers now
+  cross-fade over 320 ms while the outgoing pose is still visible. Two masks at
+  partial opacity combine as `1 − (1−a)(1−b) ≤ 1`, so the ink never thickens
+  past the 7% ceiling.
+- **Only the walk is code.** `walkOffset(t)` carries the family 44px forward
+  with an eased start and finish, a 4px bob at twice the stride frequency for
+  the footfall, and a 0.6° lean about the feet. It starts on the spot and ends
+  standing flat, so nothing drifts off a narrow phone, and it eases into place
+  over one `requestAnimationFrame` loop — softened to 0.12 per frame so the
+  group lags the page and settles instead of snapping — that stops when the gap
+  is under 0.002, so an idle page runs no frames at all.
+- **It yields to the reader.** `prefers-reduced-motion` holds it at the start of
+  the walk before the first paint; `prefers-contrast: more`, and the reading
+  setting that does the same, remove it entirely; it is excluded from print, is
+  `aria-hidden`, cannot be focused or tapped, and never appears on `/safety` or
+  `/triage`.
+- **A decoration that wins the largest-paint race is a bug.** The phone budget
+  job failed on the first version: Lighthouse named the drawing itself as the
+  largest contentful paint at 3.9s on `/week/pregnancy-w28` and 3.8s on
+  `/search`, against a 2s ceiling — not because 18kB is heavy, but because the
+  biggest thing on the page could not paint until its PNG arrived. With the
+  single fixed, `contain`ed layer the same runner on the same routes now paints
+  text first, 1508–1552ms across three runs each, and the budget passes.
+
 ### The feeding question grows up with the child (#132)
 
 - **The question is asked in the tense of the child's age.** Before the birth it

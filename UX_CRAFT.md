@@ -27,7 +27,7 @@ If a screen makes someone feel behind, judged, sold to, or overwhelmed, it has f
 These are ranked. When two conflict, the lower number wins.
 
 1. **One thing at a time.** Never two primary actions on one screen. If there are two, one of them is secondary and must look it.
-2. **Nothing moves unless the user moved it.** No autoplay, no carousels, no scroll-triggered animation, no pulsing badges. Motion is a response, never an invitation.
+2. **Nothing moves unless the user moved it.** No autoplay, no carousels, no scroll-triggered animation, no pulsing badges. Motion is a response, never an invitation. _(The dashboard figure moves only because the page is being scrolled — see §11.)_
 3. **No red unless something is actually wrong.** Red is reserved for red flags and destructive actions. Errors in forms are amber. "You're behind" does not exist as a concept.
 4. **No numbers that make you feel late.** No streaks, no percentages, no "3 of 7 done", no countdowns. Progress is shown as _what you've done_, never as _what you haven't_.
 5. **Every screen answers "what do I do now?"** If a screen cannot answer that in one sentence, it is not a screen — it is a settings page.
@@ -346,6 +346,8 @@ Motion exists to explain a change of state. Nothing else.
 | Skeleton shimmer          | 1.6s loop  | linear, 8% opacity delta   |
 
 **Never:** bounce, spring, overshoot, parallax, scroll-triggered reveals, confetti, lottie celebrations, animated illustrations.
+_(The dashboard figure is the single exception: it is scroll-linked, not scroll-triggered, and it is
+drawn rather than animated. §11 sets its limits.)_
 
 **Always:** honour `prefers-reduced-motion: reduce` by removing all transforms and keeping only opacity fades under 100ms.
 
@@ -422,6 +424,62 @@ Warm, low-contrast, paper-like. No pure white, no pure black, no saturated brand
 - No illustrations of people. No animals. No abstract blobs.
 - The only decorative element allowed is a thin horizontal rule.
 - The completion tick is a 16px sage check, drawn at 1.5px, no circle, no fill.
+
+### The one exception: the figure on the dashboard
+
+The owner asked for a faint drawing behind the dashboard: first a mother holding a
+child, then a family walking hand in hand, that moves as the page scrolls. It is a direct
+contradiction of this section and of rule 2 in "Ten product rules", and it was built
+knowingly, as an experiment to be judged by eye rather than by argument. It is scoped so
+that it cannot become the thin end of a wedge:
+
+- **One place, one drawing per page.** Mounted once in the root layout, so it covers the
+  dashboard, the library and sign-in, but never `/safety`, `/triage` or `/print`, where a
+  decoration would sit next to a red flag. Each area of the product gets the drawing that
+  belongs to it — a parent rocking a newborn on sign-in, a parent with the bump over the
+  guide, the walking family on the dashboard, a toddler playing, a parent with a pram on
+  the account pages — so the picture never tells a parent a story that is not theirs.
+- **One weight.** A single ink stroke at 7% on paper, no fill, no second colour, no shadow.
+  Nothing but a silhouette. It is deliberately one step above invisible: legible as a shape
+  when you look for it, never something you read past.
+- **Drawn, not computed.** Four rounds of procedural geometry — plotted points, a capsule
+  skeleton, a filled contour, tapered tubes — all read as a wireframe mannequin, and no CC0
+  illustration library has an animatable mother and child. So the drawings are pictures now,
+  stored as the ink's own alpha and painted through a mask: the one files in the product that
+  nobody typed. Twenty of them — four poses for each of five moments — because one picture
+  cannot swing its legs, and a cycle has four distinct moments.
+- **On screen whole.** The layer is `fixed inset-0`; all twenty poses are composited onto one
+  1100×838 stage and masked to `contain` from the centre, so the drawing is complete on a
+  phone as well as a laptop and the figure does not change size when a parent changes page.
+- **A walk, not a loop.** The scroll carries them forward 44px over 1.5 viewports, with a 4px
+  footfall bob twice per stride, two strides in all, and a 0.6° lean about the feet. Two is
+  the number that reads as ambling: a dozen turned the page into a sprint, and a pose every
+  150px is one step per screen. Both ends are still — it starts on the spot and finishes
+  standing flat, so nothing drifts off a narrow phone and nothing rewinds — and it eases over
+  one `requestAnimationFrame` loop that stops when the gap is under 0.002, so an idle page
+  runs no frames at all. Nothing moves on a timer.
+- **Poses dissolve, they do not cut.** The four drawings are stacked layers and the handover
+  is a 320ms cross-fade, so the outgoing pose is still there while the next comes up and the
+  eye reads a continuous walk. A hard cut between four drawings is a slide show: that was the
+  second thing the owner said no to, after the speed. Two masks at partial opacity can never
+  exceed full opacity, so the dissolve does not thicken the ink.
+- **Over the page, and given room.** It paints _above_ the content column at `z-20` — below
+  the header and tab bar at `z-30` — because behind it was a figure nobody could see: the
+  cards are opaque and their colour is one or two percent off the paper, so translucency
+  enough to let the stroke through also dissolves the card. Over the top, the line has the
+  same weight on a card as on the paper. `pointer-events: none` and `aria-hidden`, so it
+  cannot be focused, tapped, or read aloud.
+- **It does not touch the text.** The ink is `currentColor`, and ink over ink is a
+  no-op: `#1f1f1f` at 7% over `#1f1f1f` is still `#1f1f1f`. The strokes darken paper and
+  pass straight through a letter without softening it, which is why the layer can sit
+  on top without costing a single point of contrast. It is also why the same file works in
+  dark mode, where the ink is `#F2EDE6`.
+- **It yields.** `prefers-reduced-motion: reduce` holds it at the start of the walk before
+  the first paint. `prefers-contrast: more` — and the reading setting that does the same —
+  removes it entirely with `display: none !important`. It is also excluded from print.
+
+If a later change needs a sixth theme, a fifth pose, a photograph, or a colour, that change
+needs to reopen this document first, not extend this list.
 
 ---
 

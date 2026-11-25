@@ -92,7 +92,7 @@ export function AppShell({
           footer can sit outside `main` — a `<footer>` inside `main` is not
           exposed as the `contentinfo` landmark — while still ending above the
           fixed tab bar. */}
-      <div className="mx-auto max-w-2xl px-5 pb-28">
+      <div className="relative z-10 mx-auto max-w-2xl px-5 pb-28">
         <main
           id="main"
           tabIndex={-1}
