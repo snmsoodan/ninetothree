@@ -68,10 +68,6 @@ export default function PrivacyPage() {
           in your browser and never sent anywhere.
         </li>
         <li>
-          <strong>Whether you are paying.</strong> The plan, its status and the customer reference
-          our payment processor gives us. We never see or store a card number.
-        </li>
-        <li>
           <strong>Sign-in attempts.</strong> A timestamped count, so that a script cannot sit there
           guessing addresses. It is not linked to what you read.
         </li>
@@ -110,13 +106,9 @@ export default function PrivacyPage() {
           email when that is switched on. It sees the address and the message, which is the point of
           it.
         </li>
-        <li>
-          <strong>Our payment processor</strong> handles subscriptions. It sees your email and your
-          card; we see whether the subscription is active.
-        </li>
       </ul>
       <p>
-        We will tell you before adding a fourth. Nothing here is sold, rented, or handed to an
+        We will tell you before adding a third. Nothing here is sold, rented, or handed to an
         advertiser, because we do not have advertisers.
       </p>
 

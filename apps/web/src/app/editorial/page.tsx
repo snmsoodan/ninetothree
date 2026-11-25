@@ -141,11 +141,10 @@ export default function EditorialPage() {
 
       <h2>Who pays for it</h2>
       <p>
-        One payment, and nothing else. The week you are in, the safety pages and the triage
-        questions are free forever, without an account, along with five pins. Plus is $5, paid once:
-        the whole timeline in both directions, no limit on pins, a second adult in your household,
-        offline reading and printing. There is no subscription, no advertising and no investor
-        pressure to add any, which is the only reason a promise like that is worth writing down.
+        Nobody, yet. The whole guide is free — every week, as many pins as you like, a second adult
+        in your household, offline reading and printing — and there is no subscription, no
+        advertising and no investor pressure to add either. We will say so here first if that
+        changes, and nothing that is free today will become paid.
       </p>
 
       <h2>When we are wrong</h2>

@@ -53,26 +53,13 @@ export default function TermsPage() {
 
       <h2>What it costs</h2>
       <p>
-        The week you are in, the safety pages and the triage questions are free, permanently and
-        without an account. <strong>Plus is $5, paid once.</strong> It opens the whole timeline in
-        both directions, lifts the limit on pins, adds a second adult to your household, and turns
-        on offline reading and printing.
+        Nothing. <strong>Everything here is free</strong> — every week in both directions, as many
+        pins as you want, a second adult in your household, offline reading and printing. There is
+        nothing to buy, nothing to subscribe to and no card anywhere on the site.
       </p>
       <p>
-        It is not a subscription. There is no monthly charge, nothing renews, and there is nothing
-        to cancel — one payment and the guide is yours for as long as we run it. Paying once also
-        means there is no card to expire and no failed payment to be cut off by.
-      </p>
-      <p>
-        The price you pay is the price on the day you pay it. If we raise it later, that applies to
-        new purchases, not to yours.
-      </p>
-
-      <h2>Refunds</h2>
-      <p>
-        If Plus is not what you expected, write to us within thirty days of paying and we will
-        refund it, no interrogation. A refund ends the access it paid for — the week you are in, the
-        safety pages and the triage questions stay, because those were never the thing being sold.
+        We may add a paid tier one day, for something new. If we do, everything described on this
+        page today stays free, and nothing you already use will move behind it.
       </p>
 
       <h2>The content</h2>
@@ -108,10 +95,11 @@ export default function TermsPage() {
       <h2>The legal part</h2>
       <p>
         The service is provided as it is. To the extent the law allows, we are not liable for
-        indirect or consequential losses, and our total liability is limited to what you paid us in
-        the twelve months before the claim. Nothing here limits liability for death or personal
-        injury caused by negligence, or for anything else that cannot be limited — and nothing here
-        is intended to make you give up a right you have as a consumer.
+        indirect or consequential losses, and our total liability is limited to a hundred dollars,
+        or to what you paid us in the twelve months before the claim if that is more — which today
+        is nothing, because nothing here is sold. Nothing here limits liability for death or
+        personal injury caused by negligence, or for anything else that cannot be limited — and
+        nothing here is intended to make you give up a right you have as a consumer.
       </p>
       <p>
         These terms are governed by the laws of the State of Delaware, and disputes will be heard in
