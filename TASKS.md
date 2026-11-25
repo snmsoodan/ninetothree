@@ -479,7 +479,7 @@ ordered issues so each slice is independently testable:
 | 161 | Push from the pack                                           | native-only delivery         |
 | 162 | Store readiness                                              | native-only                  |
 
-Issue 147 (the token exchange) is merged; 148–162 are open. Issues 147–157 come first because they are the ones that make a screen exist. 158–160 make the three clients agree.
+Issues 147 (the token exchange) and 148 (the token source) are merged; 149–162 are open. Issues 147–157 come first because they are the ones that make a screen exist. 158–160 make the three clients agree.
 161–162 are marked "not parity" on purpose: the web has no push channel and no store, so they extend the phone
 without adding a web obligation. Nothing here changes the free-product decision: the apps are the same product with
 no purchase, no entitlement and no upsell.

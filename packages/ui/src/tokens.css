@@ -3,6 +3,8 @@
  *
  * These are the only colours, sizes, and timings allowed in the product.
  * If a value is not here, it does not exist. See UX_CRAFT.md.
+ * GENERATED FILE — do not edit. The source is packages/tokens/src/tokens.ts,
+ * and `pnpm tokens:check` fails when this file and that source disagree.
  *
  * Tailwind v4 reads @theme and generates utilities from it, so
  * `bg-paper`, `text-ink-muted`, `border-line` all work.
@@ -198,8 +200,7 @@
  * letters are easier to tell apart. Size is the browser's job.
  */
 :root[data-font="hyperlegible"] {
-  --font-sans:
-    var(--font-atkinson), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-sans: var(--font-atkinson), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
 /*

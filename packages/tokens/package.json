@@ -1,0 +1,36 @@
+{
+  "name": "@ninetothree/tokens",
+  "version": "0.0.0",
+  "private": true,
+  "license": "Apache-2.0",
+  "author": {
+    "name": "Sanamdeep Singh",
+    "url": "https://ninetothree.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/snmsoodan/ninetothree.git"
+  },
+  "homepage": "https://ninetothree.com",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": "./src/index.ts",
+    "./css": "./src/css.ts",
+    "./native": "./src/native.ts"
+  },
+  "scripts": {
+    "lint": "eslint src scripts --max-warnings 0",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --coverage",
+    "tokens:emit": "node --experimental-strip-types scripts/generate.ts",
+    "tokens:check": "node --experimental-strip-types scripts/generate.ts --check"
+  },
+  "devDependencies": {
+    "@ninetothree/config": "workspace:*",
+    "@types/node": "^22.10.2",
+    "@vitest/coverage-v8": "^2.1.8",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}
