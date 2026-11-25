@@ -4,6 +4,7 @@ export {
   gestationalDays,
   daysUntilDue,
   ageInDays,
+  ageInMonths,
   GESTATION_DAYS,
   DAY_MS,
   type Stage,

@@ -118,7 +118,7 @@ These are the spine of the product. Every clinical claim, appointment window, re
 | Publisher                    | What it is for                                                                         | Link                                                    |
 | ---------------------------- | -------------------------------------------------------------------------------------- | ------------------------------------------------------- |
 | **CPSC**                     | The federal product safety regulator. The recall source of record.                     | `cpsc.gov`                                              |
-| **CPSC — Recalls**           | Live recall feed. We match this against every product we recommend, daily.             | `cpsc.gov/Recalls`                                      |
+| **CPSC — Recalls**           | Live recall feed, polled hourly. We match this against every product we recommend.     | `cpsc.gov/Recalls`                                      |
 | **NHTSA — Car Seats**        | Federal standard (FMVSS 213), 5-star ease-of-use ratings, inspection stations.         | `nhtsa.gov/equipment/car-seats-and-booster-seats`       |
 | **NHTSA — Car Seat Recalls** | Seat-specific recall lookup by make and model.                                         | `nhtsa.gov/car-seats-and-booster-seats/car-seat-recall` |
 | **IIHS — Child Safety**      | Independent booster-seat fit ratings. The only US booster ratings worth reading.       | `iihs.org/topics/child-safety`                          |
@@ -301,7 +301,7 @@ We do not translate. We rewrite.
 | Price band still accurate                 | Quarterly                       | Update or remove            |
 | Product still sold                        | Quarterly                       | Replace                     |
 | Clinical source still current             | Annually, or on guidance change | Re-review + version bump    |
-| Recall feed match                         | Daily (automated)               | Alert + content update      |
+| Recall register poll                      | Per visit, cached 1 hour        | Alert + content update      |
 
 **Stale content rule:** any health page with `last_reviewed` older than 12 months is automatically hidden from search and flagged in the admin queue. It is not silently served.
 
@@ -645,17 +645,27 @@ A red flag is written once, in the pack's `redFlags` array, and it appears in fo
 
 A recall is the one kind of content we do not write. It is an agency record, and our job is to carry it accurately and get it to the parent who has the thing.
 
-**The feed is `packages/content/recalls/recalls.json`.** Five entries today, all `stop-use`, all citing a `cpsc.gov/Recalls/...` page. There is no ingestion job: a recall reaches a parent only after someone adds it. The file is validated at module load like every pack, so a malformed recall fails the build rather than a parent at 3am.
+**There are two halves, and they are not the same kind of thing.** `packages/content/recalls/recalls.json` holds nine entries written and checked by a person — CPSC for products, FDA for formula and food, NHTSA for a car seat — each `stop-use` and each citing the page it came from. On top of that, `/api/updates` polls the CPSC and openFDA registers for the last 120 days on every visit, cached an hour, and turns what they return into the same `Recall` shape. The curated file is validated at module load like every pack, so a malformed one fails the build rather than a parent at 3am; a live record is validated by `Recall.safeParse` in the normalizer, and a record that fails it is dropped rather than repaired.
+
+**Discovery is live; the sentence a parent reads is not.** A register says what was recalled. It does not say what to do about the four months of a baby's life in which that thing was in their house. So a live recall's action is the agency's own remedy text, untouched, and anything we would rather say in our own words is added to `recalls.json` with the same source URL — `mergeRecalls` matches on the URL and the curated entry wins, in place, with no duplicate.
+
+**Only a classifier decides what is ours.** `classifyRecall` in `packages/content/src/recall-classify.ts` reads the title, the product name and the hazard — never the description, which lists every retailer that carried the item — and returns a category and an age window, or `null`. A naive "child" keyword match caught 304 of 485 CPSC records in a ten-month window, including a fuel can and a thermal laminator; the rules are ordered so that "car seat" beats "travel" and "infant formula" beats "food", and a whole-word match means `cotton` does not fire on `cotton candy` and `toy` does not fire on `toyota`.
+
+**Some words mean a child's thing and an adult's, and the deny list is the answer.** "Bed rail", "bottle", "space heater" and "ride-on" each describe a product a parent might own and a product they certainly should not hear about, and reading the live titles found six of them: an adult portable bed rail, a bottle of minoxidil, a space heater, a ride-on mower, an electric balloon pump and a block of cheese. `NOT_OURS` is checked before any rule, and where one word was doing two jobs the word got narrower — `baby bottle`, `infant formula`, `building block`, `glass marble`, `sleep machine`. The food rule needs a second gate, `BABY_FOOD`, because "pouch" and "puree" are how an adult's dinner is sold too; the cost is that a genuine toddler snack whose text never says "toddler" is dropped, which is the right way round for a list a parent trusts.
 
 **A recall matches on three signals, ranked.** `option` (the parent chose this exact product) beats `step` (they pinned the step that offered it) beats `keyword` (a word in the title of a pinned step, for a recall about a category). One notice per recall, not one per signal.
 
-**A recall that matches nothing is a schema error.** The message is "a recall that matches nothing can never reach a parent". A recall published in the future is a `recallIssues` finding instead, because a date is a fact about the record and an empty match list is a mistake in it.
+**A recall also has an age window, and that is a second way to reach a parent.** `category` is one of `sleep`, `feeding`, `food`, `travel`, `play`, `care`, `home`. `ages` is a signed-month range from birth, `-9` to `36`, where negative is before birth. The two filters are separate on purpose: `matches` answers "is this the thing you have", and `ages` answers "would this matter to you today". A parent who pinned nothing still deserves to know that the formula they may be feeding was recalled this morning, and the Updates page and its dashboard card are that second filter. Everything shown for age is labelled as such — "Worth knowing at this age" — because a recall we surfaced by window rather than by match is a weaker claim, and the notice says which one it is making.
+
+**One recall, published twice, is still one recall.** `sameRecall` collapses a curated entry and an agency record that share an id, a register URL, a product name, or an address the curator listed in `alsoAt`. That last one exists because the FDA writes a notice in sentences and files the same event in its enforcement database under a product description, at a different URL — the two records share no id, no URL and no product words, so only a person can say they are the same recall.
+
+**A recall that matches nothing is not a mistake, but a recall nobody can act on is.** `matches` defaults to empty, because a live record arrives knowing nothing about what a family owns and reaches them through its age window instead. A curated entry with no matches, no age window and no category would reach nobody, and `lintRecall` says so. A recall published in the future is a `recallIssues` finding, because a date is a fact about the record.
 
 **The recall lint is narrower than the pack lint.** `lintRecall` checks the title, the hazard and the action for a promise, an obligation or a norm. It does not apply the reading-level ceiling or the review record, because rewriting a CPSC hazard statement to hit grade 8 would mean changing the agency's words.
 
 **A recall is never personalized away.** Like a red flag, it is not a step and no rule can hide it. The queue only holds things that match something the parent pinned or chose, and putting one away is permanent.
 
-**What is not here yet.** No ingestion, no email, no `check` or `info` recall in the shipped feed. The five entries say `"reviewedBy": "Clinical review pending"` like everything else, and the recall lint does not check that field.
+**What is not here yet.** No email, and no `check` or `info` recall in the curated nine. NHTSA publishes no list endpoint — every attempt returns `403 Missing Authentication Token` — so car-seat campaigns stay hand-added and the page does not claim otherwise. The nine curated entries say `"reviewedBy": "Clinical review pending"` like everything else, and the recall lint does not check that field. `/updates` names which registers answered today and links all four official searches, because the only honest way to promise completeness is to point at the people who have it.
 
 ## 15. The link catalogue
 
@@ -685,7 +695,7 @@ A recall is the one kind of content we do not write. It is an agency record, and
 
 **The corpus is complete for the stages the product covers.** Pregnancy week 4 to toddler month 36, with no gaps. A parent past month 36 gets the month-36 pack, which is the intended fallback rather than a hole. `loader.test.ts` walks every reachable stage and fails if any of them has no pack — the guard that would have caught the toddler gap, which existed for two content issues because nothing was checking.
 
-**What is not here yet.** The recall feed is 5 hand-curated entries with no ingestion job, and clinical review of every pack is still pending.
+**What is not here yet.** The recall feed is 9 hand-curated entries with no ingestion job, and clinical review of every pack is still pending.
 
 **A pack that no stage can reach is not content.** `infant-month-2` had `stageIndex: 2`, and `computeStage` clamps infant to month 3, so `findPackForStage` returned month 3 and never month 2. It was reachable only by typing its URL. It was deleted, and its content lives in postpartum weeks 8 and 9, which is where a parent at that age actually is. The stage model is the authority on what a pack is for; a pack outside it is a file, not a week.
 

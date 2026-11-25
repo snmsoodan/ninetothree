@@ -1,11 +1,14 @@
 import {
   matchRecalls,
   recallKey,
+  recallsForAge,
+  RECALL_SEVERITY_RANK,
   type Recall,
   type RecallMatch,
   type RecallSubject,
 } from "@ninetothree/content";
-import { recordNotices, type AppState } from "./store";
+import { ageInMonths } from "@ninetothree/rules";
+import { recordNotices, stageInput, type AppState } from "./store";
 
 /**
  * What this parent has that a recall could be about.
@@ -52,4 +55,53 @@ export function newMatches(state: AppState, recalls: Recall[]): RecallMatch[] {
  */
 export function syncNotices(state: AppState, recalls: Recall[], at?: string): number {
   return recordNotices(newMatches(state, recalls), at);
+}
+
+export interface AgeUpdate {
+  recall: Recall;
+  /** The reason this is already theirs, if it is. */
+  mine: RecallMatch | null;
+}
+
+export interface AgeUpdates {
+  /** Signed months, negative before birth. */
+  months: number;
+  items: AgeUpdate[];
+}
+
+/**
+ * The recalls that apply at this parent's age, with their own matches marked.
+ *
+ * Two filters run independently and are then unioned, which is the whole point:
+ * `matches` finds what they told us about, and the age window finds what is
+ * true for a six-month-old whether or not they told us anything. A family
+ * should not have to pin the right step to hear that a formula was recalled.
+ *
+ * Returns null until the dates are known, because an age of zero is a real age
+ * and must not stand in for "we do not know yet".
+ */
+export function updatesFor(state: AppState, recalls: Recall[], today: string): AgeUpdates | null {
+  const input = stageInput(state);
+  if (!input) return null;
+
+  const months = ageInMonths(input, today);
+  const mine = new Map(currentMatches(state, recalls).map((match) => [match.recall.id, match]));
+
+  const byId = new Map<string, AgeUpdate>();
+  for (const recall of recallsForAge(recalls, months)) {
+    byId.set(recall.id, { recall, mine: mine.get(recall.id) ?? null });
+  }
+  // A recall this parent matched that falls outside the age window still
+  // belongs on the page: they own the thing, so the window is not their window.
+  for (const match of mine.values()) {
+    if (!byId.has(match.recall.id))
+      byId.set(match.recall.id, { recall: match.recall, mine: match });
+  }
+
+  const items = [...byId.values()].sort(
+    (a, b) =>
+      RECALL_SEVERITY_RANK[a.recall.severity] - RECALL_SEVERITY_RANK[b.recall.severity] ||
+      b.recall.publishedAt.localeCompare(a.recall.publishedAt),
+  );
+  return { months, items };
 }

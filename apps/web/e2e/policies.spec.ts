@@ -7,11 +7,11 @@ import { onboard } from "./helpers";
  * looking for the way out. They are also the pages that are easiest to break
  * without noticing, because nothing in the week view links to them.
  *
- * The four paths are written out rather than imported from the content package
+ * The paths are written out rather than imported from the content package
  * on purpose: if a policy is dropped from `POLICIES`, the footer test below
  * fails, and if a page stops existing this list still fails.
  */
-const POLICY_PATHS = ["/privacy", "/terms", "/editorial", "/corrections"];
+const POLICY_PATHS = ["/privacy", "/terms", "/editorial", "/corrections", "/license"];
 
 test.describe("the policies", () => {
   for (const path of POLICY_PATHS) {
@@ -23,9 +23,10 @@ test.describe("the policies", () => {
       await expect(page.locator("h1")).toHaveCount(1);
       await expect(page.locator("article p").first()).toBeVisible();
 
-      // The draft notice is the honest bit: these have not been reviewed by a
-      // lawyer, and the page says so rather than implying otherwise.
-      await expect(page.getByText("This page is a draft.")).toBeVisible();
+      // Every policy page opens with an honest caveat about itself: the
+      // legal ones are drafts, the licence one summarises the licence files
+      // rather than replacing them.
+      await expect(page.getByText(/^This page is a (draft|summary)\./)).toBeVisible();
 
       // Every policy page can be left without the back button.
       await expect(page.getByRole("navigation", { name: "Policies" })).toBeVisible();

@@ -59,6 +59,11 @@ export default defineConfig({
         // is no Stripe account behind it; the point is that the route verifies
         // a real HMAC rather than trusting whatever arrives.
         STRIPE_WEBHOOK_SECRET: "whsec_e2e_secret",
+        // Keeps the suite off the CPSC and FDA registers. A test that needs
+        // somebody else's server fails when that server is down, and the
+        // fallback it exercises is the one a parent sees when it is. The live
+        // path is unit-tested against fixtures instead.
+        RECALLS_OFFLINE: "1",
       },
     },
     {

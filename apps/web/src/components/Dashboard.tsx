@@ -2,7 +2,6 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { RECALLS } from "@ninetothree/content";
 import { lensFor } from "@ninetothree/content/core";
 import { ACTION_INDEX } from "@ninetothree/content/action-index";
 import { PACK_INDEX, findPackAtOrBefore, nextPackIndex } from "@ninetothree/content/pack-index";
@@ -12,6 +11,7 @@ import { AppShell } from "@/components/AppShell";
 import { AppointmentList } from "@/components/AppointmentList";
 import { PinList, type PinItem } from "@/components/PinList";
 import { RecallList } from "@/components/RecallList";
+import { UpdatesCard } from "@/components/UpdatesCard";
 import { ReminderCard } from "@/components/ReminderCard";
 import { ProgressLine } from "@/components/ProgressLine";
 import { ShareCard } from "@/components/ShareCard";
@@ -24,7 +24,8 @@ import { TogetherCard } from "@/components/TogetherCard";
 import { YourJobsCard } from "@/components/YourJobsCard";
 import { resolvePins } from "@/lib/pins";
 import { dueReminders, localDate, reminderKey, unseen } from "@/lib/reminders";
-import { syncNotices } from "@/lib/recalls";
+import { syncNotices, updatesFor } from "@/lib/recalls";
+import { useRecallFeed } from "@/lib/use-recall-feed";
 import {
   dismissNotice,
   markReminded,
@@ -56,6 +57,10 @@ export function Dashboard() {
   useEffect(() => {
     if (ready && !state.onboarded) router.replace("/onboarding");
   }, [ready, state.onboarded, router]);
+
+  // Curated recalls are in the first paint; the live ones arrive a moment
+  // later. Nothing on this page waits for the network.
+  const { recalls } = useRecallFeed();
 
   const { household, share } = useHousehold();
   const sharedIds = useMemo(() => household?.sharedItemIds ?? [], [household]);
@@ -90,8 +95,8 @@ export function Dashboard() {
   // The queue is filled on the dashboard, not on a timer: a recall is
   // something a parent looks at, not something that interrupts them.
   useEffect(() => {
-    if (ready) syncNotices(state, RECALLS);
-  }, [ready, state]);
+    if (ready) syncNotices(state, recalls);
+  }, [ready, state, recalls]);
 
   const { weeksDone, actionsDone } = useMemo(() => {
     const settled = new Set(
@@ -115,6 +120,7 @@ export function Dashboard() {
 
   const today = new Date().toISOString().slice(0, 10);
   const stage = computeStage(input, today);
+  const updates = updatesFor(state, recalls, today);
   const pack = findPackAtOrBefore(stage.kind, stage.index);
   const label = stageLabel(stage);
 
@@ -169,7 +175,8 @@ export function Dashboard() {
             level={1}
           />
         )}
-        <RecallList notices={notices} recalls={RECALLS} onDismiss={dismissNotice} />
+        <RecallList notices={notices} recalls={recalls} onDismiss={dismissNotice} />
+        <UpdatesCard updates={updates} />
         <PinList
           pins={pins}
           onUnpin={removePin}

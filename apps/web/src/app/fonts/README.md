@@ -11,8 +11,9 @@ network.
 | `atkinson-bold.woff2`    | Atkinson Hyperlegible | 700       | https://fonts.google.com/specimen/Atkinson+Hyperlegible |
 
 All three are licensed under the SIL Open Font License 1.1, which permits
-redistribution and self-hosting. The full licence text is at
-https://openfontlicense.org.
+redistribution and self-hosting. The full text is committed at
+[`LICENSES/OFL-1.1.txt`](../../../../../LICENSES/OFL-1.1.txt) so a copy of this
+repository carries its own font licence rather than a link that can rot.
 
 `next/font/google` downloads the font during the build. When that request is
 slow or blocked, the build fails with `TypeError: Cannot read properties of

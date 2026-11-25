@@ -28,7 +28,7 @@ Technical design for V1. The goal is a small, boring, fast, accessible system th
 | Auth          | **Auth.js v5** — email magic link + Google + Apple         | No password support burden                                       |
 | Payments      | **Stripe** Checkout, one payment, + webhooks               | Standard, low ops; nothing to renew or cancel                    |
 | Email         | **Resend + React Email**                                   | Same components as the app                                       |
-| Jobs          | **Inngest** (or Vercel Cron for V1)                        | Weekly digest, link checks, recall sync                          |
+| Jobs          | **Inngest** (or Vercel Cron for V1)                        | Weekly digest, link checks, content staleness                    |
 | Search        | **Postgres FTS + pg_trgm**                                 | No extra service in V1                                           |
 | Analytics     | **PostHog** (EU cloud) + **Sentry**                        | Product + errors, privacy-friendly                               |
 | Feature flags | **DB-backed flags**                                        | No vendor                                                        |
@@ -433,6 +433,35 @@ Personas live in `packages/content/src/persona.ts` as a view preference, and the
 
 **A client component reads a projection, not the registry.** The dashboard renders the lens, and the first version imported `getPack` from `@ninetothree/content/registry` to get it. That pulls every pack into the bundle: CI measured `/today` at 454 kB against a 150 kB budget, and the check failed on the pull request rather than in somebody's hand. `scripts/gen-indexes.mjs` now writes `persona-index.ts` — the 24 authored views and nothing else, 17 kB — and the client reads `findPersonaViews(pack.id)`. The rule generalises: if a browser needs something from the corpus, it gets a generated projection with a drift test, not an import of the corpus.
 
+### Recalls and updates
+
+A recall is the one piece of this product that is _already_ true before the parent arrives, and it is the only place where being wrong hurts somebody in their house. So it is modelled separately from the guide, and it has three rules.
+
+**A recall is shared truth, filtered twice.** `Recall` carries `category`, `severity`, an `ages` window and a `matches` set. Nothing about the recall text is per-family; what changes is which recalls a family sees, and that happens in two independent ways:
+
+- **Yours** — `matches` names the option ids, action ids or keywords that make it about something they chose or pinned. This is the existing queue: it arrives as a notice on the dashboard, it can be dismissed, and it stays dismissed. The reason is shown, because a recall that arrives with no explanation reads as a mailing list.
+- **Worth knowing now** — `ages` says which months it applies to. This is not personalisation, it is arithmetic, and it is why the feed can be useful before anybody has pinned anything: a car-seat recall matters at 16 weeks pregnant, not only to whoever pinned "start looking at car seats".
+
+The two are unioned on `/updates` and deduplicated by recall id, so a family never sees the same recall twice for two reasons. The dashboard card shows only what is _not_ already in their own queue.
+
+**Age is signed months, and pregnancy is negative.** `ageInMonths` in `packages/rules` returns `0` on the due date, negative before it (a parent at 32 weeks is at `-2`), and calendar months after. One number then covers both "buy this before the baby arrives" and "this applies from six months", and a `fromMonths` of `-9` means _anytime in the third trimester onward_. The window is inclusive on both ends and validated at module load: `toMonths >= fromMonths`, bounded to `[-9, 36]`. Age math lives in `packages/rules` and not in `packages/content`, because the dependency runs one way and the corpus must not learn about the clock.
+
+**Discovery is live; advice is curated.** Two registers are polled, because they are the only ones who can say a product was recalled this morning:
+
+| Source  | Endpoint                                                                | What it gives                                          | What it cannot                                          |
+| ------- | ----------------------------------------------------------------------- | ------------------------------------------------------ | ------------------------------------------------------- |
+| CPSC    | `saferproducts.gov/RestWebServices/Recall?format=json&RecallDateStart=` | products, hazards, remedies, per-recall URL            | nothing about food                                      |
+| openFDA | `api.fda.gov/food/enforcement.json?search=report_date:[…]`              | food and formula enforcement reports, classified I–III | nothing about hardware                                  |
+| NHTSA   | —                                                                       | campaign lookup by number only                         | **no list endpoint**; car-seat campaigns are hand-added |
+
+`getRecallFeed` in `apps/web/src/lib/recall-feed.ts` fetches both with a 5s timeout, `Promise.allSettled` so one register failing does not fail the feed, an 8 MB body cap, and `next: { revalidate: 3600 }` so a page view is not a request to a government server. The response is served by `/api/updates` (`force-dynamic`, `s-maxage=3600`) and read by `useRecallFeed`, which renders the curated list in the first paint and swaps in the live one when it arrives — the page is never a spinner and never empty.
+
+**What reaches a parent is a filter, not a mirror.** A naive keyword match on "child" caught 304 of 485 CPSC records in a ten-month window, including a fuel can whose hazard reads "risk of child poisoning". `classifyRecall` in `packages/content` is therefore a pure, ordered, noun-based classifier over the title, the product name and the hazard — never the description, which names every retailer on the shelf. It returns a category and an age window, or `null`, and a `null` record is dropped. The windows are editorial and coarse: a car seat from `-9` to 24 months, a lounger 0–6, formula 0–12, a high chair 4–36.
+
+**Nine curated entries stay in front, and win.** `mergeRecalls(curated, live)` deduplicates by id, then by source URL, then by an address the curator listed in `alsoAt`, then by the significant words of the product name, so the hand-written CooCooBaby and ByHeart entries replace the register's version of themselves rather than appearing twice. `alsoAt` exists for the FDA, which publishes one recall as a notice and again as an enforcement-database row: two URLs, two product strings, one event, and only a person can say so. The register supplies the fact; the curated entry supplies the sentence a parent can act on. A live record has an empty `matches`, so it reaches a family through its age window — which is the honest claim, since the register knows nothing about what they own.
+
+**The page states its coverage.** When both registers answer it says so and shows the date; when one does not, it names it and says records may be missing; when neither does — or when `RECALLS_OFFLINE=1`, which the Playwright run sets — it says the registers are not answering and serves the curated list alone. A feed that fails quietly is worse than one that admits it is partial. The list is capped at twelve by severity with the true count stated, because two hundred accurate entries is a page nobody reads. The four official searches (CPSC, FDA, NHTSA, FSIS) remain at the bottom, so a parent who wants completeness can have it.
+
 ---
 
 ## 7. Rendering and performance
@@ -551,15 +580,15 @@ things zoom cannot do.
 
 ## 10. Email and jobs
 
-| Job                    | Schedule             | What it does                                                   |
-| ---------------------- | -------------------- | -------------------------------------------------------------- |
-| `weekly-digest`        | Hourly, per timezone | Sends the week email to users whose week changes today         |
-| `appointment-reminder` | Hourly               | Sends reminders 24h before                                     |
-| `link-check`           | Weekly               | HEAD/GET every URL, flags non-200, parked domains, redirects   |
-| `recall-sync`          | Daily                | Pulls the CPSC and NHTSA recall feeds, matches pinned products |
-| `content-stale`        | Monthly              | Flags packs with `reviewed_at` > 12 months                     |
-| `trial-ending`         | Daily                | One email, no guilt                                            |
-| `cleanup`              | Daily                | Hard-deletes accounts past 30 days                             |
+| Job                    | Schedule             | What it does                                                                |
+| ---------------------- | -------------------- | --------------------------------------------------------------------------- |
+| `weekly-digest`        | Hourly, per timezone | Sends the week email to users whose week changes today                      |
+| `appointment-reminder` | Hourly               | Sends reminders 24h before                                                  |
+| `link-check`           | Weekly               | HEAD/GET every URL, flags non-200, parked domains, redirects                |
+| ~~`recall-sync`~~      | —                    | **Not a job.** The feed is fetched on demand and cached for an hour; see §6 |
+| `content-stale`        | Monthly              | Flags packs with `reviewed_at` > 12 months                                  |
+| `trial-ending`         | Daily                | One email, no guilt                                                         |
+| `cleanup`              | Daily                | Hard-deletes accounts past 30 days                                          |
 
 **Idempotency:** every job writes a `job_runs` row keyed by `(job, run_key)`; re-runs are safe.
 

@@ -15,10 +15,17 @@ export interface PolicyPageProps {
   title: string;
   /** One sentence under the heading. What this page is for. */
   lede: string;
+  /**
+   * Replaces the draft notice. Only the licence page uses this: its caveat is
+   * a different one — the page summarises the licences, the files are the
+   * licences — and saying "this page is a draft" there would undermine the
+   * attribution it is asking for.
+   */
+  notice?: ReactNode;
   children: ReactNode;
 }
 
-export function PolicyPage({ title, lede, children }: PolicyPageProps) {
+export function PolicyPage({ title, lede, notice, children }: PolicyPageProps) {
   return (
     <AppShell stage="Policies">
       <article className="measure">
@@ -32,9 +39,13 @@ export function PolicyPage({ title, lede, children }: PolicyPageProps) {
           It comes off in one commit, when it is true.
         */}
         <p className="mt-6 rounded-md border border-line-strong bg-paper-sunken px-4 py-3 text-sm text-ink-muted">
-          <strong className="font-medium text-ink">This page is a draft.</strong> It describes what
-          the software actually does today, and that part is accurate. It has not yet been reviewed
-          by a lawyer, and it is not legal advice.
+          {notice ?? (
+            <>
+              <strong className="font-medium text-ink">This page is a draft.</strong> It describes
+              what the software actually does today, and that part is accurate. It has not yet been
+              reviewed by a lawyer, and it is not legal advice.
+            </>
+          )}
         </p>
 
         <div className="article-body mt-8">{children}</div>

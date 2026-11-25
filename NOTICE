@@ -1,0 +1,75 @@
+Nine to Three
+Copyright 2026 Sanamdeep Singh
+
+This product includes software developed at Nine to Three
+(https://ninetothree.com).
+
+---------------------------------------------------------------------------
+What is licensed under what
+---------------------------------------------------------------------------
+
+The repository is split deliberately, because the code and the writing are
+different things and someone reusing one should not accidentally take the
+other.
+
+1. Code — Apache License 2.0
+   Every file except the ones carved out below: the applications, the
+   packages, the scripts, the build and test configuration. The full text is
+   in LICENSE.
+
+2. Written guidance — Creative Commons Attribution 4.0 International
+   The week-by-week and month-by-month guides, the articles, the checklists,
+   the recall commentary, and the copy written for parents, wherever they
+   live in the repository (they are content data, not code). The full text is
+   in LICENSES/CC-BY-4.0.txt.
+
+3. Fonts — SIL Open Font License 1.1
+   apps/web/src/app/fonts/*.woff2 — Inter, Newsreader and Atkinson
+   Hyperlegible. The full text is in LICENSES/OFL-1.1.txt. The OFL requires
+   that these files are not sold on their own and that any modified version
+   is not distributed under the reserved font names.
+
+---------------------------------------------------------------------------
+Attribution
+---------------------------------------------------------------------------
+
+If you reuse the code, keep this NOTICE file and the copyright line above. If
+you reuse the guidance, credit "Nine to Three (ninetothree.com), CC BY 4.0",
+link to https://ninetothree.com, and say whether you changed anything. That is
+all the CC BY licence asks for, and it is the whole point of putting the
+guides under it: a parent who finds this work somewhere else should be able to
+find their way back to the source.
+
+---------------------------------------------------------------------------
+Not covered by these licences
+---------------------------------------------------------------------------
+
+The name "Nine to Three", the wordmark, and the domain ninetothree.com are not
+licensed. Reusing the code or the guides does not grant permission to use them
+or to suggest that a copy is the original.
+
+Recalls and product information are facts published by the US Consumer Product
+Safety Commission, the Food and Drug Administration, the National Highway
+Traffic Safety Administration and the Food Safety and Inspection Service. They
+are quoted with a link to the source and remain the work of those agencies.
+No endorsement by any of them is implied.
+
+---------------------------------------------------------------------------
+Third-party components
+---------------------------------------------------------------------------
+
+Runtime and build dependencies keep their own licences, listed in
+pnpm-lock.yaml and readable with `pnpm licenses list`. The ones that shape this
+repository are:
+
+  Next.js, React, next-auth          MIT
+  Tailwind CSS                       MIT
+  Zod                                MIT
+  drizzle-orm, drizzle-kit           Apache-2.0
+  @electric-sql/pglite               Apache-2.0
+  Vitest, Playwright                 MIT / Apache-2.0
+  Storybook                          MIT
+  Inter, Newsreader,
+  Atkinson Hyperlegible              SIL OFL 1.1
+
+Nothing in this repository relicenses any of them.

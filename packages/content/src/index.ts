@@ -167,17 +167,28 @@ export { loadTriage, TRIAGE, TRIAGE_BY_ID, getTriage } from "./triage-registry";
 export {
   RECALL_SEVERITIES,
   RECALL_BECAUSES,
+  RECALL_CATEGORIES,
+  RECALL_SEVERITY_RANK,
+  CATEGORY_LABELS,
   RecallMatches,
+  RecallAges,
   Recall,
   recallIssues,
   loadRecalls,
   assertValidRecalls,
   matchRecalls,
   recallKey,
+  sameRecall,
+  mergeRecalls,
+  isForAge,
+  recallsForAge,
+  ageWindowLabel,
   type RecallSeverity,
   type RecallBecause,
+  type RecallCategory,
   type RecallIssue,
   type RecallSubject,
   type RecallMatch,
 } from "./recalls";
+export { classifyRecall, type RecallText, type RecallGuess } from "./recall-classify";
 export { loadRecallFeed, RECALLS, RECALLS_BY_ID, getRecall } from "./recall-registry";

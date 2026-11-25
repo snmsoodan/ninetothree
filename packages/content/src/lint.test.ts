@@ -533,6 +533,8 @@ describe("recalls", () => {
       hazard: "The seat can come off the frame.",
       action: "Stop using it and ask the maker for a refund.",
       severity: "stop-use",
+      category: "feeding",
+      ages: { fromMonths: 6, toMonths: 36 },
       publishedAt: "2026-01-01",
       source: {
         id: "s1",

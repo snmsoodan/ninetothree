@@ -3,6 +3,14 @@
 import { Badge, Card, CardBody, TextLink } from "@ninetothree/ui";
 import type { RecallBecause, RecallSeverity } from "@ninetothree/content";
 
+/**
+ * `age` is not a match: it is the window saying this applies right now. `list`
+ * is the same admission one step earlier — a parent who has not told us any
+ * dates is reading the list itself, unfiltered, and we say that rather than
+ * implying a window we do not have.
+ */
+export type NoticeReason = RecallBecause | "age" | "list";
+
 import { formatDate } from "@/lib/i18n";
 
 export interface RecallNoticeItem {
@@ -13,7 +21,7 @@ export interface RecallNoticeItem {
   hazard: string;
   action: string;
   severity: RecallSeverity;
-  because: RecallBecause;
+  because: NoticeReason;
   /** The option id, action id, or keyword that made the match. */
   matchedOn: string;
   /** ISO date, YYYY-MM-DD. */
@@ -23,6 +31,8 @@ export interface RecallNoticeItem {
 
 export interface RecallNoticeProps {
   notice: RecallNoticeItem;
+  /** A short line beside the reason, e.g. "Sleep · Birth to 6 months". */
+  meta?: string;
   onDismiss?: (id: string) => void;
 }
 
@@ -45,10 +55,12 @@ const SEVERITY_TONE = {
  * explanation reads as a mailing list. "You pinned this step" is the product
  * saying "I remembered what you told me".
  */
-const BECAUSE_COPY: Record<RecallBecause, string> = {
+const BECAUSE_COPY: Record<NoticeReason, string> = {
   option: "You chose this.",
   step: "You pinned this step.",
   keyword: "You pinned a step about this.",
+  age: "Worth knowing at this age.",
+  list: "On the list we keep.",
 };
 
 function announcedOn(iso: string): string {
@@ -70,13 +82,14 @@ function announcedOn(iso: string): string {
  * no icon, no exclamation, no "URGENT". The severity is a word, the hazard is
  * a sentence, and the action is the last thing they read.
  */
-export function RecallNotice({ notice, onDismiss }: RecallNoticeProps) {
+export function RecallNotice({ notice, meta, onDismiss }: RecallNoticeProps) {
   return (
     <Card tone="raised" className="border-l-2 border-l-red">
       <CardBody className="py-5">
         <div className="flex flex-wrap items-center gap-2">
           <Badge tone={SEVERITY_TONE[notice.severity]}>{SEVERITY_LABEL[notice.severity]}</Badge>
           <span className="text-sm text-ink-faint">{BECAUSE_COPY[notice.because]}</span>
+          {meta ? <span className="text-sm text-ink-faint">· {meta}</span> : null}
         </div>
 
         <h3 className="mt-2 font-display text-xl text-ink">{notice.title}</h3>
