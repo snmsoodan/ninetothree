@@ -60,6 +60,21 @@ async function signIn(page: Page, email: string) {
 }
 
 test.describe("signing in", () => {
+  test("the sign-in page offers Google and Apple, and nothing else", async ({ page }) => {
+    await page.goto("/signin");
+
+    await expect(page.getByRole("button", { name: "Continue with Google" })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Continue with Apple" })).toBeVisible();
+
+    // The only other button is the one this suite needs: AUTH_TEST_MODE=1 keeps
+    // the email route open, and it is labelled so nobody mistakes it for a
+    // product decision. A page without that variable draws the two buttons and
+    // no form, which `SignInForm.test.tsx` covers directly.
+    await expect(page.getByRole("button")).toHaveCount(3);
+    await expect(page.getByText("Test mode: email link")).toBeVisible();
+    await expect(page.getByRole("button", { name: "Send me a link" })).toBeVisible();
+  });
+
   test("a link from the sign-in page signs you in", async ({ page }) => {
     const email = address();
     await onboard(page);
@@ -125,7 +140,7 @@ test.describe("a link that should not work", () => {
     await page.goto(url);
     await expect(page).toHaveURL(/\/signin\/error/);
     await expect(page.getByRole("heading", { level: 1 })).toContainText("That link has been used");
-    await expect(page.getByRole("link", { name: "Ask for a new link" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Back to sign in" })).toBeVisible();
     await expect(page.locator("body")).not.toContainText("Verification");
   });
 });

@@ -55,10 +55,13 @@ export default defineConfig({
         // Opens /api/auth/dev/link, which is how the suite gets a real magic
         // link without an inbox. Unset everywhere else.
         AUTH_TEST_MODE: "1",
-        // The webhook secret the billing spec signs its deliveries with. There
-        // is no Stripe account behind it; the point is that the route verifies
-        // a real HMAC rather than trusting whatever arrives.
-        STRIPE_WEBHOOK_SECRET: "whsec_e2e_secret",
+        // Placeholders so the sign-in page draws the two real buttons. Nothing
+        // is clicked: the consent screens belong to Google and Apple and a test
+        // that needs somebody else's server fails when that server is down.
+        AUTH_GOOGLE_ID: "e2e-google-id",
+        AUTH_GOOGLE_SECRET: "e2e-google-secret",
+        AUTH_APPLE_ID: "e2e-apple-id",
+        AUTH_APPLE_SECRET: "e2e-apple-secret",
         // Keeps the suite off the CPSC and FDA registers. A test that needs
         // somebody else's server fails when that server is down, and the
         // fallback it exercises is the one a parent sees when it is. The live

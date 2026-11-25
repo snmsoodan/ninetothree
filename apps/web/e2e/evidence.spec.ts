@@ -230,6 +230,17 @@ test("a week that is not yours, readable without paying", async ({ page }) => {
   await shot(page, "23-week-not-yours");
 });
 
+test("two ways in, and no third", async ({ page }) => {
+  /* Signed out. #139 replaced an email field with two buttons, and the honest
+     picture is the page as a parent meets it: Google, Apple, and the
+     test-mode email form below the fold, which production does not have. */
+  await page.goto("/signin");
+  await expect(page.getByRole("button", { name: "Continue with Google" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Continue with Apple" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Send me a link" })).toBeVisible();
+  await shot(page, "24-two-ways-in");
+});
+
 test("the narrowest phone we support, with nothing sideways", async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 640 });
   await onboard(page);

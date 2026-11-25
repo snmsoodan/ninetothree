@@ -18,6 +18,14 @@ const COPY: Record<string, { title: string; body: string }> = {
     title: "We could not send that",
     body: "Something went wrong on our side. Try again, and if it keeps happening, use a different address.",
   },
+  OAuthSignin: {
+    title: "Google or Apple did not answer",
+    body: "The page that hands us your name did not open. Try the other button, or try again in a minute.",
+  },
+  OAuthCallback: {
+    title: "That did not come back right",
+    body: "We started a sign-in and could not finish it. Nothing has changed — try again.",
+  },
   OAuthAccountNotLinked: {
     title: "That address signs in another way",
     body: "You have used this address with Google or Apple before. Use that button, or sign in with a different address.",
@@ -26,11 +34,15 @@ const COPY: Record<string, { title: string; body: string }> = {
     title: "That did not go through",
     body: "The sign-in was cancelled. Nothing has changed.",
   },
+  Configuration: {
+    title: "Sign-in is not set up",
+    body: "This copy of the app has no Google or Apple credential. Whoever runs it can add one from the README.",
+  },
 };
 
 const FALLBACK = {
   title: "That did not work",
-  body: "Try again. If it keeps happening, ask for a new link.",
+  body: "Nothing has changed. Try again, and use the other button if the first one keeps failing.",
 };
 
 function Body() {
@@ -43,7 +55,7 @@ function Body() {
         <h1 className="font-display text-2xl text-ink">{copy.title}</h1>
         <p className="mt-2 text-base text-ink-muted">{copy.body}</p>
         <p className="mt-6 text-sm text-ink-muted">
-          <TextLink href="/signin">Ask for a new link</TextLink>
+          <TextLink href="/signin">Back to sign in</TextLink>
         </p>
       </CardBody>
     </Card>

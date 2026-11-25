@@ -25,7 +25,7 @@ function Body() {
           Nothing yet? It can take a minute. The link works once, for fifteen minutes.
         </p>
         <p className="mt-6 text-sm text-ink-muted">
-          <TextLink href="/signin">Use a different address</TextLink>
+          <TextLink href="/signin">Back to sign in</TextLink>
         </p>
       </CardBody>
     </Card>
