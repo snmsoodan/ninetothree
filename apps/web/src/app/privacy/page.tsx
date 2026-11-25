@@ -52,9 +52,10 @@ export default function PrivacyPage() {
       <h2>What we keep if you make an account</h2>
       <ul>
         <li>
-          <strong>Your email address.</strong> It is how you sign in and how the weekly email is
-          sent. There is no password — we email you a single-use link instead, and we store only a
-          hash of that link.
+          <strong>Your email address, and which sign-in you used.</strong> Sign-in is Google or
+          Apple: we never see or store a password, and the only thing we keep from either is the
+          address on the account and an identifier for the account itself. The weekly email goes to
+          that address.
         </li>
         <li>
           <strong>Your household.</strong> The people you have invited, their email addresses, and
@@ -102,13 +103,17 @@ export default function PrivacyPage() {
           Postgres, encrypted in transit and at rest, and reachable only from our servers.
         </li>
         <li>
-          <strong>Our email provider</strong> delivers the sign-in link, and will deliver the weekly
-          email when that is switched on. It sees the address and the message, which is the point of
-          it.
+          <strong>Google or Apple</strong> holds your sign-in. They tell us your address and that
+          you are you; they do not tell us anything else about your account with them, and we send
+          them nothing about your pregnancy.
+        </li>
+        <li>
+          <strong>Our email provider</strong> delivers the weekly email when that is switched on. It
+          sees the address and the message, which is the point of it.
         </li>
       </ul>
       <p>
-        We will tell you before adding a third. Nothing here is sold, rented, or handed to an
+        We will tell you before adding a fourth. Nothing here is sold, rented, or handed to an
         advertiser, because we do not have advertisers.
       </p>
 
@@ -153,10 +158,10 @@ export default function PrivacyPage() {
 
       <h2>Security</h2>
       <p>
-        Sign-in links are single use, short lived and rate limited. Every table that holds a
-        household&rsquo;s data is restricted at the database level, not only in our code, so a bug
-        in one query cannot read another family&rsquo;s rows. If something does go wrong, we will
-        tell the people affected, plainly and without waiting to be asked.
+        Sessions are rows we can delete, so signing out everywhere actually does something. Every
+        table that holds a household&rsquo;s data is restricted at the database level, not only in
+        our code, so a bug in one query cannot read another family&rsquo;s rows. If something does
+        go wrong, we will tell the people affected, plainly and without waiting to be asked.
       </p>
 
       <h2>Changes</h2>

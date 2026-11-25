@@ -2294,9 +2294,66 @@ sign-in, invite, together and journey specs still driving a real magic-link sess
 `upgrade()` anywhere. `pnpm screenshots` regenerated `docs/screenshots/15-settings-reading-as.png`
 and `20-settings-feeding-two-year.png`, which no longer carry a plan card.
 
-**What could not be verified here.** That Google and Apple sign-in work — that is #139, and
-today `/signin` renders an email form only.
+**What could not be verified here.** That Google and Apple sign-in work — that is #139, and at
+the time `/signin` rendered an email form only. §69 closes it.
 
-## 69. How this file is maintained
+## 69. Two ways in: Google or Apple, and nothing else (issue #139)
+
+**The ask, and the answer to a question in it.** "Which platforms do we allow to sign in at
+the moment? I think we should have just two options Google and apple." The honest answer was
+that exactly one route worked, and it was not either of them. `buildProviders()` returned the
+email magic-link provider unconditionally and pushed Google and Apple only when credentials
+were present — but `/signin` was a client page that rendered an email field and nothing else,
+so a real Google client and a real Apple Service ID would have been built, mounted under
+`/api/auth/*`, and unreachable from the page. "Configured" and "offered" had drifted apart
+without a failing test, because the only test asserted on the provider array.
+
+**What changed.** `providers.ts` now starts from an empty list. Google and Apple are pushed
+only when both halves of their credential are set, and each carries
+`allowDangerousEmailAccountLinking: true`. The email provider is pushed only under
+`AUTH_TEST_MODE=1`. `signInChoices()` returns the ids of exactly those providers, so the page
+cannot disagree with the server by construction: `/signin` became a server component that
+reads it, so there is one list, not two. A parent with neither credential sees the sentence
+"Sign-in is not set up on this copy of the app" and the four variable names, rather than a
+button that goes nowhere.
+
+**Why the linking flag.** Auth.js refuses to attach a new provider to an existing verified
+address by default and answers `OAuthAccountNotLinked`. With no password and no email route
+in production, a parent who started with Google and later chose Apple would have had no path
+back to their own household. The flag is safe only because both providers verify the address
+before handing it over, which is why the comment in the file says so; the name describes the
+generic case, not this one.
+
+**What stayed.** The magic link, its fifteen-minute token, the rate limiter and the dev-only
+`/api/auth/dev/link` endpoint. They are no longer a way in for a parent; they are how the
+end-to-end suite gets a real session without driving somebody else's consent screen. The
+`/signin/check-email` page remains reachable under test mode and its "Use a different
+address" link became "Back to sign in", because in production there is no address form to go
+back to.
+
+**Test churn.** `providers.test.ts` was rewritten around the new contract: nothing configured
+means no providers, each provider needs both halves, the order is stable, the linking flag is
+set, email appears only in test mode, and `signInChoices()` agrees. One assertion was written
+against the provider object; Auth.js keeps provider options under `provider.options`, so it
+failed until it was pointed there — confirmed with a `node -e` probe rather than by guessing.
+`SignInForm.test.tsx` is new and drives the component: two buttons and no email field, the
+callback URL carried through, only the configured provider drawn, the honest message when
+none is, and the email form only behind its test-mode heading. `e2e/auth.spec.ts` gained a
+test that `/signin` shows exactly two buttons and no third way in, and `playwright.config.ts`
+swapped its now-unused `STRIPE_WEBHOOK_SECRET` for dummy OAuth credentials so the page renders
+its real buttons; nothing clicks them, because a test that needs Google's or Apple's server
+fails when that server has a bad day.
+
+**What was verified.** `pnpm typecheck` (5/5), `pnpm test` (every package, coverage gates
+green), `pnpm lint` (0 errors), `pnpm format:check` clean, `pnpm content:validate` clean,
+`pnpm build` and `pnpm bundle:check` inside budget, and `pnpm test:e2e` in full — see the
+screenshot of the page in `docs/screenshots/24-two-ways-in.png`.
+
+**What could not be verified here.** A completed round trip through Google's or Apple's own
+consent screen. That needs a real client id registered against the deployed origin, which is
+the owner's to create; what is verified is that the page offers them, that the server builds
+them, and that a parent who picks one leaves on that provider's authorize URL.
+
+## 70. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.

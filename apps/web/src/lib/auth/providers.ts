@@ -29,9 +29,15 @@ export interface ProviderEnv {
 /**
  * The providers that are actually configured.
  *
- * Google and Apple appear only when their credentials do, so a laptop with no
- * OAuth app still shows a working sign-in page rather than two buttons that
- * fail. The email provider is always there: it is the one that needs nothing.
+ * Two ways in, and both are a real account at a company the parent already
+ * has one with: Google and Apple. Each appears only when both halves of its
+ * credential are set, so a laptop with no OAuth app shows an honest page rather
+ * than a button that fails.
+ *
+ * The email provider is built only under `AUTH_TEST_MODE=1`. The end-to-end
+ * suite needs a way in that does not involve driving Google's consent screen,
+ * and the dev link that hands it a token lives in the same mode. In production
+ * there is no magic-link form to find, because there is no provider behind it.
  */
 export function buildProviders(
   sender: MagicLinkSender,
@@ -50,14 +56,40 @@ export function buildProviders(
     },
   };
 
-  const providers: ConfiguredProvider[] = [email];
+  const providers: ConfiguredProvider[] = [];
 
   if (env.AUTH_GOOGLE_ID && env.AUTH_GOOGLE_SECRET) {
-    providers.push(Google({ clientId: env.AUTH_GOOGLE_ID, clientSecret: env.AUTH_GOOGLE_SECRET }));
+    providers.push(
+      Google({
+        clientId: env.AUTH_GOOGLE_ID,
+        clientSecret: env.AUTH_GOOGLE_SECRET,
+        /* Both providers verify the address before they hand it over, so the
+           same person arriving through Apple after using Google is the same
+           person. Without this Auth.js refuses with `OAuthAccountNotLinked`
+           and the parent is stuck explaining themselves to a database. */
+        allowDangerousEmailAccountLinking: true,
+      }),
+    );
   }
   if (env.AUTH_APPLE_ID && env.AUTH_APPLE_SECRET) {
-    providers.push(Apple({ clientId: env.AUTH_APPLE_ID, clientSecret: env.AUTH_APPLE_SECRET }));
+    providers.push(
+      Apple({
+        clientId: env.AUTH_APPLE_ID,
+        clientSecret: env.AUTH_APPLE_SECRET,
+        allowDangerousEmailAccountLinking: true,
+      }),
+    );
   }
+  if (env.AUTH_TEST_MODE === "1") providers.push(email);
 
   return providers;
+}
+
+/** What the sign-in page is allowed to offer. */
+export type SignInChoice = "google" | "apple" | "email";
+
+export function signInChoices(env: ProviderEnv = process.env): SignInChoice[] {
+  return buildProviders(() => Promise.resolve(), env).map(
+    (provider) => provider.id as SignInChoice,
+  );
 }

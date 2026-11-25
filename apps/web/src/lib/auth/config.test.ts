@@ -26,11 +26,25 @@ describe("buildConfig", () => {
     });
   });
 
-  it("offers email and nothing else when nothing else is configured", async () => {
+  it("offers nothing on a copy with no OAuth app", async () => {
     const config = await buildConfig({});
 
-    expect(config.providers).toHaveLength(1);
-    expect((config.providers[0] as { id: string }).id).toBe("email");
+    // Not even email: #139 made the magic link a test seam, not a way in.
+    expect(config.providers).toHaveLength(0);
+  });
+
+  it("offers Google and Apple, in that order, when both are set", async () => {
+    const config = await buildConfig({
+      AUTH_GOOGLE_ID: "google-id",
+      AUTH_GOOGLE_SECRET: "google-secret",
+      AUTH_APPLE_ID: "apple-id",
+      AUTH_APPLE_SECRET: "apple-secret",
+    });
+
+    expect(config.providers.map((provider) => (provider as { id: string }).id)).toEqual([
+      "google",
+      "apple",
+    ]);
   });
 
   it("clears the attempt count when someone proves they own the address", async () => {

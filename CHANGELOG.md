@@ -9,6 +9,22 @@ changelog written after the fact from memory is a changelog nobody can trust.
 
 ## Unreleased
 
+### Two ways in: Google or Apple (#139)
+
+- **The sign-in page offers Google and Apple, and nothing else.** Both were already buildable
+  and neither was reachable: `/signin` drew an email field regardless of what the server had
+  built. It is now a server component that renders exactly the providers that exist, so the
+  page and the server cannot disagree.
+- **No password, no magic link.** The email provider is built only under `AUTH_TEST_MODE=1`,
+  which is what lets the end-to-end suite hold a real session; in production the route is not
+  mounted. A credential that is only half set draws nothing, and with nothing set the page says
+  so in words and names the variables instead of offering a button that fails.
+- **One account per address, whichever button was used first.** `allowDangerousEmailAccountLinking`
+  lets an Apple sign-in attach to a household that started with Google, which is otherwise an
+  `OAuthAccountNotLinked` dead end now that there is no password to fall back on.
+- **Honest copy.** `/privacy` describes Google or Apple as the sign-in, what is stored (the
+  address and an account identifier, no password), and names them as processors.
+
 ### Everything is free (#138)
 
 - **The wall is gone, not lowered.** Every week of pregnancy and of the first three years
