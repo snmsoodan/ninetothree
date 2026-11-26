@@ -61,5 +61,6 @@ export {
   type PinButtonProps,
 } from "./controls.tsx";
 export { RadioGroup, type RadioGroupProps, type RadioOption } from "./radio-group.tsx";
+export { TextField, type TextFieldProps } from "./text-field.tsx";
 export { ProgressRing, RING_TICKS, filledTicks, type ProgressRingProps } from "./progress-ring.tsx";
 export { Screen, Sheet, type ScreenProps, type SheetProps } from "./screen.tsx";

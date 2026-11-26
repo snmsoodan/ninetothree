@@ -469,7 +469,7 @@ ordered issues so each slice is independently testable:
 | 151 | The shell: Expo Router, tabs, deep links, theme             | shared — merged              |
 | 152 | Today, on the phone                                         | shared — merged              |
 | 153 | The week, on the phone                                      | shared — merged              |
-| 154 | Library and search, on the phone                            | shared                       |
+| 154 | Library and search, on the phone                            | shared — merged              |
 | 155 | Triage on the phone                                         | shared (dialler branch)      |
 | 156 | The shelf and Together, on the phone                        | shared (share-sheet branch)  |
 | 157 | Settings, updates, appointments, history, reads             | shared                       |

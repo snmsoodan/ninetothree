@@ -9,6 +9,29 @@ changelog written after the fact from memory is a changelog nobody can trust.
 
 ## Unreleased
 
+### Library and search, on the phone (#154)
+
+- **The catalogue's logic is shared.** `packages/domain/src/library.ts` now owns
+  the domain/price/query chain, the type grouping, the guide index behind search,
+  the citation line, both chip lists and every label and sentence the two pages
+  say. The web's library, search page and result list import them; no label or
+  filter expression is left in the components.
+- **Thirteen model tests, ten of them parity.** Ten saved queries run through
+  the shared filter and through a copy of the web page's old inline chain, and
+  must agree id for id.
+- **The phone's search index is the web's.** `apps/mobile/app/search.tsx` builds
+  `buildIndex(PACKS, LINKS)` once at start-up; a test compares its ids with
+  `apps/web/public/search-index.json`.
+- **`packages/ui-native` has a text field.** A label that is a label, an optional
+  hint, a search keyboard, and a 44px target — five tests.
+- **Two screens and two models.** The library tab filters by search, domain and
+  price in chips, says how many there are in a live region, and puts cards in one,
+  two or three columns by window; search focuses its box on arrival, explains
+  itself while blank, and marks a result external when its href is a URL.
+- **Coverage:** 223 tests, 99.4% statements and lines, 95.53% functions, 91.57%
+  branches. Still no simulator, so this is structure and copy, not pixels —
+  see [`EVIDENCE.md`](EVIDENCE.md) §79.
+
 ### The week, on the phone (#153)
 
 - **The week's sentences are shared.** `packages/domain/src/week-copy.ts` now

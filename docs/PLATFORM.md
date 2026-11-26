@@ -266,6 +266,17 @@ tests on the phone and no change to the web's page beyond importing the shared
 sentences. The photograph is still missing for the same two reasons: no accepted
 Xcode licence and no Android SDK on this machine.
 
+The library and search followed (#154), and they are the sharpest test of the
+seam so far: the web's filtering was a chain of expressions inside a page and
+its search was a scorer over a fetched index, so keeping the phone in step meant
+moving both into `@ninetothree/domain` rather than copying them. The site now
+imports `filterLibrary`, `libraryGroups`, `searchGuide` and every label from the
+same module the phone tab does, and the ten-query parity test fails if the two
+paths ever disagree. The phone builds its own index from the bundled packs and
+links, and a test compares its ids with the JSON the site fetches, so the corpus
+cannot be regenerated on one platform only. Search on both platforms is the same
+scorer, capped at 20.
+
 ## 8. Cost, and what could go wrong
 
 | Work                                                                               | Size      | Risk                                                                     |

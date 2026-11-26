@@ -64,6 +64,7 @@ export type Href =
   | "/today"
   | "/week"
   | "/library"
+  | "/search"
   | "/read"
   | "/shelf"
   | "/together"
@@ -80,6 +81,7 @@ export type Href =
 /** The stack screens that live outside the tabs, and their titles. */
 export const STACK_SCREENS = [
   { path: "/week/[id]", title: "Week" },
+  { path: "/search", title: "Search" },
   { path: "/read/[slug]", title: "Reading" },
   { path: "/updates", title: "Updates" },
   { path: "/triage", title: "Something's wrong" },
@@ -168,7 +170,7 @@ export function parseIncomingUrl(raw: string): Href | null {
   // universal link to nothing is still a link someone tapped.
   if (clean === "/") return "/today";
   if (clean === "/today" || clean === "/week") return clean;
-  if (clean === "/library" || clean === "/read") return clean;
+  if (clean === "/library" || clean === "/search" || clean === "/read") return clean;
   if (clean === "/shelf" || clean === "/together" || clean === "/settings") return clean;
   if (clean === "/updates" || clean === "/triage" || clean === "/appointments") return clean;
   if (clean === "/history" || clean === "/onboarding" || clean === "/signin") return clean;

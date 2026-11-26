@@ -1,5 +1,11 @@
 import Link from "next/link";
-import type { SearchHit, SearchKind } from "@ninetothree/content";
+import type { SearchHit } from "@ninetothree/content";
+import {
+  SEARCH_KIND_LABEL,
+  SEARCH_NOTHING,
+  SEARCH_NOTHING_HINT,
+  searchResultLine,
+} from "@ninetothree/domain";
 import { Card, CardBody } from "@ninetothree/ui";
 
 export interface SearchResultsProps {
@@ -7,12 +13,6 @@ export interface SearchResultsProps {
   /** The query as typed, so the empty state can quote it back. */
   query: string;
 }
-
-const KIND_LABEL: Record<SearchKind, string> = {
-  step: "A step",
-  week: "A week",
-  link: "In the library",
-};
 
 /**
  * What a search found, and where each answer comes from.
@@ -27,10 +27,8 @@ export function SearchResults({ hits, query }: SearchResultsProps) {
   if (hits.length === 0) {
     return (
       <div className="mt-8">
-        <p className="text-lg text-ink">Nothing here for that.</p>
-        <p className="mt-2 text-ink-muted">
-          Try a shorter word, or browse the library — everything we link to is in one place.
-        </p>
+        <p className="text-lg text-ink">{SEARCH_NOTHING}</p>
+        <p className="mt-2 text-ink-muted">{SEARCH_NOTHING_HINT}</p>
         <p className="mt-4">
           <Link
             href="/library"
@@ -50,7 +48,7 @@ export function SearchResults({ hits, query }: SearchResultsProps) {
           <Card>
             <CardBody className="pt-5">
               <p className="text-xs uppercase tracking-wide text-ink-faint">
-                {KIND_LABEL[hit.kind]}
+                {SEARCH_KIND_LABEL[hit.kind]}
               </p>
               <h2 className="mt-1 font-display text-lg text-ink">
                 <Link
@@ -60,14 +58,7 @@ export function SearchResults({ hits, query }: SearchResultsProps) {
                   {hit.title}
                 </Link>
               </h2>
-              {hit.packTitle ? (
-                <p className="mt-1 text-sm text-ink-muted">
-                  {hit.packTitle} · {hit.sourceIds.length}{" "}
-                  {hit.sourceIds.length === 1 ? "source" : "sources"}
-                </p>
-              ) : (
-                <p className="mt-1 text-sm text-ink-muted">Checked and cited in the library</p>
-              )}
+              <p className="mt-1 text-sm text-ink-muted">{searchResultLine(hit)}</p>
             </CardBody>
           </Card>
         </li>

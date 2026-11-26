@@ -2,7 +2,15 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { search, type SearchDoc } from "@ninetothree/content";
+import type { SearchDoc } from "@ninetothree/content";
+import {
+  SEARCH_FAILED,
+  SEARCH_FAILED_HINT,
+  SEARCH_HEADING,
+  SEARCH_INTRO,
+  SEARCH_PLACEHOLDER,
+  searchGuide,
+} from "@ninetothree/domain";
 import { AppShell } from "@/components/AppShell";
 import { SearchResults } from "@/components/SearchResults";
 import { loadSearchIndex } from "@/lib/search-index";
@@ -34,14 +42,12 @@ export default function SearchPage() {
     };
   }, []);
 
-  const hits = useMemo(() => (docs ? search(docs, query, 20) : []), [docs, query]);
+  const hits = useMemo(() => (docs ? searchGuide(docs, query, 20) : []), [docs, query]);
 
   return (
     <AppShell>
-      <h1 className="font-display text-3xl text-ink">Search</h1>
-      <p className="mt-2 text-ink-muted">
-        Every week, every step, and everything we link to. Plain words are fine.
-      </p>
+      <h1 className="font-display text-3xl text-ink">{SEARCH_HEADING}</h1>
+      <p className="mt-2 text-ink-muted">{SEARCH_INTRO}</p>
 
       <div className="mt-6">
         <label htmlFor="search" className="block text-sm font-medium text-ink">
@@ -53,18 +59,15 @@ export default function SearchPage() {
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           autoComplete="off"
-          placeholder="glucose, car seat, daycare"
+          placeholder={SEARCH_PLACEHOLDER}
           className="mt-2 w-full rounded-lg border border-line bg-paper-raised px-4 py-3 text-ink placeholder:text-ink-faint focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-clay"
         />
       </div>
 
       {failed ? (
         <div className="mt-8">
-          <p className="text-lg text-ink">Search is not loading right now.</p>
-          <p className="mt-2 text-ink-muted">
-            Nothing is lost — everything we link to is in the library, and every step is still on
-            your week.
-          </p>
+          <p className="text-lg text-ink">{SEARCH_FAILED}</p>
+          <p className="mt-2 text-ink-muted">{SEARCH_FAILED_HINT}</p>
           <p className="mt-4">
             <Link
               href="/library"

@@ -1,84 +1,44 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import {
-  DOMAINS,
-  groupByType,
-  linksForDomain,
-  searchLinks,
-  type Domain,
-  type LinkEntry,
-  type LinkType,
-} from "@ninetothree/content";
 import { LINKS } from "@ninetothree/content/link-registry";
+import {
+  LIBRARY_COUNT,
+  LIBRARY_EMPTY,
+  LIBRARY_EMPTY_HINT,
+  LIBRARY_HEADING,
+  LIBRARY_INTRO,
+  costChoices,
+  domainChoices,
+  filterLibrary,
+  libraryGroups,
+  type LibraryCost,
+  type LibraryDomain,
+} from "@ninetothree/domain";
 import { AppShell } from "@/components/AppShell";
 import { LinkCard } from "@/components/LinkCard";
-
-const DOMAIN_LABEL: Record<Domain, string> = {
-  "health-parent": "Your health",
-  "health-baby": "Baby's health",
-  feeding: "Feeding",
-  sleep: "Sleep",
-  nutrition: "Food",
-  play: "Play",
-  safety: "Safety",
-  gear: "Gear",
-  money: "Money and leave",
-  mind: "How you feel",
-  childcare: "Childcare",
-  home: "Home",
-  milestones: "Milestones",
-};
-
-const COST_LABEL: Record<LinkEntry["cost"], string> = {
-  free: "Free",
-  $: "Cheap",
-  $$: "Moderate",
-  $$$: "Expensive",
-  varies: "Cost varies",
-};
-
-const COSTS = ["free", "$", "$$", "$$$", "varies"] as const;
-
-const TYPE_HEADING: Record<LinkType, string> = {
-  authoritative: "Official guidance",
-  charity: "Charities and support",
-  "local-service": "Help near you",
-  community: "Other parents",
-  editorial: "Independent reviews",
-  app: "Apps",
-  course: "Classes",
-  book: "Books",
-  commercial: "Where to buy",
-};
 
 /**
  * The whole catalogue, browsable. This is the "I just want to look at
  * everything" surface — the guided version lives inside each week.
  */
 export default function LibraryPage() {
-  const [domain, setDomain] = useState<Domain | "all">("all");
-  const [cost, setCost] = useState<LinkEntry["cost"] | "any">("any");
+  const [domain, setDomain] = useState<LibraryDomain>("all");
+  const [cost, setCost] = useState<LibraryCost>("any");
   const [query, setQuery] = useState("");
 
-  const results = useMemo(() => {
-    const byDomain = domain === "all" ? LINKS : linksForDomain(LINKS, domain);
-    const byCost = cost === "any" ? byDomain : byDomain.filter((link) => link.cost === cost);
-    if (query.trim() === "") return byCost;
-    const matched = new Set(searchLinks(LINKS, query).map((link) => link.id));
-    return byCost.filter((link) => matched.has(link.id));
-  }, [domain, cost, query]);
+  const results = useMemo(
+    () => filterLibrary(LINKS, { domain, cost, query }),
+    [domain, cost, query],
+  );
 
-  const groups = useMemo(() => groupByType(results), [results]);
+  const groups = useMemo(() => libraryGroups(results), [results]);
 
   return (
     <AppShell stage="Library">
       <div className="measure">
-        <h1 className="font-display text-3xl text-ink">The library</h1>
-        <p className="mt-2 text-base text-ink-muted">
-          Every place we send you, in one list. Nothing is here because someone paid for it. Where a
-          link earns us a commission, the card says so.
-        </p>
+        <h1 className="font-display text-3xl text-ink">{LIBRARY_HEADING}</h1>
+        <p className="mt-2 text-base text-ink-muted">{LIBRARY_INTRO}</p>
 
         <div className="mt-6 space-y-4">
           <div>
@@ -102,13 +62,12 @@ export default function LibraryPage() {
             <select
               id="library-domain"
               value={domain}
-              onChange={(event) => setDomain(event.target.value as Domain | "all")}
+              onChange={(event) => setDomain(event.target.value as LibraryDomain)}
               className="mt-1 w-full rounded-md border border-line bg-paper-raised px-3 py-2 text-base text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-clay"
             >
-              <option value="all">Everything</option>
-              {DOMAINS.map((value) => (
-                <option key={value} value={value}>
-                  {DOMAIN_LABEL[value]}
+              {domainChoices(domain).map((choice) => (
+                <option key={choice.value} value={choice.value}>
+                  {choice.label}
                 </option>
               ))}
             </select>
@@ -121,13 +80,12 @@ export default function LibraryPage() {
             <select
               id="library-cost"
               value={cost}
-              onChange={(event) => setCost(event.target.value as LinkEntry["cost"] | "any")}
+              onChange={(event) => setCost(event.target.value as LibraryCost)}
               className="mt-1 w-full rounded-md border border-line bg-paper-raised px-3 py-2 text-base text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-clay"
             >
-              <option value="any">Any price</option>
-              {COSTS.map((value) => (
-                <option key={value} value={value}>
-                  {COST_LABEL[value]}
+              {costChoices(cost).map((choice) => (
+                <option key={choice.value} value={choice.value}>
+                  {choice.label}
                 </option>
               ))}
             </select>
@@ -135,24 +93,20 @@ export default function LibraryPage() {
         </div>
 
         <p aria-live="polite" className="mt-5 text-sm text-ink-muted tabular">
-          {results.length === 0
-            ? "Nothing matches that yet."
-            : `${results.length} place${results.length === 1 ? "" : "s"}.`}
+          {results.length === 0 ? LIBRARY_EMPTY : LIBRARY_COUNT(results.length)}
         </p>
 
         {results.length === 0 ? (
-          <p className="mt-3 text-base text-ink-muted">
-            Try a broader word, or clear the filter. The catalogue is still growing.
-          </p>
+          <p className="mt-3 text-base text-ink-muted">{LIBRARY_EMPTY_HINT}</p>
         ) : (
           <div className="mt-6 space-y-8">
-            {[...groups.entries()].map(([type, links]) => (
-              <section key={type} aria-labelledby={`type-${type}`}>
-                <h2 id={`type-${type}`} className="font-display text-2xl text-ink">
-                  {TYPE_HEADING[type]}
+            {groups.map((group) => (
+              <section key={group.type} aria-labelledby={`type-${group.type}`}>
+                <h2 id={`type-${group.type}`} className="font-display text-2xl text-ink">
+                  {group.heading}
                 </h2>
                 <ul className="mt-3 space-y-3">
-                  {links.map((link) => (
+                  {group.links.map((link) => (
                     <li key={link.id}>
                       <LinkCard link={link} />
                     </li>
