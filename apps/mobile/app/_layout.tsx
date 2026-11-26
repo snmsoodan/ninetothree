@@ -7,7 +7,7 @@
  * over.
  */
 import { useEffect, useState } from "react";
-import { Stack } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -16,6 +16,7 @@ import { Screen, Skeleton, ThemeProvider, useTheme } from "@ninetothree/ui-nativ
 import { bootStorage } from "../src/boot";
 import { StoreProvider, type AppStore } from "../src/store-context";
 import { STACK_SCREENS } from "../src/routes";
+import { HelpButton } from "../src/triage-screen";
 
 void SplashScreen.preventAutoHideAsync();
 
@@ -52,6 +53,7 @@ export default function RootLayout() {
 
 function RootStack() {
   const theme = useTheme();
+  const router = useRouter();
   return (
     <Stack
       screenOptions={{
@@ -60,6 +62,9 @@ function RootStack() {
         headerTitleStyle: { color: theme.color.ink, fontWeight: "500" },
         headerShadowVisible: false,
         contentStyle: { backgroundColor: theme.color.paper },
+        // The same corner, on every screen the tabs do not own: a week opened
+        // from a texted link gets the help button too.
+        headerRight: () => <HelpButton onPress={() => router.push("/safety")} />,
       }}
     >
       <Stack.Screen name="index" options={{ headerShown: false }} />

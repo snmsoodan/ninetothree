@@ -277,6 +277,18 @@ links, and a test compares its ids with the JSON the site fetches, so the corpus
 cannot be regenerated on one platform only. Search on both platforms is the same
 scorer, capped at 20.
 
+Triage and safety followed (#155), and they are the first slice whose subject is
+a frightened parent rather than a curious one. The tree and the red-flag list
+were page-local on the site — `apps/web/src/lib/help.ts` existed only to serve
+them — so they moved into `@ninetothree/domain` and both surfaces now read the
+same nodes, the same outcomes and the same `ESCALATION_COPY`. What the phone adds
+is not wording but a port: `dial()` is the one function that asks the platform
+whether it can place a call, and it answers false on a simulator instead of
+throwing, because a crash is the worst possible failure mode on this screen. The
+phone also gained a `/safety` screen, since an outcome's "every warning sign"
+button needs somewhere to go, and "Get help now" sits in the header of every
+screen rather than in a sixth tab.
+
 ## 8. Cost, and what could go wrong
 
 | Work                                                                               | Size      | Risk                                                                     |

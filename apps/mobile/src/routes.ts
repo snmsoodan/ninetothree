@@ -71,6 +71,7 @@ export type Href =
   | "/updates"
   | "/settings"
   | "/triage"
+  | "/safety"
   | "/appointments"
   | "/history"
   | "/onboarding"
@@ -85,6 +86,7 @@ export const STACK_SCREENS = [
   { path: "/read/[slug]", title: "Reading" },
   { path: "/updates", title: "Updates" },
   { path: "/triage", title: "Something's wrong" },
+  { path: "/safety", title: "If something is wrong" },
   { path: "/appointments", title: "Appointments" },
   { path: "/history", title: "History" },
   { path: "/onboarding", title: "Welcome" },
@@ -172,7 +174,8 @@ export function parseIncomingUrl(raw: string): Href | null {
   if (clean === "/today" || clean === "/week") return clean;
   if (clean === "/library" || clean === "/search" || clean === "/read") return clean;
   if (clean === "/shelf" || clean === "/together" || clean === "/settings") return clean;
-  if (clean === "/updates" || clean === "/triage" || clean === "/appointments") return clean;
+  if (clean === "/updates" || clean === "/triage" || clean === "/safety") return clean;
+  if (clean === "/appointments") return clean;
   if (clean === "/history" || clean === "/onboarding" || clean === "/signin") return clean;
 
   const week = /^\/week\/(\d{1,3})$/.exec(clean);
