@@ -2,6 +2,13 @@ packages:
   - "apps/*"
   - "packages/*"
 
+# One React, or the app crashes on a hook read of null. Expo SDK 58 requires
+# React 19.3.0 exactly; several libraries declare a `^19` peer, which pnpm
+# otherwise satisfies by installing a second copy beside it.
+overrides:
+  react: 19.3.0
+  react-dom: 19.3.0
+
 allowBuilds:
   esbuild: true
   unrs-resolver: true

@@ -122,10 +122,14 @@ Each of these is one place, and each is testable on its own.
    moved is the machine itself — `createStore(io)`, the state shapes, the nine
    migrations, the selectors — with a port of `load`, `save`, `remove` and an
    optional `onOnboarded`. The web binding is 103 lines over `localStorage`; the
-   phone's is four methods over AsyncStorage and is written down here, not in
-   the repository, because there is no device to run it on. The port is
-   synchronous: `localStorage` is, AsyncStorage is not, and buffering the
-   writes is cheaper than an `await` in every screen.
+   phone's is `apps/mobile/src/storage.ts` (built, #151): 120 lines over
+   AsyncStorage that hydrate a cache first, answer reads from it, and chain
+   writes per key so `save()` stays synchronous. The port is synchronous:
+   `localStorage` is, AsyncStorage is not, and buffering the writes is cheaper
+   than an `await` in every screen. A rejected write is recorded rather than
+   thrown — a full disk loses a pin, not the app — and the onboarding flag is a
+   separate one-byte key so an unreadable JSON still routes a returning parent
+   to Today.
 5. **`packages/ui-native`** (built, #150) — twelve primitives. Four of them
    mirror a props surface that exists in `packages/ui` and are held to it:
    `Card`/`CardHeader`/`CardBody`/`CardFooter`, `Button`, `Badge`,
@@ -212,10 +216,17 @@ evidence is a screenshot at each posture, plus a recording of a fold, plus a
 Playwright sweep across the four widths the web already tests. Nothing about
 this needs a physical folding phone to be believable.
 
-## 7. The spike, defined but not run
+## 7. The shell, built and still unphotographed
 
-One day, on a throwaway branch, answering one question with evidence: **do the
-real packs render correctly on three shapes from one codebase?**
+This section described a spike. Issue #151 built its skeleton as the real
+`apps/mobile` — Expo Router, five tabs, deep links, the tokens, the shared
+store behind the AsyncStorage adapter, and a boot gate that reads storage before
+the first frame. Every screen is an honest placeholder naming the issue that
+fills it, so the routes and the links can be tested before any screen exists.
+What has not happened is the part this section is actually about: a device.
+
+The original question stands: **do the real packs render correctly on three
+shapes from one codebase?**
 
 - `apps/mobile` with Expo Router, no screens invented: Today, then the week.
 - Reading the same JSON from `packages/content` the web site reads. No mock

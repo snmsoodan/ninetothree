@@ -9,6 +9,34 @@ changelog written after the fact from memory is a changelog nobody can trust.
 
 ## Unreleased
 
+### The app boots before it draws (#151)
+
+- **`apps/mobile` exists.** Expo Router with five tabs — This week, Library,
+  Shelf, Together, Settings — and the stack screens behind them, sharing the
+  tokens, the content, the contracts and the state machine rather than
+  re-describing them. `main` stays web-only: the app has no `build` script, so
+  `pnpm build` and the bundle budget are untouched.
+- **One route table, one link parser.** `src/routes.ts` maps `/week/24`,
+  `https://ninetothree.com/week/24`, `ninetothree://week/24` and a bare
+  `/week/24` to the same screen, and refuses a foreign host, a foreign scheme, a
+  traversal, an unknown path and a week outside 4–42 — a bad link opens nothing,
+  rather than a blank page.
+- **Storage is async, the store is not.** `src/storage.ts` hydrates a cache
+  before `createStore()` runs, answers reads from memory, chains writes per key,
+  records a rejected write instead of throwing, and keeps the onboarding flag on
+  its own one-byte key so unreadable JSON still routes a returning parent to
+  Today.
+- **A boot bug the web could not have.** The shared store hydrates lazily on
+  `subscribe()`, so the boot gate's first `getSnapshot()` said
+  `onboarded: false` for a parent who finished onboarding a year ago. It now
+  calls `hydrate()` explicitly; five boot tests, thirteen storage tests and
+  seventeen link tests hold it. `EVIDENCE.md` §76 records the rest.
+- **One React for the whole repository.** Expo pins React 19.3.0 exactly, and a
+  `^19` peer had installed a second copy beside it — a duplicate renderer that
+  crashed the web suite on `useRef` with `Cannot read properties of null`.
+  `pnpm-workspace.yaml` now overrides `react` and `react-dom`, which fixes the
+  crash at its cause rather than in the tests.
+
 ### The shapes a thumb can reach (#150)
 
 - **`@ninetothree/ui-native` exists, with the primitives a phone screen needs.**

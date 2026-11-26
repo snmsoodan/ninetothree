@@ -56,6 +56,18 @@ With no `DATABASE_URL` the app creates an in-process PGlite database and migrate
 request, so nothing needs installing. To use a real Postgres, set `DATABASE_URL` and run
 `pnpm db:migrate`.
 
+The phone app is a second workspace package, not a second install:
+
+```bash
+pnpm --filter @ninetothree/mobile start   # Expo dev server; scan the QR with Expo Go
+pnpm --filter @ninetothree/mobile test    # the routes, storage and boot suites
+```
+
+It has no `build` script on purpose, so `pnpm build` stays web-only and the
+bundle budget keeps meaning what it means. Nothing native can be built or
+screenshotted on this machine — see §14 — so the app's evidence is its tests,
+not a simulator.
+
 **The role in `DATABASE_URL` must not be a superuser.** Row-level security does not apply to
 superusers, so a superuser connection turns every tenancy guarantee into a code convention. This
 is the single easiest way to silently lose the security model.
@@ -342,3 +354,8 @@ decision.
   has ever been charged.
 - No email transport configured in this environment; sign-in links print to stderr.
 - Only Chromium is exercised end to end. Safari and Firefox are unverified.
+- The iOS and Android apps are built but have never run on a device or a
+  simulator: no Xcode licence is accepted and no Android SDK is installed. Their
+  route, storage and boot tests run in Node, which proves behaviour and not
+  pixels. Issues #159 (parity harness) and #160 (foldables, tested) are where a
+  device is required.

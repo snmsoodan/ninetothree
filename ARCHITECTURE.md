@@ -886,3 +886,16 @@ cookie's name stayed on the web side, so the shared package is told a boolean an
 never learns what a cookie is. `apps/web/src/lib/store.ts` still exports the same
 names, which is why the 161-test suite that guards the behaviour is unchanged and
 still passes: the seam was proven by not having to rewrite the tests.
+
+The sixth seam is the app itself, `apps/mobile` (#151): Expo Router with five
+tabs, the seven deep-linkable routes, and a boot gate that reads storage before
+the first frame. It exists because route B needs a real second client to test the
+five seams above against, and because "never a flash of onboarding" is a timing
+rule that a website with a cookie cannot prove. The boot gate found a bug the web
+could not have: the shared store hydrates lazily on `subscribe()`, which is right
+for a hook and wrong for a gate that asks for a snapshot before anything has
+mounted, so the phone calls `hydrate()` explicitly. All three clients now resolve
+one React — Expo pins 19.3.0 exactly, and a `^19` peer had quietly installed a
+second copy that crashed the web suite on `useRef`. The shell's 39 tests cover
+links, storage and boot, not pixels: no simulator has run, and that limitation is
+stated in `EVIDENCE.md` §76 rather than implied away.

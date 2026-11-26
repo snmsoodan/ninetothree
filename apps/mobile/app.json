@@ -1,0 +1,44 @@
+{
+  "expo": {
+    "name": "Nine to Three",
+    "slug": "ninetothree",
+    "scheme": "ninetothree",
+    "version": "0.1.0",
+    "orientation": "default",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.ninetothree.app",
+      "associatedDomains": ["applinks:ninetothree.com"]
+    },
+    "android": {
+      "package": "com.ninetothree.app",
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "autoVerify": true,
+          "data": [
+            { "scheme": "https", "host": "ninetothree.com", "pathPrefix": "/" },
+            { "scheme": "https", "host": "www.ninetothree.com", "pathPrefix": "/" }
+          ],
+          "category": ["BROWSABLE", "DEFAULT"]
+        }
+      ]
+    },
+    "web": { "bundler": "metro", "output": "single" },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#fbf9f6",
+          "imageWidth": 120,
+          "dark": { "backgroundColor": "#17140f" }
+        }
+      ]
+    ],
+    "experiments": { "typedRoutes": true }
+  }
+}

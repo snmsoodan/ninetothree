@@ -2778,6 +2778,88 @@ ticks, the feel of a `Pressable`, the true width of an `Inter` line, or whether
 the two-pane spread looks like a book. Those need a device, and issue #159 (the
 parity harness) and #160 (foldables, tested) are where they get one.
 
-## 76. How this file is maintained
+## 76. The app boots before it draws (issue #151)
+
+**The idea.** A parent who installed the app should never see the welcome screen
+twice. That is a timing claim, not a layout one, and it is the one thing a shell
+can get wrong so badly that the app feels broken before a single screen exists.
+Issue #151 builds the Expo Router shell around that rule: seven routes that
+already exist on the web, deep links that open the right one, and a boot gate
+that reads storage before the first frame.
+
+**One route table, in one file.** `apps/mobile/src/routes.ts` holds `TABS` (five,
+matching the web header minus Safety and Updates, which the phone keeps one tap
+away instead of behind a tab), `STACK_SCREENS`, and `parseIncomingUrl`. Every
+link — a universal link to `https://ninetothree.com/week/24`, a custom scheme
+from a test, a bare `/settings` from the router — is interpreted there and
+nowhere else, so the tab bar's idea of which tab is lit and the deep link
+handler's idea of which screen to open cannot drift apart.
+
+**The rule is that a bad link opens nothing, not a blank page.** The parser
+refuses a foreign host (`https://ninetothree.example`), a foreign scheme
+(`javascript:`, `file:`), a traversal (`/read/../settings`), an unknown path and
+a week outside 4–42. `FIRST_WEEK`, `LAST_WEEK` and `parseWeekNumber` live in
+`routes.ts` rather than in the week screen, because a parser that accepts
+`/week/43` while the screen shows "there is no week here" is a link that leads to
+an apology.
+
+**Storage is async; the store is not.** `createStore(io)` reads its port
+synchronously. React Native's storage is a promise. `src/storage.ts` bridges that
+with `bufferedIO()`: `hydrate()` fills a cache before the store exists, `load`
+answers from the cache, `save`/`remove` answer immediately and write through on a
+per-key chain so two writes to the same key land in order, `flush()` waits for
+the chain, and a rejected write is recorded in `lastError()` rather than thrown —
+a full disk loses a pin, it does not lose the app. The onboarding flag is a
+separate one-byte key so that an unreadable JSON still routes a returning parent
+to Today.
+
+**A bug the boot test found, which the web could not have.** `createStore` fills
+itself lazily, on `subscribe()`. That is right for a React hook and wrong for a
+boot gate: `bootStorage()` was asking `getSnapshot()` before anything had
+subscribed, so a parent who finished onboarding a year ago would have been sent
+back to the welcome screen — the exact flash the issue is about. The web never
+saw this because its first render reads a cookie instead. `bootStorage()` now
+calls `store.hydrate()` explicitly, and a test asserts the restored pins and
+progress before any component has mounted.
+
+**The shell is honest about being a shell.** Every screen is `SkeletonScreen`:
+a heading, the steps that screen will hold in its own words, and a sunken card
+naming the issue that fills it in — #152 Today, #153 the week, #154 the library,
+#156 the shelf, #157 settings — plus a disabled "Available soon". No screen
+pretends to be finished, and none of them is a blank rectangle either.
+
+**39 tests, 100% statements, lines and functions, 97.39% branches.** Seventeen
+cover links: every tab, every stack screen, sub-page lighting, doubled and
+trailing slashes, the bare origin, an explicit `:443`, and each refusal above.
+Thirteen cover the storage adapter — ordering, coalescing, a throwing read, a
+rejected write, the onboarding flag written once and cleared, and the store
+reading back a pin that a previous run wrote. Five cover boot: the state wins
+over the flag, the flag is the fallback, an unreadable JSON lands on onboarding
+without crashing, and a first launch writes nothing.
+
+**Two source fixes the tests forced, besides the hydration bug.** Query and hash
+had to be stripped before tab matching, or `/week/24?from=share` lit no tab; and
+`tabForPath` now treats a tab's own sub-pages as that tab, so `/settings/quiet-hours`
+keeps Settings lit while a slash boundary still stops `/weekly` from lighting
+`/week`.
+
+**One dependency change that reaches the whole repository.** Expo SDK 58 pins
+React 19.3.0 exactly, and several libraries declare a `^19` peer, which pnpm
+satisfied with a second copy — a duplicate React that broke the web suite with
+`Cannot read properties of null (reading 'useRef')`. `pnpm-workspace.yaml` now
+overrides `react` and `react-dom` to 19.3.0 for every workspace, which is the
+correct fix for a duplicate-renderer crash and not merely a test fix.
+
+**What it does not prove, and why that is stated rather than implied.** There is
+still no Xcode licence and no Android SDK on this machine, so the app has not
+been launched on a simulator and there is no screenshot. The tests run in Node
+against the route table, the adapter and the boot gate: they prove which screen a
+link opens, that storage is read before the answer is given, and that writes
+reach the disk in order. They do not prove that Expo Router mounts the tree, that
+the splash hands over without a flicker, or that a real universal link reaches
+`+native-intent`. Those need a device or an emulator, and issue #159 is where the
+parity harness earns the right to claim them.
+
+## 77. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.
