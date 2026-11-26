@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { EMPTY_STATE, type AppState } from "./store";
+import { EMPTY_STATE, type AppState } from "./model";
 import { datedAppointments } from "./appointments";
 
 const TODAY = "2026-10-20";

@@ -1,12 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { TEST_PACK } from "@/test-fixtures";
-import { EMPTY_STATE, type AppState } from "./store";
+import { EMPTY_STATE, type AppState } from "./model";
 import { settledIds, weekProgress, type WeekRef } from "./week";
 
-const [first, second, third] = TEST_PACK.coreActions;
+const [first, second, third] = ["t-glucose", "t-tdap", "t-car-seat"];
 
 /** The week as the dashboard knows it: an id and its step ids, nothing else. */
-const REF: WeekRef = { id: TEST_PACK.id, coreActionIds: TEST_PACK.coreActions.map((a) => a.id) };
+const REF: WeekRef = { id: "test-week", coreActionIds: [first!, second!, third!] };
 
 function withProgress(entries: AppState["progress"]): AppState {
   return { ...EMPTY_STATE, progress: entries };
@@ -22,13 +21,13 @@ function skipped(id: string) {
 
 describe("settledIds", () => {
   it("counts a skipped step as settled", () => {
-    const state = withProgress({ [first!.id]: skipped(first!.id) });
-    expect(settledIds(REF, state)).toEqual([first!.id]);
+    const state = withProgress({ [first!]: skipped(first!) });
+    expect(settledIds(REF, state)).toEqual([first!]);
   });
 
   it("counts a done step as settled", () => {
-    const state = withProgress({ [first!.id]: done(first!.id) });
-    expect(settledIds(REF, state)).toEqual([first!.id]);
+    const state = withProgress({ [first!]: done(first!) });
+    expect(settledIds(REF, state)).toEqual([first!]);
   });
 
   it("ignores a step with no entry", () => {
@@ -37,10 +36,10 @@ describe("settledIds", () => {
 
   it("keeps the pack's order, not the order they were settled in", () => {
     const state = withProgress({
-      [third!.id]: done(third!.id),
-      [first!.id]: done(first!.id),
+      [third!]: done(third!),
+      [first!]: done(first!),
     });
-    expect(settledIds(REF, state)).toEqual([first!.id, third!.id]);
+    expect(settledIds(REF, state)).toEqual([first!, third!]);
   });
 });
 
@@ -57,7 +56,7 @@ describe("weekProgress", () => {
   });
 
   it("is open partway through", () => {
-    const state = withProgress({ [first!.id]: done(first!.id) });
+    const state = withProgress({ [first!]: done(first!) });
     const progress = weekProgress(REF, state);
     expect(progress.settled).toBe(1);
     expect(progress.percent).toBeCloseTo(33.33, 1);
@@ -67,9 +66,9 @@ describe("weekProgress", () => {
 
   it("is settled when every step is done or skipped, without anyone pressing a button", () => {
     const state = withProgress({
-      [first!.id]: done(first!.id),
-      [second!.id]: skipped(second!.id),
-      [third!.id]: done(third!.id),
+      [first!]: done(first!),
+      [second!]: skipped(second!),
+      [third!]: done(third!),
     });
     const progress = weekProgress(REF, state);
     expect(progress.status).toBe("settled");
@@ -82,7 +81,7 @@ describe("weekProgress", () => {
   it("is closed when a parent forced it with steps still open, and that one can be reopened", () => {
     const state: AppState = {
       ...EMPTY_STATE,
-      completed: { [TEST_PACK.id]: { at: "2026-06-15T10:00:00.000Z", forced: true } },
+      completed: { [REF.id]: { at: "2026-06-15T10:00:00.000Z", forced: true } },
     };
     const progress = weekProgress(REF, state);
     expect(progress.status).toBe("closed");
@@ -95,11 +94,11 @@ describe("weekProgress", () => {
     const state: AppState = {
       ...EMPTY_STATE,
       progress: {
-        [first!.id]: done(first!.id),
-        [second!.id]: done(second!.id),
-        [third!.id]: done(third!.id),
+        [first!]: done(first!),
+        [second!]: done(second!),
+        [third!]: done(third!),
       },
-      completed: { [TEST_PACK.id]: { at: "2026-06-15T10:00:00.000Z", forced: true } },
+      completed: { [REF.id]: { at: "2026-06-15T10:00:00.000Z", forced: true } },
     };
     expect(weekProgress(REF, state).reopenable).toBe(false);
   });

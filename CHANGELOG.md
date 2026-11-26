@@ -9,6 +9,28 @@ changelog written after the fact from memory is a changelog nobody can trust.
 
 ## Unreleased
 
+### The phone's Today is the web's Today (#152)
+
+- **The block order is data now.** `apps/mobile/src/today.ts` returns the
+  dashboard's eleven blocks in the web's order, each with its heading, badge,
+  count and empty-state copy, so a test can assert the order and the screen
+  cannot quietly reorder it. The screen draws what it is handed.
+- **The dashboard's arithmetic is shared.** `pins`, `week`, `appointments`,
+  `reminders` and `recalls` moved from `apps/web/src/lib` into
+  `@ninetothree/domain` with their tests; the web files re-export them, so
+  `useWeek`, the stale-pin test and the phone all read the same functions.
+- **`Today` can be drawn at any width.** An optional `layout` prop overrides the
+  measured one, so the suite exercises compact, regular, medium and expanded —
+  two-pane and hinge included — without a device.
+- **A stale copy table, caught by types.** The phone printed "You pinned this"
+  for a recall because its reason table was `Record<string, string>` with a key
+  the `RecallBecause` union no longer has. It is now typed against that union and
+  prints the web's three sentences.
+- **Coverage:** 116 tests, 99.5% lines and statements, 100% functions, 92.6%
+  branches; the branch floor is 91 with the reason written in
+  `apps/mobile/vitest.config.ts`. Still no simulator on this machine, so nothing
+  here is a pixel — `EVIDENCE.md` §77 says what that leaves open.
+
 ### The app boots before it draws (#151)
 
 - **`apps/mobile` exists.** Expo Router with five tabs — This week, Library,

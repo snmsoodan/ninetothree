@@ -1,9 +1,18 @@
 import { describe, expect, it } from "vitest";
-import { TEST_ACTION_INDEX } from "@/test-fixtures";
+import type { ActionIndexEntry } from "@ninetothree/content/action-index";
 import { resolvePins } from "./pins";
-import type { Pin } from "./store";
+import type { Pin } from "./model";
 
-const packs = TEST_ACTION_INDEX;
+const packs: Record<string, ActionIndexEntry> = {
+  "t-glucose": {
+    id: "t-glucose",
+    title: "Book your glucose screening",
+    packId: "test-week",
+    packTitle: "Week 28",
+    why: "It checks for gestational diabetes, which has no symptoms.",
+    options: [],
+  },
+};
 
 const pin = (overrides: Partial<Pin> = {}): Pin => ({
   id: "t-glucose",

@@ -129,7 +129,11 @@ Each of these is one place, and each is testable on its own.
    than an `await` in every screen. A rejected write is recorded rather than
    thrown — a full disk loses a pin, not the app — and the onboarding flag is a
    separate one-byte key so an unreadable JSON still routes a returning parent
-   to Today.
+   to Today. The dashboard's own arithmetic moved here with #152: `pins`,
+   `week`, `appointments`, `reminders` and `recalls` were web modules that
+   never touched the DOM, and the phone needs all five to decide what is
+   current, what is stale and what is due. The web files are one-line
+   re-exports, so there is one answer to "is this pin stale", not two.
 5. **`packages/ui-native`** (built, #150) — twelve primitives. Four of them
    mirror a props surface that exists in `packages/ui` and are held to it:
    `Card`/`CardHeader`/`CardBody`/`CardFooter`, `Button`, `Badge`,
@@ -216,7 +220,7 @@ evidence is a screenshot at each posture, plus a recording of a fold, plus a
 Playwright sweep across the four widths the web already tests. Nothing about
 this needs a physical folding phone to be believable.
 
-## 7. The shell, built and still unphotographed
+## 7. The shell and the first screen, still unphotographed
 
 This section described a spike. Issue #151 built its skeleton as the real
 `apps/mobile` — Expo Router, five tabs, deep links, the tokens, the shared
@@ -243,6 +247,16 @@ be accepted (`sudo xcodebuild -license`) for iOS simulators, and there is no
 Android SDK installed, so the Pixel Fold emulator needs Android Studio first.
 Expo Go on a physical phone needs neither, which is why the spike can start
 before the toolchains are installed.
+
+Today is no longer a placeholder (#152). `apps/mobile/src/today.ts` returns the
+same eleven blocks, in the same order and with the same sentences, as
+`Dashboard.tsx`: reminders, safety, the week or the persona lens, recalls,
+updates, pins, jobs, together, appointments, share, progress. The screen draws
+them and nothing else, which is what makes the order testable without a
+simulator — 77 tests cover the model and the rendered screen. What is still
+missing is the photograph: an Expo web run can be captured on this machine, and
+`EVIDENCE.md` §77 names the two gaps the phone keeps for later issues (a lens
+that only reads, and household data that is not wired).
 
 ## 8. Cost, and what could go wrong
 
