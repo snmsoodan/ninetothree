@@ -2,10 +2,9 @@
  * Together, on the phone.
  *
  * The one page that needs the network, so it needs the one thing the rest of
- * the app does not: a token. Issue 158 stores the session on the device; until
- * then `createHousehold` is handed a null token, which makes no request at all
- * and renders the signed-out page rather than a 401. Everything below already
- * works the moment the token exists.
+ * the app does not: a token. The session context holds the one from `/signin`;
+ * signed out it is null, so `createHousehold` makes no request at all and
+ * renders the signed-out page rather than a 401.
  */
 import { useCallback, useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import { Share } from "react-native";
@@ -15,6 +14,7 @@ import { findPackAtOrBefore } from "@ninetothree/content/pack-index";
 import { computeStage } from "@ninetothree/rules";
 import { stageInput, type JobStatus } from "@ninetothree/domain";
 import { useAppStore } from "../../src/store-context";
+import { useSession } from "../../src/session-context";
 import { createHousehold, type HouseholdRead } from "../../src/household";
 import { togetherView, type TogetherState } from "../../src/together";
 import { Together, type TogetherHandlers } from "../../src/together-screen";
@@ -31,18 +31,19 @@ export function formatDay(iso: string): string {
 }
 
 /** A client per call: the token is a port value, so nothing is cached here. */
-function household() {
+function household(token: string | null) {
   return createHousehold({
     fetch: (input, init) => fetch(input, init),
     baseUrl: BASE_URL,
-    // Issue 158 supplies the bearer token; until then the page is honest about
-    // needing a sign-in rather than firing a request that cannot work.
-    token: null,
+    // Signed out this is null, and the page is honest about needing a sign-in
+    // rather than firing a request that cannot work.
+    token,
   });
 }
 
 export default function TogetherScreen() {
   const { store } = useAppStore();
+  const { token } = useSession();
   const router = useRouter();
   const state = useSyncExternalStore(store.subscribe, store.getSnapshot, store.getSnapshot);
   const [read, setRead] = useState<HouseholdRead | null>(null);
@@ -57,7 +58,7 @@ export default function TogetherScreen() {
 
   useEffect(() => {
     let live = true;
-    void household()
+    void household(token)
       .together(stageId)
       .then((result) => {
         if (live) setRead(result);
@@ -65,7 +66,7 @@ export default function TogetherScreen() {
     return () => {
       live = false;
     };
-  }, [stageId, nonce]);
+  }, [stageId, nonce, token]);
 
   const phase: TogetherState = read === null ? "loading" : read.state;
   const data = read?.state === "ready" ? read.data : null;
@@ -80,28 +81,28 @@ export default function TogetherScreen() {
     () => ({
       onAssign: (itemId: string, title: string) => {
         if (!assignTo) return;
-        void household()
+        void household(token)
           .assignJob({ itemId, title, assignedTo: assignTo })
           .then(() => reload());
       },
       onJobStatus: (id: string, status: JobStatus) => {
-        void household()
+        void household(token)
           .setJobStatus(id, status)
           .then(() => reload());
       },
       onRemoveJob: (id: string) => {
-        void household()
+        void household(token)
           .removeJob(id)
           .then(() => reload());
       },
-      onSignIn: () => router.push("/settings"),
+      onSignIn: () => router.push("/signin"),
       onShareInvite: () => {
         void Share.share({ message: `Join us on nine to three — ${BASE_URL}` });
       },
       onOpenSettings: () => router.push("/settings"),
       onRetry: reload,
     }),
-    [assignTo, router, reload],
+    [assignTo, router, reload, token],
   );
 
   return <Together model={model} handlers={handlers} />;

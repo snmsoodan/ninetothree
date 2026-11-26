@@ -36,6 +36,7 @@ export default function SettingsScreen() {
     onNotifications: (patch) => store.setNotifications(patch),
     onReading: (patch) => store.setReading(patch),
     onOpenHistory: () => router.push("/history"),
+    onAccount: () => router.push("/signin"),
     onErase: () => {
       store.resetAll();
       router.replace("/onboarding");

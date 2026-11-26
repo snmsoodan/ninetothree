@@ -473,14 +473,15 @@ ordered issues so each slice is independently testable:
 | 155 | Triage on the phone                                         | shared — merged              |
 | 156 | The shelf and Together, on the phone                        | shared — merged              |
 | 157 | Settings, updates, appointments, history, reads             | shared — merged              |
-| 158 | Sign in with Google and Apple, on the device                | per-platform providers       |
+| 158 | Sign in with Google and Apple, on the device                | shared — merged              |
 | 159 | The parity harness                                          | shared                       |
 | 160 | Foldables: four width modes, tested                         | shared (two posture sources) |
 | 161 | Push from the pack                                          | native-only delivery         |
 | 162 | Store readiness                                             | native-only                  |
 
 Issues 147–157 are merged: the token exchange, the token source, the machine,
-the primitives, the shell, and every screen a parent reads. 158–162 are open.
+the primitives, the shell, every screen a parent reads, and the device's own
+sign-in. 159–162 are open.
 158–160 make the three clients agree; 161–162 extend the phone alone.
 161–162 are marked "not parity" on purpose: the web has no push channel and no store, so they extend the phone
 without adding a web obligation. Nothing here changes the free-product decision: the apps are the same product with

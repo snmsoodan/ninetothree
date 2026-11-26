@@ -15,6 +15,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Screen, Skeleton, ThemeProvider, useTheme } from "@ninetothree/ui-native";
 import { bootStorage } from "../src/boot";
 import { StoreProvider, type AppStore } from "../src/store-context";
+import { SessionProvider } from "../src/session-context";
 import { STACK_SCREENS } from "../src/routes";
 import { HelpButton } from "../src/triage-screen";
 
@@ -41,7 +42,9 @@ export default function RootLayout() {
         <StatusBar style="auto" />
         {app ? (
           <StoreProvider value={app}>
-            <RootStack />
+            <SessionProvider>
+              <RootStack />
+            </SessionProvider>
           </StoreProvider>
         ) : (
           <BootSplash />
