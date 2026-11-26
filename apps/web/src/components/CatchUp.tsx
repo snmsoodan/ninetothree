@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import type { CatchUpItem } from "@ninetothree/rules";
 import { Button } from "@ninetothree/ui";
+import { catchUpToggle } from "@ninetothree/domain";
 import { markDone } from "@/lib/store";
 
 export interface CatchUpProps {
@@ -43,7 +44,7 @@ export function CatchUp({ items, stageLabel }: CatchUpProps) {
         aria-controls="catchup-list"
         className="mt-3 text-sm text-ink-muted underline decoration-line-strong underline-offset-2 hover:text-ink"
       >
-        {open ? "Hide them" : `Show the ${count} thing${count === 1 ? "" : "s"}`}
+        {catchUpToggle(count, open)}
       </button>
 
       {open ? (

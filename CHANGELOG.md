@@ -9,6 +9,27 @@ changelog written after the fact from memory is a changelog nobody can trust.
 
 ## Unreleased
 
+### The week, on the phone (#153)
+
+- **The week's sentences are shared.** `packages/domain/src/week-copy.ts` now
+  owns the skip reasons, the three "later" dates, the steps heading, the
+  set-aside and hidden notices, the catch-up toggle, the status labels and both
+  dialogs; `ActionItem`, `WeekView` and `CatchUp` import them, so the site and the
+  phone cannot drift apart.
+- **`apps/mobile/src/week.ts` is the page as data.** Progress, the baby/you card,
+  visible and set-aside steps, the persona lens with its own actions and tracked
+  suggestions, the two-press week completion, catch-up rows, appointments, red
+  flags, sources and the previous/next ids — all decided in one tested function.
+- **The screen is `week-screen.tsx`.** Two sheets, a radio group, pins, expansion,
+  the partner lens and four width modes drawn in jsdom; the container in
+  `app/week/[id].tsx` maps every press to one store call.
+- **Share prints a page.** `week-share.ts` builds escaped HTML and the container
+  turns it into a PDF through `expo-print`, offered by `expo-sharing` with a
+  text fallback. A printed week carries the options, their costs and their links.
+- **Coverage:** 186 tests, 99.78% statements and lines, 96% functions, 91.34%
+  branches. Still no simulator, so this is structure and copy, not pixels —
+  `EVIDENCE.md` §78 records what that leaves out.
+
 ### The phone's Today is the web's Today (#152)
 
 - **The block order is data now.** `apps/mobile/src/today.ts` returns the

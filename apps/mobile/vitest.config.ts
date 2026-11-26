@@ -32,6 +32,9 @@ export default defineConfig({
         "src/boot.ts",
         "src/today.ts",
         "src/today-screen.tsx",
+        "src/week.ts",
+        "src/week-screen.tsx",
+        "src/week-share.ts",
       ],
       /**
        * Branches sit lower than the rest on purpose. The misses that remain are
