@@ -163,7 +163,7 @@ export function Library({
   const columns = libraryColumns(layout.mode);
 
   return (
-    <Screen testID={testID}>
+    <Screen layout={layout} testID={testID}>
       <Heading level={1}>{model.heading}</Heading>
       <Body muted>{model.intro}</Body>
 

@@ -9,6 +9,7 @@ import {
   Screen,
   SectionHeader,
   useTheme,
+  type Layout,
 } from "@ninetothree/ui-native";
 import type { TriageModel } from "./triage";
 
@@ -34,17 +35,19 @@ export interface TriageHandlers {
 export interface TriageProps {
   model: TriageModel;
   handlers: TriageHandlers;
+  /** The window to draw for; measured when left out. */
+  layout?: Layout;
   testID?: string;
 }
 
-export function Triage({ model, handlers, testID = "screen-triage" }: TriageProps) {
+export function Triage({ model, handlers, layout: given, testID = "screen-triage" }: TriageProps) {
   const theme = useTheme();
   const call = model.call;
   const tel = call?.tel ?? null;
   const number = call?.phone ?? null;
 
   return (
-    <Screen scroll testID={testID}>
+    <Screen scroll layout={given} testID={testID}>
       {model.trail.length > 0 ? (
         <View
           accessibilityLabel={model.trailLabel}

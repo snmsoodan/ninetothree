@@ -62,7 +62,7 @@ export function AppShell({
   }, [pathname]);
 
   return (
-    <div className="min-h-dvh bg-paper">
+    <div className="layout-shell min-h-dvh bg-paper">
       <header className="no-print sticky top-0 z-30 border-b border-line bg-paper/95 backdrop-blur-sm">
         <div className="mx-auto flex h-14 max-w-2xl items-center justify-between px-5">
           <Link

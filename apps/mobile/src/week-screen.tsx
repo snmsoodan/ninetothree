@@ -80,7 +80,7 @@ export function Week({ model, handlers, layout: given, testID = "screen-week" }:
 
   if (model.status === "quiet") {
     return (
-      <Screen testID={testID}>
+      <Screen layout={layout} testID={testID}>
         <Card tone="sunken">
           <CardBody>
             <Heading level={1}>{model.quiet?.heading ?? ""}</Heading>
@@ -154,6 +154,7 @@ export function Week({ model, handlers, layout: given, testID = "screen-week" }:
 
   return (
     <Screen
+      layout={layout}
       testID={testID}
       panes={[
         <View style={{ gap: theme.space[4] }} testID={`${testID}-pane-week`}>

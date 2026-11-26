@@ -1,0 +1,72 @@
+/*
+ * Window-size utilities, the web half of the native layout primitives.
+ *
+ * The thresholds mirror packages/ui-native/src/layout.ts (360, 600, 840), and
+ * the four mode names are the same. A browser reporting a crease through
+ * `env(viewport-segment-*)` can add `.layout-half-open`, which stacks the panes
+ * so the primary action stays in the top half.
+ */
+
+@layer components {
+  .layout-shell {
+    container-type: inline-size;
+    --layout-columns: 1;
+    --layout-panes: 1;
+  }
+
+  @container (min-width: 360px) {
+    .layout-shell {
+      --layout-columns: 1;
+      --layout-panes: 1;
+    }
+  }
+
+  @container (min-width: 600px) {
+    .layout-shell {
+      --layout-columns: 2;
+      --layout-panes: 2;
+    }
+  }
+
+  @container (min-width: 840px) {
+    .layout-shell {
+      --layout-columns: 3;
+      --layout-panes: 2;
+    }
+  }
+
+  /* The four names, so a mode can be attached to a region for tests and CSS. */
+  .layout-compact {
+    --layout-columns: 1;
+  }
+  .layout-regular {
+    --layout-columns: 1;
+  }
+  .layout-medium {
+    --layout-columns: 2;
+  }
+  .layout-expanded {
+    --layout-columns: 3;
+  }
+
+  .layout-grid {
+    display: grid;
+    grid-template-columns: repeat(var(--layout-columns), minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+
+  .layout-panes {
+    display: grid;
+    grid-template-columns: repeat(var(--layout-panes), minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+
+  /* A reported hinge: two halves stacked, never a body across the crease. */
+  .layout-half-open .layout-panes {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .layout-primary-first {
+    order: -1;
+  }
+}

@@ -73,7 +73,7 @@ export function Today({ model, handlers, layout: given, testID = "screen-today" 
 
   if (model.status === "loading") {
     return (
-      <Screen testID={testID}>
+      <Screen layout={layout} testID={testID}>
         <Body muted>One moment.</Body>
       </Screen>
     );
@@ -119,6 +119,7 @@ export function Today({ model, handlers, layout: given, testID = "screen-today" 
 
   return (
     <Screen
+      layout={layout}
       testID={testID}
       panes={[
         <View style={{ gap: theme.space[4] }} testID={`${testID}-pane-week`}>

@@ -127,9 +127,88 @@ describe("Screen", () => {
     const pair = screen.getByTestId("week-panes");
     // The crease is 20 wide, so that is the gap — not half a design gutter.
     expect(pair.style.gap).toBe("20px");
-    const [left, right] = Array.from(pair.children) as HTMLElement[];
-    expect(left?.style.width).toBe("390px");
-    expect(right?.style.width).toBe("390px");
+    // Half-open is the laptop posture: the panes stack, so the top half is the
+    // half above the table and nothing spans the crease.
+    expect(pair.style.flexDirection).toBe("column");
+    expect(Array.from(pair.children)).toHaveLength(2);
+  });
+
+  it("puts the pane with the primary action first when the laptop is half-open", () => {
+    setWindow({
+      width: 820,
+      mode: "expanded",
+      columns: 2,
+      panesAcross: 2,
+      posture: "half-open",
+      hinge: { start: 400, end: 420, angle: 100, posture: "half-open" },
+      panes: [
+        { x: 0, width: 390 },
+        { x: 430, width: 390 },
+      ],
+    });
+    render(
+      <Screen panes={[<>notes</>, <>primary</>]} primary={1} testID="week">
+        stacked
+      </Screen>,
+    );
+    const pair = screen.getByTestId("week-panes");
+    const [top, bottom] = Array.from(pair.children) as HTMLElement[];
+    expect(top?.textContent).toBe("primary");
+    expect(bottom?.textContent).toBe("notes");
+  });
+
+  it("draws a screen with no panes in the first usable half of a creased window", () => {
+    setWindow({
+      width: 660,
+      mode: "medium",
+      columns: 2,
+      panesAcross: 2,
+      posture: "open",
+      hinge: { start: 320, end: 340, angle: 180, posture: "open" },
+      panes: [
+        { x: 0, width: 320 },
+        { x: 340, width: 320 },
+      ],
+    });
+    const { container, rerender } = render(<Screen testID="triage">body</Screen>);
+    const pane = screen.getByTestId("triage-pane");
+    expect(pane.style.width).toBe("320px");
+    expect(pane.textContent).toBe("body");
+
+    rerender(<Screen>body</Screen>);
+    expect(container.textContent).toBe("body");
+  });
+
+  it("draws a pair with no test id on a flat window and on a creased one", () => {
+    setWindow({
+      width: 900,
+      mode: "expanded",
+      columns: 2,
+      panesAcross: 2,
+      panes: [
+        { x: 0, width: 432 },
+        { x: 432, width: 432 },
+      ],
+    });
+    const flat = render(<Screen panes={[<>left</>, <>right</>]}>stacked</Screen>);
+    const rows = flat.container.querySelectorAll('[style*="row"]');
+    expect(rows.length).toBeGreaterThan(0);
+    flat.unmount();
+
+    setWindow({
+      width: 820,
+      mode: "expanded",
+      columns: 2,
+      panesAcross: 2,
+      posture: "half-open",
+      hinge: { start: 400, end: 420, angle: 100, posture: "half-open" },
+      panes: [
+        { x: 0, width: 390 },
+        { x: 430, width: 390 },
+      ],
+    });
+    const creased = render(<Screen panes={[<>top</>, <>bottom</>]}>stacked</Screen>);
+    expect(creased.container.textContent).toBe("topbottom");
   });
 
   it("takes a style last, so a screen can override the frame", () => {

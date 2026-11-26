@@ -3385,6 +3385,45 @@ copy are tested; layout is not. `/week` and `/onboarding` are recorded as
 stand-ins rather than full parity, so the harness cannot report success for them
 until a later issue replaces them.
 
-## 85. How this file is maintained
+## 85. Foldables are a layout question, answered in one place (issue #160)
+
+**One set of widths.** `packages/ui-native/src/layout.ts` already named four
+modes — compact, regular, medium, expanded — at 360, 600 and 840. The web now
+has the same names, the same numbers and the same `columnsFor` in
+`packages/ui/src/layout.ts`, and `packages/ui/src/layout.css` carries them as
+container queries. A browser narrower than 600 gets one column, 600 and up two,
+840 and up three, which is what a 900 px Playwright viewport has always meant;
+the difference is that the number is now read from one place instead of
+implied by Tailwind's `sm:`.
+
+**A crease is a gap, not a margin.** `paneDirection` stacks the pair when the
+posture is half-open and leaves it side by side otherwise, and `orderedPanes`
+puts the pane that holds the primary action first in that stacked case. A
+half-open laptop stands on its bottom half, so the top half is where a parent
+can still see; the screen now changes order, not just padding. `Screen` takes
+`primary={0 | 1}` for that choice. When a screen passes no panes but a crease
+is reported, `Screen` draws the body in the first usable half rather than
+letting a button run under the glass; a reported crease also counts as two
+panes on a width that would otherwise be one (`describeLayout`), because one
+body across the gap is the failure this change exists to prevent.
+
+**The matrix.** `apps/mobile/src/foldables.test.tsx` draws Today, Week, Library
+and Triage at 320, 390, 700, 900 and 1100 dp, reporting a crease from 600 up.
+For each width it asserts the mode, the native column count, Library's one,
+two and three columns, that a creased window has two pane spans and neither
+crosses the hinge, and that every `role="button"` sits inside a single half.
+Five widths × four screens, ten tests. The UI package adds four tests pinning
+the shared thresholds, the four names in the stylesheet, and the mode labels.
+`packages/ui-native` is 82 tests at 100% statements and functions and above
+the 95% branch floor.
+
+**What it does not prove.** No foldable was plugged in: `hingeFor()` still
+returns `null` because the `expo-hinge` module is not installed, so the posture
+in these tests is the same hand-built object the screens would receive. Browser
+segment reporting (`env(viewport-segment-*)`) is a stylesheet hook
+(`.layout-half-open`), not a measured claim. Pixels, gestures and the real
+glass remain untested, as §§78–83 say for every native screen.
+
+## 86. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.
