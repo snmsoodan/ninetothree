@@ -34,6 +34,7 @@
     "content:indexes:check": "pnpm --filter @ninetothree/content indexes:check",
     "tokens:emit": "pnpm --filter @ninetothree/tokens tokens:emit",
     "tokens:check": "pnpm --filter @ninetothree/tokens tokens:check",
+    "store:check": "pnpm --filter @ninetothree/mobile run store:check",
     "format": "prettier --write \"**/*.{ts,tsx,md,json,css}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,md,json,css}\"",
     "links:check": "node scripts/check-links.mjs",

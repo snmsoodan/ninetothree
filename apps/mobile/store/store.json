@@ -1,0 +1,121 @@
+{
+  "app": {
+    "name": "Nine to Three",
+    "iosBundleId": "com.ninetothree.app",
+    "androidPackage": "com.ninetothree.app",
+    "version": "0.1.0",
+    "copyright": "2026 Sanamdeep Singh",
+    "supportUrl": "https://ninetothree.com/support",
+    "marketingUrl": "https://ninetothree.com",
+    "privacyUrl": "https://ninetothree.com/privacy",
+    "iosCategory": "HEALTH_AND_FITNESS",
+    "androidCategory": "PARENTING"
+  },
+  "privacy": {
+    "tracking": false,
+    "collected": [
+      {
+        "type": "EmailAddress",
+        "linked": true,
+        "tracking": false,
+        "purposes": ["AppFunctionality"],
+        "why": "Signing in with Google or Apple gives the server one address, and that address is how it knows which household is yours. Nothing leaves the phone until you sign in."
+      },
+      {
+        "type": "Name",
+        "linked": true,
+        "tracking": false,
+        "purposes": ["AppFunctionality"],
+        "why": "Google and Apple send a name with the address. It is shown back to you in Settings and nowhere else."
+      }
+    ],
+    "accessed": [
+      {
+        "category": "FileTimestamp",
+        "reasons": ["C617.1"],
+        "why": "The shelf, the settings and the cached weeks are files in the app's own container. The app reads their modification time to know whether a cached week has gone stale."
+      },
+      {
+        "category": "UserDefaults",
+        "reasons": ["CA92.1"],
+        "why": "React Native and the modules it loads keep their preferences in the app's own defaults, which is the only place they read them back from."
+      },
+      {
+        "category": "SystemBootTime",
+        "reasons": ["35F9.1"],
+        "why": "Elapsed time is measured against the system's uptime so a timer still works after the device has slept, which is most of a night with a newborn."
+      },
+      {
+        "category": "DiskSpace",
+        "reasons": ["E174.1"],
+        "why": "Available room is checked before a bundle or a cache file is written, and nothing is written when the answer is none."
+      }
+    ]
+  },
+  "permissions": [],
+  "listing": {
+    "ios": {
+      "title": "Nine to Three",
+      "subtitle": "Pregnancy to age three",
+      "keywords": "pregnancy,newborn,baby,toddler,week by week,parenting,feeding,sleep",
+      "promotionalText": "Every week from pregnancy to your child's third birthday, in plain words, with the sources on the page. Free, no ads, no paywall.",
+      "description": "Nine to Three is one calm place for the whole of early parenthood: pregnancy week by week, then your child's first three years.\n\nEach week gives you three things to do, the food and sleep that matter just now, the appointments that are coming, and the questions worth asking at them. When something worries you, the triage screen asks three questions and then tells you whether to call your provider tonight or watch and wait until morning.\n\nEverything here is written for a tired person at 3am. Short sentences. No cheerleading. No promises nobody can keep. Where a claim comes from a guideline or a study, the source is on the page.\n\nWHAT IS INSIDE\n\n- A page for this week, with the few things that actually matter now\n- Every stage from pregnancy week 4 to the third birthday\n- Nutrition, sleep, feeding, clothes, gear, childcare, and your own recovery\n- Trips to the provider, with the questions to ask and the signs that mean go now\n- A library of 251 hand-checked links, so an answer is one tap away\n- A shelf for the things you pinned, plus appointments and notes\n- Together: a partner sees the same week on their own phone\n\nWHAT IT COSTS\n\nNothing. No subscription, no ads, no upsell, no account required to read a week. Sign in only if you want your shelf on more than one device.\n\nWHAT IT IS NOT\n\nIt is not a substitute for your provider. It never diagnoses, never doses a medicine, and when the answer is \"call\", it says call.\n\nNine to Three is made by a small independent team. If a page is wrong, there is a corrections form in the app and a person reads it.",
+      "whatsNew": "The first release: pregnancy to age three, the week page, triage, the library, the shelf, and Together.",
+      "supportUrl": "https://ninetothree.com/support",
+      "marketingUrl": "https://ninetothree.com",
+      "privacyUrl": "https://ninetothree.com/privacy"
+    },
+    "android": {
+      "title": "Nine to Three",
+      "shortDescription": "A calm week-by-week guide, from pregnancy to your child's third birthday.",
+      "fullDescription": "Nine to Three is one calm place for the whole of early parenthood: pregnancy week by week, then your child's first three years.\n\nEach week gives you three things to do, the food and sleep that matter just now, the appointments that are coming, and the questions worth asking at them. When something worries you, the triage screen asks three questions and then tells you whether to call your provider tonight or watch and wait until morning.\n\nEverything here is written for a tired person at 3am. Short sentences. No cheerleading. No promises nobody can keep. Where a claim comes from a guideline or a study, the source is on the page.\n\nInside:\n\n- A page for this week, with the few things that actually matter now\n- Every stage from pregnancy week 4 to the third birthday\n- Nutrition, sleep, feeding, clothes, gear, childcare, and your own recovery\n- Trips to the provider, with the questions to ask and the signs that mean go now\n- A library of 251 hand-checked links, so an answer is one tap away\n- A shelf for the things you pinned, plus appointments and notes\n- Together: a partner sees the same week on their own phone\n\nIt costs nothing. No subscription, no ads, no upsell, and no account needed to read a week. Sign in only if you want your shelf on more than one device.\n\nIt is not a substitute for your provider. It never diagnoses, never doses a medicine, and when the answer is \"call\", it says call.",
+      "whatsNew": "The first release: pregnancy to age three, the week page, triage, the library, the shelf, and Together.",
+      "contactEmail": "hello@ninetothree.com",
+      "privacyUrl": "https://ninetothree.com/privacy"
+    }
+  },
+  "screenshots": [
+    {
+      "id": "this-week",
+      "screen": "Today",
+      "headline": "One page for this week",
+      "sub": "Three things to do, and what to watch for.",
+      "shows": "The week number, the three core actions with checkboxes, and the one reassurance line."
+    },
+    {
+      "id": "the-week",
+      "screen": "The week",
+      "headline": "What this week asks of you",
+      "sub": "Food, sleep, appointments, and the questions to ask.",
+      "shows": "A week pack with the what-is-happening section, the food list, and the appointment card."
+    },
+    {
+      "id": "triage",
+      "screen": "Triage",
+      "headline": "A straight answer at 3am",
+      "sub": "Three questions, then the number to call.",
+      "shows": "The triage tree mid-question, with the safety line and the call-now path visible."
+    },
+    {
+      "id": "library",
+      "screen": "Library",
+      "headline": "251 places worth trusting",
+      "sub": "Every link checked, every stage covered.",
+      "shows": "Search results with stage filters, a source domain, and the last-checked date."
+    },
+    {
+      "id": "shelf",
+      "screen": "Your shelf",
+      "headline": "The things you pinned",
+      "sub": "Pinned weeks, appointments and notes, in one place.",
+      "shows": "Pinned items, the next appointment, and a note."
+    },
+    {
+      "id": "together",
+      "screen": "Together",
+      "headline": "The same page, both phones",
+      "sub": "A partner sees the week without asking.",
+      "shows": "The household card with two members and the shared week."
+    }
+  ]
+}

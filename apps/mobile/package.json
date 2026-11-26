@@ -17,9 +17,11 @@
     "start": "expo start",
     "ios": "expo start --ios",
     "android": "expo start --android",
-    "lint": "eslint app src --max-warnings 0",
+    "lint": "eslint app src store --max-warnings 0",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run --coverage"
+    "test": "vitest run --coverage",
+    "store": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types store/index.ts",
+    "store:check": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --experimental-strip-types store/index.ts --check"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.0",

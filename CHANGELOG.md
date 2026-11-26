@@ -9,6 +9,19 @@ changelog written after the fact from memory is a changelog nobody can trust.
 
 ## Unreleased
 
+### The store artefacts are generated from one file, and CI reads it (#162)
+
+- `apps/mobile/store/store.json` is the only place the identifiers, the
+  collected data, the required-reason APIs, the permission list, both listings
+  and the six screenshot scenes are written.
+- `render.ts` turns it into `PrivacyInfo.xcprivacy`, `DATA-SAFETY.md`,
+  `LISTING.md` and `SCREENSHOTS.md`; `pnpm store:check` fails when any of them,
+  `app.json`'s `ios.privacyManifest`/`ios.infoPlist`, or `eas.json` disagrees
+  with it.
+- `eas.json` gains development, preview and production profiles. No credentials,
+  no project id, no icon and no screenshots: those need a store account and a
+  simulator, and `EVIDENCE.md` §87 says so.
+
 ### Push is the pack's own words, not a second content system (#161)
 
 - `StagePack` gained an optional `push: { title, body }`, linted with the rest
