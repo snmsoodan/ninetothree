@@ -9,6 +9,17 @@ changelog written after the fact from memory is a changelog nobody can trust.
 
 ## Unreleased
 
+### A parity harness that reads both clients (#159)
+
+- `@ninetothree/parity` holds a 30-row manifest: every web `page.tsx`, the
+  phone route that answers it, the testIDs it owes in order, and a reason on
+  every row that is a stand-in or web-only.
+- The test walks the real page directory in both directions, so a new page
+  without a manifest row fails, and a manifest row without a page fails.
+- Phone testIDs are read through a route file's local imports, which is where
+  the screens actually live; block order is checked, not just presence.
+- **26 tests**, 100% statements, branches, functions and lines.
+
 ### Sign in with Google and Apple, on the phone (#158)
 
 - `DELETE /api/auth/native/session` revokes the bearer session a phone holds,

@@ -1,0 +1,197 @@
+[
+  {
+    "route": "/",
+    "phone": null,
+    "parity": "web-only",
+    "reason": "A signpost, not a screen: it redirects from the onboarding cookie before any JavaScript is sent.",
+    "blocks": []
+  },
+  {
+    "route": "/today",
+    "phone": "/today",
+    "parity": "full",
+    "blocks": ["today-week", "today-pins", "today-appointments", "today-progress"]
+  },
+  {
+    "route": "/week",
+    "phone": "/week",
+    "parity": "native-substitute",
+    "reason": "Both are signposts. The phone resolves the parent's stage at boot and redirects to /week/[id].",
+    "blocks": []
+  },
+  {
+    "route": "/week/[id]",
+    "phone": "/week/[id]",
+    "parity": "full",
+    "blocks": ["week-body", "week-also-know", "week-appointments"]
+  },
+  {
+    "route": "/library",
+    "phone": "/library",
+    "parity": "full",
+    "blocks": ["library-search", "library-domains", "library-costs"]
+  },
+  {
+    "route": "/search",
+    "phone": "/search",
+    "parity": "full",
+    "blocks": ["search-field", "search-results"]
+  },
+  {
+    "route": "/read",
+    "phone": "/read",
+    "parity": "full",
+    "blocks": ["screen-read-index"]
+  },
+  {
+    "route": "/read/[slug]",
+    "phone": "/read/[slug]",
+    "parity": "full",
+    "blocks": ["screen-read-article", "read-sources"]
+  },
+  {
+    "route": "/shelf",
+    "phone": "/shelf",
+    "parity": "full",
+    "blocks": ["shelf-filter", "shelf-pins", "shelf-finished"]
+  },
+  {
+    "route": "/settings",
+    "phone": "/settings",
+    "parity": "full",
+    "blocks": ["settings-account", "settings-status", "settings-persona", "settings-history"]
+  },
+  {
+    "route": "/together",
+    "phone": "/together",
+    "parity": "full",
+    "blocks": ["together-jobs", "together-shared", "together-who"]
+  },
+  {
+    "route": "/updates",
+    "phone": "/updates",
+    "parity": "full",
+    "blocks": ["updates-check", "updates-list"]
+  },
+  {
+    "route": "/triage",
+    "phone": "/triage",
+    "parity": "full",
+    "blocks": ["triage-call", "triage-all-flags"]
+  },
+  {
+    "route": "/safety",
+    "phone": "/safety",
+    "parity": "full",
+    "blocks": ["safety-cta"]
+  },
+  {
+    "route": "/appointments",
+    "phone": "/appointments",
+    "parity": "full",
+    "blocks": ["appointments-coming", "add-appointment"]
+  },
+  {
+    "route": "/history",
+    "phone": "/history",
+    "parity": "full",
+    "blocks": ["history-empty", "history-pins"]
+  },
+  {
+    "route": "/onboarding",
+    "phone": "/onboarding",
+    "parity": "native-substitute",
+    "reason": "The route exists and opens the welcome copy, but the flow itself is still the shell's placeholder.",
+    "blocks": ["screen-onboarding"]
+  },
+  {
+    "route": "/signin",
+    "phone": "/signin",
+    "parity": "full",
+    "blocks": ["sign-in-google"]
+  },
+  {
+    "route": "/signin/check-email",
+    "phone": null,
+    "parity": "web-only",
+    "reason": "The phone has no email magic link; it offers Google and Apple only.",
+    "blocks": []
+  },
+  {
+    "route": "/signin/error",
+    "phone": null,
+    "parity": "web-only",
+    "reason": "A refusal on the phone is one quiet sentence in the sign-in card, not a page with a provider code.",
+    "blocks": []
+  },
+  {
+    "route": "/choose/[actionId]",
+    "phone": null,
+    "parity": "web-only",
+    "reason": "The phone sends a step with a chooser to this route rather than drawing a native chooser (#159 leaves it honest).",
+    "blocks": []
+  },
+  {
+    "route": "/join/[token]",
+    "phone": null,
+    "parity": "web-only",
+    "reason": "An invite link opens on the web, where the token can be previewed before a household exists.",
+    "blocks": []
+  },
+  {
+    "route": "/email",
+    "phone": null,
+    "parity": "web-only",
+    "reason": "A preview of the weekly email for the person writing it; the phone has nothing to preview.",
+    "blocks": []
+  },
+  {
+    "route": "/print/week/[id]",
+    "phone": null,
+    "parity": "web-only",
+    "reason": "Printing is the browser's job; the phone shares the week as text instead.",
+    "blocks": []
+  },
+  {
+    "route": "/print/checklist/[id]",
+    "phone": null,
+    "parity": "web-only",
+    "reason": "The hospital bag is printed from the browser, where it paginates.",
+    "blocks": []
+  },
+  {
+    "route": "/corrections",
+    "phone": null,
+    "parity": "web-only",
+    "reason": "A public record read occasionally, linked from the footer rather than from any phone screen.",
+    "blocks": []
+  },
+  {
+    "route": "/editorial",
+    "phone": null,
+    "parity": "web-only",
+    "reason": "How the guide is written is a page a parent reads once, usually before trusting it.",
+    "blocks": []
+  },
+  {
+    "route": "/license",
+    "phone": null,
+    "parity": "web-only",
+    "reason": "A legal page, kept in one place so the two clients cannot disagree about it.",
+    "blocks": []
+  },
+  {
+    "route": "/privacy",
+    "phone": null,
+    "parity": "web-only",
+    "reason": "A legal page, kept in one place so the two clients cannot disagree about it.",
+    "blocks": []
+  },
+  {
+    "route": "/terms",
+    "phone": null,
+    "parity": "web-only",
+    "reason": "A legal page, kept in one place so the two clients cannot disagree about it.",
+    "blocks": []
+  }
+]

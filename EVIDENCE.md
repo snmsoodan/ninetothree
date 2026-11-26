@@ -3339,6 +3339,52 @@ The context's restore is exercised through `restoreSession` with a memory store,
 not through `expo-secure-store` on a device. Biometric lock and email magic links
 are out of scope, as the issue says.
 
-## 84. How this file is maintained
+## 84. Parity, checked against the files rather than remembered (issue #159)
+
+Two clients, one product: the site has thirty pages and the phone answers
+eighteen of them, but until now "the phone has every screen" was a sentence in
+`TASKS.md` and a reviewer's memory. `packages/parity` turns it into a test.
+
+**The manifest is the claim.** `screens.json` has one row per web `page.tsx`:
+the route, the phone route that answers it (`null` for none), one of `full`,
+`native-substitute` or `web-only`, a reason whenever the answer is not a full
+screen, and the testIDs the phone screen renders in source order. Fifteen rows
+are full, two are stand-ins (`/week`'s redirect signpost and the onboarding
+skeleton), and thirteen are deliberately web-only: the landing page, the three
+sign-in outcomes, the action chooser, an invitation join, email preferences,
+two print documents, and the five legal and editorial pages. Every one of those
+thirteen names why, so a route cannot quietly drop off the phone.
+
+**What the test reads.** `webRoutes` walks `apps/web/src/app` for `page.tsx`
+and turns the paths into routes, `/` included; `parseManifest` refuses a row
+without a route, a phone field, a known class, a string reason or a blocks
+array. `parityErrors` then checks both directions — no page missing from the
+manifest, no manifest row that is not a page, no duplicate, a reason on anything
+that is not full parity, and a phone file for every row that claims one.
+
+**Blocks are read through the route, not off it.** A phone route file is two
+lines thick; its copy and its testIDs live in `src/*-screen.tsx`. So
+`sourceWithImports` follows relative imports from the route file, depth-first,
+once each, stopping at aliased packages — their testIDs belong to the
+primitives, not to the screen. The block list is then checked as an ordering:
+`today-week`, `today-pins`, `today-appointments`, `today-progress` must appear
+in that sequence. The first draft of this manifest had `today-pins` after
+`today-appointments`; the harness caught the lie before a reviewer could.
+
+**Tests.** Twenty-six, and every rule has a failing example: a duplicate route,
+a page missing from the manifest, an invented route, a class with no reason, a
+web-only row that still names a phone route, a full row with no phone file or no
+blocks, a block that is absent, a block that is out of order, a module cycle, an
+import that does not resolve, and a malformed manifest in eight shapes.
+`packages/parity`: **100%** statements, branches, functions and lines.
+
+**What it does not prove.** Parity here means the same screen exists with the
+same named blocks in the same order — not that the phone's pixels match the
+site's. No simulator ran, so the same gap as §83 applies: structure, roles and
+copy are tested; layout is not. `/week` and `/onboarding` are recorded as
+stand-ins rather than full parity, so the harness cannot report success for them
+until a later issue replaces them.
+
+## 85. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.
