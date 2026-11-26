@@ -9,6 +9,18 @@ changelog written after the fact from memory is a changelog nobody can trust.
 
 ## Unreleased
 
+### Sign in with Google and Apple, on the phone (#158)
+
+- `DELETE /api/auth/native/session` revokes the bearer session a phone holds,
+  idempotently and with no cookie involved.
+- The phone's `signIn`, `exchange`, `restoreSession` and `signOut` live in a
+  port-based module over `expo-secure-store`; a refused token stays signed out
+  and silent, and a cancellation is not an error.
+- A session context reads the keychain once at boot, so Together's household
+  calls finally carry a real token and survive a cold start.
+- The `/signin` skeleton is now the shared card: Google always, Apple on iOS
+  only, and an Account row in Settings that opens it.
+
 ### Settings, updates, appointments, history and reads, on the phone (#157)
 
 - **The last page-local models moved into `@ninetothree/domain`.** `read`,

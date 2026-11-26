@@ -316,6 +316,15 @@ is the ports: `Share.share` for the two exports (a text share, not a file),
 `Linking` for publisher pages, and the existing `dial()` for the crisis and
 support numbers.
 
+**A phone signs in with the session the browser already uses.** #158 added the
+two providers and the store, not a second account system: the same
+`/api/auth/native/exchange` route and the same `sessions` row. The logic is a
+module over four ports — a secure store, a fetch, a base URL, two provider
+functions — so it is tested without a device, and the only Expo code is an
+adapter and a promise bridge. Signing out needed one new route, because a phone
+has no cookie to clear. Foldables are untouched here; the card is a column and
+stretches.
+
 ## 8. Cost, and what could go wrong
 
 | Work                                                                               | Size      | Risk                                                                     |

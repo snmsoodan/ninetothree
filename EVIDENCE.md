@@ -3287,6 +3287,58 @@ own; they are typechecked and exercised only through the models and screens they
 call. And the account, household, invite and data cards that the web's settings
 page carries are deliberately absent from the phone.
 
-## 83. How this file is maintained
+## 83. Device sign-in, and a session that survives a cold start (issue #158)
+
+The website has signed people in since its first deploy. The phone has not: every
+screen it drew was either local or read-only, so `createHousehold` was handed a
+`null` token and made no request at all. This issue closes that gap without
+touching the guide a signed-out parent sees.
+
+**One route for signing out.** A browser's sign-out is a NextAuth route that also
+clears a cookie. A phone has no cookie, only the row it was given in `sessions`,
+so `DELETE /api/auth/native/session` deletes exactly that row. It is deliberately
+idempotent and answers `204` even without a token: an expired session, a deleted
+session and a network that is about to lose the response are the same thing to
+the person pressing the button, and the app deletes its own copy regardless.
+
+**The logic, apart from the device.** `apps/mobile/src/auth.ts` holds no Expo
+module. It takes a `SecureStorePort`, a `fetch`, a base URL and two provider
+functions, which is why its tests never touch a keychain:
+
+| Function         | What it decides                                                                                              |
+| ---------------- | ------------------------------------------------------------------------------------------------------------ |
+| `restoreSession` | Parses the stored blob with `NativeSession`; an expired or unreadable one is deleted, and `null` is returned |
+| `exchange`       | Posts `{provider,idToken}`, and treats a non-2xx, an unparsable body and a thrown fetch as the same refusal  |
+| `signIn`         | A closed prompt is `cancelled`; a refused token is `refused`; only a parsed session is written to the store  |
+| `signOut`        | Calls the revoke route when a token exists, then deletes the local credential even if the call failed        |
+
+**What reaches the screen.** `expo-auth-session`'s Google hook returns its result
+as a render, so `auth-providers.ts` parks the resolver in a ref and settles it on
+the response; Apple's sheet is already a promise. `session-context.tsx` reads the
+keychain once at boot, inside the same gate that already holds the splash, and
+exposes `{session, token, setSession}`. `together.tsx` now passes that token to
+`createHousehold`; signed out it is still `null`, still no request, still the
+signed-out page. Settings gained an Account row to `/signin`, which replaces the
+skeleton `#158` had left there.
+
+**Tests.** Fourteen added: eight on `auth.ts` and six on the card. They cover the
+token → exchange → stored session path with the provider and the route mocked, a
+refused token leaving both the store and the UI empty, a cancellation never
+calling the exchange, a malformed response body, an expired and an unreadable
+stored session being forgotten, a sign-out that survives a failed revoke call,
+and the card hiding Apple where it cannot run. `apps/mobile`: **429 tests in 33
+files**, statements and lines **99.36%**, functions **95.41%**, branches **91.42%**
+— all thresholds (95/95/95/91) met.
+
+**What it does not prove.** No simulator ran: Xcode's licence is unaccepted and
+there is no Android SDK on this machine, so the card is proved by roles, labels
+and copy, not pixels. No real Google or Apple dialog was opened, and the Google
+client IDs are read from unset `EXPO_PUBLIC_*` variables — a build without them
+renders the button and the prompt resolves to `null`, which is a cancellation.
+The context's restore is exercised through `restoreSession` with a memory store,
+not through `expo-secure-store` on a device. Biometric lock and email magic links
+are out of scope, as the issue says.
+
+## 84. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.

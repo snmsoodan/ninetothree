@@ -43,6 +43,8 @@ export interface SettingsHandlers {
   onReading: (patch: Partial<ReadingPrefs>) => void;
   onOpenHistory: () => void;
   onErase: () => void;
+  /** Absent on a shell that has no sign-in yet; present in the app. */
+  onAccount?: () => void;
 }
 
 export interface SettingsProps {
@@ -155,6 +157,18 @@ export function Settings({ model, handlers, testID = "screen-settings" }: Settin
         <Body muted>{model.intro}</Body>
         <Body muted>{model.moment}</Body>
       </View>
+
+      {handlers.onAccount ? (
+        <View style={{ gap: 4 }}>
+          <Heading level={2}>Account</Heading>
+          <LinkRow
+            label="Sign in or out"
+            detail="Google or Apple. Your shelf follows you between devices."
+            onPress={handlers.onAccount}
+            testID="settings-account"
+          />
+        </View>
+      ) : null}
 
       <View style={{ gap: 4 }}>
         <Heading level={2}>{model.dates.heading}</Heading>
