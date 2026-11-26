@@ -3143,6 +3143,75 @@ for the outcome that escalates to 911, not that a phone dials. And the older
 same behaviour `dial` gives when the platform says yes, and moving it belongs to
 a later slice rather than to this one.
 
-## 81. How this file is maintained
+## 81. The shelf and Together, on the phone (issue #156)
+
+The two tabs that are about a person's own list and their household were the
+last pages written in `apps/web/src/components` and nowhere else. `shelfView`
+and the together model moved into `@ninetothree/domain`, the three household
+routes now parse and produce the contract in `@ninetothree/contracts`, and the
+phone draws both pages from the same sentences the browser uses.
+
+**The wire is a contract now, in both directions.** `packages/contracts/src/together.ts`
+is the shape a household is read as, and the shape a job is created from and
+patched with. `GET /api/household/together`, `POST /api/household/jobs` and
+`PATCH /api/household/jobs/[id]` parse their input and validate their output, so
+a field renamed on one side fails a test rather than blanking a page. 47 contract
+tests.
+
+**One shelf, ordered in one place.** `packages/domain/src/shelf.ts` decides what
+a pin is — live, stale, filtered, first, last — and returns the order, the move
+bounds, the empty state, the no-match state and the closing line. The browser's
+`apps/web/src/app/shelf/page.tsx` and the phone's `apps/mobile/src/shelf.ts` both
+call it; the phone adds only the copy the tab needs. 199 domain tests, up from 168.
+
+**One household, described once.** `packages/domain/src/together.ts` owns
+`handableHelp` (reading, watching and asking never reach the shared page),
+`jobSections` (open work above settled work, a verdict rather than a score),
+`sharedLines`, `upcoming`, `appointmentDetail`, `whoIsDoingIt` and every
+`TOGETHER_*` sentence. Six components in `apps/web/src/components` now read
+those instead of their own copies.
+
+**The phone draws the same two pages.** `apps/mobile/src/shelf-screen.tsx` and
+`together-screen.tsx` render headings, badges, the week link, up/down buttons
+only where a move exists, an unpin named for a screen reader, the three job moves
+on open work and only Clear on settled work — the same split `JobList.tsx` makes.
+`apps/mobile/src/household.ts` is the client: a bearer token, the same routes, the
+same parsing, and no request at all when there is no token, because the device
+that has not signed in yet (#158) must not fire one it knows will be refused.
+`HouseholdRead` distinguishes `ready` from `signed-out` from `failed`, so the
+screen can offer sign-in, retry, or nothing, rather than one generic apology.
+
+**A no-week household says so.** The browser had a card for "there is no week to
+show yet"; the phone kept the heading over emptiness. It now renders that card,
+because a household whose dates are not set is not a household with an empty
+list.
+
+**Reorder says the same thing on both screens.** The page keeps both arrows on
+every pin and disables them at the ends, and hides both while a filter is on. The
+phone's first draft hid the arrow that could not act, which made the control
+appear and disappear under a thumb and would have failed the journey test — so it
+now draws the same two arrows, disabled the same way, and goes quiet under a
+filter too.
+
+**48 new tests, 318 in `apps/mobile`.** 6 cover the shelf model and 9 the rendered
+shelf (order, the ends disabled rather than missing, both arrows gone under a
+filter, the week link only for a live action, the unpin's accessible name, the
+filter, the no-match card, the empty shelf, the closing line). 13 cover the together model (the four states, verbs, assign labels, the
+verdict split, empty sections, the injected day formatter, own email only) and 13
+the rendered page (section order, assign, the three job moves, done absent on
+settled work, sign-in versus retry versus loading, the invite). 8 cover the
+household client against a fake fetch: no token means no request, the bearer
+header, a refused payload becoming `failed`, a dropped connection becoming
+`failed`, a blank assignee refused before the wire, and encoded job ids.
+Statements and lines are 99.25%, functions 95.45%, branches 91.62%.
+
+**What it does not prove.** No simulator on this machine, so this is structure,
+roles, accessible names and copy rather than pixels — the same limit as §78 and
+§80. The invite is a `Share.share` call: the test proves the message contains the
+link and the warning that it is shown once, not that a share sheet opens. And
+`apps/mobile/app/(tabs)/together.tsx` still passes `token: null`, so on a device
+today the tab renders its signed-out card; #158 supplies the real token.
+
+## 82. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.

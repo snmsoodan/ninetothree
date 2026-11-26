@@ -1,9 +1,11 @@
 import { render, screen } from "@testing-library/react";
+import type { TogetherSharedItem } from "@ninetothree/contracts";
+import { sharedLines } from "@ninetothree/domain";
 import { describe, expect, it } from "vitest";
 
-import { SharedList, type SharedItem } from "./SharedList";
+import { SharedList } from "./SharedList";
 
-const items: SharedItem[] = [
+const items: TogetherSharedItem[] = [
   {
     itemId: "a",
     title: "Book the glucose test",
@@ -24,19 +26,19 @@ const items: SharedItem[] = [
 
 describe("SharedList", () => {
   it("promises that only the title travels", () => {
-    render(<SharedList items={[]} />);
+    render(<SharedList lines={sharedLines([], undefined)} />);
     expect(screen.getByText("Nothing shared yet.")).toBeInTheDocument();
     expect(screen.getByText(/only the title travels/)).toBeInTheDocument();
   });
 
   it("marks the ones you shared and names the other person", () => {
-    render(<SharedList items={items} otherName="Sam" />);
+    render(<SharedList lines={sharedLines(items, "Sam")} />);
     expect(screen.getByText("Week 28 · shared by you")).toBeInTheDocument();
     expect(screen.getByText("Pinned · from Sam")).toBeInTheDocument();
   });
 
   it("does not invent a name when there is more than one other person", () => {
-    render(<SharedList items={items} />);
+    render(<SharedList lines={sharedLines(items, undefined)} />);
     expect(screen.getByText("Pinned")).toBeInTheDocument();
   });
 });

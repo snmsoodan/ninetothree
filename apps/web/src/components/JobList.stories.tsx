@@ -1,20 +1,22 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
-import { JobList, type Job } from "./JobList";
+import type { TogetherJob } from "@ninetothree/contracts";
+import { jobSections } from "@ninetothree/domain";
+
+import { JobList } from "./JobList";
 
 const names = { u1: "Maya", u2: "Sam", u3: "Priya" };
 
 const meta: Meta<typeof JobList> = {
   title: "App/JobList",
   component: JobList,
-  args: { youId: "u1", names },
 };
 
 export default meta;
 
 type Story = StoryObj<typeof JobList>;
 
-const open: Job = {
+const open: TogetherJob = {
   id: "j1",
   itemId: "pregnancy-w28-glucose-test",
   title: "Book the glucose test",
@@ -25,27 +27,27 @@ const open: Job = {
   doneAt: null,
 };
 
-export const NothingYet: Story = { args: { jobs: [] } };
+function args(jobs: TogetherJob[]) {
+  return { sections: jobSections(jobs, "u1", names), hasJobs: jobs.length > 0 };
+}
 
-export const OneOpen: Story = { args: { jobs: [open] } };
+export const NothingYet: Story = { args: args([]) };
 
-export const Yours: Story = { args: { jobs: [{ ...open, assignedTo: "u1" }] } };
+export const OneOpen: Story = { args: args([open]) };
+
+export const Yours: Story = { args: args([{ ...open, assignedTo: "u1" }]) };
 
 export const Settled: Story = {
-  args: {
-    jobs: [
-      { ...open, status: "done", doneAt: "2026-10-20T10:00:00Z" },
-      { ...open, id: "j2", itemId: "b", title: "Pack the hospital bag", status: "dropped" },
-    ],
-  },
+  args: args([
+    { ...open, status: "done", doneAt: "2026-10-20T10:00:00Z" },
+    { ...open, id: "j2", itemId: "b", title: "Pack the hospital bag", status: "dropped" },
+  ]),
 };
 
 export const ThreeGenerations: Story = {
-  args: {
-    jobs: [
-      open,
-      { ...open, id: "j2", itemId: "b", title: "Collect the prescription", assignedTo: "u3" },
-      { ...open, id: "j3", itemId: "c", title: "Book the glucose test", assignedTo: "u1" },
-    ],
-  },
+  args: args([
+    open,
+    { ...open, id: "j2", itemId: "b", title: "Collect the prescription", assignedTo: "u3" },
+    { ...open, id: "j3", itemId: "c", title: "Book the glucose test", assignedTo: "u1" },
+  ]),
 };

@@ -9,6 +9,32 @@ changelog written after the fact from memory is a changelog nobody can trust.
 
 ## Unreleased
 
+### The shelf and Together, on the phone (#156)
+
+- **The household is a contract, both ways.** `packages/contracts/src/together.ts`
+  describes the payload a household is read as and the body a job is created or
+  patched with; the three household routes parse their input and validate their
+  output, so a renamed field fails a test rather than blanking a page.
+- **The shelf and the shared page are decided in one place.**
+  `packages/domain/src/shelf.ts` owns order, move bounds, stale pins, the filter,
+  the no-match state and the closing line; `packages/domain/src/together.ts` owns
+  `handableHelp`, `jobSections`, `sharedLines`, `upcoming` and every `TOGETHER_*`
+  sentence. Six web components now read them instead of their own copies.
+- **The phone draws both tabs.** `shelf-screen.tsx` and `together-screen.tsx`
+  render the same headings and the same rules: both reorder arrows on every pin,
+  disabled at the ends and hidden under a filter, the week link only for a live
+  action, three job moves on open work and only Clear once settled.
+- **`household.ts` is the bearer client**, with the same routes and the same
+  parsing, and it makes no request at all without a token. `signed-out`, `failed`
+  and `ready` are three different cards, so a partner is offered sign-in, a retry,
+  or the household — not one generic apology.
+- **A no-week household says so**, as the browser does, instead of keeping a
+  heading over emptiness.
+- **Coverage:** 318 tests in `apps/mobile` (48 new), 99.25% statements and lines,
+  95.45% functions, 91.62% branches; 199 domain tests, 47 contract tests. Still no
+  simulator, so this is structure and copy, not pixels — see
+  [`EVIDENCE.md`](EVIDENCE.md) §81.
+
 ### Triage and safety, on the phone (#155)
 
 - **The decision tree and the red-flag list are shared.**

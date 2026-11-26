@@ -5,8 +5,17 @@ import { useSession } from "next-auth/react";
 import { useCallback, useEffect, useState } from "react";
 import { Card, CardBody } from "@ninetothree/ui";
 
+import type { JobStatus, Together } from "@ninetothree/contracts";
+import {
+  TOGETHER_FAILED,
+  TOGETHER_FAILED_BODY,
+  TOGETHER_LOADING,
+  TOGETHER_SIGNED_OUT,
+  TOGETHER_SIGNED_OUT_BODY,
+  TOGETHER_SIGN_IN_ACTION,
+} from "@ninetothree/domain";
+
 import type { HelpItem } from "./HelpThisWeek";
-import type { JobStatus } from "./JobList";
 import { TogetherBody, type TogetherPayload } from "./TogetherBody";
 
 export type { TogetherAppointment, TogetherMember, TogetherPayload } from "./TogetherBody";
@@ -54,7 +63,9 @@ export function PartnerView({ stageId }: PartnerViewProps) {
           setState("failed");
           return;
         }
-        setData((await response.json()) as TogetherPayload);
+        // The route parses this with the contract before sending it, so this is a
+        // narrowing the compiler wants rather than a promise the app is making.
+        setData((await response.json()) as Together);
         setState("ready");
       })
       .catch(() => {
@@ -104,22 +115,20 @@ export function PartnerView({ stageId }: PartnerViewProps) {
   }, []);
 
   if (state === "loading") {
-    return <p className="text-base text-ink-muted">One moment.</p>;
+    return <p className="text-base text-ink-muted">{TOGETHER_LOADING}</p>;
   }
 
   if (state === "signed-out") {
     return (
       <Card tone="sunken">
         <CardBody className="pt-5">
-          <p className="text-base text-ink">Sign in to see this.</p>
-          <p className="mt-1 text-base text-ink-muted">
-            This page is about the people you share the dates with, so it needs to know who you are.
-          </p>
+          <p className="text-base text-ink">{TOGETHER_SIGNED_OUT}</p>
+          <p className="mt-1 text-base text-ink-muted">{TOGETHER_SIGNED_OUT_BODY}</p>
           <Link
             href="/signin?callbackUrl=/together"
             className="mt-3 inline-block text-sm text-ink-muted underline underline-offset-2 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-clay"
           >
-            Sign in
+            {TOGETHER_SIGN_IN_ACTION}
           </Link>
         </CardBody>
       </Card>
@@ -130,8 +139,8 @@ export function PartnerView({ stageId }: PartnerViewProps) {
     return (
       <Card tone="sunken">
         <CardBody className="pt-5">
-          <p className="text-base text-ink">We could not read this just now.</p>
-          <p className="mt-1 text-base text-ink-muted">Reloading the page usually settles it.</p>
+          <p className="text-base text-ink">{TOGETHER_FAILED}</p>
+          <p className="mt-1 text-base text-ink-muted">{TOGETHER_FAILED_BODY}</p>
         </CardBody>
       </Card>
     );

@@ -170,6 +170,9 @@ importers:
       '@ninetothree/content':
         specifier: workspace:*
         version: link:../../packages/content
+      '@ninetothree/contracts':
+        specifier: workspace:*
+        version: link:../../packages/contracts
       '@ninetothree/domain':
         specifier: workspace:*
         version: link:../../packages/domain
@@ -459,6 +462,9 @@ importers:
       '@ninetothree/content':
         specifier: workspace:*
         version: link:../content
+      '@ninetothree/contracts':
+        specifier: workspace:*
+        version: link:../contracts
       '@ninetothree/rules':
         specifier: workspace:*
         version: link:../rules
