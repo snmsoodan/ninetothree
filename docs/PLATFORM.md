@@ -289,6 +289,20 @@ phone also gained a `/safety` screen, since an outcome's "every warning sign"
 button needs somewhere to go, and "Get help now" sits in the header of every
 screen rather than in a sixth tab.
 
+The shelf and the shared household followed (#156), and they are the first slice
+where the phone writes. Reading was one contract; writing is three — a job is
+created, patched and deleted — so `packages/contracts/src/together.ts` now
+describes the body going out as well as the payload coming back, and the routes
+parse both. The shelf's order, move bounds, stale pins and filter were page-local
+on the site, so they moved into `@ninetothree/domain` alongside `jobSections`,
+`sharedLines` and `upcoming`; the site's six household components read them, and
+the phone draws the same two pages from the same decisions — including the rule
+that settled work offers only Clear, that an errand is never handed to nobody,
+and that reorder keeps both arrows on every pin, disabled at the ends and hidden
+under a filter, on both screens. The phone's client (`apps/mobile/src/household.ts`) takes its token as a
+port: with `null` it makes no request at all and says "sign in", which is the
+honest state until #158 stores a real session on the device.
+
 ## 8. Cost, and what could go wrong
 
 | Work                                                                               | Size      | Risk                                                                     |

@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
+import { sharedLines } from "@ninetothree/domain";
+
 import { SharedList } from "./SharedList";
 
 const meta: Meta<typeof SharedList> = {
@@ -30,8 +32,8 @@ const items = [
   },
 ];
 
-export const Empty: Story = { args: { items: [] } };
+export const Empty: Story = { args: { lines: sharedLines([], undefined) } };
 
-export const TwoPeople: Story = { args: { items, otherName: "Sam" } };
+export const TwoPeople: Story = { args: { lines: sharedLines(items, "Sam") } };
 
-export const NoNameForTheOtherPerson: Story = { args: { items } };
+export const NoNameForTheOtherPerson: Story = { args: { lines: sharedLines(items, undefined) } };

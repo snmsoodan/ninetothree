@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "@ninetothree/content": "workspace:*",
+    "@ninetothree/contracts": "workspace:*",
     "@ninetothree/rules": "workspace:*"
   },
   "devDependencies": {

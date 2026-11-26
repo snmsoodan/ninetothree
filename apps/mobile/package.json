@@ -24,6 +24,7 @@
   "dependencies": {
     "@expo/vector-icons": "^15.0.0",
     "@ninetothree/content": "workspace:*",
+    "@ninetothree/contracts": "workspace:*",
     "@ninetothree/domain": "workspace:*",
     "@ninetothree/rules": "workspace:*",
     "@ninetothree/tokens": "workspace:*",

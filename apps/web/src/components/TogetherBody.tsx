@@ -1,59 +1,33 @@
 import Link from "next/link";
 import { Card, CardBody } from "@ninetothree/ui";
+import type { JobStatus, Together } from "@ninetothree/contracts";
+import {
+  TOGETHER_COMING_UP,
+  TOGETHER_INVITE,
+  TOGETHER_NO_APPOINTMENTS,
+  TOGETHER_NO_APPOINTMENTS_BODY,
+  TOGETHER_PRIVACY,
+  TOGETHER_WHO,
+  appointmentDetail,
+  togetherModel,
+} from "@ninetothree/domain";
 
 import { formatDate } from "@/lib/i18n";
 import { HelpThisWeek, type HelpItem } from "./HelpThisWeek";
-import { JobList, type Job, type JobStatus } from "./JobList";
-import { SharedList, type SharedItem } from "./SharedList";
+import { JobList } from "./JobList";
+import { SharedList } from "./SharedList";
 
-export interface TogetherMember {
-  userId: string;
-  role: "parent" | "partner" | "grandparent" | "carer";
-  email: string;
-  name: string | null;
-  isYou: boolean;
-}
-
-export interface TogetherAppointment {
-  id: string;
-  title: string;
-  kind: string | null;
-  dueAt: string | null;
-  who: string | null;
-  location: string | null;
-}
-
-export interface TogetherPayload {
-  id: string;
-  role: TogetherMember["role"];
-  members: TogetherMember[];
-  shared: SharedItem[];
-  jobs: Job[];
-  appointments: TogetherAppointment[];
-  week: {
-    id: string;
-    title: string;
-    subtitle: string | null;
-    body: string | null;
-    mind: string | null;
-    help: HelpItem[];
-  } | null;
-}
-
-function who(member: TogetherMember): string {
-  return member.name?.trim() || member.email;
-}
-
-function formatDay(iso: string): string {
-  return formatDate(iso, { weekday: "short", month: "short", day: "numeric" });
-}
+/** The payload is the contract, so the phone and the browser read one shape. */
+export type TogetherPayload = Together;
+export type { TogetherAppointment, TogetherMember } from "@ninetothree/contracts";
 
 /**
  * The shared page with the data already in hand.
  *
  * Kept apart from the fetching so the design system can show a real household
  * without a database behind it, and so the four sections can be read in one
- * place.
+ * place. Every decision about who is named, what is open and what is settled
+ * comes from `togetherModel`, which the phone renders from as well.
  */
 export interface TogetherBodyProps {
   data: TogetherPayload;
@@ -63,61 +37,57 @@ export interface TogetherBodyProps {
 }
 
 export function TogetherBody({ data, onAssign, onJobStatus, onJobRemove }: TogetherBodyProps) {
-  const others = data.members.filter((member) => !member.isYou);
-  // Only name the other person when there is exactly one of them; with two,
-  // "from Sam" would be a guess.
-  const otherName = others.length === 1 ? who(others[0]!) : undefined;
-  const upcoming = data.appointments.filter((appointment) => appointment.dueAt);
-  const you = data.members.find((member) => member.isYou);
-  const names = Object.fromEntries(data.members.map((member) => [member.userId, who(member)]));
+  const model = togetherModel(data);
+  const to = data.members.find((member) => !member.isYou)?.userId;
 
   return (
     <div className="space-y-8">
       <HelpThisWeek
         week={data.week}
         onAssign={
-          otherName && onAssign
-            ? (item) =>
-                onAssign(item, others[0]!.userId, data.week?.id ?? null, data.week?.title ?? null)
+          model.canAssign && onAssign && to
+            ? (item) => onAssign(item, to, data.week?.id ?? null, data.week?.title ?? null)
             : undefined
         }
-        assignTo={otherName}
+        assignTo={model.otherName}
       />
 
       <JobList
-        jobs={data.jobs}
-        youId={you?.userId ?? ""}
-        names={names}
+        sections={model.jobs}
+        hasJobs={model.hasJobs}
         onStatus={onJobStatus}
         onRemove={onJobRemove}
       />
 
-      <SharedList items={data.shared} otherName={otherName} />
+      <SharedList lines={model.shared} />
 
       <section aria-labelledby="coming-up-heading">
         <h2 id="coming-up-heading" className="font-display text-xl text-ink">
-          Coming up
+          {TOGETHER_COMING_UP}
         </h2>
-        {upcoming.length === 0 ? (
+        {model.upcoming.length === 0 ? (
           <Card tone="sunken" className="mt-3">
             <CardBody className="pt-5">
-              <p className="text-base text-ink">Nothing in the calendar.</p>
-              <p className="mt-1 text-base text-ink-muted">
-                Appointments you add on the appointments page show up here for everyone.
-              </p>
+              <p className="text-base text-ink">{TOGETHER_NO_APPOINTMENTS}</p>
+              <p className="mt-1 text-base text-ink-muted">{TOGETHER_NO_APPOINTMENTS_BODY}</p>
             </CardBody>
           </Card>
         ) : (
           <ul className="mt-3 space-y-2">
-            {upcoming.map((appointment) => (
+            {model.upcoming.map((appointment) => (
               <li key={appointment.id}>
                 <Card tone="sunken">
                   <CardBody className="py-4">
                     <p className="text-base text-ink">{appointment.title}</p>
                     <p className="mt-0.5 text-sm text-ink-faint">
-                      {formatDay(appointment.dueAt!)}
-                      {appointment.who ? ` · ${appointment.who}` : ""}
-                      {appointment.location ? ` · ${appointment.location}` : ""}
+                      {appointmentDetail(
+                        appointment,
+                        formatDate(appointment.dueAt, {
+                          weekday: "short",
+                          month: "short",
+                          day: "numeric",
+                        }),
+                      )}
                     </p>
                   </CardBody>
                 </Card>
@@ -129,18 +99,18 @@ export function TogetherBody({ data, onAssign, onJobStatus, onJobRemove }: Toget
 
       <section aria-labelledby="who-heading">
         <h2 id="who-heading" className="font-display text-xl text-ink">
-          Who is here
+          {TOGETHER_WHO}
         </h2>
         <ul className="mt-3 space-y-2">
-          {data.members.map((member) => (
+          {model.members.map((member) => (
             <li key={member.userId}>
               <Card tone="sunken">
                 <CardBody className="py-4">
                   <p className="text-base text-ink">
-                    {member.isYou ? "You" : who(member)}
+                    {member.label}
                     <span className="text-ink-faint"> · {member.role}</span>
                   </p>
-                  {member.isYou && member.name ? (
+                  {member.email ? (
                     <p className="mt-0.5 text-sm text-ink-faint">{member.email}</p>
                   ) : null}
                 </CardBody>
@@ -149,12 +119,12 @@ export function TogetherBody({ data, onAssign, onJobStatus, onJobRemove }: Toget
           ))}
         </ul>
         <p className="mt-3 text-sm text-ink-faint">
-          Notes, mood answers and anything you have not shared stay with the person who wrote them.{" "}
+          {TOGETHER_PRIVACY}{" "}
           <Link
             href="/settings"
             className="underline underline-offset-2 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-clay"
           >
-            Invite someone
+            {TOGETHER_INVITE}
           </Link>
         </p>
       </section>

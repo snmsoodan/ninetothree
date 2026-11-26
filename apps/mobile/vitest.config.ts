@@ -27,11 +27,14 @@ export default defineConfig({
     coverage: {
       provider: "v8",
       include: [
+        "src/household.ts",
         "src/routes.ts",
         "src/storage.ts",
         "src/boot.ts",
         "src/library.ts",
         "src/library-screen.tsx",
+        "src/shelf.ts",
+        "src/shelf-screen.tsx",
         "src/search.ts",
         "src/search-screen.tsx",
         "src/safety.ts",
@@ -42,6 +45,8 @@ export default defineConfig({
         "src/triage-screen.tsx",
         "src/week.ts",
         "src/week-screen.tsx",
+        "src/together.ts",
+        "src/together-screen.tsx",
         "src/week-share.ts",
       ],
       /**

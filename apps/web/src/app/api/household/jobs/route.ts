@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { CreateJobRequest } from "@ninetothree/contracts";
 import { assignJob, listJobs } from "@ninetothree/db";
 
 import { getDb } from "@/lib/auth/db";
@@ -30,23 +31,16 @@ export async function POST(request: Request) {
   const userId = session?.user?.id;
   if (!userId) return NextResponse.json({ error: "signed out" }, { status: 401 });
 
-  const body = (await request.json().catch(() => null)) as {
-    itemId?: unknown;
-    title?: unknown;
-    packId?: unknown;
-    packTitle?: unknown;
-    assignedTo?: unknown;
-  } | null;
-
-  const itemId = typeof body?.itemId === "string" ? body.itemId : "";
-  const title = typeof body?.title === "string" ? body.title : "";
-  const assignedTo = typeof body?.assignedTo === "string" ? body.assignedTo : "";
-  if (!itemId || !title || !assignedTo) {
+  // The phone sends this body too, so the shape is the contract's rather than a
+  // list of `typeof` checks that a second client could quietly disagree with.
+  const parsed = CreateJobRequest.safeParse(await request.json().catch(() => null));
+  if (!parsed.success) {
     return NextResponse.json(
       { error: "itemId, title and assignedTo are required" },
       { status: 400 },
     );
   }
+  const { itemId, title, assignedTo } = parsed.data;
 
   const { sql } = await getDb();
   const scope = await ensureScope(sql, userId);
@@ -56,8 +50,8 @@ export async function POST(request: Request) {
       itemId,
       title,
       assignedTo,
-      stagePackId: typeof body?.packId === "string" ? body.packId : null,
-      packTitle: typeof body?.packTitle === "string" ? body.packTitle : null,
+      stagePackId: parsed.data.packId ?? null,
+      packTitle: parsed.data.packTitle ?? null,
     });
     return NextResponse.json({ job });
   } catch {
