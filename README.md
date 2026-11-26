@@ -347,6 +347,12 @@ same 360, 600 and 840 on both clients, a half-open window stacks its panes and
 puts the primary action on top, and a five-width matrix draws Today, Week,
 Library and Triage to show nothing pressable lands on the crease.
 
+Push is the last delivery piece (#161): a pack may carry two lines of lock-screen
+text, and `sendPackPush` puts them through the same `shouldSend` gate as email
+before handing them to a per-platform transport. One row per install, removed
+on sign-out; the browser has no push channel, so #161 is intentionally not a
+parity item.
+
 **The database is tested against a real Postgres, in the test process, with no container.** `packages/db` holds the schema and the migrations. There is no Docker in this environment, so `testcontainers` was not an option; the tests run against **PGlite**, which is Postgres compiled to WebAssembly. It is not an emulation — the same parser, the same constraint checks, the same `information_schema` — so the migration is exercised for real and the suite has no external service to flake on. Migrations are hand-written pairs of `NNNN_name.up.sql` and `NNNN_name.down.sql`, because the acceptance criterion asks for a down and `drizzle-kit generate` is forward-only. A test compares the live database against the Drizzle schema column by column, and the check constraints, foreign keys and indexes by name, so the hand-written SQL cannot drift from the typed schema. `packages/db/SCHEMA.md` is the reference, including the ten places where the shipped code and `ARCHITECTURE.md` disagreed.
 
 **A cross-household read is impossible by construction, and that is two things, not one.** `packages/db/src/scope.ts` exports a `Scope` with a brand that is never exported, so it cannot be built from an object literal — the only way to get one is `scopeFor(db, userId)`, which reads the membership out of the database. Every repository function takes a `Scope` first and none of them accepts a bare `household_id` or `user_id`, so there is no parameter to pass the wrong one through. Underneath that, `0002_rls` turns on row-level security for the eleven tables that hold something about a person. The tests prove the second half by connecting as an ordinary role and running `select ... from pregnancies` with **no `where` clause at all**: one row comes back, not two. That test also documents a deployment requirement — a superuser bypasses every policy, so the application must not connect as the table owner or the policies are decorative.

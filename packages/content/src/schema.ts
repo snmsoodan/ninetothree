@@ -260,6 +260,16 @@ export const StagePack = z
     title: z.string().min(1).max(80),
     /** One line under the title. Sets the tone for the whole week. */
     subtitle: z.string().max(160).optional(),
+    /**
+     * The same week as a lock-screen line. Optional: a pack may have nothing
+     * that belongs on a phone, and silence is better than a reminder to read.
+     */
+    push: z
+      .object({
+        title: z.string().min(1).max(80),
+        body: z.string().min(1).max(180),
+      })
+      .optional(),
 
     baby: z
       .object({

@@ -25,3 +25,4 @@ export {
   type AccountExport,
   type DeletionStatus,
 } from "./account";
+export * from "./devices";

@@ -40,29 +40,30 @@ guarantees is that no table of ours survives it.
 
 ## The tables
 
-Nineteen, in dependency order.
+Twenty, in dependency order.
 
-| Table                 | Holds                                                                                       |
-| --------------------- | ------------------------------------------------------------------------------------------- |
-| `users`               | One row per person. Email is `citext`, so `A@B.com` and `a@b.COM` are the same account.     |
-| `households`          | The unit a subscription and a set of appointments belong to.                                |
-| `household_members`   | Who is in a household, and as what.                                                         |
-| `pregnancies`         | A due date, and whether it is still active.                                                 |
-| `children`            | A birth date, and whether the age should be corrected for prematurity.                      |
-| `stage_packs`         | The published content. `payload` is the whole validated pack as JSON.                       |
-| `content_sources`     | Where each pack's claims come from, one row per source.                                     |
-| `link_catalogue`      | The 251 places we send people, with the domains they serve and when they were last checked. |
-| `stage_progress`      | Whether a parent has finished a week, and whether they said so or the steps did.            |
-| `item_state`          | Everything a parent did to one action: done, skipped, snoozed, pinned, noted, chosen.       |
-| `appointments`        | What a parent typed. The generated schedule is derived from the due date and never stored.  |
-| `reminders`           | A time to send something, and whether it has been sent.                                     |
-| `subscriptions`       | The Stripe ids and the plan.                                                                |
-| `feature_flags`       | A key, a boolean, and an optional payload.                                                  |
-| `content_events`      | Append-only. What was shown, what was opened, what was skipped.                             |
-| `accounts`            | One row per OAuth identity. Google and Apple land here.                                     |
-| `sessions`            | One row per signed-in browser. Deleting the row signs that browser out.                     |
-| `verification_tokens` | A magic link that has been sent and not yet used. Holds a hash, never the token.            |
-| `auth_attempts`       | When each address last asked for a link. The rate limiter reads it.                         |
+| Table                 | Holds                                                                                            |
+| --------------------- | ------------------------------------------------------------------------------------------------ |
+| `users`               | One row per person. Email is `citext`, so `A@B.com` and `a@b.COM` are the same account.          |
+| `households`          | The unit a subscription and a set of appointments belong to.                                     |
+| `household_members`   | Who is in a household, and as what.                                                              |
+| `pregnancies`         | A due date, and whether it is still active.                                                      |
+| `children`            | A birth date, and whether the age should be corrected for prematurity.                           |
+| `stage_packs`         | The published content. `payload` is the whole validated pack as JSON.                            |
+| `content_sources`     | Where each pack's claims come from, one row per source.                                          |
+| `link_catalogue`      | The 251 places we send people, with the domains they serve and when they were last checked.      |
+| `stage_progress`      | Whether a parent has finished a week, and whether they said so or the steps did.                 |
+| `item_state`          | Everything a parent did to one action: done, skipped, snoozed, pinned, noted, chosen.            |
+| `appointments`        | What a parent typed. The generated schedule is derived from the due date and never stored.       |
+| `reminders`           | A time to send something, and whether it has been sent.                                          |
+| `device_tokens`       | One push address per install, scoped to the household, moved on sign-in and deleted on sign-out. |
+| `subscriptions`       | The Stripe ids and the plan.                                                                     |
+| `feature_flags`       | A key, a boolean, and an optional payload.                                                       |
+| `content_events`      | Append-only. What was shown, what was opened, what was skipped.                                  |
+| `accounts`            | One row per OAuth identity. Google and Apple land here.                                          |
+| `sessions`            | One row per signed-in browser. Deleting the row signs that browser out.                          |
+| `verification_tokens` | A magic link that has been sent and not yet used. Holds a hash, never the token.                 |
+| `auth_attempts`       | When each address last asked for a link. The rate limiter reads it.                              |
 
 ## The indexes
 
@@ -215,14 +216,16 @@ needed. That is an assumption about the production target, not a proof of it.
 
 `0002_rls` turns on row-level security for the eleven tables that hold
 something about a person, and leaves the four that hold content alone.
+`0010_device_tokens` adds a twelfth, on the same terms.
 
-| Table                                                         | Policy                   | Who can see a row       |
-| ------------------------------------------------------------- | ------------------------ | ----------------------- |
-| `users`                                                       | `users_self`             | the person themselves   |
-| `household_members`                                           | `household_members_self` | the person themselves   |
-| `households`                                                  | `households_member`      | anyone in the household |
-| `pregnancies`, `children`, `appointments`, `subscriptions`    | `*_household`            | anyone in the household |
-| `stage_progress`, `item_state`, `reminders`, `content_events` | `*_self`                 | the person themselves   |
+| Table                                                         | Policy                    | Who can see a row                                               |
+| ------------------------------------------------------------- | ------------------------- | --------------------------------------------------------------- |
+| `users`                                                       | `users_self`              | the person themselves                                           |
+| `household_members`                                           | `household_members_self`  | the person themselves                                           |
+| `households`                                                  | `households_member`       | anyone in the household                                         |
+| `pregnancies`, `children`, `appointments`, `subscriptions`    | `*_household`             | anyone in the household                                         |
+| `device_tokens`                                               | `device_tokens_household` | anyone in the household; only the person themselves can add one |
+| `stage_progress`, `item_state`, `reminders`, `content_events` | `*_self`                  | the person themselves                                           |
 
 `stage_packs`, `content_sources`, `link_catalogue` and `feature_flags` are
 deliberately unprotected. They are the same for everybody, and a policy on them

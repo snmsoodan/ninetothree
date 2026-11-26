@@ -458,6 +458,34 @@ export const reminders = pgTable(
   ],
 );
 
+/**
+ * One row per install. The token is what APNs and FCM know the phone by; the
+ * household is what every read and every query is scoped to. A phone that
+ * signs into another household moves its row rather than leaving a stale copy
+ * behind, which is why the token is unique on its own.
+ */
+export const deviceTokens = pgTable(
+  "device_tokens",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    householdId: uuid("household_id")
+      .notNull()
+      .references(() => households.id, { onDelete: "cascade" }),
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    token: text("token").notNull().unique(),
+    platform: text("platform").notNull(),
+    createdAt,
+    updatedAt: timestamp("updated_at", { withTimezone: true, mode: "date" }).notNull().defaultNow(),
+  },
+  (t) => [
+    index("device_tokens_household_idx").on(t.householdId),
+    index("device_tokens_user_idx").on(t.userId),
+    check("device_tokens_platform_check", sql`${t.platform} in ('ios', 'android')`),
+  ],
+);
+
 export const subscriptions = pgTable(
   "subscriptions",
   {
@@ -584,6 +612,7 @@ export const TABLES = [
   itemState,
   appointments,
   reminders,
+  deviceTokens,
   subscriptions,
   featureFlags,
   contentEvents,
