@@ -1,9 +1,9 @@
 import Link from "next/link";
-import type { Article } from "@ninetothree/content";
+import { READ_RELATED_HEADING, type RelatedAction } from "@ninetothree/domain";
 
 export interface RelatedActionsProps {
   /** The steps this article explains, already resolved to titles. */
-  actions: { id: string; title: string; packTitle: string; href: string }[];
+  actions: RelatedAction[];
 }
 
 /**
@@ -19,7 +19,7 @@ export function RelatedActions({ actions }: RelatedActionsProps) {
   return (
     <section aria-labelledby="related-heading" className="mt-10">
       <h2 id="related-heading" className="font-display text-xl text-ink">
-        The step this goes with
+        {READ_RELATED_HEADING}
       </h2>
       <ul className="mt-3 space-y-2">
         {actions.map((action) => (
@@ -36,25 +36,4 @@ export function RelatedActions({ actions }: RelatedActionsProps) {
       </ul>
     </section>
   );
-}
-
-/** Resolve an article's `relatedActions` against the packs, dropping ids that no longer exist. */
-export function resolveRelated(
-  article: Article,
-  find: (
-    id: string,
-  ) => { pack: { id: string; title: string }; action: { id: string; title: string } } | undefined,
-): RelatedActionsProps["actions"] {
-  return (article.relatedActions ?? []).flatMap((id) => {
-    const hit = find(id);
-    if (!hit) return [];
-    return [
-      {
-        id: hit.action.id,
-        title: hit.action.title,
-        packTitle: hit.pack.title,
-        href: `/week/${hit.pack.id}#${hit.action.id}-title`,
-      },
-    ];
-  });
 }

@@ -4,10 +4,11 @@ import { notFound } from "next/navigation";
 import { findAction } from "@ninetothree/content";
 import { ARTICLES, getArticle } from "@ninetothree/content/article-registry";
 import { PACKS } from "@ninetothree/content/registry";
+import { READ_BACK, articleView } from "@ninetothree/domain";
 import { AppShell } from "@/components/AppShell";
 import { ArticleBody } from "@/components/ArticleBody";
 import { CrisisFooter } from "@/components/CrisisFooter";
-import { RelatedActions, resolveRelated } from "@/components/RelatedActions";
+import { RelatedActions } from "@/components/RelatedActions";
 import { SourceBlock } from "@/components/SourceBlock";
 
 export function generateStaticParams() {
@@ -36,27 +37,27 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   const article = getArticle(slug);
   if (!article) notFound();
 
-  const related = resolveRelated(article, (id) => findAction(PACKS, id));
+  const view = articleView(article, (id) => findAction(PACKS, id));
 
   return (
     <AppShell stage="Long reads">
       <article className="measure">
         <p className="text-sm text-ink-faint">
           <Link href="/read" className="underline underline-offset-2 hover:text-ink">
-            Long reads
+            {READ_BACK}
           </Link>
         </p>
-        <h1 className="mt-2 font-display text-3xl text-ink">{article.title}</h1>
-        <p className="mt-2 text-lg text-ink-muted">{article.summary}</p>
+        <h1 className="mt-2 font-display text-3xl text-ink">{view.title}</h1>
+        <p className="mt-2 text-lg text-ink-muted">{view.summary}</p>
 
         <div className="mt-8">
           <ArticleBody body={article.body} />
         </div>
 
-        <RelatedActions actions={related} />
+        <RelatedActions actions={view.related} />
 
         <SourceBlock
-          sources={article.sources}
+          sources={view.sources}
           reviewedBy={article.reviewedBy}
           reviewedAt={article.reviewedAt}
           updatedAt={article.updatedAt}
@@ -64,7 +65,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
         {/* A page about how a parent feels carries the numbers, every time,
             whether or not the article happens to mention them. */}
-        {article.domain === "mind" ? <CrisisFooter /> : null}
+        {view.crisis ? <CrisisFooter /> : null}
       </article>
     </AppShell>
   );

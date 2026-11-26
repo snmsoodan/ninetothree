@@ -2,7 +2,7 @@
 
 import { PERSONA_META, type Persona } from "@ninetothree/content/core";
 import { Checkbox, RadioGroup } from "@ninetothree/ui";
-import { PERSONA_ORDER } from "@ninetothree/domain";
+import { HUMOUR_HINT, HUMOUR_LABEL, HUMOUR_NOTE, PERSONA_ORDER } from "@ninetothree/domain";
 
 export interface PersonaSettingsProps {
   persona: Persona;
@@ -35,14 +35,12 @@ export function PersonaSettings({ persona, humour, onPersona, onHumour }: Person
       />
       <div>
         <Checkbox
-          label="A light line now and then"
-          hint="One line at the bottom of the week. Never about the baby, your body, money or feeding."
+          label={HUMOUR_LABEL}
+          hint={HUMOUR_HINT}
           checked={humour}
           onCheckedChange={(checked) => onHumour(checked === true)}
         />
-        <p className="mt-2 text-sm text-ink-faint">
-          Off is a complete answer. It is also off on its own if you have told us about a loss.
-        </p>
+        <p className="mt-2 text-sm text-ink-faint">{HUMOUR_NOTE}</p>
       </div>
     </div>
   );

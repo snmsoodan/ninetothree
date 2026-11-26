@@ -2,16 +2,22 @@
 
 import { Checkbox, RadioGroup } from "@ninetothree/ui";
 import {
+  FREQUENCY_OPTIONS as ALL_FREQUENCIES,
   NOTIFICATION_FREQUENCIES,
+  NOTIFY_EMAIL,
+  NOTIFY_FREQUENCY,
+  NOTIFY_LOSS,
+  NOTIFY_NOTE,
+  NOTIFY_PAUSED,
+  NOTIFY_PUSH,
+  NOTIFY_QUIET,
   type NotificationFrequency,
   type NotificationPrefs,
 } from "@ninetothree/domain";
 
-const FREQUENCY_OPTIONS = [
-  { value: "weekly", label: "Every week", hint: "The week you are in, on the day it starts." },
-  { value: "fortnightly", label: "Every other week", hint: "Two weeks at a time." },
-  { value: "monthly", label: "Once a month", hint: "A month at a glance." },
-].filter((option) => NOTIFICATION_FREQUENCIES.includes(option.value as NotificationFrequency));
+const FREQUENCY_OPTIONS = ALL_FREQUENCIES.filter((option) =>
+  NOTIFICATION_FREQUENCIES.includes(option.value as NotificationFrequency),
+);
 
 export interface NotificationSettingsProps {
   prefs: NotificationPrefs;
@@ -30,29 +36,22 @@ export interface NotificationSettingsProps {
 export function NotificationSettings({ prefs, onChange, loss }: NotificationSettingsProps) {
   return (
     <div className="space-y-6">
-      <p className="text-base text-ink-muted">
-        Nothing is sent yet. This version has no email and no push. These are the settings the first
-        one will use.
-      </p>
+      <p className="text-base text-ink-muted">{NOTIFY_NOTE}</p>
 
-      {loss ? (
-        <p className="text-base text-ink">
-          The guide is paused, so nothing is sent. That stays true whatever is set below.
-        </p>
-      ) : null}
+      {loss ? <p className="text-base text-ink">{NOTIFY_LOSS}</p> : null}
 
       <div className="space-y-4">
         <Checkbox
           id="notify-email"
-          label="Email"
-          hint="One message, at the frequency below."
+          label={NOTIFY_EMAIL.label}
+          hint={NOTIFY_EMAIL.hint}
           checked={prefs.email}
           onCheckedChange={(checked) => onChange({ email: checked === true })}
         />
         <Checkbox
           id="notify-push"
-          label="Push"
-          hint="An appointment tomorrow, and a recall on something you pinned or chose."
+          label={NOTIFY_PUSH.label}
+          hint={NOTIFY_PUSH.hint}
           checked={prefs.push}
           onCheckedChange={(checked) => onChange({ push: checked === true })}
         />
@@ -61,7 +60,7 @@ export function NotificationSettings({ prefs, onChange, loss }: NotificationSett
       <div>
         <RadioGroup
           name="notify-frequency"
-          label="How often"
+          label={NOTIFY_FREQUENCY}
           value={prefs.frequency}
           onValueChange={(value) => onChange({ frequency: value as NotificationFrequency })}
           options={FREQUENCY_OPTIONS}
@@ -71,8 +70,8 @@ export function NotificationSettings({ prefs, onChange, loss }: NotificationSett
       <div className="space-y-4">
         <Checkbox
           id="notify-quiet"
-          label="Keep it quiet overnight"
-          hint="Push waits until 8am. Email is not held."
+          label={NOTIFY_QUIET.label}
+          hint={NOTIFY_QUIET.hint}
           checked={prefs.quietFrom !== prefs.quietTo}
           onCheckedChange={(checked) =>
             onChange(
@@ -82,8 +81,8 @@ export function NotificationSettings({ prefs, onChange, loss }: NotificationSett
         />
         <Checkbox
           id="notify-paused"
-          label="Pause everything"
-          hint="Nothing is sent until you turn this back on."
+          label={NOTIFY_PAUSED.label}
+          hint={NOTIFY_PAUSED.hint}
           checked={prefs.paused}
           onCheckedChange={(checked) => onChange({ paused: checked === true })}
         />

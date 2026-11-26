@@ -1,32 +1,19 @@
 "use client";
 
+import {
+  HISTORY_COMPLETE,
+  HISTORY_NOTHING,
+  HISTORY_NOTHING_BODY,
+  HISTORY_REASON,
+  HISTORY_RETIRED,
+  formatDay,
+  weekSummary,
+} from "@ninetothree/domain";
+import type { History, HistoryAction } from "@ninetothree/domain";
 import { Badge, Card, CardBody } from "@ninetothree/ui";
-import type { History, HistoryAction, HistoryWeek } from "@/lib/history";
 
 export interface HistoryListProps {
   history: History;
-}
-
-const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
-/**
- * Hand-rolled, not `Intl`. `Intl.DateTimeFormat` can resolve differently on
- * the server and the client, which produces a hydration mismatch and a visible
- * re-render. A month table cannot disagree with itself.
- */
-export function formatDay(iso: string): string {
-  const date = new Date(iso);
-  if (Number.isNaN(date.getTime())) return "";
-  // getUTCMonth is 0-11 and MONTHS has twelve entries, so the lookup always hits.
-  const month = MONTHS[date.getUTCMonth()] as string;
-  return `${month} ${date.getUTCDate()}`;
-}
-
-function summary(week: HistoryWeek): string {
-  const parts: string[] = [];
-  if (week.done > 0) parts.push(`${week.done} done`);
-  if (week.skipped > 0) parts.push(`${week.skipped} skipped`);
-  return parts.join(", ");
 }
 
 function Row({ action }: { action: HistoryAction }) {
@@ -34,13 +21,12 @@ function Row({ action }: { action: HistoryAction }) {
     <div className="flex items-start justify-between gap-3">
       <div className="min-w-0">
         <p className="text-base text-ink">{action.title}</p>
-        {action.retired ? (
-          <p className="mt-0.5 text-sm text-ink-faint">
-            This step is no longer in the guide. What you did is still here.
-          </p>
-        ) : null}
+        {action.retired ? <p className="mt-0.5 text-sm text-ink-faint">{HISTORY_RETIRED}</p> : null}
         {action.reason ? (
-          <p className="mt-0.5 text-sm text-ink-faint">You said: {action.reason}</p>
+          <p className="mt-0.5 text-sm text-ink-faint">
+            {HISTORY_REASON}
+            {action.reason}
+          </p>
         ) : null}
       </div>
       <div className="flex shrink-0 items-center gap-2">
@@ -64,11 +50,8 @@ export function HistoryList({ history }: HistoryListProps) {
     return (
       <Card tone="sunken">
         <CardBody className="pt-5">
-          <p className="text-base text-ink">Nothing recorded yet.</p>
-          <p className="mt-1 text-base text-ink-muted">
-            When you mark something done or skip it, it lands here. Nothing is recorded until you
-            say so.
-          </p>
+          <p className="text-base text-ink">{HISTORY_NOTHING}</p>
+          <p className="mt-1 text-base text-ink-muted">{HISTORY_NOTHING_BODY}</p>
         </CardBody>
       </Card>
     );
@@ -85,11 +68,9 @@ export function HistoryList({ history }: HistoryListProps) {
             <h2 id={`history-${week.packId}`} className="font-display text-xl text-ink">
               {week.packTitle}
             </h2>
-            <p className="text-sm text-ink-faint tabular">{summary(week)}</p>
+            <p className="text-sm text-ink-faint tabular">{weekSummary(week)}</p>
           </div>
-          {week.complete ? (
-            <p className="mt-1 text-sm text-sage">Everything in this week is accounted for.</p>
-          ) : null}
+          {week.complete ? <p className="mt-1 text-sm text-sage">{HISTORY_COMPLETE}</p> : null}
           <ul className="mt-3">
             {week.actions.map((action) => (
               <li key={action.id} className="border-t border-line py-3 first:border-t-0 first:pt-0">

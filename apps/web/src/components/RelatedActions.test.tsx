@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { RelatedActions, resolveRelated } from "./RelatedActions";
+import { relatedActions } from "@ninetothree/domain";
+import { RelatedActions } from "./RelatedActions";
 import type { Article } from "@ninetothree/content";
 
 const ACTIONS = [
@@ -36,13 +37,13 @@ describe("RelatedActions", () => {
   });
 });
 
-describe("resolveRelated", () => {
+describe("relatedActions", () => {
   const article = {
     relatedActions: ["w28-glucose", "w8-dental"],
   } as unknown as Article;
 
   it("resolves an id to the step's title, week and anchor", () => {
-    const resolved = resolveRelated(article, (id) =>
+    const resolved = relatedActions(article, (id) =>
       id === "w28-glucose"
         ? {
             pack: { id: "pregnancy-w28", title: "Week 28" },
@@ -61,11 +62,11 @@ describe("resolveRelated", () => {
   });
 
   it("drops an id that no longer exists rather than linking nowhere", () => {
-    const resolved = resolveRelated(article, () => undefined);
+    const resolved = relatedActions(article, () => undefined);
     expect(resolved).toEqual([]);
   });
 
   it("handles an article with no related actions", () => {
-    expect(resolveRelated({} as Article, () => undefined)).toEqual([]);
+    expect(relatedActions({} as Article, () => undefined)).toEqual([]);
   });
 });

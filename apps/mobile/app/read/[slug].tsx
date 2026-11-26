@@ -1,6 +1,9 @@
-import { useLocalSearchParams } from "expo-router";
+import { useCallback, useMemo } from "react";
+import { Linking } from "react-native";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { Body, Heading, Screen } from "@ninetothree/ui-native";
-import { SkeletonScreen } from "../../src/skeleton-screen";
+import { ReadArticle, type ReadHandlers } from "../../src/read-screen";
+import { readArticleView } from "../../src/read";
 
 /** Slugs are lowercase and hyphenated, matching the web's /read/<slug>. */
 function slugOf(value: string | string[] | undefined): string | null {
@@ -10,7 +13,28 @@ function slugOf(value: string | string[] | undefined): string | null {
 
 export default function ReadScreen() {
   const { slug } = useLocalSearchParams<{ slug: string }>();
+  const router = useRouter();
   const clean = slugOf(slug);
+  const model = useMemo(() => readArticleView(clean ?? ""), [clean]);
+
+  const openHref = useCallback(
+    (href: string) => {
+      const [path, hash] = href.split("#");
+      router.push(hash ? `${path}?at=${encodeURIComponent(hash)}` : (path ?? href));
+    },
+    [router],
+  );
+
+  const handlers: ReadHandlers = {
+    onOpenHref: openHref,
+    onOpenUrl: (url) => {
+      void Linking.openURL(url);
+    },
+    onCall: (number) => {
+      void Linking.openURL(`tel:${number.replace(/[^0-9+]/g, "")}`);
+    },
+    onBack: () => router.back(),
+  };
 
   if (!clean) {
     return (
@@ -21,18 +45,5 @@ export default function ReadScreen() {
     );
   }
 
-  return (
-    <SkeletonScreen
-      testID="screen-read"
-      href={`/read/${clean}`}
-      issue={154}
-      title="Reading"
-      subtitle={`An article from the library: ${clean}.`}
-      steps={[
-        "The same words the web serves, from the same pack.",
-        "Citations where the sources are, and a date on every claim.",
-        "Pin it, or send it to the other adult in the house.",
-      ]}
-    />
-  );
+  return <ReadArticle model={model} handlers={handlers} />;
 }

@@ -1,7 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import { HistoryList, formatDay } from "./HistoryList";
-import type { History, HistoryAction, HistoryWeek } from "@/lib/history";
+import { formatDay } from "@ninetothree/domain";
+import { HistoryList } from "./HistoryList";
+import type { History, HistoryAction, HistoryWeek } from "@ninetothree/domain";
 
 function action(overrides: Partial<HistoryAction> = {}): HistoryAction {
   return {

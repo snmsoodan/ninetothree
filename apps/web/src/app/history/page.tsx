@@ -7,7 +7,7 @@ import { PACK_INDEX } from "@ninetothree/content/pack-index";
 import { AppShell } from "@/components/AppShell";
 import { ExportButtons } from "@/components/ExportButtons";
 import { HistoryList } from "@/components/HistoryList";
-import { buildHistory } from "@/lib/history";
+import { buildHistory, historyLine } from "@ninetothree/domain";
 import { useAppState, useHydrated } from "@/lib/store";
 
 export default function HistoryPage() {
@@ -29,13 +29,7 @@ export default function HistoryPage() {
     <AppShell stage="History">
       <div className="measure">
         <h1 className="font-display text-3xl text-ink">Your history</h1>
-        <p className="mt-2 text-base text-ink-muted">
-          {history.total === 0
-            ? "Nothing recorded yet. This fills in as you go."
-            : `${history.total} step${history.total === 1 ? "" : "s"} across ${weeks} week${
-                weeks === 1 ? "" : "s"
-              }. Nothing here expires.`}
-        </p>
+        <p className="mt-2 text-base text-ink-muted">{historyLine(history.total, weeks)}</p>
 
         <div className="mt-4">
           <ExportButtons state={state} history={history} />

@@ -3212,6 +3212,81 @@ link and the warning that it is shown once, not that a share sheet opens. And
 `apps/mobile/app/(tabs)/together.tsx` still passes `token: null`, so on a device
 today the tab renders its signed-out card; #158 supplies the real token.
 
-## 82. How this file is maintained
+## 82. Settings, updates, appointments, history and reads, on the phone (issue #157)
+
+The five pages a parent opens when they are not following a week are now on the
+phone, and none of them carries its own copy of a decision. The last page-local
+models on the site — the settings copy, the history rows, the appointment
+schedule and its calendar file, the updates scope and the article parser and
+sources — moved into `@ninetothree/domain` first. The web pages import them, the
+phone imports them, and only the drawing differs. `apps/web/src/lib/export.ts`
+was deleted outright: `ExportButtons` now builds its JSON and CSV from
+`buildExport`, `toJson` and `toCsv`, so the history export cannot say one thing in
+a browser and another in a share sheet.
+
+**Settings share every word.** `packages/domain/src/settings.ts` owns the
+headings, the explanations, the status and persona options, the notification
+frequency choices, the three reading preferences and the erase dialog.
+`apps/mobile/src/settings.ts` adds only the current values from a state;
+`settings-screen.tsx` draws them with a native `Toggle` (a `Pressable` with
+`accessibilityRole="switch"`), the shared `RadioGroup` and `Chip`, and a `Sheet`
+for the confirm. The profile card is read-only on the phone on purpose: editing
+it is the web's account flow, and this issue's scope is the quiet settings that
+belong on a device.
+
+**History is the same record, exported the same way.** `buildHistory` decides
+order, the day label, the status word, the reason and the retired line, and
+`buildExport` produces the same six-column CSV the site downloads. The phone
+draws pinned cards, then week cards with a complete badge, then every row as a
+`LinkRow` with its day and reason. The export button shares the CSV text through
+the system sheet.
+
+**Appointments own the grid, not the calendar.** `scheduleItems`, `firstNowIndex`
+and `buildIcs` moved into `packages/domain/src/appointments.ts`, so the phone
+marks the first open window with the same sage badge the web does and hands the
+same `.ics` body to `Share.share`. Only an appointment the parent typed gets
+edit and delete; a computed milestone does not pretend to be editable.
+
+**Updates keeps the registers honest.** `updatesModel` already decided which
+recalls apply, why each one reached this parent and when the registers were last
+checked; the phone's `fetchFeed` reads the same `/api/updates` payload through
+the `RecallFeed` contract, falls back to the curated list when the request fails
+or the body does not parse, and never presents the fallback as live. Severity is
+a `Badge`, the publisher and the report link are `LinkRow`s, and the empty card
+appears only when there is genuinely nothing, not while the request is in
+flight.
+
+**A read is one article parsed once.** `articleView`, `articleBlocks` and
+`readIndex` moved into `packages/domain/src/read.ts`, and both surfaces resolve
+related actions through `findAction(PACKS, id)`, so a link in an article points
+at a real action on either platform. The phone draws headings, paragraphs and
+lists, the review line, the sources with their publisher and kind, and — only
+for an article that carries one — the crisis card with both the crisis and
+support numbers dialled through the same `dial()` port the safety screen uses.
+
+**31 tests added, 415 in `apps/mobile`.** 9 cover the settings model and 18 the
+rendered page (every status, date field, persona, humour, notification toggle,
+frequency, quiet window, pause, three reading radios, history link, erase and
+its cancel). 10 cover the updates model and 8 the screen (registers, severity,
+the reason line, every publisher, the check link, the empty card, report).
+10 cover appointments and 10 the screen (coming and past, the sage first window,
+edit and delete only on typed rows, the sheet's save and cancel, the calendar
+button). 5 cover history and 9 the page (pinned and week cards, complete and
+retired rows, the export, opening a week). 6 cover reads and 10 the article
+(headings, lists, sources, related actions, crisis and support calls, the
+missing-slug fallback). Statements and lines are 99.57%, functions 95.41%,
+branches 91.5%.
+
+**What it does not prove.** No simulator on this machine — the Xcode licence is
+unaccepted and there is no Android SDK — so this is structure, roles, accessible
+names and copy rather than pixels, the same limit as §78, §80 and §81. The
+export and calendar buttons call `Share.share` with the CSV and ICS as text: the
+tests prove the body and the filename, not that a sheet opens or that a file
+lands. The six route containers in `apps/mobile/app` have no unit tests of their
+own; they are typechecked and exercised only through the models and screens they
+call. And the account, household, invite and data cards that the web's settings
+page carries are deliberately absent from the phone.
+
+## 83. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.

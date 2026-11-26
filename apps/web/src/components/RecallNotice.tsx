@@ -1,7 +1,8 @@
 "use client";
 
+import { BECAUSE_COPY, SEVERITY_LABEL, announcedOn, type NoticeReason } from "@ninetothree/domain";
+import type { RecallSeverity } from "@ninetothree/content";
 import { Badge, Card, CardBody, TextLink } from "@ninetothree/ui";
-import type { RecallBecause, RecallSeverity } from "@ninetothree/content";
 
 /**
  * `age` is not a match: it is the window saying this applies right now. `list`
@@ -9,10 +10,6 @@ import type { RecallBecause, RecallSeverity } from "@ninetothree/content";
  * dates is reading the list itself, unfiltered, and we say that rather than
  * implying a window we do not have.
  */
-export type NoticeReason = RecallBecause | "age" | "list";
-
-import { formatDate } from "@/lib/i18n";
-
 export interface RecallNoticeItem {
   /** `${recallId}:${matchedOn}`. */
   id: string;
@@ -36,43 +33,11 @@ export interface RecallNoticeProps {
   onDismiss?: (id: string) => void;
 }
 
-const SEVERITY_LABEL: Record<RecallSeverity, string> = {
-  "stop-use": "Stop using it",
-  check: "Check yours",
-  info: "Worth knowing",
-};
-
 const SEVERITY_TONE = {
   "stop-use": "red",
   check: "amber",
   info: "neutral",
 } as const;
-
-/**
- * Why this reached them, in the parent's own terms.
- *
- * The reason is the whole point of the notice: a recall that arrives with no
- * explanation reads as a mailing list. "You pinned this step" is the product
- * saying "I remembered what you told me".
- */
-const BECAUSE_COPY: Record<NoticeReason, string> = {
-  option: "You chose this.",
-  step: "You pinned this step.",
-  keyword: "You pinned a step about this.",
-  age: "Worth knowing at this age.",
-  list: "On the list we keep.",
-};
-
-function announcedOn(iso: string): string {
-  const [year, month, day] = iso.split("-").map(Number);
-  if (!year || !month || !day) return iso;
-  return formatDate(new Date(Date.UTC(year, month - 1, day)), {
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-    timeZone: "UTC",
-  });
-}
 
 /**
  * One recall, for one parent.

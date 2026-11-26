@@ -1,8 +1,8 @@
 "use client";
 
 import { Button } from "@ninetothree/ui";
-import { toCsv, toJson } from "@/lib/export";
-import type { History } from "@/lib/history";
+import { toCsv, toJson } from "@ninetothree/domain";
+import type { History } from "@ninetothree/domain";
 import type { AppState } from "@/lib/store";
 
 export interface ExportButtonsProps {

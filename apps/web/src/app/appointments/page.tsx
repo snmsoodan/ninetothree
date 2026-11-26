@@ -2,10 +2,34 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { appointmentsFor, buildIcs, type DatedAppointment } from "@ninetothree/content";
+import { buildIcs } from "@ninetothree/content";
+import {
+  APPOINTMENTS_ADD,
+  APPOINTMENTS_CALENDAR,
+  APPOINTMENTS_CANCEL,
+  APPOINTMENTS_COMING,
+  APPOINTMENTS_CREATE,
+  APPOINTMENTS_DATE,
+  APPOINTMENTS_EMPTY_COMING,
+  APPOINTMENTS_EMPTY_OWN,
+  APPOINTMENTS_HEADING,
+  APPOINTMENTS_ICS_FILENAME,
+  APPOINTMENTS_INTRO,
+  APPOINTMENTS_LABEL,
+  APPOINTMENTS_NOTE,
+  APPOINTMENTS_OWN,
+  APPOINTMENTS_PAST,
+  APPOINTMENTS_PAST_INTRO,
+  APPOINTMENTS_SAVE,
+  APPOINTMENTS_WHO,
+  calendarLine,
+  icsStamp,
+  scheduleItems,
+  splitSchedule,
+} from "@ninetothree/domain";
 import { Button, Card, CardBody } from "@ninetothree/ui";
 import { AppShell } from "@/components/AppShell";
-import { ScheduleList, type ScheduleItem } from "@/components/ScheduleList";
+import { ScheduleList } from "@/components/ScheduleList";
 import { localDate } from "@/lib/reminders";
 import {
   addAppointment,
@@ -17,13 +41,6 @@ import {
 
 function todayIso(): string {
   return localDate(new Date());
-}
-
-function stamp(): string {
-  return new Date()
-    .toISOString()
-    .replace(/[-:]/g, "")
-    .replace(/\.\d{3}/, "");
 }
 
 interface Draft {
@@ -47,39 +64,16 @@ export default function AppointmentsPage() {
     if (hydrated && !state.onboarded) router.replace("/onboarding");
   }, [hydrated, state.onboarded, router]);
 
-  const generated = useMemo<DatedAppointment[]>(() => {
-    if (!state.dueDate) return [];
-    return appointmentsFor({
-      dueDate: state.dueDate,
-      today,
-      firstBaby: state.profile.firstBaby ?? true,
-    });
-  }, [state.dueDate, state.profile.firstBaby, today]);
-
-  const items = useMemo<ScheduleItem[]>(() => {
-    const own: ScheduleItem[] = state.appointments.map((appointment) => ({
-      id: appointment.id,
-      label: appointment.label,
-      from: appointment.date,
-      to: appointment.date,
-      ...(appointment.who ? { who: appointment.who } : {}),
-      ...(appointment.note ? { note: appointment.note } : {}),
-      status: appointment.date < today ? "past" : appointment.date === today ? "now" : "upcoming",
-      own: true,
-    }));
-    return [...generated, ...own].sort((a, b) => a.from.localeCompare(b.from));
-  }, [generated, state.appointments, today]);
-
-  const coming = items.filter((item) => item.status !== "past");
-  const past = items.filter((item) => item.status === "past").reverse();
+  const items = useMemo(() => scheduleItems(state, today), [state, today]);
+  const { coming, past } = splitSchedule(items);
 
   function download() {
-    const ics = buildIcs(coming, stamp());
+    const ics = buildIcs(coming, icsStamp(new Date()));
     const blob = new Blob([ics], { type: "text/calendar;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement("a");
     anchor.href = url;
-    anchor.download = "nine-to-three-appointments.ics";
+    anchor.download = APPOINTMENTS_ICS_FILENAME;
     anchor.click();
     URL.revokeObjectURL(url);
   }
@@ -112,30 +106,25 @@ export default function AppointmentsPage() {
   return (
     <AppShell stage="Appointments">
       <div className="measure">
-        <h1 className="font-display text-3xl text-ink">Appointments</h1>
-        <p className="mt-2 text-base text-ink-muted">
-          Worked out from your due date, so you are not counting weeks in your head. Add your own
-          and they sit in the same list.
-        </p>
+        <h1 className="font-display text-3xl text-ink">{APPOINTMENTS_HEADING}</h1>
+        <p className="mt-2 text-base text-ink-muted">{APPOINTMENTS_INTRO}</p>
 
         {state.dueDate ? (
           <div className="mt-5 flex flex-wrap items-center gap-3">
             <Button variant="secondary" onClick={download} disabled={coming.length === 0}>
-              Add to calendar
+              {APPOINTMENTS_CALENDAR}
             </Button>
-            <span className="text-sm text-ink-faint">
-              A calendar file with the {coming.length} still to come.
-            </span>
+            <span className="text-sm text-ink-faint">{calendarLine(coming.length)}</span>
           </div>
         ) : null}
 
         <section aria-labelledby="coming-heading" className="mt-8">
           <h2 id="coming-heading" className="font-display text-2xl text-ink">
-            Coming up
+            {APPOINTMENTS_COMING}
           </h2>
           <ScheduleList
             items={coming}
-            emptyCopy="Nothing left on the schedule. If something comes up, add it here."
+            emptyCopy={APPOINTMENTS_EMPTY_COMING}
             onEdit={edit}
             onDelete={removeAppointment}
           />
@@ -144,7 +133,7 @@ export default function AppointmentsPage() {
         <section aria-labelledby="own-heading" className="mt-10">
           <div className="flex items-baseline justify-between gap-3">
             <h2 id="own-heading" className="font-display text-2xl text-ink">
-              Add your own
+              {APPOINTMENTS_OWN}
             </h2>
             {draft ? null : (
               <button
@@ -152,7 +141,7 @@ export default function AppointmentsPage() {
                 onClick={() => setDraft({ ...EMPTY_DRAFT, date: today })}
                 className="rounded-sm px-2 py-1 text-sm text-ink-muted underline underline-offset-2 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-clay"
               >
-                Add an appointment
+                {APPOINTMENTS_ADD}
               </button>
             )}
           </div>
@@ -169,7 +158,7 @@ export default function AppointmentsPage() {
                   <div className="space-y-3">
                     <div>
                       <label htmlFor="appt-label" className="block text-sm text-ink-muted">
-                        What is it
+                        {APPOINTMENTS_LABEL}
                       </label>
                       <input
                         id="appt-label"
@@ -180,7 +169,7 @@ export default function AppointmentsPage() {
                     </div>
                     <div>
                       <label htmlFor="appt-date" className="block text-sm text-ink-muted">
-                        When
+                        {APPOINTMENTS_DATE}
                       </label>
                       <input
                         id="appt-date"
@@ -192,7 +181,7 @@ export default function AppointmentsPage() {
                     </div>
                     <div>
                       <label htmlFor="appt-who" className="block text-sm text-ink-muted">
-                        Who with, if you know
+                        {APPOINTMENTS_WHO}
                       </label>
                       <input
                         id="appt-who"
@@ -203,7 +192,7 @@ export default function AppointmentsPage() {
                     </div>
                     <div>
                       <label htmlFor="appt-note" className="block text-sm text-ink-muted">
-                        Anything to remember
+                        {APPOINTMENTS_NOTE}
                       </label>
                       <input
                         id="appt-note"
@@ -215,14 +204,14 @@ export default function AppointmentsPage() {
                   </div>
                   <div className="mt-4 flex flex-wrap items-center gap-3">
                     <Button type="submit" disabled={draft.label.trim() === "" || draft.date === ""}>
-                      {draft.id ? "Save" : "Add it"}
+                      {draft.id ? APPOINTMENTS_SAVE : APPOINTMENTS_CREATE}
                     </Button>
                     <button
                       type="button"
                       onClick={() => setDraft(null)}
                       className="rounded-sm px-2 py-1 text-sm text-ink-muted underline underline-offset-2 hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-clay"
                     >
-                      Cancel
+                      {APPOINTMENTS_CANCEL}
                     </button>
                   </div>
                 </form>
@@ -231,10 +220,7 @@ export default function AppointmentsPage() {
           ) : state.appointments.length === 0 ? (
             <Card tone="sunken" className="mt-3">
               <CardBody className="pt-5">
-                <p className="text-base text-ink-muted">
-                  Nothing of your own yet. A scan you booked, a class, a pediatrician visit — they
-                  all go here.
-                </p>
+                <p className="text-base text-ink-muted">{APPOINTMENTS_EMPTY_OWN}</p>
               </CardBody>
             </Card>
           ) : null}
@@ -243,11 +229,9 @@ export default function AppointmentsPage() {
         {past.length > 0 ? (
           <section aria-labelledby="past-heading" className="mt-10">
             <h2 id="past-heading" className="font-display text-2xl text-ink">
-              Already past
+              {APPOINTMENTS_PAST}
             </h2>
-            <p className="mt-1 text-sm text-ink-faint">
-              Kept so you can see what you have already done.
-            </p>
+            <p className="mt-1 text-sm text-ink-faint">{APPOINTMENTS_PAST_INTRO}</p>
             <ScheduleList items={past} emptyCopy="" onEdit={edit} onDelete={removeAppointment} />
           </section>
         ) : null}

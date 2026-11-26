@@ -9,6 +9,22 @@ changelog written after the fact from memory is a changelog nobody can trust.
 
 ## Unreleased
 
+### Settings, updates, appointments, history and reads, on the phone (#157)
+
+- **The last page-local models moved into `@ninetothree/domain`.** `read`,
+  `settings`, `history`, `appointments`, `updates` and the export document
+  builders now live there; the web pages import them and `lib/export.ts` was
+  deleted, so the site and the phone cannot disagree about a row, a date, a
+  scope or a CSV column.
+- **Five more screens exist on the phone.** Settings with native switches and
+  radios, updates with the contract-parsed feed and its curated fallback,
+  appointments with the shared scheduler and `.ics` body, history with the same
+  export, and reads with the shared article parser, sources and crisis card.
+- **Both exports are the same text.** The CSV the site downloads and the CSV the
+  phone shares come from `toCsv`; the calendar file comes from `buildIcs`.
+- **415 mobile tests**, 31 added; statements and lines 99.57%, functions 95.41%,
+  branches 91.5%.
+
 ### The shelf and Together, on the phone (#156)
 
 - **The household is a contract, both ways.** `packages/contracts/src/together.ts`

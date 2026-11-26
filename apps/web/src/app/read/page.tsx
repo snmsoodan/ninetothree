@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { articleHref } from "@ninetothree/content";
 import { ARTICLES } from "@ninetothree/content/article-registry";
+import { READ_HEADING, READ_INTRO, readIndex } from "@ninetothree/domain";
 import { AppShell } from "@/components/AppShell";
 
 export const metadata: Metadata = {
@@ -19,28 +19,22 @@ export default function ReadIndexPage() {
   return (
     <AppShell stage="Long reads">
       <div className="measure">
-        <h1 className="font-display text-3xl text-ink">Long reads</h1>
-        <p className="mt-2 text-base text-ink-muted">
-          A week holds three steps and about two hundred characters each. These are the things that
-          do not fit: what a test measures, why a seat faces backwards, what the difference is
-          between a hard fortnight and something that needs help.
-        </p>
+        <h1 className="font-display text-3xl text-ink">{READ_HEADING}</h1>
+        <p className="mt-2 text-base text-ink-muted">{READ_INTRO}</p>
 
         <ul className="mt-8 space-y-6">
-          {ARTICLES.map((article) => (
+          {readIndex(ARTICLES).map((article) => (
             <li key={article.id}>
               <h2 className="font-display text-xl text-ink">
                 <Link
-                  href={articleHref(article)}
+                  href={article.href}
                   className="underline decoration-line-strong decoration-1 underline-offset-[3px] hover:decoration-ink"
                 >
                   {article.title}
                 </Link>
               </h2>
               <p className="mt-1 text-base text-ink-muted">{article.summary}</p>
-              <p className="mt-1 text-sm text-ink-faint tabular">
-                {article.sources.length} source{article.sources.length === 1 ? "" : "s"}
-              </p>
+              <p className="mt-1 text-sm text-ink-faint tabular">{article.sourceLine}</p>
             </li>
           ))}
         </ul>

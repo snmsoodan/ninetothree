@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { TEST_ACTION_INDEX, TEST_PACK_INDEX } from "@/test-fixtures";
-import { buildHistory } from "./history";
-import { CSV_HEADER, buildExport, csvCell, toCsv, toJson } from "./export";
+import { CSV_HEADER, buildExport, buildHistory, csvCell, toCsv, toJson } from "@ninetothree/domain";
 import { EMPTY_STATE, type AppState, type ProgressEntry } from "./store";
 
 const index = TEST_ACTION_INDEX;

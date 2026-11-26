@@ -1,7 +1,7 @@
 "use client";
 
+import { curatedFeed } from "@ninetothree/domain";
 import { useEffect, useState } from "react";
-import { RECALLS } from "@ninetothree/content";
 
 // The schema and the type share a name; the local type comes from this module.
 import { RecallFeed as RecallFeedSchema } from "@ninetothree/contracts";
@@ -22,12 +22,7 @@ import type { RecallFeed } from "./recall-feed";
  * unmounted component.
  */
 
-export const CURATED_FEED: RecallFeed = {
-  recalls: RECALLS,
-  sources: [],
-  live: false,
-  fetchedAt: "",
-};
+export const CURATED_FEED: RecallFeed = curatedFeed();
 
 export interface RecallFeedState {
   feed: RecallFeed;
