@@ -2993,6 +2993,88 @@ phone also has no chooser screen yet, so "Help me choose" opens the web route,
 and the whole-guide bundle has no phone equivalent. Those are deliberate and
 belong to #159 and later, not to this screen.
 
-## 79. How this file is maintained
+## 79. Library and search, on the phone (issue #154)
+
+The web's library is a filter chain over one array and its search is a scorer
+over a generated index. Both are now functions in `@ninetothree/domain`, and the
+web pages import them, so the phone is not a re-implementation — it is the same
+decision drawn a second way.
+
+**The catalogue's logic has one home.** `packages/domain/src/library.ts` owns
+`filterLibrary`, which is the exact chain the web page ran inline: narrow by
+domain, narrow by price, then keep only the links the query found, the query
+scored over the whole catalogue rather than the narrowed list. `libraryGroups`
+puts the survivors under the nine type headings in the type order;
+`guideIndex` and `searchGuide` wrap `buildIndex` and `search` so a caller does
+not need to know which package they came from; `searchResultLine` is the
+citation under a title; `domainChoices` and `costChoices` are the chip lists with
+the chosen value marked.
+
+**Filters and prices stayed as data.** `DOMAIN_LABEL` (13 domains), `COST_LABEL`
+(Free, Cheap, Moderate, Expensive, Cost varies), `TYPE_HEADING` (9 types) and the
+copy for the count, the empty state and both search sentences all moved out of
+the web components. `apps/web/src/app/library/page.tsx`,
+`apps/web/src/app/search/page.tsx` and `SearchResults.tsx` no longer hold a
+single label of their own; the site's rendering is unchanged, which its ten
+existing `SearchResults` tests still assert.
+
+**Thirteen model tests, ten of them parity.** Besides the unchanged catalogue,
+each filter alone, the query intersecting a filter, the empty combination, the
+group headings and their order, and the plural in the count, the suite runs ten
+saved queries through `filterLibrary` and through a copy of the chain the page
+used before this change, and asserts the two agree id for id. That copy is the
+only place the old implementation still exists, and it exists so the next person
+who "tidies" the shared function has to look at what the page used to do.
+
+**The phone's index is the web's index.** The web fetches
+`apps/web/public/search-index.json`, written by `scripts/gen-indexes.mjs`. The
+phone has the packs and links in its bundle, so `apps/mobile/app/search.tsx`
+builds the index once at module scope with the same `buildIndex`. A test reads
+the generated JSON from disk and compares the two id lists, so a corpus change
+that is not regenerated — or a phone that built a different index — fails in
+the mobile suite rather than in a shop.
+
+**Two screens.** `src/library.ts` is the tab as data: every card's title,
+publisher, why, type and price label, whether it is free (a sage badge rather
+than a word), the platform line ("On iPhone and Android"), the note, the
+commission line where there is one, and the checked date formatted at noon so a
+timezone west of UTC cannot show yesterday. `src/search.ts` is search as data:
+the 20-result cap, a blank query that explains itself instead of apologising, a
+nothing line with its hint, and a route per hit. A link hit in the web's index
+points at `/library#id`; the phone keeps the route and drops the anchor, because
+a tab has no scroll position to restore, and the model marks a result external
+only when its href is a URL.
+
+**A text field primitive.** `packages/ui-native/src/text-field.tsx` is the two
+words the library needed and search could not do without: a label that is a
+label rather than a placeholder that vanishes, an optional hint, `44px` of
+height, and `returnKeyType="search"` with `keyboardType="web-search"` when it is
+a search box. Five tests: named by its label and not its placeholder, change
+events, the hint, the search keyboard, the touch target.
+
+**The library widens with the window.** One column on a phone and a small
+tablet, two on a foldable's inner screen, three on a tabletop — a local
+`libraryColumns` exported so the rule is asserted rather than inferred from a
+snapshot. Filters are chips, not dropdowns: a dropdown on a phone is a second
+screen for a one-word answer. The count is a polite live region, so a filter
+change is announced rather than merely redrawn.
+
+**223 tests in `apps/mobile`.** 12 cover the library model, 12 the rendered
+library (the heading, the box, a domain chip carrying its value, the checked
+state of both chip rows, the live count, every card's five lines, a title's
+press, the empty state, and the one-column basis on a phone), 7 the search model
+with the index parity test, 6 the rendered search (focus on arrival, the blank
+explanation, a keystroke, every hit's kind, title and line, a press carrying its
+row, and the nothing state). Statements and lines are 99.4%, functions 95.53%,
+branches 91.57%; the branch floor stays 91 with the reason in
+`apps/mobile/vitest.config.ts`.
+
+**What it does not prove.** No simulator on this machine, so this is structure,
+roles, accessible names and copy rather than pixels — the same limit as §78.
+Search opens the library tab rather than the card a link result came from,
+because the tab cannot scroll to an anchor; that is a real gap and belongs to
+#159's parity work, not to this screen.
+
+## 80. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.

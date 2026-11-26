@@ -85,6 +85,8 @@ describe("parseIncomingUrl", () => {
       ["https://www.ninetothree.com/week/24?utm=message", "/week/24"],
       ["http://ninetothree.com/today", "/today"],
       ["/library", "/library"],
+      ["ninetothree://search", "/search"],
+      ["https://ninetothree.com/search?q=car+seat", "/search"],
       ["/read/sleep-and-feeding", "/read/sleep-and-feeding"],
     ];
     for (const [raw, path] of expected) expect(parseIncomingUrl(raw)).toBe(path);
@@ -100,6 +102,7 @@ describe("parseIncomingUrl", () => {
       "/today",
       "/week",
       "/library",
+      "/search",
       "/read",
       "/shelf",
       "/together",
