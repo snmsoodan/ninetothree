@@ -1,7 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
-import { ScheduleList, formatDate, formatWindow, type ScheduleItem } from "./ScheduleList";
+import { formatDate, formatWindow, type ScheduleItem } from "@ninetothree/domain";
+import { ScheduleList } from "./ScheduleList";
 
 const item = (overrides: Partial<ScheduleItem> = {}): ScheduleItem => ({
   id: "us-first-visit",

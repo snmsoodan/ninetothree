@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ExportButtons } from "./ExportButtons";
-import { buildHistory } from "@/lib/history";
+import { buildHistory } from "@ninetothree/domain";
 import { EMPTY_STATE, type AppState } from "@/lib/store";
 
 const state: AppState = {

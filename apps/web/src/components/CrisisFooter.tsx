@@ -1,13 +1,12 @@
-import { ESCALATION_COPY } from "@ninetothree/content";
-
-/*
- * Both of these carry a number in ESCALATION_COPY. The type says `phone?`
- * because three of the eight escalations are a line you already have, not a
- * number we can print — so the values are read straight through rather than
- * guarded with a fallback that could never run.
- */
-const CRISIS = ESCALATION_COPY["call-988"];
-const SUPPORT = ESCALATION_COPY["call-psi"];
+import {
+  CRISIS,
+  CRISIS_HEADING,
+  CRISIS_LEAD,
+  CRISIS_TAIL,
+  SUPPORT,
+  SUPPORT_LEAD,
+  SUPPORT_TAIL,
+} from "@ninetothree/domain";
 
 /**
  * The crisis footer, on every page whose subject is how a parent feels.
@@ -24,21 +23,21 @@ export function CrisisFooter() {
       className="mt-10 rounded-lg border border-line bg-paper-sunken p-5"
     >
       <h2 id="crisis-heading" className="font-display text-lg text-ink">
-        If you are thinking about hurting yourself
+        {CRISIS_HEADING}
       </h2>
       <p className="mt-2 text-base text-ink-muted">
-        Call or text{" "}
+        {CRISIS_LEAD}{" "}
         <a href={CRISIS.href} className="font-medium text-ink underline underline-offset-2">
           {CRISIS.phone}
         </a>
-        . It is free, it is answered day and night, and calling it is not an overreaction.
+        {CRISIS_TAIL}
       </p>
       <p className="mt-3 text-base text-ink-muted">
-        For how you feel when it is not an emergency, the PSI Helpline is{" "}
+        {SUPPORT_LEAD}{" "}
         <a href={SUPPORT.href} className="font-medium text-ink underline underline-offset-2">
           {SUPPORT.phone}
         </a>
-        .
+        {SUPPORT_TAIL}
       </p>
     </footer>
   );

@@ -23,6 +23,32 @@ import { DataCard } from "@/components/DataCard";
 import { InviteCard } from "@/components/InviteCard";
 import { ReadingSettings } from "@/components/ReadingSettings";
 import { PersonaSettings } from "@/components/PersonaSettings";
+import {
+  DATES_HEADING,
+  DATES_INTRO,
+  DATES_WHERE,
+  DEVICE_ERASE,
+  DEVICE_HEADING,
+  DEVICE_HISTORY,
+  DEVICE_INTRO,
+  ERASE_BODY,
+  ERASE_CONFIRM,
+  ERASE_DESCRIPTION,
+  ERASE_KEEP,
+  ERASE_TITLE,
+  PERSONA_HEADING,
+  PERSONA_INTRO,
+  PROFILE_HEADING,
+  PROFILE_INTRO,
+  PROFILE_NOT_SET,
+  READING_HEADING,
+  READING_INTRO,
+  SETTINGS_HEADING,
+  SETTINGS_INTRO,
+  SETTINGS_MOMENT,
+  STATUS_OPTIONS,
+  dateLabel,
+} from "@ninetothree/domain";
 import { localDate } from "@/lib/reminders";
 import {
   resetAll,
@@ -36,11 +62,6 @@ import {
   useAppState,
   useHydrated,
 } from "@/lib/store";
-
-const STATUS = [
-  { value: "pregnant", label: "I am pregnant" },
-  { value: "parent", label: "My baby is here" },
-];
 
 export default function SettingsPage() {
   const state = useAppState();
@@ -57,34 +78,30 @@ export default function SettingsPage() {
   if (!ready || !input) {
     return (
       <AppShell stage="Settings">
-        <p className="text-base text-ink-muted">One moment.</p>
+        <p className="text-base text-ink-muted">{SETTINGS_MOMENT}</p>
       </AppShell>
     );
   }
 
   const fields = profileFieldsFor(feedingBand(input, localDate(new Date())));
-  const dateLabel = state.status === "pregnant" ? "Due date" : "Birth date";
+  const dateHeading = dateLabel(state.status);
   const dateValue = state.status === "pregnant" ? (state.dueDate ?? "") : (state.birthDate ?? "");
 
   return (
     <AppShell stage="Settings">
       <div className="measure">
-        <h1 className="font-display text-3xl text-ink">Settings</h1>
-        <p className="mt-2 text-base text-ink-muted">
-          Everything here is stored on this device. We do not have an account for you.
-        </p>
+        <h1 className="font-display text-3xl text-ink">{SETTINGS_HEADING}</h1>
+        <p className="mt-2 text-base text-ink-muted">{SETTINGS_INTRO}</p>
 
         <section aria-labelledby="dates-heading" className="mt-8">
           <h2 id="dates-heading" className="font-display text-2xl text-ink">
-            Your dates
+            {DATES_HEADING}
           </h2>
-          <p className="mt-2 text-sm text-ink-muted">
-            Changing a date moves the guide. Your pins and your progress stay where they are.
-          </p>
+          <p className="mt-2 text-sm text-ink-muted">{DATES_INTRO}</p>
           <Card className="mt-3">
             <CardBody className="space-y-5 pt-5">
               <div>
-                <h3 className="text-sm font-medium text-ink-muted">Where you are</h3>
+                <h3 className="text-sm font-medium text-ink-muted">{DATES_WHERE}</h3>
                 <RadioGroup
                   name="settings-status"
                   label="Where you are"
@@ -92,13 +109,13 @@ export default function SettingsPage() {
                   onValueChange={(value) =>
                     updateDates({ status: value === "pregnant" ? "pregnant" : "parent" })
                   }
-                  options={STATUS}
+                  options={STATUS_OPTIONS}
                   className="mt-2"
                 />
               </div>
               <div>
                 <label htmlFor="settings-date" className="text-sm font-medium text-ink-muted">
-                  {dateLabel}
+                  {dateHeading}
                 </label>
                 <input
                   id="settings-date"
@@ -120,12 +137,9 @@ export default function SettingsPage() {
 
         <section aria-labelledby="persona-heading" className="mt-8">
           <h2 id="persona-heading" className="font-display text-2xl text-ink">
-            Reading as
+            {PERSONA_HEADING}
           </h2>
-          <p className="mt-2 text-sm text-ink-muted">
-            This changes what the week asks of you. It never changes a warning, a phone number or
-            anything we hide for the baby.
-          </p>
+          <p className="mt-2 text-sm text-ink-muted">{PERSONA_INTRO}</p>
           <Card className="mt-3">
             <CardBody className="pt-5">
               <PersonaSettings
@@ -140,11 +154,9 @@ export default function SettingsPage() {
 
         <section aria-labelledby="profile-heading" className="mt-8">
           <h2 id="profile-heading" className="font-display text-2xl text-ink">
-            What we hide
+            {PROFILE_HEADING}
           </h2>
-          <p className="mt-2 text-sm text-ink-muted">
-            These only remove steps that do not apply. They never remove a warning.
-          </p>
+          <p className="mt-2 text-sm text-ink-muted">{PROFILE_INTRO}</p>
           <div className="mt-4 space-y-8">
             {PROFILE_GROUPS.map((group) => {
               const inGroup = fields.filter((field) => field.group === group);
@@ -161,7 +173,7 @@ export default function SettingsPage() {
                           <div key={field.key}>
                             <p className="text-base text-ink">{field.label}</p>
                             <p className="mt-1 text-sm text-ink-muted">
-                              {selected?.label ?? "Not set"}. {field.effect}
+                              {selected?.label ?? PROFILE_NOT_SET}. {field.effect}
                             </p>
                           </div>
                         );
@@ -215,12 +227,9 @@ export default function SettingsPage() {
 
         <section aria-labelledby="reading-heading" className="mt-10">
           <h2 id="reading-heading" className="font-display text-2xl text-ink">
-            Reading and motion
+            {READING_HEADING}
           </h2>
-          <p className="mt-2 text-sm text-ink-muted">
-            Your browser&rsquo;s zoom is the right tool for size. These three are the things zoom
-            cannot do.
-          </p>
+          <p className="mt-2 text-sm text-ink-muted">{READING_INTRO}</p>
           <Card className="mt-3">
             <CardBody className="pt-5">
               <ReadingSettings prefs={state.reading} onChange={setReading} />
@@ -272,17 +281,15 @@ export default function SettingsPage() {
 
         <section aria-labelledby="device-heading" className="mt-10">
           <h2 id="device-heading" className="font-display text-2xl text-ink">
-            On this device
+            {DEVICE_HEADING}
           </h2>
-          <p className="mt-2 text-base text-ink-muted">
-            It lives in this browser. Clearing it cannot be undone.
-          </p>
+          <p className="mt-2 text-base text-ink-muted">{DEVICE_INTRO}</p>
           <div className="mt-3 flex flex-wrap items-center gap-2">
             <ButtonLink href="/history" variant="quiet">
-              See your history
+              {DEVICE_HISTORY}
             </ButtonLink>
             <Button variant="quiet" onClick={() => setConfirmOpen(true)}>
-              Erase everything
+              {DEVICE_ERASE}
             </Button>
           </div>
         </section>
@@ -290,12 +297,12 @@ export default function SettingsPage() {
         <Dialog
           open={confirmOpen}
           onOpenChange={setConfirmOpen}
-          title="Erase everything?"
-          description="Your pins, your progress, and your dates will be gone. There is no copy on our side."
+          title={ERASE_TITLE}
+          description={ERASE_DESCRIPTION}
           footer={
             <>
               <Button variant="quiet" onClick={() => setConfirmOpen(false)}>
-                Keep it
+                {ERASE_KEEP}
               </Button>
               <Button
                 onClick={() => {
@@ -303,15 +310,12 @@ export default function SettingsPage() {
                   setConfirmOpen(false);
                 }}
               >
-                Erase
+                {ERASE_CONFIRM}
               </Button>
             </>
           }
         >
-          <p className="text-base text-ink-muted">
-            If you only want to change your due date, you can do that above without erasing
-            anything.
-          </p>
+          <p className="text-base text-ink-muted">{ERASE_BODY}</p>
         </Dialog>
       </div>
     </AppShell>

@@ -303,6 +303,19 @@ under a filter, on both screens. The phone's client (`apps/mobile/src/household.
 port: with `null` it makes no request at all and says "sign in", which is the
 honest state until #158 stores a real session on the device.
 
+Settings, updates, appointments, history and reads followed (#157), and they are
+the slice where sharing stopped being about screens and started being about
+exports. The article parser, the settings copy, the history ordering and status
+words, the appointment grid, the calendar file and the updates scope had no
+reason to be page-local, so all of them moved into `@ninetothree/domain`; the
+site's `lib/export.ts` was deleted and `ExportButtons` now imports the same
+document builders the phone shares. The result is that a history CSV and an ICS
+file are byte-identical whichever surface produced them, and an article's
+related link resolves through the same `findAction` on both. What the phone adds
+is the ports: `Share.share` for the two exports (a text share, not a file),
+`Linking` for publisher pages, and the existing `dial()` for the crisis and
+support numbers.
+
 ## 8. Cost, and what could go wrong
 
 | Work                                                                               | Size      | Risk                                                                     |

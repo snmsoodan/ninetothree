@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { HistoryList } from "./HistoryList";
-import type { History, HistoryAction, HistoryWeek } from "@/lib/history";
+import type { History, HistoryAction, HistoryWeek } from "@ninetothree/domain";
 
 const meta: Meta<typeof HistoryList> = {
   title: "App/HistoryList",

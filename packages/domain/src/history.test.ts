@@ -1,10 +1,40 @@
 import { describe, expect, it } from "vitest";
-import { TEST_ACTION_INDEX, TEST_PACK_INDEX } from "@/test-fixtures";
+import type { ActionIndexEntry } from "@ninetothree/content/action-index";
+import type { PackIndexEntry } from "@ninetothree/content/pack-index";
 import { UNKNOWN_TITLE, UNKNOWN_WEEK, buildHistory } from "./history";
-import { EMPTY_STATE, type AppState, type ProgressEntry } from "./store";
+import { EMPTY_STATE, type AppState, type ProgressEntry } from "./model";
 
-const index = TEST_ACTION_INDEX;
-const packs = TEST_PACK_INDEX;
+/** The same three steps every case here talks about. Not shipped content. */
+const index: Record<string, ActionIndexEntry> = Object.fromEntries(
+  [
+    { id: "t-glucose", title: "Book your glucose screening" },
+    { id: "t-tdap", title: "Get your Tdap shot" },
+    { id: "t-car-seat", title: "Install the car seat" },
+  ].map((action) => [
+    action.id,
+    {
+      id: action.id,
+      title: action.title,
+      packId: "test-week",
+      packTitle: "Week 28",
+      why: "Why it matters.",
+      options: [],
+    },
+  ]),
+);
+
+const packs: PackIndexEntry[] = [
+  {
+    id: "test-week",
+    kind: "pregnancy",
+    stageIndex: 28,
+    stageUnit: "week",
+    title: "Week 28",
+    coreActionIds: ["t-glucose", "t-tdap", "t-car-seat"],
+    redFlags: [],
+    appointments: [],
+  },
+];
 
 function stateWith(progress: Record<string, ProgressEntry>, overrides: Partial<AppState> = {}) {
   return { ...EMPTY_STATE, onboarded: true, progress, ...overrides };

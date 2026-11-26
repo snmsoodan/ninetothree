@@ -1,34 +1,10 @@
 import type { Source } from "@ninetothree/content";
-
-const MONTHS = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-] as const;
-
-/** A review date is a fact about the page, so it carries the year. */
-export function formatReviewDate(date: string): string {
-  const [year, month, day] = date.split("-");
-  const name = MONTHS[Number(month) - 1] ?? month;
-  return `${name} ${Number(day)}, ${year}`;
-}
-
-const KIND_LABEL: Record<Source["kind"], string> = {
-  clinical: "Clinical",
-  government: "Government",
-  charity: "Charity",
-  editorial: "Editorial",
-  vendor: "Vendor",
-};
+import {
+  READ_OPEN_NOTE,
+  READ_SOURCES_HEADING,
+  SOURCE_KIND_LABEL,
+  reviewLine,
+} from "@ninetothree/domain";
 
 export interface SourceBlockProps {
   sources: Source[];
@@ -48,7 +24,7 @@ export function SourceBlock({ sources, reviewedBy, reviewedAt, updatedAt }: Sour
   return (
     <section aria-labelledby="sources-heading" className="mt-12 border-t border-line pt-6">
       <h2 id="sources-heading" className="font-display text-xl text-ink">
-        Where this comes from
+        {READ_SOURCES_HEADING}
       </h2>
       <ul className="mt-3 space-y-2">
         {sources.map((source) => (
@@ -65,16 +41,13 @@ export function SourceBlock({ sources, reviewedBy, reviewedAt, updatedAt }: Sour
               {" — "}
               {source.publisher}
               {", "}
-              {KIND_LABEL[source.kind]}
+              {SOURCE_KIND_LABEL[source.kind]}
             </span>
-            <span className="sr-only"> (opens in a new tab)</span>
+            <span className="sr-only">{READ_OPEN_NOTE}</span>
           </li>
         ))}
       </ul>
-      <p className="mt-4 text-sm text-ink-muted">
-        Reviewed by {reviewedBy} on {formatReviewDate(reviewedAt)}. Last changed{" "}
-        {formatReviewDate(updatedAt)}.
-      </p>
+      <p className="mt-4 text-sm text-ink-muted">{reviewLine(reviewedBy, reviewedAt, updatedAt)}</p>
     </section>
   );
 }

@@ -101,6 +101,16 @@ describe("Shelf", () => {
     expect(screen.getByText("An action we retired")).toBeTruthy();
   });
 
+  it("opens an option that has a link", () => {
+    const entry = Object.keys(ACTION_INDEX)
+      .map((id) => findIndexedAction(id, ACTION_INDEX)!)
+      .find((item) => item.options.some((option) => option.url));
+    const option = entry!.options.find((item) => item.url)!;
+    const { spies } = draw([pin(entry!.id, entry!.title)]);
+    fireEvent.click(screen.getByTestId(`shelf-option-${option.id}`));
+    expect(spies.onOpenOption).toHaveBeenCalledWith(option.url);
+  });
+
   it("passes what the filter box is given", () => {
     const { spies } = draw(PINS);
 

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { ExportButtons } from "./ExportButtons";
 import { EMPTY_STATE, type AppState } from "@/lib/store";
-import type { History } from "@/lib/history";
+import type { History } from "@ninetothree/domain";
 
 const meta: Meta<typeof ExportButtons> = {
   title: "App/ExportButtons",

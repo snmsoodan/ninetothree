@@ -1,5 +1,5 @@
 import type { History } from "./history";
-import type { AppState } from "./store";
+import type { AppState } from "./model";
 
 /**
  * The export is a history document, not a state dump.

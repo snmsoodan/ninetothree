@@ -1,46 +1,18 @@
 "use client";
 
 import { RadioGroup } from "@ninetothree/ui";
-import type { Contrast, Letters, Motion, ReadingPrefs } from "@ninetothree/domain";
-
-const CONTRAST_OPTIONS = [
-  {
-    value: "default",
-    label: "Follow my device",
-    hint: "Whatever your phone or computer is set to.",
-  },
-  {
-    value: "more",
-    label: "More contrast",
-    hint: "Darker text and stronger lines, even if your device is not set that way.",
-  },
-];
-
-const MOTION_OPTIONS = [
-  {
-    value: "default",
-    label: "Follow my device",
-    hint: "Whatever your phone or computer is set to.",
-  },
-  {
-    value: "reduced",
-    label: "Less motion",
-    hint: "Nothing slides or fades. Pages still change; they just arrive.",
-  },
-];
-
-const LETTER_OPTIONS = [
-  {
-    value: "default",
-    label: "The usual letters",
-    hint: "Inter, the typeface the rest of the guide uses.",
-  },
-  {
-    value: "hyperlegible",
-    label: "Easier to tell apart",
-    hint: "Atkinson Hyperlegible, drawn for low vision. The I, l and 1 stop looking alike.",
-  },
-];
+import {
+  CONTRAST_HEADING,
+  CONTRAST_OPTIONS,
+  LETTERS_HEADING,
+  LETTER_OPTIONS,
+  MOTION_HEADING,
+  MOTION_OPTIONS,
+  type Contrast,
+  type Letters,
+  type Motion,
+  type ReadingPrefs,
+} from "@ninetothree/domain";
 
 export interface ReadingSettingsProps {
   prefs: ReadingPrefs;
@@ -59,21 +31,21 @@ export function ReadingSettings({ prefs, onChange }: ReadingSettingsProps) {
     <div className="space-y-6">
       <RadioGroup
         name="reading-contrast"
-        label="Contrast"
+        label={CONTRAST_HEADING}
         value={prefs.contrast}
         onValueChange={(value) => onChange({ contrast: value as Contrast })}
         options={CONTRAST_OPTIONS}
       />
       <RadioGroup
         name="reading-motion"
-        label="Motion"
+        label={MOTION_HEADING}
         value={prefs.motion}
         onValueChange={(value) => onChange({ motion: value as Motion })}
         options={MOTION_OPTIONS}
       />
       <RadioGroup
         name="reading-letters"
-        label="Letters"
+        label={LETTERS_HEADING}
         value={prefs.letters}
         onValueChange={(value) => onChange({ letters: value as Letters })}
         options={LETTER_OPTIONS}
