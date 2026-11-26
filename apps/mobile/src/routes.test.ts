@@ -48,7 +48,14 @@ describe("the tab table", () => {
   });
 
   it("leaves a stack screen with no tab", () => {
-    for (const path of ["/triage", "/updates", "/appointments", "/history", "/onboarding"]) {
+    for (const path of [
+      "/triage",
+      "/safety",
+      "/updates",
+      "/appointments",
+      "/history",
+      "/onboarding",
+    ]) {
       expect(tabForPath(path)).toBeNull();
     }
   });
@@ -69,6 +76,12 @@ describe("the link builders", () => {
     expect(readHref("sleep")).toBe("/read/sleep");
     expect(webUrl(weekHref(24))).toBe(`https://${HOST}/week/24`);
     expect(appUrl(weekHref(24))).toBe("ninetothree://week/24");
+  });
+
+  it("has a stack screen for the two pages a worried parent reaches", () => {
+    const paths = STACK_SCREENS.map((screen) => screen.path);
+    expect(paths).toContain("/triage");
+    expect(paths).toContain("/safety");
   });
 
   it("names every stack screen with a leading slash, as the router does", () => {
@@ -113,6 +126,7 @@ describe("parseIncomingUrl", () => {
     for (const path of [
       "/updates",
       "/triage",
+      "/safety",
       "/appointments",
       "/history",
       "/onboarding",

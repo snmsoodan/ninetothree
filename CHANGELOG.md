@@ -9,6 +9,29 @@ changelog written after the fact from memory is a changelog nobody can trust.
 
 ## Unreleased
 
+### Triage and safety, on the phone (#155)
+
+- **The decision tree and the red-flag list are shared.**
+  `packages/domain/src/triage.ts` owns `triageView`, `triageTrail`, `triageCall`,
+  `safetyFlags`, the reviewed-date line and every `TRIAGE_*`/`SAFETY_*` sentence.
+  The web's triage page, safety page and "Get help now" button import it, and
+  `apps/web/src/lib/help.ts` is deleted.
+- **Twenty-three domain tests**, one of which walks every node and every answer,
+  so a branch that does not resolve — or an emergency outcome that does not point
+  at 911, an ER, 988 or Poison Control — fails the suite.
+- **The phone's triage cannot leave the tree.** `apps/mobile/src/triage.ts` turns
+  a trail of answers into a question, an outcome or a broken state, and `dial()`
+  is the only code that touches the phone: it refuses a non-`tel:` URL, asks once
+  whether the platform can open it, and returns false rather than throwing.
+- **A `/safety` screen on the phone**, in the web's order: 911 first, the five
+  numbers with their digits printed, then every pack's warning signs under the
+  pack they came from.
+- **"Get help now" in the header**, on the tab layout and the root stack, so the
+  red flags are one tap from every screen without a sixth tab.
+- **Coverage:** 269 tests in `apps/mobile`, 99.38% statements and lines, 96.03%
+  functions, 91.59% branches. Still no simulator, so this is structure and copy,
+  not pixels — see [`EVIDENCE.md`](EVIDENCE.md) §80.
+
 ### Library and search, on the phone (#154)
 
 - **The catalogue's logic is shared.** `packages/domain/src/library.ts` now owns

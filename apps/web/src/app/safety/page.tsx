@@ -2,37 +2,49 @@
 
 import { ESCALATION_COPY } from "@ninetothree/content";
 import { PACK_INDEX } from "@ninetothree/content/pack-index";
+import {
+  HELP_NUMBERS,
+  SAFETY_CTA,
+  SAFETY_CTA_NOTE,
+  SAFETY_FLAGS_HEADING,
+  SAFETY_FLAGS_INTRO,
+  SAFETY_FOOTER,
+  SAFETY_HEADING,
+  SAFETY_INTRO,
+  SAFETY_MORE,
+  SAFETY_MORE_URL,
+  SAFETY_NUMBERS_HEADING,
+  safetyFlags,
+} from "@ninetothree/domain";
 import { Card, CardBody, TextLink } from "@ninetothree/ui";
 import { AppShell } from "@/components/AppShell";
 import { ButtonLink } from "@/components/ButtonLink";
-import { HELP_NUMBERS } from "@/lib/help";
 
+/**
+ * Every warning sign in the guide, and every number worth having.
+ *
+ * The list is built by `safetyFlags`, which is also what the phone renders, so
+ * a flag that names a person to call on one platform names them on the other.
+ */
 export default function SafetyPage() {
-  const flags = PACK_INDEX.flatMap((pack) =>
-    pack.redFlags.map((flag) => ({ ...flag, packTitle: pack.title, packId: pack.id })),
-  );
+  const flags = safetyFlags(PACK_INDEX);
 
   return (
     <AppShell stage="Safety" safetyContent showFooter={false}>
       <div className="measure">
-        <h1 className="font-display text-3xl text-ink">If something is wrong</h1>
-        <p className="mt-2 text-base text-ink-muted">
-          This page is always here, always free, and never behind a sign-in.
-        </p>
+        <h1 className="font-display text-3xl text-ink">{SAFETY_HEADING}</h1>
+        <p className="mt-2 text-base text-ink-muted">{SAFETY_INTRO}</p>
 
         <p className="mt-6">
           <ButtonLink href="/triage" variant="primary">
-            Help me work out who to call
+            {SAFETY_CTA}
           </ButtonLink>
         </p>
-        <p className="mt-2 text-sm text-ink-muted">
-          A few questions, and one answer. It works without a signal, and nothing you answer is
-          stored.
-        </p>
+        <p className="mt-2 text-sm text-ink-muted">{SAFETY_CTA_NOTE}</p>
 
         <section aria-labelledby="numbers-heading" className="mt-8">
           <h2 id="numbers-heading" className="font-display text-2xl text-ink">
-            Who to call
+            {SAFETY_NUMBERS_HEADING}
           </h2>
           <ul className="mt-3 space-y-2">
             {HELP_NUMBERS.map(({ key, detail }) => {
@@ -63,35 +75,27 @@ export default function SafetyPage() {
 
         <section aria-labelledby="flags-heading" className="mt-10">
           <h2 id="flags-heading" className="font-display text-2xl text-ink">
-            Every warning sign we know
+            {SAFETY_FLAGS_HEADING}
           </h2>
-          <p className="mt-2 text-base text-ink-muted">
-            Collected from every week, in one place, so you never have to hunt for it.
-          </p>
+          <p className="mt-2 text-base text-ink-muted">{SAFETY_FLAGS_INTRO}</p>
           <ul className="mt-3 space-y-3">
-            {flags.map((flag) => {
-              const copy = ESCALATION_COPY[flag.escalation];
-              return (
-                <li
-                  key={`${flag.packId}-${flag.id}`}
-                  className="rounded-md border border-red/20 bg-red-wash/40 p-4"
-                >
-                  <p className="text-base text-ink">{flag.text}</p>
-                  <p className="mt-1 text-sm text-ink-muted">
-                    {copy.label}
-                    {flag.phone ? ` · ${flag.phone}` : copy.phone ? ` · ${copy.phone}` : ""}
-                  </p>
-                  <p className="mt-1 text-xs text-ink-faint">{flag.packTitle}</p>
-                </li>
-              );
-            })}
+            {flags.map((flag) => (
+              <li key={flag.id} className="rounded-md border border-red/20 bg-red-wash/40 p-4">
+                <p className="text-base text-ink">{flag.text}</p>
+                <p className="mt-1 text-sm text-ink-muted">
+                  {flag.action}
+                  {flag.phone ? ` · ${flag.phone}` : ""}
+                </p>
+                <p className="mt-1 text-xs text-ink-faint">{flag.packTitle}</p>
+              </li>
+            ))}
           </ul>
         </section>
 
         <p className="mt-10 text-sm text-ink-faint">
-          We are a guide, not a doctor. If you are worried, call.{" "}
-          <TextLink href="https://www.acog.org/womens-health" external>
-            ACOG has more
+          {SAFETY_FOOTER}{" "}
+          <TextLink href={SAFETY_MORE_URL} external>
+            {SAFETY_MORE}
           </TextLink>
           .
         </p>

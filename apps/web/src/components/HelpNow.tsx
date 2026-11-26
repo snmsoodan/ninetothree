@@ -2,8 +2,8 @@
 
 import { useState, type MouseEvent } from "react";
 import { ESCALATION_COPY, type RedFlag } from "@ninetothree/content/core";
+import { HELP_NUMBERS } from "@ninetothree/domain";
 import { Dialog, cn } from "@ninetothree/ui";
-import { HELP_NUMBERS } from "@/lib/help";
 import { ButtonLink } from "./ButtonLink";
 
 export interface HelpDialogProps {

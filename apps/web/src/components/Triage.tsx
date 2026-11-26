@@ -1,18 +1,22 @@
 import Link from "next/link";
+import { ESCALATION_COPY, type TriageNode, type TriageResult } from "@ninetothree/content";
 import {
-  ESCALATION_COPY,
-  type Escalation,
-  type TriageNode,
-  type TriageResult,
-} from "@ninetothree/content";
+  TRIAGE_ALL_FLAGS,
+  TRIAGE_BROKEN_ACTION,
+  TRIAGE_BROKEN_BODY,
+  TRIAGE_BROKEN_HEADING,
+  TRIAGE_PRIVACY,
+  TRIAGE_SOURCES_HEADING,
+  TRIAGE_START_OVER,
+  TRIAGE_TRAIL_LABEL,
+  TRIAGE_WATCH_HEADING,
+  reviewedLine,
+  triageCall,
+  triageQuestionLabel,
+  type TriageTrailStep,
+} from "@ninetothree/domain";
 import { Card, CardBody } from "@ninetothree/ui";
 import { ButtonLink } from "@/components/ButtonLink";
-import { formatReviewDate } from "@/components/SourceBlock";
-
-export interface TriageTrailStep {
-  answerId: string;
-  label: string;
-}
 
 /**
  * The answers given so far, each one a link back to that point. A parent who
@@ -23,7 +27,7 @@ export function TriageTrail({ steps }: { steps: TriageTrailStep[] }) {
   if (steps.length === 0) return null;
 
   return (
-    <nav aria-label="Your answers" className="mt-4">
+    <nav aria-label={TRIAGE_TRAIL_LABEL} className="mt-4">
       <ol className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-ink-muted">
         {steps.map((step, index) => (
           <li key={step.answerId} className="flex items-center gap-2">
@@ -61,7 +65,7 @@ export function TriageQuestion({ node, trail }: TriageQuestionProps) {
 
   return (
     <div className="measure">
-      <p className="text-sm text-ink-faint">Question {trail.length + 1}</p>
+      <p className="text-sm text-ink-faint">{triageQuestionLabel(trail.length + 1)}</p>
       <h1 className="mt-1 font-display text-3xl text-ink">{node.question}</h1>
       {node.detail ? <p className="mt-2 text-base text-ink-muted">{node.detail}</p> : null}
 
@@ -81,9 +85,7 @@ export function TriageQuestion({ node, trail }: TriageQuestionProps) {
         ))}
       </ul>
 
-      <p className="mt-8 text-sm text-ink-faint">
-        Nothing you answer here is stored. If it is an emergency, call 911 now.
-      </p>
+      <p className="mt-8 text-sm text-ink-faint">{TRIAGE_PRIVACY}</p>
     </div>
   );
 }
@@ -92,17 +94,6 @@ export function TriageQuestion({ node, trail }: TriageQuestionProps) {
  * What to do, and what to watch. There is no fourth outcome and no "you are
  * fine": the quietest answer still names a person to call if it changes.
  */
-const INSTRUCTION: Record<Escalation, string> = {
-  "call-911": "Call now. Do not drive yourself if you feel faint.",
-  "call-ob-triage": "The number is on your discharge paperwork, or in your patient portal.",
-  "call-pediatrician": "The number is on the card from your first visit, or in the portal.",
-  "go-to-er": "Go now. Do not wait for a call back.",
-  "call-poison-control": "Free, 24 hours, and they will tell you what to do.",
-  "call-988": "Free, 24 hours. You can text instead of calling.",
-  "call-psi": "Free, and they will find you someone local.",
-  "call-dv-hotline": "Free, confidential, 24 hours.",
-};
-
 export interface TriageOutcomeProps {
   result: TriageResult;
   trail: TriageTrailStep[];
@@ -110,6 +101,7 @@ export interface TriageOutcomeProps {
 
 export function TriageOutcome({ result, trail }: TriageOutcomeProps) {
   const copy = ESCALATION_COPY[result.escalation];
+  const call = triageCall(result.escalation);
 
   return (
     <div className="measure">
@@ -122,25 +114,25 @@ export function TriageOutcome({ result, trail }: TriageOutcomeProps) {
         <CardBody className="pt-5">
           <div className="flex items-baseline justify-between gap-2">
             <span className="text-base font-medium text-ink">{copy.label}</span>
-            {copy.phone ? (
+            {call.tel ? (
               <a
-                // Derived from the number rather than read from `href`, so a
-                // number and its dial string cannot drift apart.
-                href={`tel:${copy.phone.replace(/[^0-9+]/g, "")}`}
+                // Derived from the number by the shared call model, so a number
+                // and its dial string cannot drift apart on either platform.
+                href={call.tel}
                 className="text-base text-ink tabular underline underline-offset-2"
               >
-                {copy.phone}
+                {call.phone}
               </a>
             ) : null}
           </div>
-          <p className="mt-1 text-sm text-ink-muted">{INSTRUCTION[result.escalation]}</p>
+          <p className="mt-1 text-sm text-ink-muted">{call.instruction}</p>
         </CardBody>
       </Card>
 
       {result.watchFor && result.watchFor.length > 0 ? (
         <section aria-labelledby="watch-heading" className="mt-8">
           <h2 id="watch-heading" className="font-display text-xl text-ink">
-            Call back if
+            {TRIAGE_WATCH_HEADING}
           </h2>
           <ul className="mt-2 space-y-1">
             {result.watchFor.map((line) => (
@@ -154,7 +146,7 @@ export function TriageOutcome({ result, trail }: TriageOutcomeProps) {
 
       <section aria-labelledby="triage-sources-heading" className="mt-10 border-t border-line pt-6">
         <h2 id="triage-sources-heading" className="font-display text-xl text-ink">
-          Where this comes from
+          {TRIAGE_SOURCES_HEADING}
         </h2>
         <ul className="mt-3 space-y-2">
           {result.sources.map((source) => (
@@ -173,18 +165,37 @@ export function TriageOutcome({ result, trail }: TriageOutcomeProps) {
           ))}
         </ul>
         <p className="mt-4 text-sm text-ink-muted">
-          Reviewed by {result.reviewedBy} on {formatReviewDate(result.reviewedAt)}.
+          {reviewedLine(result.reviewedBy, result.reviewedAt)}
         </p>
       </section>
 
       <div className="mt-8 flex flex-wrap gap-3">
         <ButtonLink href="/triage" variant="secondary">
-          Start over
+          {TRIAGE_START_OVER}
         </ButtonLink>
         <ButtonLink href="/safety" variant="quiet">
-          Every warning sign
+          {TRIAGE_ALL_FLAGS}
         </ButtonLink>
       </div>
+    </div>
+  );
+}
+
+/**
+ * A link that was cut short. It is a real state rather than an error page: the
+ * parent arrived on purpose, so the page says what happened and offers the one
+ * route back into the tree.
+ */
+export function TriageBroken() {
+  return (
+    <div className="measure">
+      <h1 className="font-display text-3xl text-ink">{TRIAGE_BROKEN_HEADING}</h1>
+      <p className="mt-2 text-base text-ink-muted">{TRIAGE_BROKEN_BODY}</p>
+      <p className="mt-6">
+        <ButtonLink href="/triage" variant="secondary">
+          {TRIAGE_BROKEN_ACTION}
+        </ButtonLink>
+      </p>
     </div>
   );
 }

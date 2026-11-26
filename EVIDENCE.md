@@ -3075,6 +3075,74 @@ Search opens the library tab rather than the card a link result came from,
 because the tab cannot scroll to an anchor; that is a real gap and belongs to
 #159's parity work, not to this screen.
 
-## 80. How this file is maintained
+## 80. Triage and safety, on the phone (issue #155)
+
+The web's triage is a walk through a decision tree and its safety page is a list
+of every red flag in the catalogue. Both were private to
+`apps/web/src/components` — the tree in a page-local module, the flags in
+`apps/web/src/lib/help.ts`. The phone cannot import either, so the two moved into
+`@ninetothree/domain` and the web now reads them from there. The phone is again
+the same decision drawn a second way.
+
+**One tree, one list.** `packages/domain/src/triage.ts` owns `triageView` (the
+node a set of answers lands on, or nothing when the answers leave the tree),
+`triageTrail` (the crumbs back to the root), `triageCall` (the escalation an
+outcome makes, with its phone number), `safetyFlags` (every warning sign across
+every pack, tagged with the pack it came from), `reviewedLine`, `formatLongDate`,
+and the copy both surfaces show: `TRIAGE_*`, `SAFETY_*` and `HELP_NUMBERS`.
+`apps/web/src/components/Triage.tsx`, `apps/web/src/app/triage/page.tsx`,
+`apps/web/src/app/safety/page.tsx` and `HelpNow.tsx` import it, and
+`apps/web/src/lib/help.ts` is gone. The site renders what it rendered before,
+which its 15 `Triage` tests and 9 `HelpNow` tests still assert.
+
+**Twenty-three domain tests, one of them a walk.** The suite visits every node
+and every answer, so a branch added without a resolution fails, and it holds the
+invariants the tree already promised: kebab-case ids, no unreachable node, no
+reassurance phrasing in an outcome, and every emergency outcome pointing at 911,
+an ER, 988 or Poison Control. A flag's id is its pack's id plus its own, so two
+packs may both warn about a fever without the list collapsing them into one.
+
+**The phone's answer cannot leave the tree.** `apps/mobile/src/triage.ts` is the
+model: `triageModel({ tree, answerIds })` returns a question (with its numbered
+step, its answers and its trail), an outcome (its heading, body, the call card,
+the watch list, the sources and the reviewed date) or a broken state for answers
+that do not resolve — rather than throwing on a bad deep link. `truncateTo(trail,
+index)` walks back to a crumb. `dial(dialer, tel)` is the one place that touches
+the phone: it refuses anything that is not `tel:`, asks `canOpenURL` once, and
+returns false instead of throwing, because a simulator or a tablet without a
+dialer must not crash a parent who is already frightened.
+
+**A second screen the issue did not name.** "Every warning sign" in an outcome
+has to go somewhere, so `apps/mobile/src/safety.ts` + `safety-screen.tsx` build
+the phone's `/safety` page in the web's order: the call-911 card first, five
+sunken number cards with the number printed in the text as well as in the
+`tel:`, then every pack's flags with their own action and phone, then the
+footer. `safetyModel(packs)` composes it, and a flag's own number still beats the
+escalation's.
+
+**"Get help now" rides in the header.** The issue asked that red flags stay
+reachable from the tab bar. Five tabs is already the maximum a phone should
+carry, so the button is a `headerRight` on both the tab layout and the root
+stack — every screen, including one opened from a texted link, has it, and it
+matches the web's `HelpNow` word for word.
+
+**45 new tests, 269 in `apps/mobile`.** 18 cover the model (every path through
+the tree, the broken state, `truncateTo`, and `dial` refusing a non-`tel:` and a
+dialer that says no), 13 the rendered triage (the crumb trail, the step line, an
+answer's press, the call card with its number and its `tel:`, the watch list, the
+sources, start-over), 7 the safety model and 7 the rendered safety page (the five
+numbers, each flag under the pack it came from, its action and phone), plus
+`/safety` in the route table. Statements and lines are 99.38%, functions 96.03%,
+branches 91.59%.
+
+**What it does not prove.** No simulator on this machine, so this is structure,
+roles, accessible names and copy rather than pixels — the same limit as §78. The
+`tel:` assertion is a model assertion: the tests prove the app builds `tel:911`
+for the outcome that escalates to 911, not that a phone dials. And the older
+`app/week/[id].tsx` still calls `Linking.openURL("tel:…")` directly; it is the
+same behaviour `dial` gives when the platform says yes, and moving it belongs to
+a later slice rather than to this one.
+
+## 81. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.
