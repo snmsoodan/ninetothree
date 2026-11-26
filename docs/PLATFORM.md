@@ -258,6 +258,14 @@ missing is the photograph: an Expo web run can be captured on this machine, and
 `EVIDENCE.md` §77 names the two gaps the phone keeps for later issues (a lens
 that only reads, and household data that is not wired).
 
+The week followed (#153). It is drawn from the same `WeekModel` the web's page
+is built from — the same steps, skip reasons, later dates, set-aside notice,
+catch-up window, lens and sources — and its share button prints the page to PDF
+through the system sheet instead of opening a browser dialog. That is 70 more
+tests on the phone and no change to the web's page beyond importing the shared
+sentences. The photograph is still missing for the same two reasons: no accepted
+Xcode licence and no Android SDK on this machine.
+
 ## 8. Cost, and what could go wrong
 
 | Work                                                                               | Size      | Risk                                                                     |

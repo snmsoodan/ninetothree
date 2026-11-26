@@ -5,6 +5,15 @@ import Link from "next/link";
 import type { Action } from "@ninetothree/content";
 import { Badge, Button, Dialog, RadioGroup, TextLink, cn } from "@ninetothree/ui";
 import {
+  LATER_DIALOG,
+  LATER_OPTIONS,
+  SKIP_DIALOG,
+  SKIP_REASONS,
+  STEP_PRIORITY_LABEL,
+  addDays,
+  minutesLabel,
+} from "@ninetothree/domain";
+import {
   chosenOption,
   clearProgress,
   isDone,
@@ -18,32 +27,13 @@ import {
   useAppState,
 } from "@/lib/store";
 
-const SKIP_REASONS = [
-  { value: "not-now", label: "Not this week", hint: "It will not come back on its own." },
-  { value: "already-done", label: "Already done", hint: "You did this before you got here." },
-  { value: "not-for-me", label: "Not for me", hint: "We will stop showing this kind of thing." },
-  { value: "no-reason", label: "Skip without saying why", hint: "That is allowed." },
-];
-
-const LATER_OPTIONS = [
-  { value: "1", label: "Tomorrow", hint: "Back on the list in the morning." },
-  { value: "3", label: "In a few days", hint: "Back before the week is out." },
-  { value: "7", label: "Next week", hint: "Back when the next week starts." },
-];
-
-/** ISO date `days` from `today`. UTC, so a clock change cannot move it. */
-export function addDays(today: string, days: number): string {
-  const date = new Date(`${today}T00:00:00Z`);
-  date.setUTCDate(date.getUTCDate() + days);
-  return date.toISOString().slice(0, 10);
-}
-
-const PRIORITY_LABEL: Record<Action["priority"], string | null> = {
-  essential: "Do this one",
-  recommended: null,
-  optional: null,
-  "skip-if": null,
-};
+/**
+ * ISO date `days` from `today`. UTC, so a clock change cannot move it.
+ *
+ * Kept as a re-export because this is where callers have always found it; the
+ * arithmetic itself lives in `@ninetothree/domain`, which the phone uses too.
+ */
+export { addDays } from "@ninetothree/domain";
 
 export interface ActionItemProps {
   action: Action;
@@ -78,7 +68,7 @@ export function ActionItem({
   const [reason, setReason] = useState("not-now");
   const [later, setLater] = useState("7");
 
-  const priorityLabel = PRIORITY_LABEL[action.priority];
+  const priorityLabel = STEP_PRIORITY_LABEL[action.priority];
 
   return (
     <article
@@ -133,10 +123,8 @@ export function ActionItem({
 
       <p className="mt-2 text-base text-ink-muted">{action.why}</p>
 
-      {action.minutes ? (
-        <p className="mt-2 text-sm text-ink-faint tabular">
-          About {action.minutes} {action.minutes === 1 ? "minute" : "minutes"}
-        </p>
+      {minutesLabel(action.minutes) ? (
+        <p className="mt-2 text-sm text-ink-faint tabular">{minutesLabel(action.minutes)}</p>
       ) : null}
 
       {action.detail ? (
@@ -258,12 +246,12 @@ export function ActionItem({
       <Dialog
         open={skipOpen}
         onOpenChange={setSkipOpen}
-        title="Skip this one?"
-        description="Nothing bad happens. It will not nag you, and it will not count against you."
+        title={SKIP_DIALOG.title}
+        description={SKIP_DIALOG.body}
         footer={
           <>
             <Button variant="quiet" onClick={() => setSkipOpen(false)}>
-              Cancel
+              {SKIP_DIALOG.cancel}
             </Button>
             <Button
               onClick={() => {
@@ -274,14 +262,14 @@ export function ActionItem({
                 setSkipOpen(false);
               }}
             >
-              Skip it
+              {SKIP_DIALOG.confirm}
             </Button>
           </>
         }
       >
         <RadioGroup
           name={`skip-${action.id}`}
-          label="Why are you skipping?"
+          label={SKIP_DIALOG.question}
           value={reason}
           onValueChange={setReason}
           options={SKIP_REASONS}
@@ -291,30 +279,30 @@ export function ActionItem({
       <Dialog
         open={laterOpen}
         onOpenChange={setLaterOpen}
-        title="Come back to this later?"
-        description="It leaves this week and comes back on its own. Nothing is lost, and nothing counts against you."
+        title={LATER_DIALOG.title}
+        description={LATER_DIALOG.body}
         footer={
           <>
             <Button variant="quiet" onClick={() => setLaterOpen(false)}>
-              Cancel
+              {LATER_DIALOG.cancel}
             </Button>
             <Button
               onClick={() => {
                 snooze(
                   { id: action.id, title: action.title, packId, packTitle },
-                  addDays(today, Number(later)),
+                  addDays(today, LATER_OPTIONS.find((o) => o.value === later)?.days ?? 7),
                 );
                 setLaterOpen(false);
               }}
             >
-              Set it aside
+              {LATER_DIALOG.confirm}
             </Button>
           </>
         }
       >
         <RadioGroup
           name={`later-${action.id}`}
-          label="When should it come back?"
+          label={LATER_DIALOG.question}
           value={later}
           onValueChange={setLater}
           options={LATER_OPTIONS}

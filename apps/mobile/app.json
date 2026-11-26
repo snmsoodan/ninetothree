@@ -20,14 +20,25 @@
           "action": "VIEW",
           "autoVerify": true,
           "data": [
-            { "scheme": "https", "host": "ninetothree.com", "pathPrefix": "/" },
-            { "scheme": "https", "host": "www.ninetothree.com", "pathPrefix": "/" }
+            {
+              "scheme": "https",
+              "host": "ninetothree.com",
+              "pathPrefix": "/"
+            },
+            {
+              "scheme": "https",
+              "host": "www.ninetothree.com",
+              "pathPrefix": "/"
+            }
           ],
           "category": ["BROWSABLE", "DEFAULT"]
         }
       ]
     },
-    "web": { "bundler": "metro", "output": "single" },
+    "web": {
+      "bundler": "metro",
+      "output": "single"
+    },
     "plugins": [
       "expo-router",
       [
@@ -35,10 +46,15 @@
         {
           "backgroundColor": "#fbf9f6",
           "imageWidth": 120,
-          "dark": { "backgroundColor": "#17140f" }
+          "dark": {
+            "backgroundColor": "#17140f"
+          }
         }
-      ]
+      ],
+      "expo-sharing"
     ],
-    "experiments": { "typedRoutes": true }
+    "experiments": {
+      "typedRoutes": true
+    }
   }
 }

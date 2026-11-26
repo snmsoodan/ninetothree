@@ -2927,6 +2927,72 @@ not wired, so the phone starts from `people: 0`, `jobs: []`, `sharedIds: []` and
 the curated feed until #156 and #157. They are listed here so the next PR cannot
 mistake them for finished work.
 
-## 78. How this file is maintained
+## 78. The week, on the phone (issue #153)
+
+**The idea.** Today tells a parent where they are. The week tells them what to
+do, and it is the screen the web spent twenty issues getting right: three steps
+in priority order, each with a "why", a skip reason, a "later" date, options with
+links and costs, pins, a catch-up list, appointments, red flags with a number to
+call, and sources. Porting that by rewriting it would guarantee drift, so this
+issue moved the sentences out and made the phone render the same ones.
+
+**The copy is a package now.** `packages/domain/src/week-copy.ts` holds every
+sentence the week page says that is not pack content: the four skip reasons, the
+three "later" options and their day counts, `stepsHeading(n)`,
+`setAsideNotice(n)`, `hiddenNotice(n)`, `catchUpToggle(n)`, the per-status
+labels, and both dialogs. `ActionItem.tsx`, `WeekView.tsx` and `CatchUp.tsx` were
+rewired to import them, with the web's own copies deleted — so a test that
+asserts a phrase on the phone is asserting the phrase the site prints. The first
+run failed with two `TS2305`s because the barrel had not exported the two dialog
+objects; the typechecker caught that, which is the point of the move.
+
+**One radio, two attributes.** `packages/ui-native` gained a `RadioGroup` for the
+skip and later sheets. React Native Web drops `accessibilityState` on the DOM
+node, so the component sets `aria-checked` as well; a phone screen reader reads
+the first, a browser and a test read the second. Five tests pin that down.
+
+**The model decides, the screen draws.** `apps/mobile/src/week.ts` turns a pack
+plus `AppState` into a `WeekModel`: progress for the parent only, a body card
+only when the pack has something to say, steps with status/pin/choice already
+resolved, the lens for everyone else (with its own steps, its tracked
+suggestions, or both), the completion card with its two-press confirmation,
+catch-up rows, appointments, flags, sources and the previous/next ids. The
+screen in `apps/mobile/src/week-screen.tsx` draws it and nothing else: two
+sheets, the sheet's cancel and confirm, `PinButton` per step, expansion, the
+lens with its actions, and a nav pair that disappears at week 4 and month 36.
+
+**Share is a printed page.** The web's share is the browser's print dialog. The
+phone has no dialog, so `src/week-share.ts` builds the page as escaped HTML —
+stage, day, body, steps with options and links, appointments, flags, sources —
+and the container hands it to `expo-print`, which returns a PDF URI that
+`expo-sharing` offers to the system sheet. Fourteen unit tests read the string:
+the escapes, the option costs and URLs, the sparse week, the partner lens, and a
+file name per stage so two printed weeks do not overwrite each other. When the
+sheet is unavailable the container falls back to `Share.share`, so a parent
+never sees an error instead of the week.
+
+**The container is thin.** `apps/mobile/app/week/[id].tsx` resolves the id,
+builds the model, and maps each handler to one store call: `markDone`,
+`markSkipped`, `snooze` with `addDays(today, days)`, `clearProgress`,
+`togglePin`, `chooseOption`, `completeWeek`, `reopenWeek`, and `unsnooze` for
+every set-aside step in this pack. Links open in the system browser and red-flag
+numbers dial through `tel:`.
+
+**186 tests in `apps/mobile`.** 23 cover the model, 39 the rendered screen
+through react-native-web (both sheets and their cancel, the lens callbacks, the
+catch-up "Open Week N" press, the two-press completion and its "not yet", all
+four layouts), 8 the share page, 5 the new primitive, and the rest are the shell,
+routes, storage and Today suites. Statements and lines are 99.78%, functions
+96%, branches 91.34%; the branch floor stays 91 with the reason in
+`apps/mobile/vitest.config.ts`.
+
+**What it does not prove.** There is still no simulator on this machine — Xcode's
+licence is unaccepted and there is no Android SDK — so nothing here is a pixel;
+the suite proves structure, roles, accessible names and copy, not kerning. The
+phone also has no chooser screen yet, so "Help me choose" opens the web route,
+and the whole-guide bundle has no phone equivalent. Those are deliberate and
+belong to #159 and later, not to this screen.
+
+## 79. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.

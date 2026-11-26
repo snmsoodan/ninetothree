@@ -12,6 +12,7 @@ import { CatchUp } from "./CatchUp";
 import { RedFlagList } from "./RedFlagList";
 import { SourceList } from "./SourceList";
 import { AppShell } from "./AppShell";
+import { STEPS_SUBTITLE, hiddenNotice, setAsideNotice, stepsHeading } from "@ninetothree/domain";
 import { isSnoozed, unsnooze, useAppState } from "@/lib/store";
 import { weekProgress } from "@/lib/week";
 import { WeekCompletion } from "./WeekCompletion";
@@ -144,11 +145,9 @@ export function WeekView({
           <>
             <section aria-labelledby="actions-heading" className="mt-8">
               <h2 id="actions-heading" className="font-display text-2xl text-ink">
-                {visible.length === 1 ? "The one thing" : `The ${visible.length} things`}
+                {stepsHeading(visible.length)}
               </h2>
-              <p className="mt-1 text-sm text-ink-muted">
-                That is the whole week. Everything else can wait.
-              </p>
+              <p className="mt-1 text-sm text-ink-muted">{STEPS_SUBTITLE}</p>
               <div className="mt-4 space-y-3">
                 {visible.map((action) => (
                   <ActionItem
@@ -164,20 +163,19 @@ export function WeekView({
               </div>
               {setAside.length > 0 ? (
                 <p className="mt-3 text-sm text-ink-faint">
-                  {setAside.length} step{setAside.length === 1 ? "" : "s"} set aside for now.{" "}
+                  {setAsideNotice(setAside.length).line}{" "}
                   <button
                     type="button"
                     onClick={() => setAside.forEach((action) => unsnooze(action.id))}
                     className="underline underline-offset-2 hover:text-ink"
                   >
-                    Show {setAside.length === 1 ? "it" : "them"} now
+                    {setAsideNotice(setAside.length).action}
                   </button>
                 </p>
               ) : null}
               {hidden.length > 0 ? (
                 <p className="mt-3 text-sm text-ink-faint">
-                  {hidden.length} step{hidden.length === 1 ? "" : "s"} hidden because of what you
-                  told us.{" "}
+                  {hiddenNotice(hidden.length)}{" "}
                   <Link href="/settings" className="underline underline-offset-2">
                     Change that
                   </Link>
