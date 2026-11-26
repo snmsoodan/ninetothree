@@ -477,13 +477,14 @@ ordered issues so each slice is independently testable:
 | 159 | The parity harness                                          | shared — merged               |
 | 160 | Foldables: four width modes, tested                         | shared — merged               |
 | 161 | Push from the pack                                          | native-only delivery — merged |
-| 162 | Store readiness                                             | native-only                   |
+| 162 | Store readiness                                             | native-only — merged          |
 
 Issues 147–160 are merged: the token exchange, the token source, the machine,
 the primitives, the shell, every screen a parent reads, the device's own sign-in,
 the harness that checks the manifest against both clients' files, the one
 set of width names both clients now share, and a push sender that renders the
-pack's own two lines. 161 is merged; 162 is open.
+pack's own two lines, and the store artefacts a submission needs, generated from
+one file and checked on every pull request. All sixteen are merged.
 
 158–160 make the three clients agree; 161–162 extend the phone alone. 161–162
 are marked "not parity" on purpose: the web has no push channel and no store, so

@@ -352,6 +352,18 @@ adapter and a promise bridge. Signing out needed one new route, because a phone
 has no cookie to clear. Foldables are untouched here; the card is a column and
 stretches.
 
+**What the stores are told comes from one file.** #162 put the two identifiers,
+the version, the collected data, the four required-reason APIs, the permission
+list, both listings and six screenshot scenes into
+`apps/mobile/store/store.json`, and a generator writes `PrivacyInfo.xcprivacy`,
+`DATA-SAFETY.md`, `LISTING.md` and `SCREENSHOTS.md` from it. `pnpm store:check`
+runs in CI and fails when those files, `app.json`'s `ios.privacyManifest` and
+`ios.infoPlist`, or the `eas.json` profiles disagree with the source. The
+permission list is empty because the app prompts for nothing; that is a fact to
+keep true, not a placeholder. The icon and the screenshots are the two assets
+this repository still owes the stores, and both need a simulator — see
+`EVIDENCE.md` §87.
+
 ## 8. Cost, and what could go wrong
 
 | Work                                                                               | Size      | Risk                                                                     |

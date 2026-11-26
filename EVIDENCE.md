@@ -3464,6 +3464,45 @@ push opt-in UI on the phone yet and no scheduled job calling the sender, so this
 is the delivery layer, not the switch a parent can see. The web has no push
 channel at all, which is why #161 is not a parity item.
 
-## 87. How this file is maintained
+## 87. One file lists what the stores ask, and the check is the reviewer (issue #162)
+
+**One source, four artefacts, two configs.** `apps/mobile/store/store.json`
+holds the two identifiers, the version, what is collected, why each
+required-reason API is called, an empty permission list, both listings and six
+screenshot scenes. `render.ts` turns it into `PrivacyInfo.xcprivacy`,
+`DATA-SAFETY.md`, `LISTING.md` and `SCREENSHOTS.md`, and `index.ts` either writes
+them or — with `--check`, which is the CI step — prints the file that drifted and
+the command that regenerates it. `app.json`'s `ios.privacyManifest` and
+`ios.infoPlist` are compared against the same source, because the manifest a
+reviewer reads in the repo and the one compiled into the binary must not be two
+documents. `eas.json` is checked the same way: a production profile that does not
+increment its own build number is the kind of thing found after a rejected
+upload.
+
+**The empty permission list is the claim.** The app prompts for nothing: secure
+store, sharing, printing and the Apple and Google sheets raise no runtime
+permission. So `permissions: []` is accurate rather than unfinished, and
+`SCREENSHOTS.md` and `DATA-SAFETY.md` both say so. When the push opt-in gets a
+switch, `POST_NOTIFICATIONS` goes in that array and every artefact moves with it.
+
+**What the tests prove.** Twenty-one tests, of which the important four are
+tripwires against the real files: the committed artefacts equal the render for
+the committed `store.json`, and `findings`, `appConfigFindings` and
+`easFindings` are empty for the real `app.json` and `eas.json`. The rest prove
+the checks bite: a description one character over its limit, 80-byte keywords,
+two scenes sharing an id, five scenes where six are wanted, a manifest that
+tracks while `NSPrivacyTracking` says it does not, a key that is not a usage
+description, a version and a manifest that disagree, and an `eas.json` with no
+preview APK and no submission block. Each names the row it would print.
+
+**What it does not prove.** No submission was made and no store account exists.
+There is no icon: `app.json` has no `icon` key, so Expo's placeholder ships until
+somebody draws one. The six screenshots are a brief, not PNGs — capturing them
+needs a simulator, and this machine has no Xcode licence and no Android SDK, the
+same constraint as #159 and #160. `eas.json` names no credentials and no project
+id; `eas init` writes that, and inventing one would be a lie the build would
+believe.
+
+## 88. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.

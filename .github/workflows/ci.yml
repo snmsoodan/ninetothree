@@ -58,6 +58,9 @@ jobs:
       - name: The stylesheet is generated from the token source
         run: pnpm tokens:check
 
+      - name: The store artefacts are generated from the store source
+        run: pnpm store:check
+
       - name: Test
         run: pnpm test
 

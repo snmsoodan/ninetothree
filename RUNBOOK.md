@@ -86,6 +86,7 @@ pnpm test
 pnpm content:validate
 pnpm content:registry:check
 pnpm content:indexes:check
+pnpm store:check
 pnpm build
 pnpm bundle:check
 pnpm links:check
@@ -357,5 +358,84 @@ decision.
 - The iOS and Android apps are built but have never run on a device or a
   simulator: no Xcode licence is accepted and no Android SDK is installed. Their
   route, storage and boot tests run in Node, which proves behaviour and not
-  pixels. Issues #159 (parity harness) and #160 (foldables, tested) are where a
+  pixels. Issue #159 (parity harness) and #160 (foldables, tested) are where a
   device is required.
+- No store submission has been made: `eas.json` and the store artefacts are
+  written and machine-checked, but there is no EAS account, no signing
+  certificate and no app icon. `apps/mobile/store/SCREENSHOTS.md` is a capture
+  brief, not six screenshots, because capturing one needs a simulator (§15).
+
+---
+
+## 15. Shipping to the stores
+
+The two listings, the Apple privacy manifest, the `PrivacyInfo.xcprivacy` file
+and the Play data-safety answers are all generated from one file:
+
+```bash
+pnpm --filter @ninetothree/mobile store        # write them
+pnpm store:check                              # fail on drift; runs in CI
+```
+
+Edit `apps/mobile/store/store.json`, never the generated files. `store:check`
+also compares the facts in that file against `app.json` (`ios.privacyManifest`,
+`ios.infoPlist`, both identifiers, the version) and `eas.json`, so a permission
+added in one place and not the other fails before a reviewer finds it.
+
+### 15.1 The first submission
+
+`eas.json` has three profiles and no credentials. The order is:
+
+```bash
+npx eas-cli login
+npx eas-cli init                    # writes extra.eas.projectId into app.json
+npx eas-cli build --profile preview --platform ios
+npx eas-cli build --profile preview --platform android
+```
+
+`preview` builds an internal APK and an internal iOS build; `production`
+increments the build number itself. `eas init` is the only step that writes
+configuration this repository does not already hold, which is why the project
+id is absent rather than invented.
+
+### 15.2 The four client IDs
+
+Sign-in needs one Google client per platform and one Apple client on the web,
+and none of them are in the repo:
+
+| Where                                | Variable                                         |
+| ------------------------------------ | ------------------------------------------------ |
+| iOS                                  | `EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID`               |
+| Android                              | `EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID`           |
+| Expo Go and the web build of the app | `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID`               |
+| Server, audience check               | `AUTH_GOOGLE_NATIVE_IDS`, `AUTH_APPLE_NATIVE_ID` |
+
+`EXPO_PUBLIC_API_URL` points the app at `https://ninetothree.com`. The bundle
+identifier and package are both `com.ninetothree.app`, so the Google client IDs
+must be registered against exactly that pair — a typo here fails at the
+provider, not at build time.
+
+### 15.3 What a reviewer will ask
+
+- **No purchases.** The app has no paywall, no subscription and no entitlement;
+  do not paste subscription copy into either console.
+- **No permissions.** Nothing prompts: no camera, no photos, no location, no
+  notifications. `store.json` has an empty `permissions` list on purpose. When
+  the push opt-in from #161 gets a switch, add `POST_NOTIFICATIONS` there and
+  the Play form gains the row.
+- **One collected type pair.** Email address and name, both linked to the
+  account, neither used for tracking, both for app functionality. The four
+  required-reason APIs are explained in `DATA-SAFETY.md`.
+- **Deletion.** `/api/account/delete` and the privacy page's instructions are
+  the answer to Play's deletion question.
+
+### 15.4 Screenshots and the icon
+
+There is no simulator here, so `SCREENSHOTS.md` is a brief: six scenes, the
+screen each is taken from, the overlay headline and sub, and both stores'
+required pixel sizes. Capture them on a machine with Xcode or an Android SDK,
+then put the PNGs in the console by hand. The app icon does not exist yet and is
+the one asset this issue could not generate; `app.json` has no `icon` key, so
+Expo falls back to its placeholder rather than shipping a fake one.
+
+---
