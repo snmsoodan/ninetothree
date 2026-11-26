@@ -268,6 +268,15 @@ legal, the provider callbacks and the action chooser. It proves the screen
 exists and holds its shape; it does not prove the pixels, because no simulator
 has run.
 
+Foldables made the width vocabulary shared (#160). `packages/ui/src/layout.ts`
+and `packages/ui-native/src/layout.ts` now name the same four modes at the same
+360, 600 and 840, with `layout.css` turning them into container queries for the
+web; a half-open posture stacks the panes and moves the primary pane to the top
+half, and `apps/mobile/src/foldables.test.tsx` draws four screens at five widths
+to prove no button lands on the crease. `hingeFor()` still returns `null` until
+`expo-hinge` is added, so the posture is hand-built in tests and no physical
+device was available.
+
 The week followed (#153). It is drawn from the same `WeekModel` the web's page
 is built from — the same steps, skip reasons, later dates, set-aside notice,
 catch-up window, lens and sources — and its share button prints the page to PDF

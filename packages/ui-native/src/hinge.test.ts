@@ -40,6 +40,13 @@ describe("describeLayout", () => {
     expect(layout.posture).toBeNull();
   });
 
+  it("treats a creased narrow window as two panes rather than one body across the gap", () => {
+    const layout = describeLayout(700, laptop);
+    expect(layout.mode).toBe("medium");
+    expect(layout.panesAcross).toBe(2);
+    expect(layout.panes).toHaveLength(2);
+  });
+
   it("describes a book as two panes, and keeps each pane off the crease", () => {
     const layout = describeLayout(900, laptop);
     expect(layout.mode).toBe("expanded");

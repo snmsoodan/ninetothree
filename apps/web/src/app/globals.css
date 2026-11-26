@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "@ninetothree/ui/tokens.css";
+@import "@ninetothree/ui/layout.css";
 
 /*
  * Tailwind only scans the app by default, so every utility used inside the

@@ -9,6 +9,20 @@ changelog written after the fact from memory is a changelog nobody can trust.
 
 ## Unreleased
 
+### One set of width names, and a crease that moves the primary action (#160)
+
+- `packages/ui/src/layout.ts` names compact, regular, medium and expanded at
+  the same 360/600/840 as the phone, and `layout.css` carries them as container
+  queries, so 900 px means the same thing in a browser and on a tablet.
+- A half-open window stacks its panes and draws the primary pane first;
+  `Screen` gained `primary={0 | 1}`, and a creased window with no panes passed
+  keeps its body in the first usable half.
+- A creased narrow window counts as two panes in `describeLayout`, so a body
+  can no longer be drawn across the gap.
+- Ten tests draw Today, Week, Library and Triage at 320, 390, 700, 900 and
+  1100 dp and assert the mode, the columns, and that no pressable thing lands
+  on the hinge. No physical foldable was available; see `EVIDENCE.md` §85.
+
 ### A parity harness that reads both clients (#159)
 
 - `@ninetothree/parity` holds a 30-row manifest: every web `page.tsx`, the

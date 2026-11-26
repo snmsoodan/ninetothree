@@ -1,4 +1,12 @@
 export { cn } from "./cn";
+export {
+  BREAKPOINTS,
+  LAYOUT_MODES,
+  columnsFor,
+  layoutClass,
+  layoutModeFor,
+  type LayoutMode,
+} from "./layout";
 export { Button, type ButtonProps, type ButtonVariant, type ButtonSize } from "./primitives/Button";
 export { ButtonLink, type ButtonLinkProps } from "./primitives/ButtonLink";
 export { Card, CardHeader, CardBody, CardFooter, type CardProps } from "./primitives/Card";

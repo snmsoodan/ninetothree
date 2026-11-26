@@ -4,6 +4,8 @@ import {
   columnsFor,
   crossesHinge,
   layoutModeFor,
+  orderedPanes,
+  paneDirection,
   paneCount,
   panesFor,
 } from "./layout.ts";
@@ -64,6 +66,22 @@ describe("panesFor", () => {
       x: 400,
       width: 400,
     });
+  });
+});
+
+describe("paneDirection and orderedPanes", () => {
+  const laptop: Hinge = { start: 400, end: 420, angle: 100, posture: "half-open" };
+
+  it("reads a book left to right and stacks a laptop", () => {
+    expect(paneDirection(null)).toBe("row");
+    expect(paneDirection(hinge)).toBe("row");
+    expect(paneDirection(laptop)).toBe("column");
+  });
+
+  it("moves the primary pane first only when the laptop is half-open", () => {
+    expect(orderedPanes(["a", "b"], 1, hinge)).toEqual(["a", "b"]);
+    expect(orderedPanes(["a", "b"], 1, laptop)).toEqual(["b", "a"]);
+    expect(orderedPanes(["a", "b"], 0, laptop)).toEqual(["a", "b"]);
   });
 });
 

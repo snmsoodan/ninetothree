@@ -1,4 +1,4 @@
-import type { Hinge } from "./hinge.ts";
+import { isHalfOpen, type Hinge } from "./hinge.ts";
 
 /**
  * How big the window is, in the four sizes the product draws for.
@@ -69,4 +69,31 @@ export function crossesHinge(span: Span, hinge: Hinge | null): boolean {
 /** How many panes a layout has. One, except when the window is a book. */
 export function paneCount(mode: LayoutMode): 1 | 2 {
   return mode === "expanded" ? 2 : 1;
+}
+
+/**
+ * The direction the two panes take.
+ *
+ * Closed, flat or absent, they sit side by side like a book. A laptop fold is
+ * held upright with its bottom half on the table, so the pair stacks and the
+ * top half is the one a parent can still see.
+ */
+export function paneDirection(hinge: Hinge | null): "row" | "column" {
+  return isHalfOpen(hinge) ? "column" : "row";
+}
+
+/**
+ * The panes in the order they are drawn.
+ *
+ * A half-open window puts the pane holding the primary action first, because
+ * the top half is the half above the table. Every other posture keeps the order
+ * the screen passed, so a book reads left to right as it always did.
+ */
+export function orderedPanes<T>(
+  panes: readonly [T, T],
+  primary: 0 | 1,
+  hinge: Hinge | null,
+): [T, T] {
+  if (!isHalfOpen(hinge)) return [panes[0], panes[1]];
+  return primary === 0 ? [panes[0], panes[1]] : [panes[1], panes[0]];
 }

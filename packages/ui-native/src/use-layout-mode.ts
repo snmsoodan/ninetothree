@@ -28,7 +28,9 @@ export interface Layout {
  */
 export function describeLayout(width: number, hinge: Hinge | null = null): Layout {
   const mode = layoutModeFor(width);
-  const panesAcross = paneCount(mode);
+  // A reported crease is two panes even on a narrow window: one body spanning
+  // the gap is the thing this exists to prevent.
+  const panesAcross = hinge ? 2 : paneCount(mode);
   return {
     width,
     mode,

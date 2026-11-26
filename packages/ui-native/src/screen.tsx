@@ -1,6 +1,7 @@
 import { Modal, Pressable, ScrollView, View, type StyleProp, type ViewStyle } from "react-native";
 import type { ReactNode } from "react";
-import { useLayoutMode } from "./use-layout-mode.ts";
+import { orderedPanes, paneDirection } from "./layout.ts";
+import { useLayoutMode, type Layout } from "./use-layout-mode.ts";
 import { useTheme } from "./theme.tsx";
 import { Heading } from "./text.tsx";
 
@@ -13,6 +14,13 @@ export interface ScreenProps {
    * by side or one under the other.
    */
   panes?: [ReactNode, ReactNode];
+  /** The window to draw for; measured when left out. */
+  layout?: Layout;
+  /**
+   * Which pane holds the primary action. A half-open window draws it first,
+   * in the top half, where the person can still see it.
+   */
+  primary?: 0 | 1;
   style?: StyleProp<ViewStyle>;
   testID?: string;
   children?: ReactNode;
@@ -23,29 +31,49 @@ export interface ScreenProps {
  * place that knows a foldable has two halves. Padding is per-mode rather than
  * a percentage, so `compact` loses nothing to margins it cannot afford.
  */
-export function Screen({ scroll = true, panes, style, testID, children }: ScreenProps) {
+export function Screen({
+  scroll = true,
+  panes,
+  layout: given,
+  primary = 0,
+  style,
+  testID,
+  children,
+}: ScreenProps) {
   const theme = useTheme();
-  const layout = useLayoutMode();
-  const padding = layout.mode === "compact" ? theme.space[4] : theme.space[6];
+  const measured = useLayoutMode();
+  const layout = given ?? measured;
+  const padding = layout.mode === "compact" ? theme.space[4] : theme.space[6]!;
 
   // A hinge is a gap in the glass, so the panes are separated by the real gap.
   // Without one, the gutter is a design choice and half of it comes off each
   // pane so the pair still fits the window exactly.
-  const gap = layout.hinge ? layout.hinge.end - layout.hinge.start : (theme.space[6] ?? 24);
+  const gap = layout.hinge ? layout.hinge.end - layout.hinge.start : theme.space[6]!;
   const paneWidth = (pane: { width: number }) => (layout.hinge ? pane.width : pane.width - gap / 2);
 
-  const body =
-    panes && layout.panesAcross === 2 ? (
-      <View style={{ flexDirection: "row", gap }} testID={testID ? `${testID}-panes` : undefined}>
-        {layout.panes.map((pane, index) => (
-          <View key={pane.x} style={{ width: paneWidth(pane) }}>
-            {panes[index]}
-          </View>
-        ))}
-      </View>
-    ) : (
-      children
-    );
+  const pair = panes && layout.panesAcross === 2;
+  const direction = paneDirection(layout.hinge);
+
+  const body = pair ? (
+    <View style={{ flexDirection: direction, gap }} testID={testID ? `${testID}-panes` : undefined}>
+      {orderedPanes(panes, primary, layout.hinge).map((pane, index) => (
+        <View
+          key={layout.panes[index]!.x}
+          style={direction === "row" ? { width: paneWidth(layout.panes[index]!) } : undefined}
+        >
+          {pane}
+        </View>
+      ))}
+    </View>
+  ) : layout.hinge && layout.panesAcross === 2 ? (
+    // No panes were passed, but the glass has a crease. Draw the body in the
+    // first usable half rather than letting it run under the gap.
+    <View style={{ width: layout.panes[0]!.width }} testID={testID ? `${testID}-pane` : undefined}>
+      {children}
+    </View>
+  ) : (
+    children
+  );
 
   return (
     <View style={[{ flex: 1, backgroundColor: theme.color.paper, padding }, style]} testID={testID}>
