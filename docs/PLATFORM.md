@@ -258,6 +258,16 @@ missing is the photograph: an Expo web run can be captured on this machine, and
 `EVIDENCE.md` §77 names the two gaps the phone keeps for later issues (a lens
 that only reads, and household data that is not wired).
 
+Parity is no longer a claim (#159). `packages/parity/src/screens.json` names
+every web page, the phone screen that answers it and the testIDs that screen
+owes in order; the test walks both clients' files and fails on a missing page,
+an invented page, a stand-in without a reason, a block that is absent or out of
+order. Fifteen screens are full, two are honest stand-ins (`/week`'s redirect
+and the onboarding skeleton), and thirteen are web-only by design — print,
+legal, the provider callbacks and the action chooser. It proves the screen
+exists and holds its shape; it does not prove the pixels, because no simulator
+has run.
+
 The week followed (#153). It is drawn from the same `WeekModel` the web's page
 is built from — the same steps, skip reasons, later dates, set-aside notice,
 catch-up window, lens and sources — and its share button prints the page to PDF
