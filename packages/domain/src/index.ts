@@ -92,3 +92,27 @@ export {
   statusOptions,
   type DateQuestion,
 } from "./persona";
+export {
+  REMINDER_KINDS,
+  addDays,
+  dueReminders,
+  localDate,
+  reminderKey,
+  unseen,
+  wouldPush,
+  type Reminder,
+  type ReminderKind,
+  type ReminderSources,
+} from "./reminders";
+export { resolvePins, type ResolvedPin } from "./pins";
+export { settledIds, weekProgress, type WeekProgress, type WeekRef, type WeekStatus } from "./week";
+export { datedAppointments, type DatedItem } from "./appointments";
+export {
+  currentMatches,
+  newMatches,
+  subjectFrom,
+  syncNotices,
+  updatesFor,
+  type AgeUpdate,
+  type AgeUpdates,
+} from "./recalls";

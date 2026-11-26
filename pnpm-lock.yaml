@@ -173,6 +173,9 @@ importers:
       '@ninetothree/domain':
         specifier: workspace:*
         version: link:../../packages/domain
+      '@ninetothree/rules':
+        specifier: workspace:*
+        version: link:../../packages/rules
       '@ninetothree/tokens':
         specifier: workspace:*
         version: link:../../packages/tokens
@@ -228,6 +231,12 @@ importers:
       '@ninetothree/config':
         specifier: workspace:*
         version: link:../../packages/config
+      '@testing-library/jest-dom':
+        specifier: ^6.6.3
+        version: 6.10.0(@testing-library/dom@10.4.2)
+      '@testing-library/react':
+        specifier: ^16.1.0
+        version: 16.3.3(@testing-library/dom@10.4.2)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       '@types/react':
         specifier: ~19.3.0
         version: 19.3.0
@@ -237,6 +246,9 @@ importers:
       babel-preset-expo:
         specifier: ~58.0.26
         version: 58.0.26(@babel/core@7.29.7(supports-color@7.2.0))(@babel/runtime@7.29.10)(expo@58.0.26)(react-refresh@0.17.0)(supports-color@7.2.0)
+      jsdom:
+        specifier: ^25.0.1
+        version: 25.0.1(supports-color@7.2.0)
       typescript:
         specifier: ^5.7.2
         version: 5.9.3

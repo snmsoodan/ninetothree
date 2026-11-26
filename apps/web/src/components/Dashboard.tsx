@@ -29,6 +29,7 @@ import { useRecallFeed } from "@/lib/use-recall-feed";
 import {
   dismissNotice,
   markReminded,
+  recordNotices,
   removePin,
   setPinReminder,
   stageInput,
@@ -95,7 +96,7 @@ export function Dashboard() {
   // The queue is filled on the dashboard, not on a timer: a recall is
   // something a parent looks at, not something that interrupts them.
   useEffect(() => {
-    if (ready) syncNotices(state, recalls);
+    if (ready) syncNotices(state, recalls, recordNotices);
   }, [ready, state, recalls]);
 
   const { weeksDone, actionsDone } = useMemo(() => {

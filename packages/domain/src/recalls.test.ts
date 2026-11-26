@@ -1,6 +1,9 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import type { Recall } from "@ninetothree/content";
-import { __resetForTests, chooseOption, getSnapshot, togglePin, updateDates } from "./store";
+import { createStore } from "./store";
+
+const store = createStore();
+const { __resetForTests, chooseOption, getSnapshot, recordNotices, togglePin, updateDates } = store;
 import { currentMatches, newMatches, subjectFrom, syncNotices, updatesFor } from "./recalls";
 
 const recall = (over: Partial<Recall> = {}): Recall => ({
@@ -33,7 +36,6 @@ const pin = (id: string, title: string) => ({
 });
 
 beforeEach(() => {
-  window.localStorage.clear();
   __resetForTests();
 });
 
@@ -85,13 +87,13 @@ describe("newMatches", () => {
 
   it("is nothing once the notice exists", () => {
     togglePin(pin("t-car-seat", "Choose a car seat"), "2026-10-01");
-    syncNotices(getSnapshot(), [recall()], "2026-10-02T00:00:00.000Z");
+    syncNotices(getSnapshot(), [recall()], recordNotices, "2026-10-02T00:00:00.000Z");
     expect(newMatches(getSnapshot(), [recall()])).toEqual([]);
   });
 
   it("still reports a stronger reason after a weaker one was dismissed", () => {
     togglePin(pin("t-car-seat", "Choose a car seat"), "2026-10-01");
-    syncNotices(getSnapshot(), [recall()], "2026-10-02T00:00:00.000Z");
+    syncNotices(getSnapshot(), [recall()], recordNotices, "2026-10-02T00:00:00.000Z");
     chooseOption("t-car-seat", "opt-graco", "Graco", "2026-10-03");
     const fresh = newMatches(getSnapshot(), [
       recall({ matches: { optionIds: ["opt-graco"], actionIds: ["t-car-seat"], keywords: [] } }),
@@ -103,20 +105,24 @@ describe("newMatches", () => {
 
 describe("syncNotices", () => {
   it("records nothing and returns zero when there is nothing to say", () => {
-    expect(syncNotices(getSnapshot(), [recall()])).toBe(0);
+    expect(syncNotices(getSnapshot(), [recall()], recordNotices)).toBe(0);
     expect(getSnapshot().notices).toEqual({});
   });
 
   it("records one notice per match and returns the count", () => {
     togglePin(pin("t-car-seat", "Choose a car seat"), "2026-10-01");
-    expect(syncNotices(getSnapshot(), [recall()], "2026-10-02T00:00:00.000Z")).toBe(1);
+    expect(syncNotices(getSnapshot(), [recall()], recordNotices, "2026-10-02T00:00:00.000Z")).toBe(
+      1,
+    );
     expect(Object.keys(getSnapshot().notices)).toEqual(["cpsc-1:t-car-seat"]);
   });
 
   it("is idempotent, so a re-render cannot double the queue", () => {
     togglePin(pin("t-car-seat", "Choose a car seat"), "2026-10-01");
-    syncNotices(getSnapshot(), [recall()], "2026-10-02T00:00:00.000Z");
-    expect(syncNotices(getSnapshot(), [recall()], "2026-10-03T00:00:00.000Z")).toBe(0);
+    syncNotices(getSnapshot(), [recall()], recordNotices, "2026-10-02T00:00:00.000Z");
+    expect(syncNotices(getSnapshot(), [recall()], recordNotices, "2026-10-03T00:00:00.000Z")).toBe(
+      0,
+    );
     expect(Object.keys(getSnapshot().notices)).toHaveLength(1);
   });
 });

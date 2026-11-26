@@ -2860,6 +2860,73 @@ the splash hands over without a flicker, or that a real universal link reaches
 `+native-intent`. Those need a device or an emulator, and issue #159 is where the
 parity harness earns the right to claim them.
 
-## 77. How this file is maintained
+## 77. Today, on the phone (issue #152)
+
+**The idea.** The dashboard is the screen a parent opens without deciding to, so
+the phone's version has to say the same things in the same order as the web's —
+not approximately, and not a subset that is easier to draw. Issue #152 is that
+port, and it is done by making the order and the words _data_ rather than markup.
+
+**The order and the copy left the component.** `apps/web/src/components/Dashboard.tsx`
+is a React component: it chooses eleven blocks, interleaves them against pins,
+notices and progress, and returns JSX. None of that reaches a phone. But the
+_decision_ — reminders, then safety, then the week or the lens, then recalls,
+updates, pins, jobs, together, appointments, share, progress — is not React at
+all. So `apps/mobile/src/today.ts` states it: `todayModel(input)` returns a
+`TodayBlock[]` in that order, each block carrying its heading, its badge, its
+count copy, and its empty-state copy. A test asserts the order, the plural
+handling, the "nothing pinned yet" sentence, and that a dismissed notice
+disappears; the screen itself only draws what it is handed.
+
+**The dashboard's own logic moved, and the web did not notice.** `pins`, `week`,
+`appointments`, `reminders` and `recalls` were `apps/web/src/lib` modules that
+read and wrote `AppState` and knew nothing about the DOM — the phone needed all
+five. They moved into `packages/domain` with their tests, and the web files are
+now one-line re-exports. That is why the web suite still passes without an edit:
+the import paths are unchanged, and the barrel is the same shape.
+
+**One prop so every window can be drawn.** `Screen` measures its own layout, and
+a jsdom window is always one width; measuring is right on a device and useless in
+a test. So `Today` takes an optional `layout` and prefers it over the measured
+one. That lets the suite draw all four modes — compact, regular, medium, expanded
+— and assert that medium pairs the week with the lens, that expanded puts them
+either side of the hinge, and that compact stacks them, without a foldable and
+without a simulator.
+
+**A copy drift the type system found.** The phone's reason-for-a-recall table was
+`Record<string, string>` with a `pin` key: "You pinned this". The web's, and the
+`RecallBecause` union in `@ninetothree/content`, are `option`, `step` and
+`keyword` — "You chose this.", "You pinned this step.", "You pinned a step about
+this." Nothing failed, because an untyped record accepts a key that no longer
+exists. Typing it `Record<RecallBecause, string>` broke the build immediately and
+the phone now prints the web's sentences. Two smaller typing errors surfaced with
+it: `TodayLayout` was missing `"regular"`, and the tests were building a `loss`
+as `{ at, week }` when the rules engine's `Loss` is `"pregnancy" | "baby"`.
+
+**116 tests. Statements and lines 99.54%, functions 100%, branches 92.6%.** 45
+cover the model and the four layouts; 32 cover the rendered screen through
+react-native-web — block order, every empty state, the reminders card and its
+one button, the lens read-only, recalls with their severity badge and source,
+updates and their "and N more" link, pins with `PinButton`, the stale pin's "this
+step has changed" line, appointments, the share card and the progress line — and
+39 are the shell's existing suites.
+
+**The branch threshold is 91, and the reason is in the config.** The misses left
+are defensive arms no content pack reaches: a pack with no subtitle, an
+appointment with no note, a notice whose recall id is no longer in the curated
+list, a persona with no authored view. Covering them would mean inventing content
+to satisfy a number, so `apps/mobile/vitest.config.ts` states the floor and says
+why, rather than lowering the number silently.
+
+**What it does not prove, and the parity gap it leaves open on purpose.** There is
+still no simulator on this machine, so nothing here is a pixel. Two gaps are
+deliberate and belong to later issues: the phone's lens card lists the authored
+action titles read-only and links "Read this week in full", because ticking a
+step belongs to the week screen (#153); and household data and live recalls are
+not wired, so the phone starts from `people: 0`, `jobs: []`, `sharedIds: []` and
+the curated feed until #156 and #157. They are listed here so the next PR cannot
+mistake them for finished work.
+
+## 78. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.
