@@ -277,6 +277,14 @@ to prove no button lands on the crease. `hingeFor()` still returns `null` until
 `expo-hinge` is added, so the posture is hand-built in tests and no physical
 device was available.
 
+Push went to the phone alone (#161), which is what "native-only delivery" means
+here. The content is shared — a pack's optional `push` field is linted with
+every other parent-facing sentence — but the transport is not: `sendPackPush`
+renders once and hands the same two lines to a `PushTransport`, whose APNs and
+FCM envelopes are the only platform-specific part. The web has no push channel,
+so there is no page for the parity manifest to name. `device_tokens` is one row
+per install, household-scoped and deleted on sign-out.
+
 The week followed (#153). It is drawn from the same `WeekModel` the web's page
 is built from — the same steps, skip reasons, later dates, set-aside notice,
 catch-up window, lens and sources — and its share button prints the page to PDF

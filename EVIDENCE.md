@@ -3424,6 +3424,46 @@ segment reporting (`env(viewport-segment-*)`) is a stylesheet hook
 (`.layout-half-open`), not a measured claim. Pixels, gestures and the real
 glass remain untested, as §§78–83 say for every native screen.
 
-## 86. How this file is maintained
+## 86. A push is the pack's own two lines, and one gate decides whether it goes (issue #161)
+
+**The pack owns the words.** `StagePack` gained an optional `push: { title,
+body }`, capped at 80 and 180 characters and walked by the copy linter with
+every other parent-facing sentence. Absent means the week had nothing worth a
+lock screen; the sender treats that as `no-push`, not an error, and sends
+nothing.
+
+**One row per install.** `device_tokens` stores the APNs/FCM token, the
+platform (`ios` or `android`), the household and the person, with the token
+unique. Registering the same phone after a second sign-in updates that row
+instead of copying it; deleting it on sign-out is the same `DELETE
+/api/devices` the sender uses to prune a token the service rejects. RLS is the
+household policy, and only the person themselves can insert, so a household
+cannot be handed a device it did not register.
+
+**The sender is one function.** `apps/web/src/lib/push.ts` renders the pack's
+two lines and calls `shouldSend` — the same gate as email — so loss mode, the
+parent's off switch, quiet hours and cadence are not reimplemented. A pack
+without push returns before any token is read. The per-platform envelope lives
+behind `PushTransport`: `deliver(device, message)` is all APNs and FCM have to
+answer, and it answers `sent`, `unregistered` or `failed`. Only `unregistered`
+prunes; a timeout keeps the phone for the next run.
+
+**What the tests prove.** Eight sender tests: no push sends nothing and
+touches no token; a pack with push sends once per install; a repeated token in
+one run still sends once; a parent who muted weekly sends gets silence; 23:00
+inside quiet hours waits; loss sends nothing; an unregistered token is pruned;
+a failed delivery is kept. Four database tests prove the list is
+household-scoped, one phone moves rather than duplicates, removal is scoped,
+and pruning cannot cross households. One mobile test proves sign-out removes
+the phone's address before it forgets the session.
+
+**What it does not prove.** No APNs or FCM credential exists in this
+environment, so no real notification was delivered. The transport is a port,
+the same way email's is; a fake proves fan-out, not certificates. There is no
+push opt-in UI on the phone yet and no scheduled job calling the sender, so this
+is the delivery layer, not the switch a parent can see. The web has no push
+channel at all, which is why #161 is not a parity item.
+
+## 87. How this file is maintained
 
 Every implementation PR adds a section recording what it built, what it tested, and what it could not test. A PR that changes a cited fact must update the source in `CONTENT_LIBRARY.md` and the row in section 3 of this file in the same commit. A PR that cannot verify something says so here rather than leaving it implied.

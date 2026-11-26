@@ -123,6 +123,7 @@ export async function signIn(provider: NativeProvider, ports: AuthPorts): Promis
 export async function signOut(
   ports: Pick<AuthPorts, "store" | "fetch" | "baseUrl">,
   token: string | null,
+  deviceToken?: string | null,
 ): Promise<void> {
   if (token) {
     try {
@@ -132,6 +133,24 @@ export async function signOut(
       });
     } catch {
       // The local delete below is the part the person can see.
+    }
+
+    // The phone's push address goes with the session. If this request fails the
+    // sender stops at a token the store no longer recognises and prunes it on
+    // the next run, so a stale row can never outlive the sign-out by much.
+    if (deviceToken) {
+      try {
+        await ports.fetch(`${ports.baseUrl}/api/devices`, {
+          method: "DELETE",
+          headers: {
+            authorization: `Bearer ${token}`,
+            "content-type": "application/json",
+          },
+          body: JSON.stringify({ token: deviceToken }),
+        });
+      } catch {
+        // Same reason as above: the local credential is the part that matters.
+      }
     }
   }
   await ports.store.deleteItem(SESSION_KEY).catch(() => undefined);

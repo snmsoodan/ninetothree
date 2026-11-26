@@ -460,29 +460,30 @@ This is how the pharmacy project stayed shippable. Keep it.
 Native apps were on this list until route B was accepted (`docs/PLATFORM.md`). They are now in scope, delivered as
 ordered issues so each slice is independently testable:
 
-| #   | Issue                                                       | Shared?              |
-| --- | ----------------------------------------------------------- | -------------------- |
-| 147 | A phone signs in and gets a session                         | shared               |
-| 148 | The tokens compile twice, from one file                     | shared               |
-| 149 | The behaviour, written once (`packages/domain`)             | shared — merged      |
-| 150 | Twelve primitives, one props surface (`packages/ui-native`) | shared — merged      |
-| 151 | The shell: Expo Router, tabs, deep links, theme             | shared — merged      |
-| 152 | Today, on the phone                                         | shared — merged      |
-| 153 | The week, on the phone                                      | shared — merged      |
-| 154 | Library and search, on the phone                            | shared — merged      |
-| 155 | Triage on the phone                                         | shared — merged      |
-| 156 | The shelf and Together, on the phone                        | shared — merged      |
-| 157 | Settings, updates, appointments, history, reads             | shared — merged      |
-| 158 | Sign in with Google and Apple, on the device                | shared — merged      |
-| 159 | The parity harness                                          | shared — merged      |
-| 160 | Foldables: four width modes, tested                         | shared — merged      |
-| 161 | Push from the pack                                          | native-only delivery |
-| 162 | Store readiness                                             | native-only          |
+| #   | Issue                                                       | Shared?                       |
+| --- | ----------------------------------------------------------- | ----------------------------- |
+| 147 | A phone signs in and gets a session                         | shared                        |
+| 148 | The tokens compile twice, from one file                     | shared                        |
+| 149 | The behaviour, written once (`packages/domain`)             | shared — merged               |
+| 150 | Twelve primitives, one props surface (`packages/ui-native`) | shared — merged               |
+| 151 | The shell: Expo Router, tabs, deep links, theme             | shared — merged               |
+| 152 | Today, on the phone                                         | shared — merged               |
+| 153 | The week, on the phone                                      | shared — merged               |
+| 154 | Library and search, on the phone                            | shared — merged               |
+| 155 | Triage on the phone                                         | shared — merged               |
+| 156 | The shelf and Together, on the phone                        | shared — merged               |
+| 157 | Settings, updates, appointments, history, reads             | shared — merged               |
+| 158 | Sign in with Google and Apple, on the device                | shared — merged               |
+| 159 | The parity harness                                          | shared — merged               |
+| 160 | Foldables: four width modes, tested                         | shared — merged               |
+| 161 | Push from the pack                                          | native-only delivery — merged |
+| 162 | Store readiness                                             | native-only                   |
 
 Issues 147–160 are merged: the token exchange, the token source, the machine,
 the primitives, the shell, every screen a parent reads, the device's own sign-in,
-the harness that checks the manifest against both clients' files, and the one
-set of width names both clients now share. 161–162 are open.
+the harness that checks the manifest against both clients' files, the one
+set of width names both clients now share, and a push sender that renders the
+pack's own two lines. 161 is merged; 162 is open.
 
 158–160 make the three clients agree; 161–162 extend the phone alone. 161–162
 are marked "not parity" on purpose: the web has no push channel and no store, so

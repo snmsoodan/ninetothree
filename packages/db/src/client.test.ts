@@ -37,6 +37,7 @@ describe("createDb", () => {
       "0007_jobs",
       "0008_deletion",
       "0009_billing",
+      "0010_device_tokens",
     ]);
   });
 

@@ -205,6 +205,8 @@ export function proseFields(pack: StagePack): Prose[] {
   };
 
   push("subtitle", pack.subtitle);
+  push("push.title", pack.push?.title);
+  push("push.body", pack.push?.body);
   push("baby.development", pack.baby?.development);
   push("you.body", pack.you?.body);
   push("you.mind", pack.you?.mind);

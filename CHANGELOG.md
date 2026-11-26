@@ -9,6 +9,20 @@ changelog written after the fact from memory is a changelog nobody can trust.
 
 ## Unreleased
 
+### Push is the pack's own words, not a second content system (#161)
+
+- `StagePack` gained an optional `push: { title, body }`, linted with the rest
+  of the pack. A week without it sends nothing.
+- `device_tokens` holds one row per install, scoped to the household, unique on
+  the token; signing in elsewhere moves the row and signing out removes it.
+- `sendPackPush` renders the two lines and calls the existing `shouldSend`
+  gate, then delivers once per token behind a transport port. Quiet hours,
+  loss mode, mute and cadence are the domain's decisions, not the sender's.
+- Eight sender tests, four database tests and one sign-out test cover the four
+  cases in the issue. No APNs/FCM credential exists here; see `EVIDENCE.md`
+  §86.
+- Not a parity item: the browser has no push channel.
+
 ### One set of width names, and a crease that moves the primary action (#160)
 
 - `packages/ui/src/layout.ts` names compact, regular, medium and expanded at

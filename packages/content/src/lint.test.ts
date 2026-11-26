@@ -86,6 +86,13 @@ describe("proseFields", () => {
     expect(paths).not.toContain("you.body");
   });
 
+  it("walks the two lines a push would show", () => {
+    const withPush: StagePack = { ...base, push: { title: "Week 20", body: "Scan week." } };
+    const paths = proseFields(withPush).map((f) => f.path);
+    expect(paths).toContain("push.title");
+    expect(paths).toContain("push.body");
+  });
+
   it("walks options, alsoKnow and appointments", () => {
     const paths = proseFields(base).map((f) => f.path);
     expect(paths.some((p) => p.includes(".options[0]."))).toBe(true);

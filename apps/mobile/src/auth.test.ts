@@ -134,6 +134,30 @@ describe("sign-in on the phone", () => {
     expect(store.values[SESSION_KEY]).toBeUndefined();
   });
 
+  it("removes the phone's push address before it forgets the session", async () => {
+    const store = memory({ [SESSION_KEY]: JSON.stringify(SESSION) });
+    const fetch = vi.fn(async () => new Response(null, { status: 204 }));
+    await signOut(
+      {
+        store,
+        fetch: fetch as unknown as typeof globalThis.fetch,
+        baseUrl: "https://ninetothree.com",
+      },
+      "abc123",
+      "device-token",
+    );
+
+    expect(fetch).toHaveBeenLastCalledWith("https://ninetothree.com/api/devices", {
+      method: "DELETE",
+      headers: {
+        authorization: "Bearer abc123",
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({ token: "device-token" }),
+    });
+    expect(store.values[SESSION_KEY]).toBeUndefined();
+  });
+
   it("signs out locally without a token and without a request", async () => {
     const store = memory({ [SESSION_KEY]: JSON.stringify(SESSION) });
     const fetch = vi.fn();
